@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Recherche</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="hero">
+    <h1>🔍 Recherche</h1>
+    <p>Trouvez rapidement un outil ou une ressource</p>
+  </div>
+
+  <div class="search-container">
+    <div class="search-bar">
+      <input
+        type="text"
+        id="search-input"
+        class="search-input"
+        placeholder="Rechercher un outil, une ressource…"
+        autofocus
+      />
+    </div>
+    <div class="search-results" id="search-results">
+      <p class="status-msg" style="padding:20px 0">Commencez à taper pour rechercher…</p>
+    </div>
+  </div>
+
+  <script src="links.js"></script>
+  <script>
+    const input = document.getElementById("search-input");
+    const results = document.getElementById("search-results");
+
+    // Flatten all items
+    const allItems = LINKS_DATA.categories.flatMap(cat =>
+      cat.items.map(item => ({ ...item, category: cat.title }))
+    );
+
+    input.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      if (!q) {
+        results.innerHTML = `<p class="status-msg" style="padding:20px 0">Commencez à taper pour rechercher…</p>`;
+        return;
+      }
+
+      const matched = allItems.filter(item =>
+        item.title.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      );
+
+      if (matched.length === 0) {
+        results.innerHTML = `<p class="status-msg" style="padding:20px 0">❌ Aucun résultat pour "<strong>${escHtml(q)}</strong>"</p>`;
+        return;
+      }
+
+      results.innerHTML = matched.map(item => `
+        <a class="tool-card" href="${item.href}" target="_blank" rel="noopener noreferrer">
+          <div class="card-header">
+            <span class="card-title">${item.icon} ${item.title}</span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-left:8px">${item.category}</span>
+          </div>
+          <div class="card-description">${item.description}</div>
+        </a>`).join("");
+    });
+
+    function escHtml(s) {
+      return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+  </script>
+</body>
+</html>
