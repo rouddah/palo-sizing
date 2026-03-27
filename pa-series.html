@@ -254,6 +254,39 @@
       color: var(--green);
     }
 
+    /* EoS model styling */
+    .badge-eos-pa {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      background: rgba(234,179,8,0.12);
+      border: 1px solid rgba(234,179,8,0.4);
+      color: #ca8a04;
+    }
+    .model-th.eos-model .model-card-top::after {
+      content: 'EoS';
+      position: absolute;
+      top: 5px; right: 7px;
+      background: rgba(234,179,8,0.25);
+      border: 1px solid rgba(234,179,8,0.6);
+      color: #fbbf24;
+      font-size: 8px;
+      font-family: var(--mono);
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.07em;
+    }
+
+    /* Measurement note in stats bar */
+    .stats-note {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
     /* ── Category rows ── */
     .cat-row td {
       position: sticky;
@@ -396,6 +429,7 @@
       <div class="filter-group" id="series-filters">
         <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
         <button class="fb" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
+        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
         <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
         <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
         <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
@@ -413,8 +447,9 @@
       </div>
     </div>
     <div class="stats-bar">
-      <span>Modèles affichés : <strong id="stat-models">23</strong></span>
+      <span>Modèles affichés : <strong id="stat-models">25</strong></span>
       <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
+      <span class="stats-note">Débits mesurés avec App-ID activé (appmix) · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
     </div>
   </div>
 
@@ -449,58 +484,71 @@
   </div>
 
   <script>
-  /* ══ DATA ══ */
+  /* ══ DATA ══
+     Source : datasheets officielles PAN-OS 12.1 (PA-7000 : 11.2, PA-7500 : 11.1)
+     Débits : App-ID activé, mesure appmix (trafic mixte réel)
+     PA-800 : End of Sale août 2024 — remplacement conseillé PA-1400
+     PA-7500 : config de référence = 6 DPC-A + 2 NPC-A + 1 MPC-A
+  ══ */
   const MODELS = [
-    { id:'PA-410',    s:'PA-400',  f:'Desktop',    color:'#1e40af', target:'Branch / SOHO',      poe:false, fw:1.4,  tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:7,  sfp1:0, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-415',    s:'PA-400',  f:'Desktop',    color:'#1d4ed8', target:'Branch PoE',         poe:true,  fw:1.5,  tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:5,  sfp1:1, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-415-5G', s:'PA-400',  f:'Desktop',    color:'#2563eb', target:'Branch PoE + 5G',    poe:true,  fw:1.5,  tp:0.8,   vpn:0.5,  sess:64000,      cps:11400,   rj45:5,  sfp1:1, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-440',    s:'PA-400',  f:'Desktop',    color:'#1e3a8a', target:'Branch / SMB',       poe:false, fw:2.4,  tp:1.2,   vpn:1.1,  sess:200000,     cps:34000,   rj45:8,  sfp1:0, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-445',    s:'PA-400',  f:'Desktop',    color:'#1e40af', target:'Branch PoE / SMB',   poe:true,  fw:2.7,  tp:1.25,  vpn:1.1,  sess:200000,     cps:34000,   rj45:5,  sfp1:1, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-450',    s:'PA-400',  f:'Desktop',    color:'#1d4ed8', target:'SMB',                poe:false, fw:3.3,  tp:2.1,   vpn:1.7,  sess:300000,     cps:48000,   rj45:8,  sfp1:0, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-455',    s:'PA-400',  f:'Desktop',    color:'#2563eb', target:'SMB PoE',            poe:true,  fw:3.6,  tp:2.3,   vpn:1.8,  sess:300000,     cps:56000,   rj45:4,  sfp1:2, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-455-5G', s:'PA-400',  f:'Desktop',    color:'#3b82f6', target:'SMB PoE + 5G',       poe:true,  fw:3.2,  tp:1.8,   vpn:1.6,  sess:300000,     cps:48000,   rj45:6,  sfp1:2, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-460',    s:'PA-400',  f:'Desktop',    color:'#1e3a8a', target:'SMB / Mid-Market',   poe:false, fw:4.2,  tp:3.0,   vpn:2.3,  sess:400000,     cps:67000,   rj45:8,  sfp1:0, sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-1410',   s:'PA-1400', f:'1U Rack',    color:'#0e7490', target:'Mid-Market',         poe:true,  fw:8.5,  tp:4.5,   vpn:4.1,  sess:945000,     cps:100000,  rj45:8,  sfp1:6, sfp10:4,  sfp25:0, sfp100:0 },
-    { id:'PA-1420',   s:'PA-1400', f:'1U Rack',    color:'#0891b2', target:'Mid-Market+',        poe:true,  fw:9.5,  tp:6.2,   vpn:5.6,  sess:1400000,    cps:140000,  rj45:4,  sfp1:2, sfp10:8,  sfp25:0, sfp100:0 },
-    { id:'PA-3410',   s:'PA-3400', f:'1U Rack',    color:'#0f766e', target:'Enterprise',         poe:false, fw:14,   tp:7.5,   vpn:6.6,  sess:1400000,    cps:145000,  rj45:0,  sfp1:0, sfp10:22, sfp25:4, sfp100:0 },
-    { id:'PA-3420',   s:'PA-3400', f:'1U Rack',    color:'#0d9488', target:'Enterprise',         poe:false, fw:19,   tp:10,    vpn:9.9,  sess:2200000,    cps:220000,  rj45:0,  sfp1:0, sfp10:22, sfp25:4, sfp100:0 },
-    { id:'PA-3430',   s:'PA-3400', f:'1U Rack',    color:'#14b8a6', target:'Enterprise+',        poe:false, fw:29,   tp:15,    vpn:12,   sess:2500000,    cps:240000,  rj45:0,  sfp1:0, sfp10:22, sfp25:4, sfp100:2 },
-    { id:'PA-3440',   s:'PA-3400', f:'1U Rack',    color:'#2dd4bf', target:'Enterprise+',        poe:false, fw:35,   tp:20,    vpn:14.5, sess:3000000,    cps:268000,  rj45:0,  sfp1:0, sfp10:22, sfp25:4, sfp100:2 },
-    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',    color:'#b45309', target:'Large Enterprise',   poe:false, fw:52,   tp:35,    vpn:20,   sess:5000000,    cps:270000,  rj45:0,  sfp1:0, sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5420',   s:'PA-5400', f:'2U Rack',    color:'#d97706', target:'Large Enterprise',   poe:false, fw:70,   tp:50,    vpn:28,   sess:7000000,    cps:370000,  rj45:0,  sfp1:0, sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5430',   s:'PA-5400', f:'2U Rack',    color:'#f59e0b', target:'Large Enterprise',   poe:false, fw:80,   tp:60,    vpn:42,   sess:9000000,    cps:380000,  rj45:0,  sfp1:0, sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5440',   s:'PA-5400', f:'2U Rack',    color:'#fbbf24', target:'Large Enterprise',   poe:false, fw:85,   tp:70,    vpn:58,   sess:20000000,   cps:390000,  rj45:0,  sfp1:0, sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5445',   s:'PA-5400', f:'2U Rack',    color:'#fcd34d', target:'Large Enterprise',   poe:false, fw:90,   tp:76,    vpn:64,   sess:48000000,   cps:449000,  rj45:0,  sfp1:0, sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U', color:'#7c3aed', target:'Hyperscale / DC',    poe:false, fw:343,  tp:184,   vpn:190,  sess:245000000,  cps:4000000, rj45:0,  sfp1:48,sfp10:48, sfp25:0, sfp100:24 },
-    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U',color:'#6d28d9', target:'Hyperscale / DC',    poe:false, fw:590,  tp:305,   vpn:310,  sess:416000000,  cps:6000000, rj45:0,  sfp1:80,sfp10:80, sfp25:0, sfp100:40 },
-    { id:'PA-7500',   s:'PA-7500', f:'Chassis 14U',color:'#be123c', target:'Hyperscale Max',     poe:false, fw:1500, tp:1440,  vpn:407,  sess:440000000,  cps:7200000, rj45:0,  sfp1:0, sfp10:0,  sfp25:0, sfp100:0  },
+    // id, série, format, couleur, cible, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1, sfp10, sfp25, sfp100, eos, vsys(base/max), haAA, m5g
+    { id:'PA-410',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch / SOHO',      poe:false, fw:1.4,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:7,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false },
+    { id:'PA-415',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'Branch PoE',         poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false },
+    { id:'PA-415-5G', s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'Branch PoE + 5G',    poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11400,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false },
+    { id:'PA-440',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'Branch / SMB',       poe:false, fw:2.4,   tp:1.2,   vpn:1.1,  sess:200000,     cps:34000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false },
+    { id:'PA-445',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch PoE / SMB',   poe:true,  fw:2.7,   tp:1.25,  vpn:1.1,  sess:200000,     cps:34000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false },
+    { id:'PA-450',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'SMB',                poe:false, fw:3.3,   tp:2.1,   vpn:1.7,  sess:300000,     cps:48000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false },
+    { id:'PA-455',    s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'SMB PoE',            poe:true,  fw:3.6,   tp:2.3,   vpn:1.8,  sess:300000,     cps:56000,   rj45:4,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false },
+    { id:'PA-455-5G', s:'PA-400',  f:'Desktop',     color:'#3b82f6', target:'SMB PoE + 5G',       poe:true,  fw:3.2,   tp:1.8,   vpn:1.6,  sess:300000,     cps:48000,   rj45:6,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false },
+    { id:'PA-460',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'SMB / Mid-Market',   poe:false, fw:4.2,   tp:3.0,   vpn:2.3,  sess:400000,     cps:67000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false },
+    // PA-800 — End of Sale août 2024 | Remplacement : PA-1400
+    { id:'PA-820',    s:'PA-800',  f:'1U Rack',     color:'#854d0e', target:'Branch/SMB — EoS',   poe:false, fw:1.6,   tp:0.9,   vpn:1.3,  sess:128000,     cps:8100,    rj45:4,  sfp1:8,  sfp10:0,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false },
+    { id:'PA-850',    s:'PA-800',  f:'1U Rack',     color:'#a16207', target:'Branch/Campus — EoS',poe:false, fw:2.0,   tp:1.0,   vpn:1.6,  sess:192000,     cps:13100,   rj45:4,  sfp1:4,  sfp10:4,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false },
+    { id:'PA-1410',   s:'PA-1400', f:'1U Rack',     color:'#0e7490', target:'Mid-Market',         poe:true,  fw:8.5,   tp:4.5,   vpn:4.1,  sess:945000,     cps:100000,  rj45:8,  sfp1:6,  sfp10:4,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false },
+    { id:'PA-1420',   s:'PA-1400', f:'1U Rack',     color:'#0891b2', target:'Mid-Market+',        poe:true,  fw:9.5,   tp:6.2,   vpn:5.6,  sess:1400000,    cps:140000,  rj45:4,  sfp1:2,  sfp10:8,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false },
+    { id:'PA-3410',   s:'PA-3400', f:'1U Rack',     color:'#0f766e', target:'Enterprise',         poe:false, fw:14,    tp:7.5,   vpn:6.6,  sess:1400000,    cps:145000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false },
+    { id:'PA-3420',   s:'PA-3400', f:'1U Rack',     color:'#0d9488', target:'Enterprise',         poe:false, fw:19,    tp:10,    vpn:9.9,  sess:2200000,    cps:220000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false },
+    { id:'PA-3430',   s:'PA-3400', f:'1U Rack',     color:'#14b8a6', target:'Enterprise + 5G',    poe:false, fw:29,    tp:15,    vpn:12,   sess:2500000,    cps:240000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true  },
+    { id:'PA-3440',   s:'PA-3400', f:'1U Rack',     color:'#2dd4bf', target:'Enterprise+ + 5G',   poe:false, fw:35,    tp:20,    vpn:14.5, sess:3000000,    cps:268000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true  },
+    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',     color:'#b45309', target:'Large Enterprise',   poe:false, fw:52,    tp:35,    vpn:20,   sess:5000000,    cps:270000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'10 / 20',  haAA:true,  m5g:true  },
+    { id:'PA-5420',   s:'PA-5400', f:'2U Rack',     color:'#d97706', target:'Large Enterprise',   poe:false, fw:70,    tp:50,    vpn:28,   sess:7000000,    cps:370000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'15 / 65',  haAA:true,  m5g:true  },
+    { id:'PA-5430',   s:'PA-5400', f:'2U Rack',     color:'#f59e0b', target:'Large Enterprise',   poe:false, fw:80,    tp:60,    vpn:42,   sess:9000000,    cps:380000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 125', haAA:true,  m5g:true  },
+    { id:'PA-5440',   s:'PA-5400', f:'2U Rack',     color:'#fbbf24', target:'Large Enterprise',   poe:false, fw:85,    tp:70,    vpn:58,   sess:20000000,   cps:390000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true  },
+    { id:'PA-5445',   s:'PA-5400', f:'2U Rack',     color:'#fcd34d', target:'Large Enterprise',   poe:false, fw:90,    tp:76,    vpn:64,   sess:48000000,   cps:449000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true  },
+    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U',  color:'#7c3aed', target:'Hyperscale / DC',    poe:false, fw:343,   tp:184,   vpn:190,  sess:245000000,  cps:4000000, rj45:0,  sfp1:48, sfp10:48, sfp25:0,  sfp100:24, eos:false, vsys:'25 / 225', haAA:true,  m5g:true  },
+    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U', color:'#6d28d9', target:'Hyperscale / DC',    poe:false, fw:590,   tp:305,   vpn:310,  sess:416000000,  cps:6000000, rj45:0,  sfp1:80, sfp10:80, sfp25:0,  sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true  },
+    // PA-7500 : config ref. 6×DPC-A + 2×NPC-A + 1×MPC-A | Interfaces : 24×SFP-DD (100G/25G/10G) + 16×QSFP-DD (400G/100G)
+    { id:'PA-7500',   s:'PA-7500', f:'Chassis 14U', color:'#be123c', target:'Hyperscale Max',     poe:false, fw:1500,  tp:1440,  vpn:407,  sess:440000000,  cps:7200000, rj45:0,  sfp1:0,  sfp10:24, sfp25:24, sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true  },
   ];
 
   const ROWS = [
-    { cat:'perf',  label:'App-ID Firewall',      fn: m => m.fw    + ' Gbps', num: m => m.fw    },
-    { cat:'perf',  label:'Threat Prevention',     fn: m => m.tp    + ' Gbps', num: m => m.tp    },
-    { cat:'perf',  label:'IPsec VPN',             fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
-    { cat:'sess',  label:'Sessions max',          fn: m => fmtN(m.sess),      num: m => m.sess  },
-    { cat:'sess',  label:'Nouvelles sessions/s',  fn: m => fmtN(m.cps),       num: m => m.cps   },
-    { cat:'ports', label:'1G RJ45',               fn: m => m.rj45  || '—',    num: m => m.rj45  },
-    { cat:'ports', label:'1G SFP',                fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
-    { cat:'ports', label:'10G SFP+',              fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
-    { cat:'ports', label:'25G SFP28',             fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
-    { cat:'100G QSFP28', label:'100G QSFP28',     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
-    { cat:'hw',    label:'Format',                fn: m => m.f,               num: null         },
-    { cat:'hw',    label:'PoE',                   fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
-    { cat:'feat',  label:'HA Active/Passive',     fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'GlobalProtect VPN',     fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'SD-WAN',                fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'WildFire ML',           fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'App-ID',                fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'perf',  label:'App-ID Firewall (appmix)',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'Threat Prevention (appmix)',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'IPsec VPN',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
+    { cat:'sess',  label:'Nouvelles sessions/s',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
+    { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
+    { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
+    { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
+    { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
+    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
   ];
 
   const CATS = {
     perf:  { label:'Performances',    icon:'▸' },
     sess:  { label:'Sessions',        icon:'▸' },
     ports: { label:'Interfaces',      icon:'▸' },
-    '100G QSFP28': { label:'Interfaces (suite)', icon:'▸' },
     hw:    { label:'Hardware',        icon:'▸' },
     feat:  { label:'Fonctionnalités', icon:'▸' },
   };
@@ -520,16 +568,25 @@
 
     // Header
     const hRow = document.getElementById('header-row');
+    const DS_URLS = {
+      'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+      'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+      'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+      'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+      'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+      'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
+    };
     hRow.innerHTML = `<th class="th-corner"></th>` +
       visible.map(m => `
-        <th class="model-th ${selected.has(m.id)?'selected':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
+        <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
           <div class="model-card-clip">
             <div class="model-card-top" style="background:${m.color}">
               <span class="model-name">${m.id}</span>
               <span class="model-target">${m.target}</span>
             </div>
             <div class="model-card-bot" style="background:${m.color}22">
-              <a class="model-ds-link" href="https://www.paloaltonetworks.com/network-security/next-generation-firewall" target="_blank" rel="noopener">↗ Datasheet</a>
+              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
               <div class="sel-dot"></div>
             </div>
           </div>
@@ -541,8 +598,7 @@
     let delay    = 0;
 
     ROWS.forEach(row => {
-      if (activeCat !== 'all' && row.cat !== activeCat && row.cat !== '100G QSFP28') return;
-      if (activeCat !== 'all' && row.cat === '100G QSFP28' && activeCat !== 'ports') return;
+      if (activeCat !== 'all' && row.cat !== activeCat) return;
 
       // Category separator
       const catKey = row.cat;
