@@ -3,29 +3,639 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sizing Guide — Recherche</title>
+  <title>Sizing Guide — Recherche & Sizing</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Search-specific layout ── */
+    .sizing-wrap {
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 100px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── Filter panel ── */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: sticky;
+      top: calc(var(--header-h) + 16px);
+    }
+
+    .filter-panel h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 20px;
+      letter-spacing: -0.2px;
+    }
+
+    .filter-group {
+      margin-bottom: 22px;
+    }
+
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Mode selector */
+    .mode-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: left;
+      font-size: 12px;
+      font-family: var(--font);
+      transition: all .15s;
+    }
+
+    .mode-btn:hover { border-color: var(--border2); color: var(--text-bright); }
+
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--text-bright);
+    }
+
+    .mode-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      flex-shrink: 0;
+    }
+
+    .mode-btn.active .mode-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Number inputs */
+    .filter-input {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-bright);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .filter-input:focus { border-color: var(--accent); }
+    .filter-input::placeholder { color: var(--text-muted); }
+
+    /* Profile buttons (usage profile) */
+    .profile-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .profile-btn {
+      flex: 1;
+      padding: 6px 4px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-family: var(--mono);
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+    }
+
+    .profile-btn:hover { color: var(--text-bright); }
+    .profile-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    /* Form factor filter */
+    .ff-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .ff-btn {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-family: var(--mono);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .ff-btn:hover { color: var(--text-bright); }
+    .ff-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    /* Interface inputs grid */
+    .iface-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .iface-field label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .iface-field input {
+      width: 100%;
+      padding: 6px 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-bright);
+      font-family: var(--mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .iface-field input:focus { border-color: var(--accent); }
+
+    /* Action buttons */
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn-search {
+      flex: 1;
+      padding: 10px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+
+    .btn-search:hover { background: var(--accent-hover); }
+    .btn-search:active { transform: scale(.98); }
+
+    .btn-reset {
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .btn-reset:hover { border-color: var(--border2); color: var(--text-bright); }
+
+    /* ── Results panel ── */
+    .results-panel { min-width: 0; }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      min-height: 32px;
+    }
+
+    .results-count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .results-count strong { color: var(--text-bright); }
+
+    .btn-compare {
+      padding: 7px 16px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-family: var(--font);
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      transition: background .15s;
+    }
+
+    .btn-compare:hover { background: var(--accent-hover); }
+
+    /* ── Result card ── */
+    .result-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: border-color .15s, transform .15s;
+      cursor: pointer;
+    }
+
+    .result-card:hover { border-color: var(--border2); transform: translateX(2px); }
+
+    .result-card.selected {
+      border-color: var(--accent);
+      background: linear-gradient(90deg, var(--accent-dim) 0%, var(--surface) 100%);
+    }
+
+    .result-card.recommended { border-color: rgba(34,197,94,0.4); }
+
+    /* Checkbox */
+    .card-check {
+      width: 18px; height: 18px;
+      border-radius: 5px;
+      border: 2px solid var(--border2);
+      background: var(--surface2);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--accent);
+      transition: all .15s;
+    }
+
+    .result-card.selected .card-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Card main content */
+    .card-main { min-width: 0; }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-model {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+
+    .card-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    .badge-rec {
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green);
+    }
+
+    .badge-compat {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .card-form {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--surface2);
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    /* Stats row */
+    .card-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-name {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-val {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+
+    .stat-val.is-active { color: var(--accent); }
+    .stat-val.is-meet   { color: var(--green); }
+    .stat-val.is-over   { color: var(--yellow); }
+
+    /* Score bar */
+    .card-score-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 80px; }
+
+    .score-label { font-family: var(--mono); font-size: 9px; color: var(--text-muted); text-align: right; }
+    .score-bar   { width: 80px; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+    .score-fill  { height: 100%; border-radius: 2px; background: var(--green); transition: width .3s; }
+    .score-fill.warn { background: var(--yellow); }
+    .score-pct   { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--text-bright); }
+
+    /* Ports indicator */
+    .ports-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .port-chip {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .port-chip.ok    { border-color: rgba(34,197,94,0.3);  color: var(--green); }
+    .port-chip.short { border-color: rgba(239,68,68,0.3);   color: var(--red);   }
+
+    /* Empty / initial state */
+    .results-empty {
+      text-align: center;
+      padding: 64px 24px;
+      color: var(--text-muted);
+    }
+
+    .results-empty .empty-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .results-empty p { font-size: 14px; margin-bottom: 6px; color: var(--text-dim); }
+    .results-empty small { font-family: var(--mono); font-size: 12px; }
+
+    /* ── Comparison modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 500;
+      overflow-y: auto;
+      padding: 32px 16px;
+    }
+
+    .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 1000px;
+      width: 100%;
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      width: 30px; height: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .modal-close:hover { color: var(--text-bright); }
+
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .cmp-table th, .cmp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .cmp-table th { font-family: var(--mono); font-size: 12px; color: var(--accent); background: var(--surface2); }
+    .cmp-table td:first-child { text-align: left; color: var(--text-muted); font-size: 12px; font-family: var(--mono); }
+    .cmp-table .cmp-best { color: var(--green); font-weight: 700; font-family: var(--mono); }
+    .cmp-table .cmp-val  { font-family: var(--mono); color: var(--text-bright); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .sizing-wrap { grid-template-columns: 1fr; }
+      .filter-panel { position: static; }
+    }
+  </style>
 </head>
 <body>
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <div class="hero" style="padding-bottom:24px">
-    <h1>Trouvez une <span>ressource</span></h1>
-    <p>Recherchez parmi tous les outils et liens disponibles</p>
+  <div style="position:relative;z-index:1;padding:32px 24px 0;max-width:1200px;margin:0 auto">
+    <h1 style="font-size:22px;font-weight:700;color:var(--text-bright);letter-spacing:-0.5px;margin-bottom:4px">
+      Sizing & Recommandation
+    </h1>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:0">
+      Trouvez le boîtier PA-Series adapté à votre projet
+    </p>
   </div>
 
-  <div class="search-wrap">
-    <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="search-input" class="search-input"
-        placeholder="Rechercher : portal, VPN, firewall, training…" autofocus />
+  <div class="sizing-wrap">
+    <!-- ══ FILTER PANEL ══ -->
+    <aside class="filter-panel">
+      <h2>Critères de dimensionnement</h2>
+
+      <!-- Mode -->
+      <div class="filter-group">
+        <span class="filter-label">Mode de débit</span>
+        <div class="mode-group">
+          <button class="mode-btn active" data-mode="tp" onclick="setMode(this)">
+            <span class="mode-dot"></span>
+            <span>
+              <strong style="display:block;font-size:12px">Threat Prevention</strong>
+              <span style="font-size:10px;color:var(--text-muted)">Toutes fonctions actives</span>
+            </span>
+          </button>
+          <button class="mode-btn" data-mode="fw" onclick="setMode(this)">
+            <span class="mode-dot"></span>
+            <span>
+              <strong style="display:block;font-size:12px">App-ID Firewall</strong>
+              <span style="font-size:10px;color:var(--text-muted)">Sans inspection avancée</span>
+            </span>
+          </button>
+          <button class="mode-btn" data-mode="vpn" onclick="setMode(this)">
+            <span class="mode-dot"></span>
+            <span>
+              <strong style="display:block;font-size:12px">IPsec VPN</strong>
+              <span style="font-size:10px;color:var(--text-muted)">Trafic chiffré uniquement</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div class="filter-group">
+        <span class="filter-label">Nombre d'utilisateurs</span>
+        <input type="number" id="userCount" class="filter-input" min="1" placeholder="ex : 250" />
+      </div>
+
+      <!-- Usage profile -->
+      <div class="filter-group">
+        <span class="filter-label">Profil d'utilisation</span>
+        <div class="profile-group">
+          <button class="profile-btn" data-bw="0.5" onclick="setProfile(this)" title="Navigation basique">
+            Léger<br><span style="font-size:9px">0.5 Mbps/user</span>
+          </button>
+          <button class="profile-btn active" data-bw="1.5" onclick="setProfile(this)" title="Bureautique classique">
+            Standard<br><span style="font-size:9px">1.5 Mbps/user</span>
+          </button>
+          <button class="profile-btn" data-bw="3" onclick="setProfile(this)" title="Vidéo / cloud intensif">
+            Intensif<br><span style="font-size:9px">3 Mbps/user</span>
+          </button>
+        </div>
+        <div id="computed-tp" style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--text-muted);min-height:16px"></div>
+      </div>
+
+      <!-- Form factor -->
+      <div class="filter-group">
+        <span class="filter-label">Format</span>
+        <div class="ff-group">
+          <button class="ff-btn active" data-ff="all"     onclick="setFF(this)">Tous</button>
+          <button class="ff-btn"        data-ff="Desktop" onclick="setFF(this)">Desktop</button>
+          <button class="ff-btn"        data-ff="1U Rack" onclick="setFF(this)">1U Rack</button>
+          <button class="ff-btn"        data-ff="2U Rack" onclick="setFF(this)">2U Rack</button>
+          <button class="ff-btn"        data-ff="Chassis" onclick="setFF(this)">Chassis</button>
+        </div>
+      </div>
+
+      <!-- Interfaces -->
+      <div class="filter-group">
+        <span class="filter-label">Interfaces minimum requises</span>
+        <div class="iface-grid">
+          <div class="iface-field">
+            <label>1G RJ45</label>
+            <input type="number" id="i_rj45" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label>1G SFP</label>
+            <input type="number" id="i_sfp" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label>10G SFP+</label>
+            <input type="number" id="i_10g" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label>25G SFP28</label>
+            <input type="number" id="i_25g" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label>100G QSFP28</label>
+            <input type="number" id="i_100g" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label>PoE requis</label>
+            <select id="i_poe" style="width:100%;padding:6px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text-bright);font-family:var(--mono);font-size:12px;outline:none">
+              <option value="no">Non</option>
+              <option value="yes">Oui</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-search" onclick="runSearch()">Rechercher</button>
+        <button class="btn-reset"  onclick="resetAll()">Reset</button>
+      </div>
+    </aside>
+
+    <!-- ══ RESULTS ══ -->
+    <div class="results-panel">
+      <div class="results-header">
+        <div class="results-count" id="results-count"></div>
+        <button class="btn-compare" id="btn-compare" onclick="openCompare()">Comparer (<span id="cmp-count">0</span>)</button>
+      </div>
+      <div class="result-grid" id="result-grid">
+        <div class="results-empty">
+          <div class="empty-icon">⬡</div>
+          <p>Renseignez vos critères et lancez la recherche</p>
+          <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
+        </div>
+      </div>
     </div>
-    <div id="search-count" class="search-count"></div>
-    <div class="search-results" id="search-results">
-      <p class="status-msg" style="padding:20px 0; text-align:left">
-        Commencez à taper pour chercher parmi les ressources…
-      </p>
+  </div>
+
+  <!-- ══ COMPARE MODAL ══ -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-title">Comparaison</div>
+      <button class="modal-close" onclick="closeCompare()">✕</button>
+      <div id="modal-content"></div>
     </div>
   </div>
 
@@ -33,54 +643,297 @@
     Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
   </footer>
 
-  <script src="links.js"></script>
   <script>
-    const input   = document.getElementById('search-input');
-    const results = document.getElementById('search-results');
-    const count   = document.getElementById('search-count');
+  /* ══════════════════════════════════════════════
+     DATA — extraite des datasheets officielles PAN
+  ══════════════════════════════════════════════ */
+  const MODELS = [
+    // id, series, form, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1g, sfp10g, sfp25g, sfp100g
+    { id:'PA-410',    series:'PA-400',  form:'Desktop',    poe:false, fw:1.4,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:7,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-415',    series:'PA-400',  form:'Desktop',    poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-415-5G', series:'PA-400',  form:'Desktop',    poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11400,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-440',    series:'PA-400',  form:'Desktop',    poe:false, fw:2.4,   tp:1.2,   vpn:1.1,  sess:200000,     cps:34000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-445',    series:'PA-400',  form:'Desktop',    poe:true,  fw:2.7,   tp:1.25,  vpn:1.1,  sess:200000,     cps:34000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-450',    series:'PA-400',  form:'Desktop',    poe:false, fw:3.3,   tp:2.1,   vpn:1.7,  sess:300000,     cps:48000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-455',    series:'PA-400',  form:'Desktop',    poe:true,  fw:3.6,   tp:2.3,   vpn:1.8,  sess:300000,     cps:56000,   rj45:4,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-455-5G', series:'PA-400',  form:'Desktop',    poe:true,  fw:3.2,   tp:1.8,   vpn:1.6,  sess:300000,     cps:48000,   rj45:6,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-460',    series:'PA-400',  form:'Desktop',    poe:false, fw:4.2,   tp:3.0,   vpn:2.3,  sess:400000,     cps:67000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-1410',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:8.5,   tp:4.5,   vpn:4.1,  sess:945000,     cps:100000,  rj45:8,  sfp1:6,  sfp10:4,  sfp25:0, sfp100:0 },
+    { id:'PA-1420',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:9.5,   tp:6.2,   vpn:5.6,  sess:1400000,    cps:140000,  rj45:4,  sfp1:2,  sfp10:8,  sfp25:0, sfp100:0 },
+    { id:'PA-3410',   series:'PA-3400', form:'1U Rack',    poe:false, fw:14,    tp:7.5,   vpn:6.6,  sess:1400000,    cps:145000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:0 },
+    { id:'PA-3420',   series:'PA-3400', form:'1U Rack',    poe:false, fw:19,    tp:10,    vpn:9.9,  sess:2200000,    cps:220000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:0 },
+    { id:'PA-3430',   series:'PA-3400', form:'1U Rack',    poe:false, fw:29,    tp:15,    vpn:12,   sess:2500000,    cps:240000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:2 },
+    { id:'PA-3440',   series:'PA-3400', form:'1U Rack',    poe:false, fw:35,    tp:20,    vpn:14.5, sess:3000000,    cps:268000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:2 },
+    { id:'PA-5410',   series:'PA-5400', form:'2U Rack',    poe:false, fw:52,    tp:35,    vpn:20,   sess:5000000,    cps:270000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
+    { id:'PA-5420',   series:'PA-5400', form:'2U Rack',    poe:false, fw:70,    tp:50,    vpn:28,   sess:7000000,    cps:370000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
+    { id:'PA-5430',   series:'PA-5400', form:'2U Rack',    poe:false, fw:80,    tp:60,    vpn:42,   sess:9000000,    cps:380000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
+    { id:'PA-5440',   series:'PA-5400', form:'2U Rack',    poe:false, fw:85,    tp:70,    vpn:58,   sess:20000000,   cps:390000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
+    { id:'PA-5445',   series:'PA-5400', form:'2U Rack',    poe:false, fw:90,    tp:76,    vpn:64,   sess:48000000,   cps:449000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
+    { id:'PA-7050',   series:'PA-7000', form:'Chassis 9U', poe:false, fw:343,   tp:184,   vpn:190,  sess:245000000,  cps:4000000, rj45:0,  sfp1:48, sfp10:48, sfp25:0, sfp100:24 },
+    { id:'PA-7080',   series:'PA-7000', form:'Chassis 19U',poe:false, fw:590,   tp:305,   vpn:310,  sess:416000000,  cps:6000000, rj45:0,  sfp1:80, sfp10:80, sfp25:0, sfp100:40 },
+    { id:'PA-7500',   series:'PA-7500', form:'Chassis 14U',poe:false, fw:1500,  tp:1440,  vpn:407,  sess:440000000,  cps:7200000, rj45:0,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0  },
+  ];
 
-    const allItems = LINKS_DATA.categories.flatMap(cat =>
-      cat.items.map(item => ({ ...item, category: cat.title }))
-    );
+  /* ══ State ══ */
+  let state = { mode:'tp', bw:1.5, ff:'all' };
+  let selected = new Set();
 
-    input.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase();
-      if (!q) {
-        results.innerHTML = `<p class="status-msg" style="padding:20px 0;text-align:left">Commencez à taper pour chercher parmi les ressources…</p>`;
-        count.textContent = '';
-        return;
-      }
-      const matched = allItems.filter(item =>
-        item.title.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-      );
+  /* ── Mode selector ── */
+  function setMode(btn) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.mode = btn.dataset.mode;
+    updateComputedTP();
+  }
 
-      count.textContent = matched.length
-        ? `${matched.length} résultat${matched.length > 1 ? 's' : ''}`
-        : '';
+  /* ── Profile selector ── */
+  function setProfile(btn) {
+    document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.bw = parseFloat(btn.dataset.bw);
+    updateComputedTP();
+  }
 
-      if (!matched.length) {
-        results.innerHTML = `<p class="status-msg" style="padding:20px 0;text-align:left">❌ Aucun résultat pour "<strong>${esc(q)}</strong>"</p>`;
-        return;
-      }
+  /* ── Form factor selector ── */
+  function setFF(btn) {
+    document.querySelectorAll('.ff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.ff = btn.dataset.ff;
+  }
 
-      results.innerHTML = matched.map(item => `
-        <a class="tool-card" href="${item.href}" target="_blank" rel="noopener noreferrer">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <div class="card-icon" style="margin:0;width:32px;height:32px;font-size:16px">${item.icon}</div>
-            <div>
-              <div class="card-title" style="margin:0">${item.title} <span class="card-arrow">↗</span></div>
-              <div style="font-size:10px;color:var(--text-muted);font-family:var(--mono);margin-top:2px">${item.category}</div>
+  /* ── Update throughput preview ── */
+  function updateComputedTP() {
+    const users = parseInt(document.getElementById('userCount').value) || 0;
+    const el    = document.getElementById('computed-tp');
+    if (!users) { el.textContent = ''; return; }
+    const gbps = (users * state.bw / 1000).toFixed(2);
+    const label = state.mode === 'fw' ? 'App-ID FW' : state.mode === 'tp' ? 'Threat Prev.' : 'IPsec VPN';
+    el.textContent = `→ Débit requis estimé (${label}) : ${gbps} Gbps`;
+  }
+
+  document.getElementById('userCount').addEventListener('input', updateComputedTP);
+
+  /* ── Main search ── */
+  function runSearch() {
+    const users    = parseInt(document.getElementById('userCount').value) || 0;
+    const reqGbps  = users * state.bw / 1000;
+    const reqRj45  = parseInt(document.getElementById('i_rj45').value)  || 0;
+    const reqSfp1  = parseInt(document.getElementById('i_sfp').value)   || 0;
+    const reqSfp10 = parseInt(document.getElementById('i_10g').value)   || 0;
+    const reqSfp25 = parseInt(document.getElementById('i_25g').value)   || 0;
+    const reqSfp100= parseInt(document.getElementById('i_100g').value)  || 0;
+    const reqPoe   = document.getElementById('i_poe').value === 'yes';
+    const ff       = state.ff;
+
+    function throughput(m) {
+      return state.mode === 'fw' ? m.fw : state.mode === 'tp' ? m.tp : m.vpn;
+    }
+
+    // Filter & score
+    const candidates = MODELS
+      .filter(m => {
+        if (ff !== 'all' && !m.form.startsWith(ff)) return false;
+        if (reqPoe && !m.poe) return false;
+        if (m.rj45  < reqRj45)   return false;
+        if (m.sfp1  < reqSfp1)   return false;
+        if (m.sfp10 < reqSfp10)  return false;
+        if (m.sfp25 < reqSfp25)  return false;
+        if (m.sfp100< reqSfp100) return false;
+        if (users > 0 && throughput(m) < reqGbps) return false;
+        return true;
+      })
+      .map(m => {
+        const tp = throughput(m);
+        // Score : closest match (lower oversize ratio is better)
+        const ratio = reqGbps > 0 ? tp / reqGbps : 1;
+        return { ...m, _tp: tp, _ratio: ratio };
+      })
+      .sort((a, b) => a._ratio - b._ratio);
+
+    selected.clear();
+    renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
+  }
+
+  /* ── Render results ── */
+  function renderResults(models, reqGbps, ifaces) {
+    const grid  = document.getElementById('result-grid');
+    const count = document.getElementById('results-count');
+
+    if (!models.length) {
+      count.innerHTML = '';
+      grid.innerHTML  = `<div class="results-empty">
+        <div class="empty-icon">⬡</div>
+        <p>Aucun boîtier ne correspond à ces critères</p>
+        <small>Essayez d'assouplir les contraintes d'interfaces ou de format</small>
+      </div>`;
+      return;
+    }
+
+    count.innerHTML = `<strong>${models.length}</strong> boîtier${models.length > 1 ? 's' : ''} compatible${models.length > 1 ? 's' : ''}`;
+
+    // First model = Recommandé (best fit), others = Compatible
+    grid.innerHTML = models.map((m, i) => {
+      const isRec     = i === 0;
+      const pct       = reqGbps > 0 ? Math.min(100, Math.round((reqGbps / m._tp) * 100)) : 100;
+      const isOversize= pct < 40;
+
+      const portChips = [
+        m.rj45   ? `<span class="port-chip ${m.rj45   >= ifaces.reqRj45   ? 'ok' : 'short'}">${m.rj45} × 1G RJ45</span>` : '',
+        m.sfp1   ? `<span class="port-chip ${m.sfp1   >= ifaces.reqSfp1   ? 'ok' : 'short'}">${m.sfp1} × 1G SFP</span>`  : '',
+        m.sfp10  ? `<span class="port-chip ${m.sfp10  >= ifaces.reqSfp10  ? 'ok' : 'short'}">${m.sfp10} × 10G SFP+</span>` : '',
+        m.sfp25  ? `<span class="port-chip ${m.sfp25  >= ifaces.reqSfp25  ? 'ok' : 'short'}">${m.sfp25} × 25G SFP28</span>` : '',
+        m.sfp100 ? `<span class="port-chip ${m.sfp100 >= ifaces.reqSfp100 ? 'ok' : 'short'}">${m.sfp100} × 100G QSFP28</span>` : '',
+        m.poe    ? `<span class="port-chip ok">PoE</span>` : '',
+      ].filter(Boolean).join('');
+
+      const tpLabel = state.mode === 'fw' ? 'App-ID FW' : state.mode === 'tp' ? 'Threat Prev.' : 'IPsec VPN';
+
+      return `
+      <div class="result-card ${isRec ? 'recommended' : ''}" id="card-${m.id}" onclick="toggleSelect('${m.id}')">
+        <div class="card-check" id="chk-${m.id}">✓</div>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="card-model">${m.id}</span>
+            <span class="card-badge ${isRec ? 'badge-rec' : 'badge-compat'}">${isRec ? 'Recommandé' : 'Compatible'}</span>
+            <span class="card-form">${m.form}</span>
+            ${m.poe ? '<span class="card-form">PoE</span>' : ''}
+          </div>
+          <div class="card-stats">
+            <div class="stat">
+              <span class="stat-name">${tpLabel}</span>
+              <span class="stat-val is-active">${m._tp} Gbps</span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">App-ID FW</span>
+              <span class="stat-val">${m.fw} Gbps</span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">IPsec VPN</span>
+              <span class="stat-val">${m.vpn} Gbps</span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">Sessions max</span>
+              <span class="stat-val">${fmtNum(m.sess)}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-name">Nouvelles/s</span>
+              <span class="stat-val">${fmtNum(m.cps)}</span>
             </div>
           </div>
-          <div class="card-description">${item.description}</div>
-        </a>`).join('');
-    });
+          <div class="ports-row">${portChips}</div>
+        </div>
+        <div class="card-score-wrap">
+          <span class="score-label">Utilisation estimée</span>
+          <div class="score-bar"><div class="score-fill ${isOversize ? 'warn' : ''}" style="width:${pct}%"></div></div>
+          <span class="score-pct">${pct}%</span>
+        </div>
+      </div>`;
+    }).join('');
 
-    function esc(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    updateCompareBtn();
+  }
+
+  /* ── Select for comparison ── */
+  function toggleSelect(id) {
+    if (selected.has(id)) {
+      selected.delete(id);
+      document.getElementById(`card-${id}`)?.classList.remove('selected');
+    } else {
+      if (selected.size >= 4) return;
+      selected.add(id);
+      document.getElementById(`card-${id}`)?.classList.add('selected');
     }
+    updateCompareBtn();
+  }
+
+  function updateCompareBtn() {
+    const btn = document.getElementById('btn-compare');
+    const cnt = document.getElementById('cmp-count');
+    cnt.textContent = selected.size;
+    btn.style.display = selected.size >= 2 ? 'block' : 'none';
+  }
+
+  /* ── Compare modal ── */
+  function openCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    if (models.length < 2) return;
+
+    const cols = models.map(m => `<th>${m.id}</th>`).join('');
+
+    const rows = [
+      ['App-ID FW',       m => m.fw    + ' Gbps'],
+      ['Threat Prevention',m => m.tp   + ' Gbps'],
+      ['IPsec VPN',       m => m.vpn   + ' Gbps'],
+      ['Sessions max',    m => fmtNum(m.sess)],
+      ['Nouvelles sess/s',m => fmtNum(m.cps)],
+      ['1G RJ45',         m => m.rj45  || '—'],
+      ['1G SFP',          m => m.sfp1  || '—'],
+      ['10G SFP+',        m => m.sfp10 || '—'],
+      ['25G SFP28',       m => m.sfp25 || '—'],
+      ['100G QSFP28',     m => m.sfp100|| '—'],
+      ['Format',          m => m.form],
+      ['PoE',             m => m.poe ? 'Oui' : '—'],
+    ];
+
+    // Find best (numeric max) per row
+    const tableRows = rows.map(([label, fn]) => {
+      const vals = models.map(m => fn(m));
+      const nums = vals.map(v => parseFloat(v));
+      const maxN = Math.max(...nums.filter(n => !isNaN(n)));
+      const cells = vals.map((v, i) => {
+        const isBest = !isNaN(nums[i]) && nums[i] === maxN && maxN > 0;
+        return `<td class="${isBest ? 'cmp-best' : 'cmp-val'}">${v}</td>`;
+      }).join('');
+      return `<tr><td>${label}</td>${cells}</tr>`;
+    }).join('');
+
+    document.getElementById('modal-content').innerHTML = `
+      <table class="cmp-table">
+        <thead><tr><th></th>${cols}</tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>`;
+
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeCompare() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  document.getElementById('modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal')) closeCompare();
+  });
+
+  /* ── Reset ── */
+  function resetAll() {
+    document.getElementById('userCount').value = '';
+    document.getElementById('i_rj45').value  = 0;
+    document.getElementById('i_sfp').value   = 0;
+    document.getElementById('i_10g').value   = 0;
+    document.getElementById('i_25g').value   = 0;
+    document.getElementById('i_100g').value  = 0;
+    document.getElementById('i_poe').value   = 'no';
+    document.getElementById('computed-tp').textContent = '';
+    document.querySelectorAll('.mode-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    document.querySelectorAll('.profile-btn').forEach((b,i) => b.classList.toggle('active', i===1));
+    document.querySelectorAll('.ff-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    state = { mode:'tp', bw:1.5, ff:'all' };
+    selected.clear();
+    document.getElementById('result-grid').innerHTML = `<div class="results-empty">
+      <div class="empty-icon">⬡</div>
+      <p>Renseignez vos critères et lancez la recherche</p>
+      <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
+    </div>`;
+    document.getElementById('results-count').innerHTML = '';
+    updateCompareBtn();
+  }
+
+  /* ── Utils ── */
+  function fmtNum(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(n%1000000===0?0:1) + 'M';
+    if (n >= 1000)    return (n/1000).toFixed(0) + 'K';
+    return n.toString();
+  }
   </script>
 </body>
 </html>
