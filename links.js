@@ -6,7 +6,7 @@ const LINKS_DATA = {
   "categories": [
     {
       "id": "partenariats",
-      "title": "🤝 Partenariats",
+      "title": "Partenariats",
       "items": [
         {
           "icon": "⭐",
@@ -48,10 +48,10 @@ const LINKS_DATA = {
     },
     {
       "id": "materiels",
-      "title": "🧱 Matériels & Licences",
+      "title": "Matériels & Licences",
       "items": [
         {
-          "icon": "🔥",
+          "icon": "↗",
           "title": "PA-Series Datasheets",
           "description": "Fiches techniques officielles de tous les firewalls PA-Series (PA-400 à PA-7500)",
           "href": "https://www.paloaltonetworks.com/network-security/next-generation-firewall",
@@ -103,7 +103,7 @@ const LINKS_DATA = {
     },
     {
       "id": "tech",
-      "title": "🛠️ AVV & Tech",
+      "title": "AVV & Tech",
       "items": [
         {
           "icon": "📚",
@@ -127,7 +127,7 @@ const LINKS_DATA = {
           "type": "external"
         },
         {
-          "icon": "🛠️",
+          "icon": "{ }",
           "title": "PAN.dev — APIs & Automation",
           "description": "Documentation des APIs PAN-OS XML/REST, Terraform, Ansible et outils DevOps",
           "href": "https://pan.dev/",

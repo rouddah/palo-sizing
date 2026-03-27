@@ -28,7 +28,7 @@
       <button class="nav-btn">Produits ▾</button>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="pa-series.html">
-          <div class="dropdown-icon">🔥</div>
+          <div class="dropdown-icon">PA</div>
           <div>
             <span class="dropdown-item-name">PA-Series</span>
             <span class="dropdown-item-sub">Next-Gen Firewalls · PA-400 → PA-7500</span>
