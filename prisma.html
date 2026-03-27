@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Prisma Access</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .val-opt { color: var(--text-muted); font-family: var(--mono); font-size: 12px; font-style: italic; }
+    .ztna-note {
+      margin-bottom: 24px;
+      padding: 13px 16px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+    .ztna-note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>Prisma Access — SASE &amp; Zero Trust</h1>
+      <p>Architecture SASE cloud-delivered · GlobalProtect · Remote Networks · Service Connections</p>
+    </div>
+
+    <!-- Architecture overview cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:36px">
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Remote Users</div>
+        <div class="card-description">GlobalProtect avec ZTNA 2.0 natif — accès sécurisé pour les utilisateurs nomades, inspection complète App-ID, Threat Prevention et vérification continue de confiance.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Remote Networks</div>
+        <div class="card-description">Connexion des sites distants via IPsec — complément ou alternative aux liens WAN existants, intègre SD-WAN et politique de sécurité unifiée sur tous les sites.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Service Connections</div>
+        <div class="card-description">Connexion sécurisée vers les datacenters et environnements cloud privés via IPsec depuis les PoP Prisma Access.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">150+ PoP mondiaux</div>
+        <div class="card-description">Infrastructure cloud-delivered distribuée mondialement. SLA de disponibilité 99.999%. Routage optimal automatique vers le PoP le plus proche.</div>
+      </div>
+    </div>
+
+    <!-- ZTNA 2.0 note -->
+    <div class="ztna-note">
+      <span class="ztna-note-icon">ℹ</span>
+      <span><strong>ZTNA 2.0 est le framework de confiance zéro natif de Prisma Access depuis 2022</strong> — il n'est pas une option séparée. L'accès granulaire aux applications privées, la vérification continue de confiance et l'inspection continue du trafic sont inclus dans toute souscription Prisma Access. Les add-ons optionnels sont SaaS Security (CASB), Enterprise DLP, ADEM et Prisma Access Browser.</span>
+    </div>
+
+    <!-- Features table -->
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:260px">Fonctionnalité</th>
+            <th>Prisma Access</th>
+            <th>Prisma Access<br>+ SaaS Security</th>
+            <th>Prisma Access<br>+ SaaS Security + DLP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="4">Réseau &amp; Connectivité</td></tr>
+          <tr><td>GlobalProtect (Remote Users)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Remote Networks (SD-WAN)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Service Connections</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SLA disponibilité</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td></tr>
+          <tr><td>Locations PoP</td><td class="val-high">150+</td><td class="val-high">150+</td><td class="val-high">150+</td></tr>
+
+          <tr class="section-row"><td colspan="4">Sécurité Next-Gen</td></tr>
+          <tr><td>App-ID (NGFW)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>URL Filtering (PAN-DB)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Threat Prevention</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>WildFire (sandboxing cloud)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>DNS Security</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SSL/TLS Decryption</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Zero Trust — ZTNA 2.0 (natif)</td></tr>
+          <tr><td>ZTNA 2.0 (accès apps privées granulaire)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Continuous trust verification</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Continuous security inspection</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Prisma Access Browser</td><td class="val-opt">option</td><td class="val-opt">option</td><td class="val-opt">option</td></tr>
+          <tr><td>ADEM (Digital Experience Monitoring)</td><td class="val-opt">option</td><td class="val-opt">option</td><td class="val-opt">option</td></tr>
+
+          <tr class="section-row"><td colspan="4">CASB &amp; Protection des Données</td></tr>
+          <tr><td>SaaS Security inline (CASB)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SaaS Security API (CASB out-of-band)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SaaS Security Posture Mgmt (SSPM)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Enterprise DLP</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Gestion &amp; Visibilité</td></tr>
+          <tr><td>Strata Cloud Manager</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>AI-Powered threat analytics</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
+      Les souscriptions Prisma Access sont vendues par nombre d'utilisateurs mobiles (Remote Users) et par bande passante (Remote Networks, en Mbps). SaaS Security et Enterprise DLP sont des souscriptions additionnelles séparées.
+      Pour un devis précis, contacter Exclusive Networks via
+      <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
+</body>
+</html>
