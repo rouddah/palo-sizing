@@ -287,6 +287,30 @@
     }
 
     .result-card.recommended { border-color: rgba(34,197,94,0.4); }
+    .result-card.card-eos { border-color: rgba(234,179,8,0.3); }
+    .badge-eos {
+      display: inline-flex; align-items: center;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: rgba(234,179,8,0.12);
+      border: 1px solid rgba(234,179,8,0.4);
+      color: #ca8a04;
+    }
+    .sort-select {
+      padding: 6px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--accent); }
 
     /* Checkbox */
     .card-check {
@@ -562,6 +586,21 @@
         <div id="computed-tp" style="margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--text-muted);min-height:16px"></div>
       </div>
 
+      <!-- Series -->
+      <div class="filter-group">
+        <span class="filter-label">Série</span>
+        <div class="ff-group">
+          <button class="ff-btn series-btn active" data-series="all"    onclick="setSeries(this)">Tous</button>
+          <button class="ff-btn series-btn"        data-series="PA-400" onclick="setSeries(this)">PA-400</button>
+          <button class="ff-btn series-btn"        data-series="PA-800" onclick="setSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;opacity:0.6">EoS</span></button>
+          <button class="ff-btn series-btn"        data-series="PA-1400" onclick="setSeries(this)">PA-1400</button>
+          <button class="ff-btn series-btn"        data-series="PA-3400" onclick="setSeries(this)">PA-3400</button>
+          <button class="ff-btn series-btn"        data-series="PA-5400" onclick="setSeries(this)">PA-5400</button>
+          <button class="ff-btn series-btn"        data-series="PA-7000" onclick="setSeries(this)">PA-7000</button>
+          <button class="ff-btn series-btn"        data-series="PA-7500" onclick="setSeries(this)">PA-7500</button>
+        </div>
+      </div>
+
       <!-- Form factor -->
       <div class="filter-group">
         <span class="filter-label">Format</span>
@@ -608,6 +647,12 @@
         </div>
       </div>
 
+      <!-- Sessions minimum -->
+      <div class="filter-group">
+        <span class="filter-label">Sessions concurrentes min.</span>
+        <input type="number" id="sessMin" class="filter-input" min="0" placeholder="ex : 500000" />
+      </div>
+
       <div class="filter-actions">
         <button class="btn-search" onclick="runSearch()">Rechercher</button>
         <button class="btn-reset"  onclick="resetAll()">Reset</button>
@@ -618,7 +663,16 @@
     <div class="results-panel">
       <div class="results-header">
         <div class="results-count" id="results-count"></div>
-        <button class="btn-compare" id="btn-compare" onclick="openCompare()">Comparer (<span id="cmp-count">0</span>)</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select class="sort-select" id="sort-by" onchange="state.sortBy=this.value;liveSearch()" title="Trier par">
+            <option value="ratio">Meilleur fit</option>
+            <option value="tp">Threat Prev. ↓</option>
+            <option value="fw">App-ID FW ↓</option>
+            <option value="vpn">IPsec VPN ↓</option>
+            <option value="sess">Sessions ↓</option>
+          </select>
+          <button class="btn-compare" id="btn-compare" onclick="openCompare()">Comparer (<span id="cmp-count">0</span>)</button>
+        </div>
       </div>
       <div class="result-grid" id="result-grid">
         <div class="results-empty">
@@ -672,10 +726,14 @@
     { id:'PA-7050',   series:'PA-7000', form:'Chassis 9U', poe:false, fw:343,   tp:184,   vpn:190,  sess:245000000,  cps:4000000, rj45:0,  sfp1:48, sfp10:48, sfp25:0, sfp100:24 },
     { id:'PA-7080',   series:'PA-7000', form:'Chassis 19U',poe:false, fw:590,   tp:305,   vpn:310,  sess:416000000,  cps:6000000, rj45:0,  sfp1:80, sfp10:80, sfp25:0, sfp100:40 },
     { id:'PA-7500',   series:'PA-7500', form:'Chassis 14U',poe:false, fw:1500,  tp:1440,  vpn:407,  sess:440000000,  cps:7200000, rj45:0,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0  },
+    // PA-800 Series — End of Sale (EoS) août 2024 · Remplacement recommandé : PA-1400
+    // Source : datasheets officielles PAN, PAN-OS 11.1 (dernière version supportée)
+    { id:'PA-820',    series:'PA-800',  form:'1U Rack',    poe:false, fw:1.6,   tp:0.9,   vpn:1.3,  sess:128000,     cps:8100,    rj45:4,  sfp1:8,  sfp10:0,  sfp25:0, sfp100:0, eos:true },
+    { id:'PA-850',    series:'PA-800',  form:'1U Rack',    poe:false, fw:2.0,   tp:1.0,   vpn:1.6,  sess:192000,     cps:13100,   rj45:4,  sfp1:4,  sfp10:4,  sfp25:0, sfp100:0, eos:true },
   ];
 
   /* ══ State ══ */
-  let state = { mode:'tp', bw:1.5, ff:'all' };
+  let state = { mode:'tp', bw:1.5, ff:'all', series:'all', sortBy:'ratio' };
   let selected = new Set();
 
   /* ── Mode selector ── */
@@ -684,6 +742,7 @@
     btn.classList.add('active');
     state.mode = btn.dataset.mode;
     updateComputedTP();
+    liveSearch();
   }
 
   /* ── Profile selector ── */
@@ -692,6 +751,7 @@
     btn.classList.add('active');
     state.bw = parseFloat(btn.dataset.bw);
     updateComputedTP();
+    liveSearch();
   }
 
   /* ── Form factor selector ── */
@@ -699,6 +759,15 @@
     document.querySelectorAll('.ff-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.ff = btn.dataset.ff;
+    liveSearch();
+  }
+
+  /* ── Series selector ── */
+  function setSeries(btn) {
+    document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.series = btn.dataset.series;
+    liveSearch();
   }
 
   /* ── Update throughput preview ── */
@@ -711,7 +780,20 @@
     el.textContent = `→ Débit requis estimé (${label}) : ${gbps} Gbps`;
   }
 
-  document.getElementById('userCount').addEventListener('input', updateComputedTP);
+  document.getElementById('userCount').addEventListener('input', () => { updateComputedTP(); liveSearch(); });
+  document.getElementById('sessMin').addEventListener('input', liveSearch);
+  ['i_rj45','i_sfp','i_10g','i_25g','i_100g'].forEach(id =>
+    document.getElementById(id).addEventListener('input', liveSearch)
+  );
+  document.getElementById('i_poe').addEventListener('change', liveSearch);
+
+  /* ── Live search helper ── */
+  function liveSearch() {
+    if (parseInt(document.getElementById('userCount').value) > 0 ||
+        parseInt(document.getElementById('sessMin').value) > 0) {
+      runSearch();
+    }
+  }
 
   /* ── Main search ── */
   function runSearch() {
@@ -723,7 +805,9 @@
     const reqSfp25 = parseInt(document.getElementById('i_25g').value)   || 0;
     const reqSfp100= parseInt(document.getElementById('i_100g').value)  || 0;
     const reqPoe   = document.getElementById('i_poe').value === 'yes';
+    const reqSess  = parseInt(document.getElementById('sessMin').value) || 0;
     const ff       = state.ff;
+    const series   = state.series;
 
     function throughput(m) {
       return state.mode === 'fw' ? m.fw : state.mode === 'tp' ? m.tp : m.vpn;
@@ -733,6 +817,7 @@
     const candidates = MODELS
       .filter(m => {
         if (ff !== 'all' && !m.form.startsWith(ff)) return false;
+        if (series !== 'all' && m.series !== series) return false;
         if (reqPoe && !m.poe) return false;
         if (m.rj45  < reqRj45)   return false;
         if (m.sfp1  < reqSfp1)   return false;
@@ -740,15 +825,22 @@
         if (m.sfp25 < reqSfp25)  return false;
         if (m.sfp100< reqSfp100) return false;
         if (users > 0 && throughput(m) < reqGbps) return false;
+        if (reqSess > 0 && m.sess < reqSess) return false;
         return true;
       })
       .map(m => {
         const tp = throughput(m);
-        // Score : closest match (lower oversize ratio is better)
         const ratio = reqGbps > 0 ? tp / reqGbps : 1;
         return { ...m, _tp: tp, _ratio: ratio };
       })
-      .sort((a, b) => a._ratio - b._ratio);
+      .sort((a, b) => {
+        const s = state.sortBy;
+        if (s === 'fw')   return b.fw   - a.fw;
+        if (s === 'tp')   return b.tp   - a.tp;
+        if (s === 'vpn')  return b.vpn  - a.vpn;
+        if (s === 'sess') return b.sess - a.sess;
+        return a._ratio - b._ratio; // default: meilleur fit
+      });
 
     selected.clear();
     renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
@@ -789,12 +881,13 @@
       const tpLabel = state.mode === 'fw' ? 'App-ID FW' : state.mode === 'tp' ? 'Threat Prev.' : 'IPsec VPN';
 
       return `
-      <div class="result-card ${isRec ? 'recommended' : ''}" id="card-${m.id}" onclick="toggleSelect('${m.id}')">
+      <div class="result-card ${isRec ? 'recommended' : ''} ${m.eos ? 'card-eos' : ''}" id="card-${m.id}" onclick="toggleSelect('${m.id}')">
         <div class="card-check" id="chk-${m.id}">✓</div>
         <div class="card-main">
           <div class="card-top">
             <span class="card-model">${m.id}</span>
             <span class="card-badge ${isRec ? 'badge-rec' : 'badge-compat'}">${isRec ? 'Recommandé' : 'Compatible'}</span>
+            ${m.eos ? '<span class="badge-eos">End of Sale</span>' : ''}
             <span class="card-form">${m.form}</span>
             ${m.poe ? '<span class="card-form">PoE</span>' : ''}
           </div>
@@ -907,17 +1000,20 @@
   /* ── Reset ── */
   function resetAll() {
     document.getElementById('userCount').value = '';
+    document.getElementById('sessMin').value   = '';
     document.getElementById('i_rj45').value  = 0;
     document.getElementById('i_sfp').value   = 0;
     document.getElementById('i_10g').value   = 0;
     document.getElementById('i_25g').value   = 0;
     document.getElementById('i_100g').value  = 0;
     document.getElementById('i_poe').value   = 'no';
+    document.getElementById('sort-by').value = 'ratio';
     document.getElementById('computed-tp').textContent = '';
     document.querySelectorAll('.mode-btn').forEach((b,i) => b.classList.toggle('active', i===0));
     document.querySelectorAll('.profile-btn').forEach((b,i) => b.classList.toggle('active', i===1));
     document.querySelectorAll('.ff-btn').forEach((b,i) => b.classList.toggle('active', i===0));
-    state = { mode:'tp', bw:1.5, ff:'all' };
+    document.querySelectorAll('.series-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    state = { mode:'tp', bw:1.5, ff:'all', series:'all', sortBy:'ratio' };
     selected.clear();
     document.getElementById('result-grid').innerHTML = `<div class="results-empty">
       <div class="empty-icon">⬡</div>
