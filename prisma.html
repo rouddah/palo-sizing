@@ -13,53 +13,83 @@
   <div class="page-wrap">
     <div class="page-header">
       <h1>Prisma Access — SASE &amp; Zero Trust</h1>
-      <p>GlobalProtect · Remote Networks · Service Connections</p>
+      <p>Architecture SASE cloud-delivered · GlobalProtect · Remote Networks · Service Connections</p>
     </div>
 
+    <!-- Architecture overview cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:36px">
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Remote Users</div>
+        <div class="card-description">GlobalProtect Agent ou ZTNA 2.0 — connexion sécurisée pour les utilisateurs nomades, avec inspection complète App-ID et Threat Prevention.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Remote Networks</div>
+        <div class="card-description">Connexion des sites distants via IPsec — remplace les MPLS traditionnels, intègre SD-WAN et politique de sécurité unifiée.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Service Connections</div>
+        <div class="card-description">Connexion sécurisée vers les datacenters et environnements cloud privés via IPsec depuis les PoP Prisma Access.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">100+ PoP mondiaux</div>
+        <div class="card-description">Infrastructure cloud-delivered distribuée mondialement. SLA de disponibilité 99.999%. Routage optimal automatique vers le PoP le plus proche.</div>
+      </div>
+    </div>
+
+    <!-- Features table -->
     <div class="table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
-            <th>Fonctionnalité</th>
-            <th>Prisma Access Essentials</th>
-            <th>Prisma Access Advanced</th>
-            <th>Prisma Access Premium</th>
+            <th style="text-align:left;min-width:260px">Fonctionnalité</th>
+            <th>Prisma Access</th>
+            <th>Prisma Access<br>+ ZTNA 2.0</th>
+            <th>Prisma Access<br>+ CASB / DLP</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="section-row"><td colspan="4">Connectivité & Réseau</td></tr>
+          <tr class="section-row"><td colspan="4">Réseau & Connectivité</td></tr>
           <tr><td>GlobalProtect (Remote Users)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Remote Networks (SD-WAN)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>Service Connections (DC / Cloud)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>Locations PoP mondiales</td><td class="val-high">100+</td><td class="val-high">100+</td><td class="val-high">100+</td></tr>
-          <tr><td>SLA de disponibilité</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td></tr>
-          <tr class="section-row"><td colspan="4">Sécurité</td></tr>
-          <tr><td>App-ID Next-Gen Firewall</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Service Connections</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SLA disponibilité</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td></tr>
+          <tr><td>Locations PoP</td><td class="val-high">100+</td><td class="val-high">100+</td><td class="val-high">100+</td></tr>
+
+          <tr class="section-row"><td colspan="4">Sécurité Next-Gen</td></tr>
+          <tr><td>App-ID (NGFW)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>URL Filtering (PAN-DB)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Threat Prevention</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>WildFire (sandboxing cloud)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>DNS Security</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>CASB (Cloud Access Security)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>DLP (Data Loss Prevention)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>ZTNA 2.0 (Zero Trust App Access)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>SaaS Security Inline</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
-          <tr><td>AI-Powered Threat Detection</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>SSL/TLS Decryption</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Zero Trust & Accès Applicatif</td></tr>
+          <tr><td>ZTNA 2.0 (accès app granulaire)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Continuous trust verification</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Continuous security inspection</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Prisma Access Browser</td><td class="val-na">—</td><td class="val-check">✓ (option)</td><td class="val-check">✓ (option)</td></tr>
+
+          <tr class="section-row"><td colspan="4">CASB & Protection des Données</td></tr>
+          <tr><td>CASB — visibilité SaaS inline</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>DLP (Data Loss Prevention)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>SaaS Security Posture Management</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+
           <tr class="section-row"><td colspan="4">Gestion & Visibilité</td></tr>
           <tr><td>Strata Cloud Manager</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr>
-            <td>ADEM (Autonomous Digital Exp. Monitoring)</td>
-            <td class="val-na">—</td>
-            <td class="val-check">✓</td>
-            <td class="val-check">✓</td>
-          </tr>
-          <tr>
-            <td>Logging & Analytics</td>
-            <td class="val-low">Standard</td>
-            <td class="val-med">Avancé</td>
-            <td class="val-high">Premium</td>
-          </tr>
+          <tr><td>ADEM (Digital Experience Monitoring)</td><td class="val-na">—</td><td class="val-check">✓ (option)</td><td class="val-check">✓ (option)</td></tr>
+          <tr><td>AI-Powered threat analytics</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
+      Les souscriptions Prisma Access sont vendues par nombre d'utilisateurs (Remote Users) et par bande passante (Remote Networks, en Mbps).
+      Pour un devis précis, contacter Exclusive Networks via
+      <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
     </div>
   </div>
 

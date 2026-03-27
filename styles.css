@@ -70,7 +70,7 @@ body {
   transition: background .3s, color .3s;
 }
 
-/* Subtle grid background */
+/* Animated grid background */
 body::before {
   content: '';
   position: fixed;
@@ -78,17 +78,26 @@ body::before {
   background-image:
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.3;
+  background-size: 48px 48px;
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
+  animation: gridDrift 30s linear infinite;
 }
 
+@keyframes gridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 48px 48px; }
+}
+
+/* Radial glow top */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(232,75,26,0.06) 0%, transparent 70%);
+  background:
+    radial-gradient(ellipse 70% 40% at 50% -5%, rgba(232,75,26,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 100%, rgba(0,48,135,0.06) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -338,15 +347,42 @@ body::after {
   letter-spacing: -1px;
   line-height: 1.2;
   margin-bottom: 14px;
+  animation: heroIn .6s ease backwards;
 }
 
-.hero h1 span { color: var(--accent); }
+.hero h1 span {
+  color: var(--accent);
+  position: relative;
+  display: inline-block;
+}
+
+/* Animated underline on accent word */
+.hero h1 span::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  animation: lineGrow .8s .4s ease backwards;
+  transform-origin: left;
+}
+
+@keyframes lineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 .hero p {
   color: var(--text-muted);
   font-size: 15px;
   max-width: 500px;
   margin: 0 auto;
+  animation: heroIn .6s .1s ease backwards;
 }
 
 /* ── App container ── */
@@ -418,9 +454,15 @@ body::after {
   border-radius: var(--radius-lg);
   padding: 20px;
   text-decoration: none;
-  transition: border-color .2s, transform .15s, box-shadow .2s, background .2s;
+  transition: border-color .2s, transform .2s, box-shadow .25s, background .2s;
   position: relative;
   overflow: hidden;
+  animation: cardIn .35s ease backwards;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .tool-card::before {
@@ -433,14 +475,26 @@ body::after {
   transition: opacity .2s;
 }
 
+/* Shine effect on hover */
+.tool-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+
 .tool-card:hover {
   border-color: var(--border2);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px var(--border2);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--border2), 0 0 20px rgba(232,75,26,0.05);
   background: var(--surface2);
 }
 
 .tool-card:hover::before { opacity: 1; }
+.tool-card:hover::after  { opacity: 1; }
 
 .card-icon {
   width: 36px;

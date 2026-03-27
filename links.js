@@ -20,7 +20,7 @@ const LINKS_DATA = {
           "icon": "🗂️",
           "title": "NextWave Partner Portal",
           "description": "Portail officiel partenaires Palo Alto Networks : ressources marketing, formations et outils",
-          "href": "https://www.paloaltonetworks.com/partners/nextwave-partner-program",
+          "href": "https://www.paloaltonetworks.com/partners",
           "type": "external"
         },
         {
@@ -34,14 +34,14 @@ const LINKS_DATA = {
           "icon": "🔁",
           "title": "Deal Registration",
           "description": "Enregistrement des opportunités commerciales via le portail partenaire NextWave",
-          "href": "https://www.paloaltonetworks.com/partners/nextwave-partner-program",
+          "href": "https://www.paloaltonetworks.com/partners",
           "type": "external"
         },
         {
           "icon": "📝",
           "title": "Licences NFR / Évaluation",
           "description": "Demande de licences Not-For-Resale et POC pour les partenaires certifiés",
-          "href": "https://www.paloaltonetworks.com/partners/nfr-licenses",
+          "href": "https://www.paloaltonetworks.com/partners",
           "type": "external"
         }
       ]
@@ -61,7 +61,7 @@ const LINKS_DATA = {
           "icon": "🧾",
           "title": "Subscriptions de sécurité",
           "description": "Threat Prevention, WildFire, DNS Security, URL Filtering, IoT Security",
-          "href": "https://www.paloaltonetworks.com/network-security/subscriptions",
+          "href": "https://www.paloaltonetworks.com/network-security/threat-prevention",
           "type": "external"
         },
         {
@@ -158,7 +158,7 @@ const LINKS_DATA = {
           "icon": "🏆",
           "title": "Strata Cloud Manager",
           "description": "Plateforme unifiée de gestion et de sécurité cloud-delivered",
-          "href": "https://www.paloaltonetworks.com/sase/strata-cloud-manager",
+          "href": "https://www.paloaltonetworks.com/network-security/strata-cloud-manager",
           "type": "external"
         }
       ]
