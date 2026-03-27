@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,66 +10,77 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <div class="hero">
-    <h1>🔍 Recherche</h1>
-    <p>Trouvez rapidement un outil ou une ressource</p>
+  <div class="hero" style="padding-bottom:24px">
+    <div class="hero-eyebrow">🔍 Recherche rapide</div>
+    <h1>Trouvez une <span>ressource</span></h1>
+    <p>Recherchez parmi tous les outils et liens disponibles</p>
   </div>
 
-  <div class="search-container">
+  <div class="search-wrap">
     <div class="search-bar">
-      <input
-        type="text"
-        id="search-input"
-        class="search-input"
-        placeholder="Rechercher un outil, une ressource…"
-        autofocus
-      />
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" class="search-input"
+        placeholder="Rechercher : portal, VPN, firewall, training…" autofocus />
     </div>
+    <div id="search-count" class="search-count"></div>
     <div class="search-results" id="search-results">
-      <p class="status-msg" style="padding:20px 0">Commencez à taper pour rechercher…</p>
+      <p class="status-msg" style="padding:20px 0; text-align:left">
+        Commencez à taper pour chercher parmi les ressources…
+      </p>
     </div>
   </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
 
   <script src="links.js"></script>
   <script>
-    const input = document.getElementById("search-input");
-    const results = document.getElementById("search-results");
+    const input   = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    const count   = document.getElementById('search-count');
 
-    // Flatten all items
     const allItems = LINKS_DATA.categories.flatMap(cat =>
       cat.items.map(item => ({ ...item, category: cat.title }))
     );
 
-    input.addEventListener("input", () => {
+    input.addEventListener('input', () => {
       const q = input.value.trim().toLowerCase();
       if (!q) {
-        results.innerHTML = `<p class="status-msg" style="padding:20px 0">Commencez à taper pour rechercher…</p>`;
+        results.innerHTML = `<p class="status-msg" style="padding:20px 0;text-align:left">Commencez à taper pour chercher parmi les ressources…</p>`;
+        count.textContent = '';
         return;
       }
-
       const matched = allItems.filter(item =>
         item.title.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q)
       );
 
-      if (matched.length === 0) {
-        results.innerHTML = `<p class="status-msg" style="padding:20px 0">❌ Aucun résultat pour "<strong>${escHtml(q)}</strong>"</p>`;
+      count.textContent = matched.length
+        ? `${matched.length} résultat${matched.length > 1 ? 's' : ''}`
+        : '';
+
+      if (!matched.length) {
+        results.innerHTML = `<p class="status-msg" style="padding:20px 0;text-align:left">❌ Aucun résultat pour "<strong>${esc(q)}</strong>"</p>`;
         return;
       }
 
       results.innerHTML = matched.map(item => `
         <a class="tool-card" href="${item.href}" target="_blank" rel="noopener noreferrer">
-          <div class="card-header">
-            <span class="card-title">${item.icon} ${item.title}</span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted);margin-left:8px">${item.category}</span>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div class="card-icon" style="margin:0;width:32px;height:32px;font-size:16px">${item.icon}</div>
+            <div>
+              <div class="card-title" style="margin:0">${item.title} <span class="card-arrow">↗</span></div>
+              <div style="font-size:10px;color:var(--text-muted);font-family:var(--mono);margin-top:2px">${item.category}</div>
+            </div>
           </div>
           <div class="card-description">${item.description}</div>
-        </a>`).join("");
+        </a>`).join('');
     });
 
-    function escHtml(s) {
-      return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
   </script>
 </body>

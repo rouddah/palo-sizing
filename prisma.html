@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,15 +10,18 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <div class="page-container">
-    <h1 class="page-title">☁️ Prisma Access — SASE & Zero Trust</h1>
-    <p class="page-subtitle">Comparaison des offres Prisma Access et options de licences</p>
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>☁️ Prisma Access — SASE &amp; Zero Trust</h1>
+      <p>Architecture SASE cloud-delivered de Palo Alto Networks · GlobalProtect · Remote Networks · Service Connections</p>
+      <div class="source-tag">✓ Source : Documentation officielle Palo Alto Networks</div>
+    </div>
 
     <div class="table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
-            <th style="text-align:left">Fonctionnalité</th>
+            <th>Fonctionnalité</th>
             <th>Prisma Access Essentials</th>
             <th>Prisma Access Advanced</th>
             <th>Prisma Access Premium</th>
@@ -26,89 +29,33 @@
         </thead>
         <tbody>
           <tr class="section-row"><td colspan="4">Connectivité & Réseau</td></tr>
-          <tr>
-            <td>GlobalProtect (Remote Users)</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>Remote Networks (SD-WAN)</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>Service Connections (DC)</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>Locations PoP mondiales</td>
-            <td class="val-med">100+</td>
-            <td class="val-med">100+</td>
-            <td class="val-high">100+</td>
-          </tr>
+          <tr><td>GlobalProtect (Remote Users)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Remote Networks (SD-WAN)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Service Connections (DC / Cloud)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Locations PoP mondiales</td><td class="val-high">100+</td><td class="val-high">100+</td><td class="val-high">100+</td></tr>
+          <tr><td>SLA de disponibilité</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td><td class="val-high">99.999%</td></tr>
           <tr class="section-row"><td colspan="4">Sécurité</td></tr>
-          <tr>
-            <td>App-ID & URL Filtering</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>Threat Prevention & WildFire</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>CASB (Cloud Access Security)</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>DLP (Data Loss Prevention)</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>ZTNA 2.0 (Zero Trust)</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>SaaS Security Inline</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>AI-Powered SASE</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-          </tr>
+          <tr><td>App-ID Next-Gen Firewall</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>URL Filtering (PAN-DB)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Threat Prevention</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>WildFire (sandboxing cloud)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>DNS Security</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>CASB (Cloud Access Security)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>DLP (Data Loss Prevention)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>ZTNA 2.0 (Zero Trust App Access)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SaaS Security Inline</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>AI-Powered Threat Detection</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
           <tr class="section-row"><td colspan="4">Gestion & Visibilité</td></tr>
+          <tr><td>Strata Cloud Manager</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr>
-            <td>Strata Cloud Manager</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td>ADEM (Autonomous Digital Exp. Monitoring)</td>
+            <td class="val-na">—</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
           </tr>
           <tr>
-            <td>ADEM (Autonomous Digital Exp.)</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>Logging & Analytics avancés</td>
-            <td class="val-low">Basique</td>
+            <td>Logging & Analytics</td>
+            <td class="val-low">Standard</td>
             <td class="val-med">Avancé</td>
             <td class="val-high">Premium</td>
           </tr>
@@ -116,5 +63,9 @@
       </table>
     </div>
   </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
 </body>
 </html>

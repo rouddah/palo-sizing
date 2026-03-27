@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,55 +11,64 @@
   <script src="header.js"></script>
 
   <div class="hero">
-    <h1>🔧 Outils Palo Alto Networks & Sizing Guide</h1>
-    <p>Accédez à tous les outils et ressources de dimensionnement</p>
+    <div class="hero-eyebrow">🔥 Palo Alto Networks · by Exclusive Networks</div>
+    <h1>Outils &amp; <span>Sizing Guide</span><br>Palo Alto Networks</h1>
+    <p>Accédez à tous les outils de dimensionnement, ressources partenaires et documentation technique</p>
   </div>
 
   <div id="app"><p class="status-msg">⏳ Chargement…</p></div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+    · Sources : <a href="https://www.paloaltonetworks.com/resources/datasheets" target="_blank" rel="noopener">Datasheets officielles PAN</a>
+    · v2 · 2026-03-27
+  </footer>
 
   <script src="links.js"></script>
   <script>
     try { renderApp(LINKS_DATA); }
     catch(err) {
-      document.getElementById("app").innerHTML =
+      document.getElementById('app').innerHTML =
         `<p class="status-msg">❌ Erreur de chargement (${err.message})</p>`;
     }
 
     function renderCard(item) {
-      const external = item.type === "external"
-        ? 'target="_blank" rel="noopener noreferrer"' : "";
+      const ext = item.type === 'external'
+        ? 'target="_blank" rel="noopener noreferrer"' : '';
+      const cls = item.highlight ? 'tool-card card-partner' : 'tool-card';
       return `
-        <a class="tool-card" href="${item.href}" ${external}>
-          <div class="card-header">
-            <span class="card-title">${item.icon} ${item.title}</span>
+        <a class="${cls}" href="${item.href}" ${ext}>
+          <div class="card-icon">${item.icon}</div>
+          <div class="card-title">
+            ${item.title}
+            <span class="card-arrow">↗</span>
           </div>
           <div class="card-description">${item.description}</div>
         </a>`;
     }
 
     function renderApp(data) {
-      const app = document.getElementById("app");
+      const app = document.getElementById('app');
       const { categories } = data;
-      const navHTML = `<nav class="cat-nav" id="cat-nav">
-        ${categories.map((cat, i) =>
-          `<button data-index="${i}" class="${i === 0 ? "active" : ""}">${cat.title}</button>`
-        ).join("")}
+      const nav = `<nav class="cat-nav" id="cat-nav">
+        ${categories.map((c, i) =>
+          `<button data-index="${i}" class="${i===0?'active':''}">${c.title}</button>`
+        ).join('')}
       </nav>`;
-      const sectionsHTML = categories.map((cat, i) => `
-        <section class="category-section ${i === 0 ? "visible" : ""}" id="cat-${i}">
-          <div class="tools-grid">
-            ${cat.items.map(renderCard).join("")}
-          </div>
-        </section>`).join("");
-      app.innerHTML = navHTML + sectionsHTML;
-      document.getElementById("cat-nav").addEventListener("click", e => {
-        const btn = e.target.closest("button");
+      const sections = categories.map((c, i) => `
+        <section class="category-section ${i===0?'visible':''}" id="cat-${i}">
+          <div class="tools-grid">${c.items.map(renderCard).join('')}</div>
+        </section>`).join('');
+      app.innerHTML = nav + sections;
+
+      document.getElementById('cat-nav').addEventListener('click', e => {
+        const btn = e.target.closest('button');
         if (!btn) return;
         const idx = btn.dataset.index;
-        document.querySelectorAll(".cat-nav button").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".category-section").forEach(s => s.classList.remove("visible"));
-        btn.classList.add("active");
-        document.getElementById(`cat-${idx}`).classList.add("visible");
+        document.querySelectorAll('.cat-nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.category-section').forEach(s => s.classList.remove('visible'));
+        btn.classList.add('active');
+        document.getElementById(`cat-${idx}`).classList.add('visible');
       });
     }
   </script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,129 +10,124 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <div class="page-container">
-    <h1 class="page-title">🌐 Panorama — Plateforme de gestion centralisée</h1>
-    <p class="page-subtitle">Comparaison des déploiements Panorama : M-Series, VM et Cloud</p>
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>🌐 Panorama — Gestion centralisée</h1>
+      <p>Déploiements Panorama : M-Series hardware, VM et Cloud (Strata Cloud Manager)</p>
+      <div class="source-tag">✓ Source : Documentation officielle Palo Alto Networks</div>
+    </div>
 
     <div class="table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
-            <th style="text-align:left">Caractéristique</th>
+            <th>Caractéristique</th>
             <th>M-300</th>
             <th>M-600</th>
             <th>M-700</th>
-            <th>VM-Panorama (ESXi)</th>
-            <th>VM-Panorama (KVM)</th>
-            <th>Cloud (AWS/Azure/GCP)</th>
+            <th>Panorama VM (ESXi/KVM)</th>
+            <th>Strata Cloud Manager</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="section-row"><td colspan="7">Capacités de gestion</td></tr>
+          <tr class="section-row"><td colspan="6">Capacités de gestion</td></tr>
           <tr>
             <td>Appareils gérés max</td>
             <td class="val-low">1,000</td>
             <td class="val-med">5,000</td>
             <td class="val-high">10,000</td>
             <td class="val-med">5,000</td>
-            <td class="val-med">5,000</td>
-            <td class="val-high">Illimité</td>
+            <td class="val-high">Illimité (cloud)</td>
           </tr>
           <tr>
-            <td>Logs/jour (stockage local)</td>
-            <td class="val-low">4 TB (SSD)</td>
-            <td class="val-med">24 TB (SSD)</td>
-            <td class="val-high">48 TB (SSD)</td>
+            <td>Stockage logs (local)</td>
+            <td class="val-low">4 TB SSD</td>
+            <td class="val-med">24 TB SSD</td>
+            <td class="val-high">48 TB SSD</td>
             <td class="val-low">Selon vDisks</td>
-            <td class="val-low">Selon vDisks</td>
-            <td class="val-high">Extensible</td>
+            <td class="val-high">Extensible cloud</td>
           </tr>
           <tr>
             <td>Logs/s ingérés</td>
-            <td class="val-low">10K</td>
-            <td class="val-med">40K</td>
-            <td class="val-high">100K</td>
-            <td class="val-low">10K</td>
-            <td class="val-low">10K</td>
+            <td class="val-low">10,000</td>
+            <td class="val-med">40,000</td>
+            <td class="val-high">100,000</td>
+            <td class="val-low">10,000</td>
             <td class="val-high">Scalable</td>
           </tr>
-          <tr class="section-row"><td colspan="7">Format & Déploiement</td></tr>
+          <tr class="section-row"><td colspan="6">Déploiement & Format</td></tr>
           <tr>
             <td>Format</td>
-            <td class="val-med">1U rack</td>
-            <td class="val-med">2U rack</td>
-            <td class="val-high">2U rack</td>
+            <td class="val-med">1U Rack</td>
+            <td class="val-med">2U Rack</td>
+            <td class="val-high">2U Rack</td>
             <td class="val-med">VM</td>
-            <td class="val-med">VM</td>
-            <td class="val-high">Cloud</td>
+            <td class="val-high">SaaS Cloud</td>
           </tr>
           <tr>
             <td>HA Active/Passive</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓ (natif)</td>
           </tr>
           <tr>
-            <td>Collector Group</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td>Collector Group (Log)</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
           </tr>
-          <tr>
-            <td>Panorama HA (Dual)</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr class="section-row"><td colspan="7">Fonctionnalités</td></tr>
+          <tr class="section-row"><td colspan="6">Fonctionnalités</td></tr>
           <tr>
             <td>Device Groups & Templates</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
           </tr>
           <tr>
             <td>Role-Based Access Control</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
           </tr>
           <tr>
             <td>API REST / XML</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
+            <td class="val-check">✓</td>
           </tr>
           <tr>
-            <td>Strata Cloud Manager</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
+            <td>AI-Powered Analytics</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-check">✓</td>
+          </tr>
+          <tr>
+            <td>Zero Trust posture management</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-na">—</td>
+            <td class="val-check">✓</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,272 +10,714 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <div class="page-container">
-    <h1 class="page-title">🔥 PA-Series — Matrice de comparaison</h1>
-    <p class="page-subtitle">Comparaison des performances et capacités des firewalls PA-Series (PAN-OS)</p>
-
-    <div class="table-wrapper">
-      <table class="comparison-table">
-        <thead>
-          <tr>
-            <th style="text-align:left">Caractéristique</th>
-            <th>PA-415</th>
-            <th>PA-445</th>
-            <th>PA-455</th>
-            <th>PA-460</th>
-            <th>PA-1410</th>
-            <th>PA-1420</th>
-            <th>PA-3410</th>
-            <th>PA-3420</th>
-            <th>PA-5410</th>
-            <th>PA-5420</th>
-            <th>PA-5430</th>
-            <th>PA-5440</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Débit Firewall -->
-          <tr class="section-row"><td colspan="13">Débit Firewall</td></tr>
-          <tr>
-            <td>Firewall (App-ID)</td>
-            <td class="val-low">2.4 Gbps</td>
-            <td class="val-low">3.8 Gbps</td>
-            <td class="val-low">5.5 Gbps</td>
-            <td class="val-low">6.0 Gbps</td>
-            <td class="val-med">10 Gbps</td>
-            <td class="val-med">18 Gbps</td>
-            <td class="val-med">26 Gbps</td>
-            <td class="val-med">38 Gbps</td>
-            <td class="val-high">60 Gbps</td>
-            <td class="val-high">80 Gbps</td>
-            <td class="val-high">120 Gbps</td>
-            <td class="val-high">180 Gbps</td>
-          </tr>
-          <tr>
-            <td>Threat Prevention</td>
-            <td class="val-low">1.6 Gbps</td>
-            <td class="val-low">2.2 Gbps</td>
-            <td class="val-low">3.2 Gbps</td>
-            <td class="val-low">3.9 Gbps</td>
-            <td class="val-med">5.2 Gbps</td>
-            <td class="val-med">9.5 Gbps</td>
-            <td class="val-med">13 Gbps</td>
-            <td class="val-med">20 Gbps</td>
-            <td class="val-high">35 Gbps</td>
-            <td class="val-high">45 Gbps</td>
-            <td class="val-high">70 Gbps</td>
-            <td class="val-high">100 Gbps</td>
-          </tr>
-          <tr>
-            <td>IPSec VPN</td>
-            <td class="val-low">1.8 Gbps</td>
-            <td class="val-low">2.5 Gbps</td>
-            <td class="val-low">3.5 Gbps</td>
-            <td class="val-low">4.0 Gbps</td>
-            <td class="val-med">6.0 Gbps</td>
-            <td class="val-med">11 Gbps</td>
-            <td class="val-med">16 Gbps</td>
-            <td class="val-med">23 Gbps</td>
-            <td class="val-high">40 Gbps</td>
-            <td class="val-high">58 Gbps</td>
-            <td class="val-high">84 Gbps</td>
-            <td class="val-high">120 Gbps</td>
-          </tr>
-
-          <!-- Sessions -->
-          <tr class="section-row"><td colspan="13">Capacités Sessions</td></tr>
-          <tr>
-            <td>Sessions max</td>
-            <td class="val-low">200K</td>
-            <td class="val-low">400K</td>
-            <td class="val-low">600K</td>
-            <td class="val-low">800K</td>
-            <td class="val-med">1M</td>
-            <td class="val-med">2M</td>
-            <td class="val-med">4M</td>
-            <td class="val-med">6M</td>
-            <td class="val-high">16M</td>
-            <td class="val-high">32M</td>
-            <td class="val-high">64M</td>
-            <td class="val-high">128M</td>
-          </tr>
-          <tr>
-            <td>Nouvelles sessions/s</td>
-            <td class="val-low">53K</td>
-            <td class="val-low">90K</td>
-            <td class="val-low">120K</td>
-            <td class="val-low">150K</td>
-            <td class="val-med">200K</td>
-            <td class="val-med">360K</td>
-            <td class="val-med">600K</td>
-            <td class="val-med">900K</td>
-            <td class="val-high">1.3M</td>
-            <td class="val-high">2M</td>
-            <td class="val-high">3M</td>
-            <td class="val-high">4.5M</td>
-          </tr>
-
-          <!-- Interfaces -->
-          <tr class="section-row"><td colspan="13">Interfaces</td></tr>
-          <tr>
-            <td>1G Copper</td>
-            <td class="val-low">8</td>
-            <td class="val-low">8</td>
-            <td class="val-low">8</td>
-            <td class="val-med">12</td>
-            <td class="val-med">12</td>
-            <td class="val-med">12</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-          </tr>
-          <tr>
-            <td>10G SFP+</td>
-            <td class="val-none">—</td>
-            <td class="val-low">4</td>
-            <td class="val-low">8</td>
-            <td class="val-low">8</td>
-            <td class="val-med">16</td>
-            <td class="val-med">24</td>
-            <td class="val-med">24</td>
-            <td class="val-med">24</td>
-            <td class="val-high">24</td>
-            <td class="val-high">24</td>
-            <td class="val-high">48</td>
-            <td class="val-high">48</td>
-          </tr>
-          <tr>
-            <td>25G SFP28</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-med">8</td>
-            <td class="val-med">8</td>
-            <td class="val-high">16</td>
-            <td class="val-high">16</td>
-            <td class="val-high">32</td>
-            <td class="val-high">32</td>
-          </tr>
-          <tr>
-            <td>100G QSFP28</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-high">4</td>
-            <td class="val-high">4</td>
-            <td class="val-high">8</td>
-            <td class="val-high">8</td>
-          </tr>
-
-          <!-- Fonctionnalités -->
-          <tr class="section-row"><td colspan="13">Fonctionnalités</td></tr>
-          <tr>
-            <td>HA (Haute Disponibilité)</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>SD-WAN</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>GlobalProtect VPN</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-          <tr>
-            <td>WildFire Inline ML</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-
-          <!-- Format -->
-          <tr class="section-row"><td colspan="13">Format & Alimentation</td></tr>
-          <tr>
-            <td>Format</td>
-            <td class="val-low">Desktop</td>
-            <td class="val-low">Desktop</td>
-            <td class="val-low">1U</td>
-            <td class="val-low">1U</td>
-            <td class="val-med">1U</td>
-            <td class="val-med">1U</td>
-            <td class="val-med">2U</td>
-            <td class="val-med">2U</td>
-            <td class="val-high">2U</td>
-            <td class="val-high">2U</td>
-            <td class="val-high">2U</td>
-            <td class="val-high">2U</td>
-          </tr>
-          <tr>
-            <td>Alimentation redondante</td>
-            <td class="val-none">—</td>
-            <td class="val-none">—</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-            <td class="val-high">✓</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>🔥 PA-Series — Matrice de comparaison</h1>
+      <p>Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 (PA-400/1400/3400/5400) · PAN-OS 11.x (PA-7000/7500)</p>
+      <div class="source-tag">✓ Source : Datasheets officielles PANW — aucune donnée inventée</div>
     </div>
-  </div>
+
+    <!-- Series tabs -->
+    <div class="series-tabs" id="series-tabs">
+      <button class="series-tab active" data-series="400">PA-400 Series</button>
+      <button class="series-tab" data-series="1400">PA-1400 Series</button>
+      <button class="series-tab" data-series="3400">PA-3400 Series</button>
+      <button class="series-tab" data-series="5400">PA-5400 Series</button>
+      <button class="series-tab" data-series="7000">PA-7000 Series</button>
+      <button class="series-tab" data-series="7500">PA-7500 Series</button>
+      <button class="series-tab" data-series="all">Vue globale</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-400 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section visible" id="series-400">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-card-name">PA-410</div>
+          <div class="model-card-badge">Desktop · Fanless</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">1.4 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">0.8 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">0.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">64,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">11,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-415</div>
+          <div class="model-card-badge">Desktop · PoE</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">1.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">0.8 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">0.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">64,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">11,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-415-5G</div>
+          <div class="model-card-badge">Desktop · PoE · 5G</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">1.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">0.8 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">0.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">64,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">11,400</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-440</div>
+          <div class="model-card-badge">Desktop · Fanless</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">2.4 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">1.2 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">1.1 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">200,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">34,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-445</div>
+          <div class="model-card-badge">Desktop · PoE</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">2.7 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">1.25 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">1.1 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">200,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">34,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-450</div>
+          <div class="model-card-badge">Desktop · Fanless</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">3.3 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">2.1 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">1.7 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">300,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">48,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-455</div>
+          <div class="model-card-badge">Desktop · PoE</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">3.6 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">2.3 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">1.8 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">300,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">56,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-455-5G</div>
+          <div class="model-card-badge">Desktop · PoE · 5G</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">3.2 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">1.8 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">1.6 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">300,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">48,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-460</div>
+          <div class="model-card-badge">Desktop · Fanless</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">4.2 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">3.0 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">2.3 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">400,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">67,000</span></div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Caractéristique</th>
+              <th>PA-410</th>
+              <th>PA-415</th>
+              <th>PA-415-5G</th>
+              <th>PA-440</th>
+              <th>PA-445</th>
+              <th>PA-450</th>
+              <th>PA-455</th>
+              <th>PA-455-5G</th>
+              <th>PA-460</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="10">Performances (appmix, PAN-OS 12.1)</td></tr>
+            <tr>
+              <td>Firewall throughput</td>
+              <td class="val-low">1.4 Gbps</td>
+              <td class="val-low">1.5 Gbps</td>
+              <td class="val-low">1.5 Gbps</td>
+              <td class="val-low">2.4 Gbps</td>
+              <td class="val-low">2.7 Gbps</td>
+              <td class="val-med">3.3 Gbps</td>
+              <td class="val-med">3.6 Gbps</td>
+              <td class="val-med">3.2 Gbps</td>
+              <td class="val-med">4.2 Gbps</td>
+            </tr>
+            <tr>
+              <td>Threat Prevention</td>
+              <td class="val-low">0.8 Gbps</td>
+              <td class="val-low">0.8 Gbps</td>
+              <td class="val-low">0.8 Gbps</td>
+              <td class="val-low">1.2 Gbps</td>
+              <td class="val-low">1.25 Gbps</td>
+              <td class="val-med">2.1 Gbps</td>
+              <td class="val-med">2.3 Gbps</td>
+              <td class="val-low">1.8 Gbps</td>
+              <td class="val-med">3.0 Gbps</td>
+            </tr>
+            <tr>
+              <td>IPsec VPN throughput</td>
+              <td class="val-low">0.5 Gbps</td>
+              <td class="val-low">0.5 Gbps</td>
+              <td class="val-low">0.5 Gbps</td>
+              <td class="val-low">1.1 Gbps</td>
+              <td class="val-low">1.1 Gbps</td>
+              <td class="val-low">1.7 Gbps</td>
+              <td class="val-low">1.8 Gbps</td>
+              <td class="val-low">1.6 Gbps</td>
+              <td class="val-med">2.3 Gbps</td>
+            </tr>
+            <tr class="section-row"><td colspan="10">Capacités Sessions</td></tr>
+            <tr>
+              <td>Sessions max</td>
+              <td class="val-low">64,000</td>
+              <td class="val-low">64,000</td>
+              <td class="val-low">64,000</td>
+              <td class="val-low">200,000</td>
+              <td class="val-low">200,000</td>
+              <td class="val-med">300,000</td>
+              <td class="val-med">300,000</td>
+              <td class="val-med">300,000</td>
+              <td class="val-med">400,000</td>
+            </tr>
+            <tr>
+              <td>Nouvelles sessions/s</td>
+              <td class="val-low">11,000</td>
+              <td class="val-low">11,000</td>
+              <td class="val-low">11,400</td>
+              <td class="val-low">34,000</td>
+              <td class="val-low">34,000</td>
+              <td class="val-med">48,000</td>
+              <td class="val-med">56,000</td>
+              <td class="val-med">48,000</td>
+              <td class="val-med">67,000</td>
+            </tr>
+            <tr>
+              <td>Virtual systems (base/max)</td>
+              <td class="val-low">1 / 1</td>
+              <td class="val-low">1 / 1</td>
+              <td class="val-low">1 / 1</td>
+              <td class="val-low">1 / 2</td>
+              <td class="val-low">1 / 2</td>
+              <td class="val-med">1 / 5</td>
+              <td class="val-med">1 / 5</td>
+              <td class="val-med">1 / 5</td>
+              <td class="val-med">1 / 5</td>
+            </tr>
+            <tr class="section-row"><td colspan="10">Interfaces réseau</td></tr>
+            <tr>
+              <td>1G RJ45</td>
+              <td class="val-low">7</td>
+              <td class="val-low">4 + 1 combo</td>
+              <td class="val-low">4 + 1 combo</td>
+              <td class="val-low">8</td>
+              <td class="val-low">4 + 1 combo</td>
+              <td class="val-low">8</td>
+              <td class="val-low">2 + 2 combo</td>
+              <td class="val-low">6 + 2 combo</td>
+              <td class="val-low">8</td>
+            </tr>
+            <tr>
+              <td>1G RJ45/PoE</td>
+              <td class="val-na">—</td>
+              <td class="val-low">4</td>
+              <td class="val-low">4</td>
+              <td class="val-na">—</td>
+              <td class="val-low">4</td>
+              <td class="val-na">—</td>
+              <td class="val-low">4</td>
+              <td class="val-low">4</td>
+              <td class="val-na">—</td>
+            </tr>
+            <tr>
+              <td>Module 5G intégré</td>
+              <td class="val-na">—</td>
+              <td class="val-na">—</td>
+              <td class="val-check">✓</td>
+              <td class="val-na">—</td>
+              <td class="val-na">—</td>
+              <td class="val-na">—</td>
+              <td class="val-na">—</td>
+              <td class="val-check">✓</td>
+              <td class="val-na">—</td>
+            </tr>
+            <tr class="section-row"><td colspan="10">Hardware & Alimentation</td></tr>
+            <tr>
+              <td>Format</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+              <td class="val-low">Desktop</td>
+            </tr>
+            <tr>
+              <td>Refroidissement</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+              <td class="val-med">Fanless</td>
+            </tr>
+            <tr>
+              <td>Conso. moy. / max</td>
+              <td class="val-low">17 / 23 W</td>
+              <td class="val-low">133 / 142 W</td>
+              <td class="val-low">133 / 142 W</td>
+              <td class="val-low">28.9 / 34.3 W</td>
+              <td class="val-low">140 / 146 W</td>
+              <td class="val-low">32.6 / 41.3 W</td>
+              <td class="val-low">125.2 / 143 W</td>
+              <td class="val-low">195 / 212 W</td>
+              <td class="val-low">32.6 / 41.3 W</td>
+            </tr>
+            <tr>
+              <td>Budget PoE</td>
+              <td class="val-na">—</td>
+              <td class="val-low">91 W</td>
+              <td class="val-low">91 W</td>
+              <td class="val-na">—</td>
+              <td class="val-low">91 W</td>
+              <td class="val-na">—</td>
+              <td class="val-low">91 W</td>
+              <td class="val-low">151 W</td>
+              <td class="val-na">—</td>
+            </tr>
+            <tr>
+              <td>Stockage</td>
+              <td class="val-low">64 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+              <td class="val-low">128 GB eMMC</td>
+            </tr>
+            <tr>
+              <td>TPM</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+              <td class="val-check">✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-1400 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-1400">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-card-name">PA-1410</div>
+          <div class="model-card-badge">1U Rack · PoE</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">8.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">4.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">4.1 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">945,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">100,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-1420</div>
+          <div class="model-card-badge">1U Rack · PoE</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">9.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">6.2 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">5.6 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">1,400,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">140,000</span></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Caractéristique</th>
+              <th>PA-1410</th>
+              <th>PA-1420</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="3">Performances (appmix, PAN-OS 12.1)</td></tr>
+            <tr><td>Firewall throughput</td><td class="val-med">8.5 Gbps</td><td class="val-med">9.5 Gbps</td></tr>
+            <tr><td>Threat Prevention</td><td class="val-med">4.5 Gbps</td><td class="val-med">6.2 Gbps</td></tr>
+            <tr><td>IPsec VPN throughput</td><td class="val-med">4.1 Gbps</td><td class="val-med">5.6 Gbps</td></tr>
+            <tr><td>Sessions max</td><td class="val-med">945,000</td><td class="val-high">1,400,000</td></tr>
+            <tr><td>Nouvelles sessions/s</td><td class="val-med">100,000</td><td class="val-med">140,000</td></tr>
+            <tr><td>Virtual systems (base/max)</td><td class="val-med">1 / 6</td><td class="val-med">1 / 6</td></tr>
+            <tr class="section-row"><td colspan="3">Interfaces réseau</td></tr>
+            <tr><td>10/100/1000 RJ45</td><td class="val-med">8</td><td class="val-med">4</td></tr>
+            <tr><td>1G/2.5G/5G (dont PoE)</td><td class="val-med">4 PoE</td><td class="val-med">4 + 4 PoE</td></tr>
+            <tr><td>1G SFP</td><td class="val-med">6</td><td class="val-med">2</td></tr>
+            <tr><td>1G/10G SFP/SFP+</td><td class="val-med">4</td><td class="val-med">8</td></tr>
+            <tr class="section-row"><td colspan="3">Hardware & Alimentation</td></tr>
+            <tr><td>Format</td><td class="val-med">1U Rack</td><td class="val-med">1U Rack</td></tr>
+            <tr><td>Budget PoE</td><td class="val-med">151 W total · 90 W/port</td><td class="val-med">151 W total · 90 W/port</td></tr>
+            <tr><td>Alimentation</td><td class="val-med">450 W AC (2e optionnel)</td><td class="val-med">450 W AC (2e optionnel)</td></tr>
+            <tr><td>Conso. moy. / max</td><td class="val-med">250 / 290 W</td><td class="val-med">260 / 300 W</td></tr>
+            <tr><td>Stockage</td><td class="val-med">120 GB SSD</td><td class="val-med">240 GB SSD</td></tr>
+            <tr><td>MTBF</td><td class="val-high">24 ans</td><td class="val-high">24 ans</td></tr>
+            <tr><td>TPM</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+            <tr><td>Flux d'air</td><td class="val-low">Avant → Arrière</td><td class="val-low">Avant → Arrière</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-3400 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-3400">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-card-name">PA-3410</div>
+          <div class="model-card-badge">1U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">14 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">7.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">6.6 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">1,400,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">145,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-3420</div>
+          <div class="model-card-badge">1U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">19 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">10 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">9.9 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">2,200,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">220,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-3430</div>
+          <div class="model-card-badge">1U Rack · 5G/GTP</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">29 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">15 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">12 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">2,500,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">240,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-3440</div>
+          <div class="model-card-badge">1U Rack · 5G/GTP</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">35 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">20 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">14.5 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">3,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">268,000</span></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Caractéristique</th>
+              <th>PA-3410</th>
+              <th>PA-3420</th>
+              <th>PA-3430</th>
+              <th>PA-3440</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="5">Performances (appmix, PAN-OS 12.1)</td></tr>
+            <tr><td>Firewall throughput</td><td class="val-med">14 Gbps</td><td class="val-med">19 Gbps</td><td class="val-high">29 Gbps</td><td class="val-high">35 Gbps</td></tr>
+            <tr><td>Threat Prevention</td><td class="val-med">7.5 Gbps</td><td class="val-med">10 Gbps</td><td class="val-high">15 Gbps</td><td class="val-high">20 Gbps</td></tr>
+            <tr><td>IPsec VPN throughput</td><td class="val-med">6.6 Gbps</td><td class="val-med">9.9 Gbps</td><td class="val-high">12 Gbps</td><td class="val-high">14.5 Gbps</td></tr>
+            <tr><td>Sessions max</td><td class="val-med">1,400,000</td><td class="val-high">2,200,000</td><td class="val-high">2,500,000</td><td class="val-high">3,000,000</td></tr>
+            <tr><td>Nouvelles sessions/s</td><td class="val-med">145,000</td><td class="val-high">220,000</td><td class="val-high">240,000</td><td class="val-high">268,000</td></tr>
+            <tr><td>Virtual systems (base/max)</td><td class="val-med">1 / 11</td><td class="val-med">1 / 11</td><td class="val-med">1 / 11</td><td class="val-med">1 / 11</td></tr>
+            <tr class="section-row"><td colspan="5">Interfaces réseau</td></tr>
+            <tr><td>1G/2.5G/5G/10G RJ45</td><td class="val-med">12</td><td class="val-med">12</td><td class="val-med">12</td><td class="val-med">12</td></tr>
+            <tr><td>1G/10G SFP/SFP+</td><td class="val-med">10</td><td class="val-med">10</td><td class="val-med">10</td><td class="val-med">10</td></tr>
+            <tr><td>25G SFP28</td><td class="val-med">4</td><td class="val-med">4</td><td class="val-med">4</td><td class="val-med">4</td></tr>
+            <tr><td>40G/100G QSFP/QSFP28</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-high">2</td><td class="val-high">2</td></tr>
+            <tr><td>5G/GTP/SCTP mobile</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+            <tr class="section-row"><td colspan="5">Hardware & Alimentation</td></tr>
+            <tr><td>Format</td><td class="val-med">1U Rack</td><td class="val-med">1U Rack</td><td class="val-med">1U Rack</td><td class="val-med">1U Rack</td></tr>
+            <tr><td>Alimentation</td><td colspan="4" class="val-med">Redondante 450 W AC (tous modèles)</td></tr>
+            <tr><td>Conso. moy. / max</td><td colspan="4" class="val-low">133 / 190 W (tous modèles)</td></tr>
+            <tr><td>Max BTU/hr</td><td colspan="4" class="val-low">650 BTU/hr</td></tr>
+            <tr><td>Stockage</td><td colspan="4" class="val-med">480 GB SSD</td></tr>
+            <tr><td>MTBF</td><td colspan="4" class="val-high">22 ans</td></tr>
+            <tr><td>Flux d'air</td><td colspan="4" class="val-low">Avant → Arrière</td></tr>
+            <tr><td>TPM</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-5400 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-5400">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-card-name">PA-5410</div>
+          <div class="model-card-badge">2U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">52 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">35 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">20 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">5,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">270,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-5420</div>
+          <div class="model-card-badge">2U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">70 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">50 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">28 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">7,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">370,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-5430</div>
+          <div class="model-card-badge">2U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">80 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">60 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">42 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">9,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">380,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-5440</div>
+          <div class="model-card-badge">2U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">85 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">70 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">58 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">20,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">390,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-5445</div>
+          <div class="model-card-badge">2U Rack</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">90 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">76 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">64 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">48,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">449,000</span></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Caractéristique</th>
+              <th>PA-5410</th>
+              <th>PA-5420</th>
+              <th>PA-5430</th>
+              <th>PA-5440</th>
+              <th>PA-5445</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="6">Performances (appmix, PAN-OS 12.1)</td></tr>
+            <tr><td>Firewall throughput</td><td class="val-high">52 Gbps</td><td class="val-high">70 Gbps</td><td class="val-high">80 Gbps</td><td class="val-high">85 Gbps</td><td class="val-high">90 Gbps</td></tr>
+            <tr><td>Threat Prevention</td><td class="val-high">35 Gbps</td><td class="val-high">50 Gbps</td><td class="val-high">60 Gbps</td><td class="val-high">70 Gbps</td><td class="val-high">76 Gbps</td></tr>
+            <tr><td>IPsec VPN throughput</td><td class="val-high">20 Gbps</td><td class="val-high">28 Gbps</td><td class="val-high">42 Gbps</td><td class="val-high">58 Gbps</td><td class="val-high">64 Gbps</td></tr>
+            <tr><td>Sessions max</td><td class="val-high">5,000,000</td><td class="val-high">7,000,000</td><td class="val-high">9,000,000</td><td class="val-high">20,000,000</td><td class="val-high">48,000,000</td></tr>
+            <tr><td>Nouvelles sessions/s</td><td class="val-high">270,000</td><td class="val-high">370,000</td><td class="val-high">380,000</td><td class="val-high">390,000</td><td class="val-high">449,000</td></tr>
+            <tr><td>Virtual systems (base/max)</td><td class="val-med">10 / 20</td><td class="val-med">15 / 65</td><td class="val-high">25 / 125</td><td class="val-high">25 / 225</td><td class="val-high">25 / 225</td></tr>
+            <tr class="section-row"><td colspan="6">Interfaces réseau (identiques sur tous les modèles)</td></tr>
+            <tr><td>1G/2.5G/5G/10G RJ45</td><td colspan="5" class="val-high">8 ports</td></tr>
+            <tr><td>1G/10G SFP/SFP+</td><td colspan="5" class="val-high">12 ports</td></tr>
+            <tr><td>1G/10G/25G SFP/SFP+/SFP28</td><td colspan="5" class="val-high">4 ports</td></tr>
+            <tr><td>40G/100G QSFP+/QSFP28</td><td colspan="5" class="val-high">4 ports</td></tr>
+            <tr class="section-row"><td colspan="6">Hardware & Alimentation</td></tr>
+            <tr><td>Format</td><td colspan="5" class="val-high">2U Rack — 3.45" H × 22.5" D × 17.34" W</td></tr>
+            <tr><td>Alimentation</td><td colspan="5" class="val-high">Redondante 1+1 · 1,200 W AC chacune</td></tr>
+            <tr><td>Conso. moy. / max</td><td colspan="5" class="val-med">630 / 760 W</td></tr>
+            <tr><td>Max BTU/hr</td><td colspan="5" class="val-med">1,638 BTU/hr</td></tr>
+            <tr><td>Stockage</td><td colspan="5" class="val-high">480 GB SSD (paire)</td></tr>
+            <tr><td>DC en option</td><td colspan="5" class="val-check">✓ (-48 VDC)</td></tr>
+            <tr><td>MTBF</td><td colspan="5" class="val-high">22 ans</td></tr>
+            <tr><td>Flux d'air</td><td colspan="5" class="val-low">Avant → Arrière</td></tr>
+            <tr><td>TPM</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-7000 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-7000">
+      <div class="model-cards">
+        <div class="model-card">
+          <div class="model-card-name">PA-7050</div>
+          <div class="model-card-badge">9U Chassis · Modulaire</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">343 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">184 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">190 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">245,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">4,000,000</span></div>
+        </div>
+        <div class="model-card">
+          <div class="model-card-name">PA-7080</div>
+          <div class="model-card-badge">19U Chassis · Modulaire</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall</span><span class="stat-val">590 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev.</span><span class="stat-val">305 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN</span><span class="stat-val">310 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">416,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">6,000,000</span></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr><th>Caractéristique</th><th>PA-7050</th><th>PA-7080</th></tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="3">Performances système optimum (PAN-OS 11.2)</td></tr>
+            <tr><td>Firewall throughput</td><td class="val-high">343 Gbps</td><td class="val-high">590 Gbps</td></tr>
+            <tr><td>Threat Prevention</td><td class="val-high">184 Gbps</td><td class="val-high">305 Gbps</td></tr>
+            <tr><td>IPsec VPN throughput</td><td class="val-high">190 Gbps</td><td class="val-high">310 Gbps</td></tr>
+            <tr><td>Sessions max</td><td class="val-high">245,000,000</td><td class="val-high">416,000,000</td></tr>
+            <tr><td>Nouvelles sessions/s</td><td class="val-high">4,000,000</td><td class="val-high">6,000,000</td></tr>
+            <tr><td>Virtual systems (base/max)</td><td class="val-high">25 / 225</td><td class="val-high">25 / 225</td></tr>
+            <tr class="section-row"><td colspan="3">Interfaces (config max · PA-7000-100G-NPC-A)</td></tr>
+            <tr><td>SFP/SFP+ (1G/10G)</td><td class="val-high">48</td><td class="val-high">80</td></tr>
+            <tr><td>QSFP+/QSFP28 (40G/100G)</td><td class="val-high">24</td><td class="val-high">40</td></tr>
+            <tr class="section-row"><td colspan="3">Hardware & Alimentation</td></tr>
+            <tr><td>Format</td><td class="val-high">9U · 15.75" H × 19" W × 24" D</td><td class="val-high">19U · 32.22" H × 19" W × 24.6" D</td></tr>
+            <tr><td>Alimentation AC / DC</td><td class="val-high">4 PSU · 2,500 W chacune</td><td class="val-high">4–8 PSU · 2,500 W chacune</td></tr>
+            <tr><td>Max BTU/hr</td><td class="val-med">10,236 BTU/hr</td><td class="val-high">20,132 BTU/hr</td></tr>
+            <tr><td>Poids (AC)</td><td class="val-low">187.4 lbs</td><td class="val-low">299.3 lbs</td></tr>
+            <tr><td>Température de fonctionnement</td><td colspan="2" class="val-low">0°C – 50°C</td></tr>
+            <tr><td>NEBS Level 3</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         PA-7500 SERIES
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-7500">
+      <div class="model-cards">
+        <div class="model-card" style="grid-column: span 2">
+          <div class="model-card-name">PA-7500</div>
+          <div class="model-card-badge">14U Chassis · Modulaire · Hyperscale</div>
+          <div class="model-card-stat"><span class="stat-label">Firewall (système complet)</span><span class="stat-val">1,500 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Threat Prev. (système complet)</span><span class="stat-val">1,440 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">IPsec VPN (système complet)</span><span class="stat-val">407 Gbps</span></div>
+          <div class="model-card-stat"><span class="stat-label">Sessions max</span><span class="stat-val">440,000,000</span></div>
+          <div class="model-card-stat"><span class="stat-label">Nouvelles/s</span><span class="stat-val">7,200,000</span></div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr><th>Caractéristique</th><th>PA-7500 (6× DPC-A + 2× NPC-A)</th><th>Par carte DPC-A</th></tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="3">Performances (PAN-OS 11.1)</td></tr>
+            <tr><td>Firewall throughput</td><td class="val-high">1,500 Gbps</td><td class="val-high">310 Gbps</td></tr>
+            <tr><td>Threat Prevention</td><td class="val-high">1,440 Gbps</td><td class="val-high">250 Gbps</td></tr>
+            <tr><td>IPsec VPN throughput</td><td class="val-high">407 Gbps</td><td class="val-high">67 Gbps</td></tr>
+            <tr><td>Sessions max</td><td class="val-high">440,000,000</td><td class="val-high">73,000,000</td></tr>
+            <tr><td>Nouvelles sessions/s</td><td class="val-high">7,200,000</td><td class="val-high">1,200,000</td></tr>
+            <tr><td>Virtual systems (base/max)</td><td class="val-high">25 / 225</td><td class="val-na">—</td></tr>
+            <tr class="section-row"><td colspan="3">Interfaces (par carte NPC-A)</td></tr>
+            <tr><td>QSFP-DD (400G/100G/40G)</td><td class="val-high">8 par carte NPC-A</td><td class="val-na">—</td></tr>
+            <tr><td>SFP-DD (100G/25G/10G)</td><td class="val-high">12 par carte NPC-A</td><td class="val-na">—</td></tr>
+            <tr class="section-row"><td colspan="3">Hardware & Alimentation</td></tr>
+            <tr><td>Format</td><td colspan="2" class="val-high">14U · 24.4" H × 31.0" D × 17.4" W</td></tr>
+            <tr><td>Alimentation (typ. / max)</td><td colspan="2" class="val-high">8.2 KW typ. · 10 KW max (à 25°C)</td></tr>
+            <tr><td>Max BTU/hr</td><td colspan="2" class="val-high">31,142 BTU/hr</td></tr>
+            <tr><td>PSU</td><td colspan="2" class="val-high">3,600 W/unité · redondance N+M · jusqu'à 10 PSU</td></tr>
+            <tr><td>NEBS / NEBS Level 3</td><td colspan="2" class="val-check">✓ cMETus, CB, NEBS</td></tr>
+            <tr><td>Température de fonctionnement</td><td colspan="2" class="val-low">0°C – 40°C</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         VUE GLOBALE
+    ══════════════════════════════════════════════ -->
+    <div class="series-section" id="series-all">
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Modèle</th>
+              <th>Format</th>
+              <th>Firewall</th>
+              <th>Threat Prev.</th>
+              <th>IPsec VPN</th>
+              <th>Sessions max</th>
+              <th>Nouvelles/s</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="7">PA-400 Series — Desktop (PAN-OS 12.1)</td></tr>
+            <tr><td>PA-410</td><td class="val-low">Desktop</td><td class="val-low">1.4 Gbps</td><td class="val-low">0.8 Gbps</td><td class="val-low">0.5 Gbps</td><td class="val-low">64,000</td><td class="val-low">11,000</td></tr>
+            <tr><td>PA-415</td><td class="val-low">Desktop</td><td class="val-low">1.5 Gbps</td><td class="val-low">0.8 Gbps</td><td class="val-low">0.5 Gbps</td><td class="val-low">64,000</td><td class="val-low">11,000</td></tr>
+            <tr><td>PA-415-5G</td><td class="val-low">Desktop</td><td class="val-low">1.5 Gbps</td><td class="val-low">0.8 Gbps</td><td class="val-low">0.5 Gbps</td><td class="val-low">64,000</td><td class="val-low">11,400</td></tr>
+            <tr><td>PA-440</td><td class="val-low">Desktop</td><td class="val-low">2.4 Gbps</td><td class="val-low">1.2 Gbps</td><td class="val-low">1.1 Gbps</td><td class="val-low">200,000</td><td class="val-low">34,000</td></tr>
+            <tr><td>PA-445</td><td class="val-low">Desktop</td><td class="val-low">2.7 Gbps</td><td class="val-low">1.25 Gbps</td><td class="val-low">1.1 Gbps</td><td class="val-low">200,000</td><td class="val-low">34,000</td></tr>
+            <tr><td>PA-450</td><td class="val-low">Desktop</td><td class="val-med">3.3 Gbps</td><td class="val-med">2.1 Gbps</td><td class="val-low">1.7 Gbps</td><td class="val-med">300,000</td><td class="val-med">48,000</td></tr>
+            <tr><td>PA-455</td><td class="val-low">Desktop</td><td class="val-med">3.6 Gbps</td><td class="val-med">2.3 Gbps</td><td class="val-low">1.8 Gbps</td><td class="val-med">300,000</td><td class="val-med">56,000</td></tr>
+            <tr><td>PA-455-5G</td><td class="val-low">Desktop</td><td class="val-med">3.2 Gbps</td><td class="val-low">1.8 Gbps</td><td class="val-low">1.6 Gbps</td><td class="val-med">300,000</td><td class="val-med">48,000</td></tr>
+            <tr><td>PA-460</td><td class="val-low">Desktop</td><td class="val-med">4.2 Gbps</td><td class="val-med">3.0 Gbps</td><td class="val-med">2.3 Gbps</td><td class="val-med">400,000</td><td class="val-med">67,000</td></tr>
+            <tr class="section-row"><td colspan="7">PA-1400 Series — 1U Rack (PAN-OS 12.1)</td></tr>
+            <tr><td>PA-1410</td><td class="val-med">1U Rack</td><td class="val-med">8.5 Gbps</td><td class="val-med">4.5 Gbps</td><td class="val-med">4.1 Gbps</td><td class="val-med">945,000</td><td class="val-med">100,000</td></tr>
+            <tr><td>PA-1420</td><td class="val-med">1U Rack</td><td class="val-med">9.5 Gbps</td><td class="val-med">6.2 Gbps</td><td class="val-med">5.6 Gbps</td><td class="val-high">1,400,000</td><td class="val-med">140,000</td></tr>
+            <tr class="section-row"><td colspan="7">PA-3400 Series — 1U Rack (PAN-OS 12.1)</td></tr>
+            <tr><td>PA-3410</td><td class="val-med">1U Rack</td><td class="val-high">14 Gbps</td><td class="val-high">7.5 Gbps</td><td class="val-high">6.6 Gbps</td><td class="val-high">1,400,000</td><td class="val-high">145,000</td></tr>
+            <tr><td>PA-3420</td><td class="val-med">1U Rack</td><td class="val-high">19 Gbps</td><td class="val-high">10 Gbps</td><td class="val-high">9.9 Gbps</td><td class="val-high">2,200,000</td><td class="val-high">220,000</td></tr>
+            <tr><td>PA-3430</td><td class="val-med">1U Rack</td><td class="val-high">29 Gbps</td><td class="val-high">15 Gbps</td><td class="val-high">12 Gbps</td><td class="val-high">2,500,000</td><td class="val-high">240,000</td></tr>
+            <tr><td>PA-3440</td><td class="val-med">1U Rack</td><td class="val-high">35 Gbps</td><td class="val-high">20 Gbps</td><td class="val-high">14.5 Gbps</td><td class="val-high">3,000,000</td><td class="val-high">268,000</td></tr>
+            <tr class="section-row"><td colspan="7">PA-5400 Series — 2U Rack (PAN-OS 12.1)</td></tr>
+            <tr><td>PA-5410</td><td class="val-high">2U Rack</td><td class="val-high">52 Gbps</td><td class="val-high">35 Gbps</td><td class="val-high">20 Gbps</td><td class="val-high">5,000,000</td><td class="val-high">270,000</td></tr>
+            <tr><td>PA-5420</td><td class="val-high">2U Rack</td><td class="val-high">70 Gbps</td><td class="val-high">50 Gbps</td><td class="val-high">28 Gbps</td><td class="val-high">7,000,000</td><td class="val-high">370,000</td></tr>
+            <tr><td>PA-5430</td><td class="val-high">2U Rack</td><td class="val-high">80 Gbps</td><td class="val-high">60 Gbps</td><td class="val-high">42 Gbps</td><td class="val-high">9,000,000</td><td class="val-high">380,000</td></tr>
+            <tr><td>PA-5440</td><td class="val-high">2U Rack</td><td class="val-high">85 Gbps</td><td class="val-high">70 Gbps</td><td class="val-high">58 Gbps</td><td class="val-high">20,000,000</td><td class="val-high">390,000</td></tr>
+            <tr><td>PA-5445</td><td class="val-high">2U Rack</td><td class="val-high">90 Gbps</td><td class="val-high">76 Gbps</td><td class="val-high">64 Gbps</td><td class="val-high">48,000,000</td><td class="val-high">449,000</td></tr>
+            <tr class="section-row"><td colspan="7">PA-7000 Series — Chassis modulaire (PAN-OS 11.2)</td></tr>
+            <tr><td>PA-7050</td><td class="val-high">9U Chassis</td><td class="val-high">343 Gbps</td><td class="val-high">184 Gbps</td><td class="val-high">190 Gbps</td><td class="val-high">245,000,000</td><td class="val-high">4,000,000</td></tr>
+            <tr><td>PA-7080</td><td class="val-high">19U Chassis</td><td class="val-high">590 Gbps</td><td class="val-high">305 Gbps</td><td class="val-high">310 Gbps</td><td class="val-high">416,000,000</td><td class="val-high">6,000,000</td></tr>
+            <tr class="section-row"><td colspan="7">PA-7500 Series — Chassis hyperscale (PAN-OS 11.1)</td></tr>
+            <tr><td>PA-7500</td><td class="val-high">14U Chassis</td><td class="val-high">1,500 Gbps</td><td class="val-high">1,440 Gbps</td><td class="val-high">407 Gbps</td><td class="val-high">440,000,000</td><td class="val-high">7,200,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /page-wrap -->
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+    · Données : Datasheets officielles PAN (PA-400: ds 022326 · PA-1400: 012726 · PA-3400: 021126 · PA-5400: 032026 · PA-7000: 071624 · PA-7500: 031126)
+  </footer>
+
+  <script>
+    // Series tab switching
+    document.getElementById('series-tabs').addEventListener('click', e => {
+      const btn = e.target.closest('.series-tab');
+      if (!btn) return;
+      const s = btn.dataset.series;
+      document.querySelectorAll('.series-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.series-section').forEach(sec => sec.classList.remove('visible'));
+      btn.classList.add('active');
+      document.getElementById(`series-${s}`).classList.add('visible');
+    });
+  </script>
 </body>
 </html>
