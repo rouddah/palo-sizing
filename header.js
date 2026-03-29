@@ -63,7 +63,6 @@
 
     <div class="nav-divider"></div>
 
-    <span class="badge badge-accent">Beta · 2026-03-27</span>
     <span class="badge" style="display:none" id="badge-author">LGU@EXN</span>
 
     <button class="icon-btn" id="theme-toggle" title="Basculer dark / light" onclick="toggleTheme()">

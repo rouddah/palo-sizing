@@ -2,6 +2,7 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="img/logo-paloalto.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sizing Guide — Prisma Access</title>
   <link rel="stylesheet" href="styles.css" />
@@ -69,12 +70,26 @@
         <thead>
           <tr>
             <th style="text-align:left;min-width:260px">Fonctionnalité</th>
-            <th>Prisma Access</th>
-            <th>Prisma Access<br>+ SaaS Security</th>
-            <th>Prisma Access<br>+ SaaS Security + DLP</th>
+            <th>Enterprise Edition<br><small style="font-weight:400;font-size:10px">Base</small></th>
+            <th>+ NG-CASB<br><small style="font-weight:400;font-size:10px">Add-on</small></th>
+            <th>+ ADEM &amp; AIOps<br><small style="font-weight:400;font-size:10px">Add-on</small></th>
           </tr>
         </thead>
         <tbody>
+          <tr class="section-row"><td colspan="4">Prix &amp; SKU</td></tr>
+          <tr>
+            <td>SKU</td>
+            <td style="font-family:var(--mono);font-size:11px">PAN-PRISMA-ACCESS-MU-ENTERPRISE</td>
+            <td style="font-family:var(--mono);font-size:11px">PAN-PRISMA-ACCESS-CASB</td>
+            <td style="font-family:var(--mono);font-size:11px">PAN-PRISMA-ACCESS-MU-SCM-PRO</td>
+          </tr>
+          <tr>
+            <td>Prix indicatif HT (par user/an)</td>
+            <td class="val-high">210 €</td>
+            <td class="val-med">+168 €</td>
+            <td class="val-med">+90 €</td>
+          </tr>
+
           <tr class="section-row"><td colspan="4">Réseau &amp; Connectivité</td></tr>
           <tr><td>GlobalProtect (Remote Users)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Remote Networks (SD-WAN)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
@@ -95,23 +110,24 @@
           <tr><td>Continuous trust verification</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Continuous security inspection</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Prisma Access Browser</td><td class="val-opt">option</td><td class="val-opt">option</td><td class="val-opt">option</td></tr>
-          <tr><td>ADEM (Digital Experience Monitoring)</td><td class="val-opt">option</td><td class="val-opt">option</td><td class="val-opt">option</td></tr>
 
-          <tr class="section-row"><td colspan="4">CASB &amp; Protection des Données</td></tr>
-          <tr><td>SaaS Security inline (CASB)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>SaaS Security API (CASB out-of-band)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr class="section-row"><td colspan="4">NG-CASB &amp; Protection des Données (add-on)</td></tr>
+          <tr><td>SaaS Security Inline</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SaaS Security API (out-of-band)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>DLP Inline &amp; API</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>SaaS Security Posture Mgmt (SSPM)</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>Enterprise DLP</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
 
           <tr class="section-row"><td colspan="4">Gestion &amp; Visibilité</td></tr>
           <tr><td>Strata Cloud Manager</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>AI-Powered threat analytics</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>ADEM (Digital Experience Monitoring)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>AIOps</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
         </tbody>
       </table>
     </div>
 
     <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
-      Les souscriptions Prisma Access sont vendues par nombre d'utilisateurs mobiles (Remote Users) et par bande passante (Remote Networks, en Mbps). SaaS Security et Enterprise DLP sont des souscriptions additionnelles séparées.
+      Les souscriptions Prisma Access sont vendues par utilisateur/an (Remote Users) ou par Mbps/an (Remote Networks — 210 €/Mbps). Le NG-CASB est un add-on unique qui regroupe SaaS Security Inline, SaaS Security API, DLP Inline et DLP API — il n'existe pas de version SaaS Security seule séparée du DLP.
       Pour un devis précis, contacter Exclusive Networks via
       <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
     </div>
