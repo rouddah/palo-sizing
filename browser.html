@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Prisma Access Browser</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .use-case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .use-case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .use-case-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .use-case-icon {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .use-case-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .cap-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: var(--green-dim);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green);
+    }
+    .cap-badge.yellow {
+      background: var(--yellow-dim);
+      border-color: rgba(245,158,11,0.3);
+      color: var(--yellow);
+    }
+    .cap-badge.purple {
+      background: rgba(139,92,246,0.12);
+      border-color: rgba(139,92,246,0.3);
+      color: var(--purple);
+    }
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .policy-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .policy-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .policy-card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .info-note {
+      margin-bottom: 24px;
+      padding: 13px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .info-note strong { color: var(--text); }
+    .section-title {
+      margin: 32px 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--mono);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .arch-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      text-align: center;
+    }
+    .arch-node {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 12px 20px;
+      min-width: 140px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+    .arch-node.accent {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .arch-arrow {
+      font-size: 20px;
+      color: var(--text-muted);
+    }
+    .os-badges {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .os-badge {
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 500;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>Prisma Access Browser</h1>
+      <p>Enterprise Browser Zero Trust · Chromium-based · Acquis via Talon (nov. 2023)</p>
+    </div>
+
+    <div class="info-note">
+      <strong>Qu'est-ce que le Prisma Access Browser ?</strong> Un navigateur d'entreprise basé sur Chromium, intégrant nativement le Zero Trust, la DLP, la prévention des menaces et les contrôles de sécurité — directement dans la couche navigateur. Il remplace le besoin d'agent VPN pour les accès web, permet de sécuriser les appareils non-gérés (BYOD, contractants) et s'intègre nativement avec Prisma Access et le Strata Cloud Manager.
+    </div>
+
+    <!-- Architecture flow -->
+    <div class="section-title">Architecture — Comment ça fonctionne</div>
+    <div class="arch-diagram">
+      <div class="arch-node">Utilisateur<br><small style="font-weight:400;color:var(--text-muted)">Managed / BYOD</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node accent">Prisma Access Browser<br><small style="font-weight:400;font-size:10px">Chromium + Zero Trust</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">Prisma Access PoP<br><small style="font-weight:400;color:var(--text-muted)">150+ mondiaux</small></div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">SaaS / Apps privées<br><small style="font-weight:400;color:var(--text-muted)">M365, Salesforce, etc.</small></div>
+    </div>
+
+    <!-- Use cases -->
+    <div class="section-title">Cas d'usage principaux</div>
+    <div class="use-case-grid">
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">💻</div>
+          BYOD / Appareils non-gérés
+        </div>
+        <div class="use-case-desc">Sécurise l'accès aux apps SaaS et privées depuis les appareils personnels sans installer d'agent MDM. Pas de VPN requis — le navigateur est le périmètre de sécurité.</div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">🤝</div>
+          Contractants & Third Parties
+        </div>
+        <div class="use-case-desc">Accès sécurisé pour prestataires et partenaires sans donner accès au réseau d'entreprise. Isolation complète et politiques de data protection renforcées.</div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">🏢</div>
+          VDI / Sessions distantes
+        </div>
+        <div class="use-case-desc">Alternative légère aux VDI coûteux pour les travailleurs remotels ne nécessitant qu'un accès web/SaaS. Réduit significativement les coûts d'infrastructure.</div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">🔐</div>
+          Apps critiques & Data sensibles
+        </div>
+        <div class="use-case-desc">Prévention de l'exfiltration de données (copier/coller, impression, téléchargement) sur les apps métiers critiques. Watermarking et enregistrement de session optionnel.</div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">🌐</div>
+          Remplacement VPN Web
+        </div>
+        <div class="use-case-desc">Pour les utilisateurs n'accédant qu'à des ressources web : le PAB remplace le client VPN et offre une expérience utilisateur supérieure avec une sécurité plus granulaire.</div>
+      </div>
+      <div class="use-case-card">
+        <div class="use-case-card-title">
+          <div class="use-case-icon">🏭</div>
+          Environnements OT / Kiosques
+        </div>
+        <div class="use-case-desc">Sécurisation des postes partagés, kiosques industriels et environnements OT/ICS avec navigation contrôlée et isolation des sessions utilisateurs.</div>
+      </div>
+    </div>
+
+    <!-- Security capabilities -->
+    <div class="section-title">Capacités de sécurité intégrées</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:280px">Capacité</th>
+            <th>Disponibilité</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="3">Prévention des menaces</td></tr>
+          <tr>
+            <td>Anti-phishing (browser-native)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Détection phishing et sites malveillants en temps réel, sans proxy externe</td>
+          </tr>
+          <tr>
+            <td>WildFire — Sandbox fichiers</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Analyse sandboxing des téléchargements via WildFire cloud (intégration native PAN)</td>
+          </tr>
+          <tr>
+            <td>Blocage extensions malveillantes</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Contrôle centralisé des extensions Chrome autorisées — politique par groupe</td>
+          </tr>
+          <tr>
+            <td>URL Filtering (PAN-DB)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Catégorisation et filtrage des URLs via la base PAN-DB (85+ catégories)</td>
+          </tr>
+          <tr>
+            <td>Isolation web (Remote Browser Isolation)</td>
+            <td class="val-med"><span class="cap-badge yellow">Add-on</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Isolation complète des sessions de navigation pour les sites à risque élevé</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Contrôle des données (DLP)</td></tr>
+          <tr>
+            <td>Prévention copier/coller</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Contrôle granulaire copier/coller entre apps — par direction, par type de données</td>
+          </tr>
+          <tr>
+            <td>Blocage impression</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Empêche l'impression de documents confidentiels depuis les apps web</td>
+          </tr>
+          <tr>
+            <td>Contrôle uploads / downloads</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Politiques granulaires par app, domaine, type de fichier et direction</td>
+          </tr>
+          <tr>
+            <td>Watermarking dynamique</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Superposition de filigrane invisible sur pages sensibles — inclut username, date, IP</td>
+          </tr>
+          <tr>
+            <td>Prévention screenshots</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Blocage OS-level des captures d'écran sur les apps configurées</td>
+          </tr>
+          <tr>
+            <td>Enterprise DLP inline</td>
+            <td class="val-med"><span class="cap-badge yellow">Add-on</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Inspection avancée du contenu : regex, classificateurs ML, empreintes digitales</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Visibilité & Contrôle</td></tr>
+          <tr>
+            <td>Enregistrement de session (audit)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Audit complet des activités web — logs centralisés dans Strata Cloud Manager</td>
+          </tr>
+          <tr>
+            <td>Accès conditionnel (device posture)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Vérification continue de la conformité de l'appareil avant chaque accès (ZTNA 2.0)</td>
+          </tr>
+          <tr>
+            <td>Intégration IdP (SAML / OIDC)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Authentification SSO via Azure AD, Okta, Ping, ADFS, etc.</td>
+          </tr>
+          <tr>
+            <td>Gestion centralisée (SCM)</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Configuration et monitoring via Strata Cloud Manager — politiques par groupe/user</td>
+          </tr>
+          <tr>
+            <td>Playback vidéo session</td>
+            <td class="val-med"><span class="cap-badge purple">Option</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Replay complet des sessions utilisateurs à des fins d'investigation forensique</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- OS support -->
+    <div class="section-title">Compatibilité OS & Déploiement</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Plate-forme</th>
+            <th>Support</th>
+            <th>Méthode de déploiement</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Windows 10 / 11</strong></td>
+            <td class="val-high"><span class="cap-badge">Supporté</span></td>
+            <td style="font-size:12px;color:var(--text-muted)">MSI via Intune, SCCM, GPO, manuel</td>
+            <td style="font-size:12px;color:var(--text-muted)">Managed & BYOD</td>
+          </tr>
+          <tr>
+            <td><strong>macOS 12+ (Monterey)</strong></td>
+            <td class="val-high"><span class="cap-badge">Supporté</span></td>
+            <td style="font-size:12px;color:var(--text-muted)">PKG via Jamf, MDM, manuel</td>
+            <td style="font-size:12px;color:var(--text-muted)">Managed & BYOD</td>
+          </tr>
+          <tr>
+            <td><strong>Linux</strong></td>
+            <td class="val-med"><span class="cap-badge yellow">Roadmap</span></td>
+            <td style="font-size:12px;color:var(--text-muted)">—</td>
+            <td style="font-size:12px;color:var(--text-muted)">À venir</td>
+          </tr>
+          <tr>
+            <td><strong>iOS / Android</strong></td>
+            <td class="val-med"><span class="cap-badge yellow">Roadmap</span></td>
+            <td style="font-size:12px;color:var(--text-muted)">—</td>
+            <td style="font-size:12px;color:var(--text-muted)">Roadmap mobile à confirmer</td>
+          </tr>
+          <tr>
+            <td><strong>Extension Chrome</strong></td>
+            <td class="val-high"><span class="cap-badge">Disponible</span></td>
+            <td style="font-size:12px;color:var(--text-muted)">Chrome Web Store (managé)</td>
+            <td style="font-size:12px;color:var(--text-muted)">Capacités réduites vs navigateur complet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Comparison vs alternatives -->
+    <div class="section-title">Prisma Access Browser vs alternatives</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px">Critère</th>
+            <th>Prisma Access Browser</th>
+            <th>VPN + Chrome standard</th>
+            <th>VDI/DaaS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Agent requis sur endpoint</td>
+            <td class="val-high">Navigateur seul</td>
+            <td class="val-low">Agent VPN + navigateur</td>
+            <td class="val-low">Client VDI + réseau</td>
+          </tr>
+          <tr>
+            <td>Accès BYOD sécurisé</td>
+            <td class="val-high">✓ Natif</td>
+            <td class="val-low">Limité / risqué</td>
+            <td class="val-med">Partiel</td>
+          </tr>
+          <tr>
+            <td>DLP dans le navigateur</td>
+            <td class="val-high">✓ Natif</td>
+            <td class="val-low">Proxy externe requis</td>
+            <td class="val-med">Centralisé côté DC</td>
+          </tr>
+          <tr>
+            <td>Zero Trust granulaire</td>
+            <td class="val-high">ZTNA 2.0 natif</td>
+            <td class="val-low">Réseau only</td>
+            <td class="val-med">Périmètre VDI</td>
+          </tr>
+          <tr>
+            <td>Coût infrastructure</td>
+            <td class="val-high">Faible (SaaS)</td>
+            <td class="val-med">Moyen</td>
+            <td class="val-low">Élevé (serveurs VDI)</td>
+          </tr>
+          <tr>
+            <td>Expérience utilisateur</td>
+            <td class="val-high">Navigateur standard</td>
+            <td class="val-med">Ralentissements VPN</td>
+            <td class="val-low">Latence VDI</td>
+          </tr>
+          <tr>
+            <td>Gestion centralisée</td>
+            <td class="val-high">SCM (cloud)</td>
+            <td class="val-low">Outils séparés</td>
+            <td class="val-med">Console VDI dédiée</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Licensing -->
+    <div class="section-title">Licence & Tarification</div>
+    <div class="info-note">
+      <strong>Modèle de licence :</strong> Abonnement annuel par utilisateur actif (concurrent ou named user selon accord). Le Prisma Access Browser est vendu en complément ou en bundle avec Prisma Access Enterprise Edition. L'intégration Strata Cloud Manager est incluse dans la licence. Les tarifs sont sur devis via Exclusive Networks — les prix varient selon le volume, la durée (1/3/5 ans) et les add-ons DLP/RBI.
+    </div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px">SKU / Édition</th>
+            <th>Prix indicatif HT</th>
+            <th>Contenu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-family:var(--mono);font-size:11px">PAN-PRISMA-BROWSER</td>
+            <td class="val-high" style="font-family:var(--mono);font-weight:700;color:var(--accent)">Sur devis</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Licence de base : navigateur + Zero Trust + DLP de base + Threat Prevention</td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);font-size:11px">Add-on Enterprise DLP</td>
+            <td class="val-med" style="font-family:var(--mono);color:var(--accent)">Sur devis</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">DLP avancé avec classificateurs ML, empreintes digitales, intégration CASB</td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);font-size:11px">Add-on Remote Browser Isolation</td>
+            <td class="val-med" style="font-family:var(--mono);color:var(--accent)">Sur devis</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Isolation complète des sessions pour catégories de sites à risque élevé</td>
+          </tr>
+          <tr>
+            <td style="font-family:var(--mono);font-size:11px">Bundle Prisma Access Enterprise + Browser</td>
+            <td class="val-high" style="font-family:var(--mono);color:var(--accent)">Sur devis</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Package combiné : SASE complet + Browser pour déploiement unifié</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key points -->
+    <div class="section-title">Points clés à retenir</div>
+    <div class="policy-grid">
+      <div class="policy-card">
+        <div class="policy-card-name">Acquisition Talon (nov. 2023)</div>
+        <div class="policy-card-desc">Palo Alto Networks a acquis Talon Cyber Security pour ~625 M$. La technologie est maintenant intégrée dans la plateforme PAN sous le nom "Prisma Access Browser".</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Chromium — pas Chrome</div>
+        <div class="policy-card-desc">Basé sur Chromium open-source (même base que Chrome/Edge), compatible avec les extensions Chrome managées. Les utilisateurs retrouvent leur environnement familier.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Zéro changement utilisateur</div>
+        <div class="policy-card-desc">L'interface est identique à Chrome. Les politiques de sécurité s'appliquent de manière transparente. Pas de formation spécifique requise pour les end-users.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Intégration native PAN</div>
+        <div class="policy-card-desc">Logs natifs dans SCM et Cortex XDR. Politiques partagées avec Prisma Access. Authentication unifiée avec l'IdP existant. Pas de stack sécurité séparé.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Vérification device continue</div>
+        <div class="policy-card-desc">ZTNA 2.0 : contrôle de la posture de l'appareil à chaque requête (pas seulement à la connexion). Révocation automatique si la conformité change en cours de session.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Prisma Access Browser vs GlobalProtect</div>
+        <div class="policy-card-desc">GP = accès réseau complet (network-centric VPN). PAB = accès web/SaaS uniquement (browser-centric Zero Trust). Les deux sont complémentaires selon les profils utilisateurs.</div>
+      </div>
+    </div>
+
+    <!-- Resources -->
+    <div class="section-title">Ressources</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="tool-card" href="https://www.paloaltonetworks.com/sase/prisma-access-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Page produit officielle<span class="card-arrow">↗</span></div>
+        <div class="card-description">Présentation produit Prisma Access Browser sur paloaltonetworks.com</div>
+      </a>
+      <a class="tool-card" href="https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Documentation<span class="card-arrow">↗</span></div>
+        <div class="card-description">Documentation officielle d'administration et de déploiement</div>
+      </a>
+      <a class="tool-card" href="prisma.html" style="min-width:220px;max-width:300px">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">Prisma Access SASE</div>
+        <div class="card-description">Éditions Mobile Users, Remote Networks et add-ons</div>
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
+</body>
+</html>

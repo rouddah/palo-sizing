@@ -48,12 +48,19 @@
             <span class="dropdown-item-sub">SASE · Zero Trust Network Access</span>
           </div>
         </a>
+        <a class="dropdown-item" href="browser.html">
+          <div class="dropdown-icon">🌐</div>
+          <div>
+            <span class="dropdown-item-name">Prisma Access Browser</span>
+            <span class="dropdown-item-sub">Enterprise Browser · Zero Trust · Ex-Talon</span>
+          </div>
+        </a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item dropdown-soon" href="#">
+        <a class="dropdown-item" href="cortex.html">
           <div class="dropdown-icon">🧠</div>
           <div>
-            <span class="dropdown-item-name">Cortex XDR</span>
-            <span class="dropdown-item-sub" style="color:var(--yellow)">Bientôt disponible</span>
+            <span class="dropdown-item-name">Cortex</span>
+            <span class="dropdown-item-sub">XDR · XSIAM · XSOAR · Xpanse</span>
           </div>
         </a>
       </div>

@@ -105,6 +105,14 @@ const LINKS_DATA = {
           "description": "Soumission de tickets, gestion des incidents P1-P4 et accès à la base de connaissance",
           "href": "https://support.paloaltonetworks.com/",
           "type": "external"
+        },
+        {
+          "icon": "🧠",
+          "title": "Cortex — XDR · XSIAM · XSOAR · Xpanse",
+          "description": "Plateforme Cortex complète : EDR/XDR, SOC IA (XSIAM), orchestration (XSOAR/AgentiX), Attack Surface Management (Xpanse)",
+          "href": "cortex.html",
+          "type": "internal",
+          "highlight": false
         }
       ]
     },
@@ -188,6 +196,13 @@ const LINKS_DATA = {
           "href": "prisma.html",
           "type": "internal",
           "highlight": false
+        },
+        {
+          "icon": "🌐",
+          "title": "Prisma Access Browser",
+          "description": "Enterprise browser Zero Trust basé sur Chromium (ex-Talon, acquis nov. 2023) — DLP, threat prevention, contrôle BYOD sans agent VPN",
+          "href": "browser.html",
+          "type": "internal"
         },
         {
           "icon": "🔐",
