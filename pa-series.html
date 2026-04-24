@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — PA-Series</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --label-w: 200px;
+      --col-w:   148px;
+    }
+
+    /* ── Toolbars ── */
+    .tb-wrap {
+      position: relative; z-index: 2;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar + .toolbar {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+
+    .tb-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .tb-sep {
+      width: 1px; height: 20px;
+      background: var(--border2);
+      flex-shrink: 0;
+    }
+
+    .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .fb {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .fb:hover { border-color: var(--border2); color: var(--text-bright); }
+    .fb.on    { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    .stats-bar {
+      padding: 5px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 20px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .stats-bar strong { color: var(--accent); }
+
+    /* ── Table container ── */
+    .table-outer {
+      position: relative; z-index: 1;
+      overflow: auto;
+      height: calc(100vh - var(--header-h) - 110px);
+    }
+
+    .pa-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      min-width: max-content;
+    }
+
+    /* ── Sticky label column ── */
+    .th-corner,
+    .spec-label-cell {
+      position: sticky;
+      left: 0;
+      width: var(--label-w);
+      min-width: var(--label-w);
+      max-width: var(--label-w);
+      z-index: 10;
+    }
+
+    .th-corner {
+      background: var(--bg);
+      z-index: 62;
+      top: 0;
+    }
+
+    .spec-label-cell {
+      background: var(--surface);
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      border-right: 2px solid var(--border2);
+      white-space: nowrap;
+      transition: background .1s, border-right-color .1s;
+    }
+
+    /* ── Sticky header row ── */
+    .col-header-row th {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+    }
+
+    /* ── Model header card ── */
+    .model-th {
+      width: var(--col-w);
+      min-width: var(--col-w);
+      max-width: var(--col-w);
+      padding: 5px 4px 0;
+      vertical-align: bottom;
+    }
+
+    .model-card-clip { overflow: hidden; border-radius: 8px 8px 0 0; }
+
+    .model-card-top {
+      padding: 10px 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+    .model-card-top:hover { filter: brightness(1.15); }
+
+    .model-card-top::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background .15s;
+    }
+    .model-card-top:hover::before { background: rgba(255,255,255,0.08); }
+
+    .model-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .model-target {
+      font-size: 10px;
+      color: rgba(255,255,255,0.75);
+      font-family: var(--mono);
+      letter-spacing: 0.03em;
+    }
+
+    .model-card-bot {
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .model-ds-link {
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color .15s;
+    }
+    .model-ds-link:hover { color: rgba(255,255,255,0.9); }
+
+    .sel-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .model-th.selected .sel-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .model-th.selected .model-card-top { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* ── Value cells ── */
+    .val-cell {
+      width: var(--col-w);
+      padding: 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      border-left: 2px solid transparent;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      transition: background .1s;
+      white-space: nowrap;
+    }
+
+    /* Zebra */
+    tr.data-row:nth-child(even) .val-cell,
+    tr.data-row:nth-child(even) .spec-label-cell { background: var(--surface2); }
+
+    tr.data-row:hover .val-cell,
+    tr.data-row:hover .spec-label-cell {
+      background: rgba(232,75,26,0.06) !important;
+    }
+    tr.data-row:hover .spec-label-cell {
+      border-right-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    /* Max highlight */
+    .val-max {
+      color: var(--green) !important;
+      font-weight: 700;
+    }
+    .val-max::after {
+      content: ' ↑';
+      font-size: 9px;
+      opacity: 0.7;
+    }
+
+    .val-na { color: var(--text-muted); opacity: 0.45; }
+
+    .badge-yes {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green);
+    }
+
+    /* EoS model styling */
+    .badge-eos-pa {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      background: rgba(234,179,8,0.12);
+      border: 1px solid rgba(234,179,8,0.4);
+      color: #ca8a04;
+    }
+    .model-th.eos-model .model-card-top::after {
+      content: 'EoS';
+      position: absolute;
+      top: 5px; right: 7px;
+      background: rgba(234,179,8,0.25);
+      border: 1px solid rgba(234,179,8,0.6);
+      color: #fbbf24;
+      font-size: 8px;
+      font-family: var(--mono);
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.07em;
+    }
+
+    /* Measurement note in stats bar */
+    .stats-note {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Category rows ── */
+    .cat-row td {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 0;
+    }
+
+    .cat-row td.cat-label-cell {
+      position: sticky;
+      left: 0;
+      z-index: 40;
+      background: var(--bg2);
+      border-right: 2px solid var(--accent);
+    }
+
+    .cat-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+    }
+
+    .cat-inner-text {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-bright);
+    }
+
+    /* ── Row entrance animation ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    tr.data-row { animation: slideIn .2s ease backwards; }
+
+    /* ── Hidden modifier ── */
+    .col-hidden { display: none; }
+
+    /* ── Compare button ── */
+    .cmp-fab {
+      position: fixed;
+      top: calc(var(--header-h) + 10px);
+      right: 20px;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232,75,26,0.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cmp-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,75,26,0.5); }
+    .cmp-fab.visible { display: flex; }
+
+    /* ── Compare modal ── */
+    .cmp-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+      overflow-y: auto;
+    }
+    .cmp-overlay.open { display: flex; }
+
+    .cmp-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 92vw;
+      max-width: 1000px;
+      position: relative;
+    }
+
+    .cmp-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 20px;
+    }
+
+    .cmp-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 30px; height: 30px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; cursor: pointer;
+      color: var(--text-muted); font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cmp-close:hover { color: var(--text-bright); }
+
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; overflow: auto; }
+    .cmp-table th, .cmp-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .cmp-table thead th { background: var(--surface2); font-family: var(--mono); font-size: 12px; font-weight: 700; position: sticky; top: 0; }
+    .cmp-table td:first-child { text-align: left; color: var(--text-muted); font-family: var(--mono); font-size: 11px; background: var(--surface); position: sticky; left: 0; }
+    .cmp-table tr:hover td { background: var(--surface2) !important; }
+    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); }
+    .ct-val { font-family: var(--mono); color: var(--text); }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <!-- ── Toolbars ── -->
+  <div class="tb-wrap">
+    <div class="toolbar">
+      <span class="tb-label">Catégories</span>
+      <div class="tb-sep"></div>
+      <div class="filter-group" id="cat-filters">
+        <button class="fb on" data-cat="all" onclick="filterCat(this)">Toutes</button>
+        <button class="fb" data-cat="perf"  onclick="filterCat(this)">Performances</button>
+        <button class="fb" data-cat="sess"  onclick="filterCat(this)">Sessions</button>
+        <button class="fb" data-cat="ports" onclick="filterCat(this)">Interfaces</button>
+        <button class="fb" data-cat="hw"    onclick="filterCat(this)">Hardware</button>
+        <button class="fb" data-cat="cap"   onclick="filterCat(this)">Capacités</button>
+        <button class="fb" data-cat="vpn"   onclick="filterCat(this)">VPN & SD-WAN</button>
+        <button class="fb" data-cat="feat"  onclick="filterCat(this)">Fonctionnalités</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-label">Série</span>
+      <div class="tb-sep"></div>
+      <div class="filter-group" id="series-filters">
+        <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
+        <button class="fb" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
+        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:9px;color:#4ade80">New</span></button>
+        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
+        <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
+        <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
+        <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
+        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)">PA-7000</button>
+        <button class="fb" data-series="PA-7500" onclick="filterSeries(this)">PA-7500</button>
+      </div>
+      <div class="tb-sep"></div>
+      <span class="tb-label">Format</span>
+      <div class="filter-group" id="form-filters">
+        <button class="fb on" data-form="all"     onclick="filterForm(this)">Tous</button>
+        <button class="fb" data-form="Desktop"    onclick="filterForm(this)">Desktop</button>
+        <button class="fb" data-form="1U Rack"    onclick="filterForm(this)">1U Rack</button>
+        <button class="fb" data-form="2U Rack"    onclick="filterForm(this)">2U Rack</button>
+        <button class="fb" data-form="Chassis"    onclick="filterForm(this)">Chassis</button>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <span>Modèles affichés : <strong id="stat-models">25</strong></span>
+      <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
+      <span class="stats-note">Débits mesurés avec App-ID activé (appmix) · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+    </div>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-outer">
+    <table class="pa-table" id="pa-table">
+      <thead>
+        <tr class="col-header-row" id="header-row">
+          <th class="th-corner"></th>
+          <!-- model columns injected by JS -->
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Compare FAB ── -->
+  <button class="cmp-fab" id="cmp-fab" onclick="openCompare()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Comparer (<span id="cmp-count">0</span>)
+  </button>
+
+  <!-- ── Compare modal ── -->
+  <div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompare()">
+    <div class="cmp-modal">
+      <div class="cmp-title">Comparaison</div>
+      <button class="cmp-close" onclick="closeCompare()">✕</button>
+      <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
+    </div>
+  </div>
+
+  <script>
+  /* ══ DATA ══
+     Source : datasheets officielles PAN-OS 12.1 (PA-7000 : 11.2, PA-7500 : 11.1)
+     Débits : App-ID activé, mesure appmix (trafic mixte réel)
+     PA-800 : End of Sale août 2024 — remplacement conseillé PA-1400
+     PA-7500 : config de référence = 6 DPC-A + 2 NPC-A + 1 MPC-A
+  ══ */
+  const MODELS = [
+    // id, série, format, couleur, cible, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1, sfp10, sfp25, sfp100, eos, vsys(base/max), haAA, m5g, sku, price(€ HT), gp(tunnels GP max), zones(max), policies(max)
+    { id:'PA-410',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch / SOHO',          poe:false, fw:1.4,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11000,  rj45:7,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-410',     price:1044,   gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:null },
+    { id:'PA-415',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'Branch PoE',             poe:true,  fw:1.5,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11000,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-415',     price:2052,   gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:91   },
+    { id:'PA-415-5G', s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'Branch PoE + 5G',        poe:true,  fw:1.5,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11400,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-415-5G',  price:4410,   gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:91   },
+    { id:'PA-440',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'Branch / SMB',           poe:false, fw:2.4,  tp:1.2,  vpn:1.1,  sess:200000,    cps:34000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false, sku:'PAN-PA-440',     price:1794,   gp:1000,  zones:50,   policies:2000,  ipsec:2800,  ssl:19890,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:null },
+    { id:'PA-445',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch PoE / SMB',       poe:true,  fw:2.7,  tp:1.25, vpn:1.1,  sess:200000,    cps:34000,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false, sku:'PAN-PA-445',     price:2772,   gp:1000,  zones:50,   policies:2000,  ipsec:2800,  ssl:19890,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:91   },
+    { id:'PA-450',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'SMB',                    poe:false, fw:3.3,  tp:2.1,  vpn:1.7,  sess:300000,    cps:48000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-450',     price:4176,   gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    { id:'PA-455',    s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'SMB PoE',                poe:true,  fw:3.6,  tp:2.3,  vpn:1.8,  sess:300000,    cps:56000,  rj45:4,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-455',     price:5796,   gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:91   },
+    { id:'PA-455-5G', s:'PA-400',  f:'Desktop',     color:'#3b82f6', target:'SMB PoE + 5G',           poe:true,  fw:3.2,  tp:1.8,  vpn:1.6,  sess:300000,    cps:48000,  rj45:6,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-455-5G',  price:7560,   gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:151  },
+    { id:'PA-460',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'SMB / Mid-Market',       poe:false, fw:4.2,  tp:3.0,  vpn:2.3,  sess:400000,    cps:67000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-460',     price:6336,   gp:1500,  zones:100,  policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    // PA-500 Series — août 2025 | Enterprise Branch / Mid-Market | Source : datasheet officielle PAN-OS 12.1
+    { id:'PA-505',    s:'PA-500',  f:'1U Rack',     color:'#14532d', target:'Branch / SOHO',          poe:false, fw:1.2,  tp:0.8,  vpn:0.4,  sess:64000,     cps:10000,  rj45:7,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-505',     price:null,   gp:500,   zones:25,   policies:500,   ipsec:500,   ssl:6600,   addr:2500,  nat:400,  sdwanT:500,  sdwanR:100, vsysMax:null, secProf:60,  poeW:null },
+    { id:'PA-510',    s:'PA-500',  f:'1U Rack',     color:'#166534', target:'Branch / SMB',           poe:false, fw:1.8,  tp:1.2,  vpn:0.8,  sess:98000,     cps:15000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-510',     price:null,   gp:500,   zones:50,   policies:750,   ipsec:1000,  ssl:10000,  addr:5000,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:60,  poeW:null },
+    { id:'PA-520',    s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'SMB Branch',             poe:false, fw:2.8,  tp:1.8,  vpn:1.5,  sess:148000,    cps:25000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-520',     price:null,   gp:500,   zones:100,  policies:1000,  ipsec:1400,  ssl:15000,  addr:5000,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:null },
+    { id:'PA-540',    s:'PA-500',  f:'1U Rack',     color:'#16a34a', target:'SMB / Mid-Market',       poe:false, fw:3.8,  tp:2.2,  vpn:2.0,  sess:248000,    cps:50000,  rj45:8,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:true,  m5g:false, sku:'PAN-PA-540',     price:null,   gp:1000,  zones:200,  policies:2000,  ipsec:2800,  ssl:30000,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:null },
+    { id:'PA-545-POE',s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'SMB PoE / Mid-Market',   poe:true,  fw:5.0,  tp:3.0,  vpn:3.0,  sess:298000,    cps:55000,  rj45:12, sfp1:4,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:true,  m5g:false, sku:'PAN-PA-545-POE', price:null,   gp:1000,  zones:200,  policies:2000,  ipsec:2800,  ssl:30000,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:181  },
+    { id:'PA-550',    s:'PA-500',  f:'1U Rack',     color:'#166534', target:'Mid-Market Branch',      poe:false, fw:6.5,  tp:4.5,  vpn:4.0,  sess:398000,    cps:70000,  rj45:12, sfp1:2,  sfp10:2,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-550',     price:null,   gp:1500,  zones:400,  policies:2500,  ipsec:2800,  ssl:45000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    { id:'PA-555-POE',s:'PA-500',  f:'1U Rack',     color:'#14532d', target:'Mid-Market PoE',         poe:true,  fw:7.5,  tp:5.0,  vpn:4.5,  sess:448000,    cps:75000,  rj45:12, sfp1:2,  sfp10:2,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-555-POE', price:null,   gp:1500,  zones:400,  policies:2500,  ipsec:2800,  ssl:45000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:330  },
+    { id:'PA-560',    s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'Mid-Market+',            poe:false, fw:8.5,  tp:6.0,  vpn:5.5,  sess:598000,    cps:100000, rj45:16, sfp1:4,  sfp10:4,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-560',     price:null,   gp:1500,  zones:500,  policies:2500,  ipsec:3200,  ssl:60000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    // PA-800 — End of Sale août 2024 | Remplacement : PA-1400
+    { id:'PA-820',    s:'PA-800',  f:'1U Rack',     color:'#854d0e', target:'Branch/SMB — EoS',       poe:false, fw:1.6,  tp:0.9,  vpn:1.3,  sess:128000,    cps:8100,   rj45:4,  sfp1:8,  sfp10:0,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-820',     price:null,   gp:1000,  zones:50,   policies:2000,  ipsec:null,  ssl:null,   addr:null,  nat:null, sdwanT:null, sdwanR:null, vsysMax:null, secProf:null, poeW:null },
+    { id:'PA-850',    s:'PA-800',  f:'1U Rack',     color:'#a16207', target:'Branch/Campus — EoS',    poe:false, fw:2.0,  tp:1.0,  vpn:1.6,  sess:192000,    cps:13100,  rj45:4,  sfp1:4,  sfp10:4,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-850',     price:null,   gp:1000,  zones:50,   policies:2000,  ipsec:null,  ssl:null,   addr:null,  nat:null, sdwanT:null, sdwanR:null, vsysMax:null, secProf:null, poeW:null },
+    { id:'PA-1410',   s:'PA-1400', f:'1U Rack',     color:'#0e7490', target:'Mid-Market',             poe:true,  fw:8.5,  tp:4.5,  vpn:4.1,  sess:945000,    cps:100000, rj45:8,  sfp1:6,  sfp10:4,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false, sku:'PAN-PA-1410',    price:11994,  gp:1500,  zones:1000, policies:10000, ipsec:3500,  ssl:51200,  addr:20000, nat:3000, sdwanT:2800, sdwanR:400, vsysMax:6,    secProf:150, poeW:151  },
+    { id:'PA-1420',   s:'PA-1400', f:'1U Rack',     color:'#0891b2', target:'Mid-Market+',            poe:true,  fw:9.5,  tp:6.2,  vpn:5.6,  sess:1400000,   cps:140000, rj45:4,  sfp1:2,  sfp10:8,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false, sku:'PAN-PA-1420',    price:22794,  gp:1500,  zones:1000, policies:10000, ipsec:4000,  ssl:140000, addr:20000, nat:3000, sdwanT:2800, sdwanR:400, vsysMax:6,    secProf:150, poeW:151  },
+    { id:'PA-3410',   s:'PA-3400', f:'1U Rack',     color:'#0f766e', target:'Enterprise',             poe:false, fw:14,   tp:7.5,  vpn:6.6,  sess:1400000,   cps:145000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false, sku:'PAN-PA-3410',    price:33516,  gp:1800,  zones:1000, policies:10000, ipsec:5000,  ssl:140000, addr:30000, nat:3000, sdwanT:3000, sdwanR:400, vsysMax:11,   secProf:150, poeW:null },
+    { id:'PA-3420',   s:'PA-3400', f:'1U Rack',     color:'#0d9488', target:'Enterprise',             poe:false, fw:19,   tp:10,   vpn:9.9,  sess:2200000,   cps:220000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false, sku:'PAN-PA-3420',    price:52548,  gp:1800,  zones:1000, policies:10000, ipsec:5000,  ssl:200000, addr:30000, nat:4500, sdwanT:3000, sdwanR:400, vsysMax:11,   secProf:375, poeW:null },
+    { id:'PA-3430',   s:'PA-3400', f:'1U Rack',     color:'#14b8a6', target:'Enterprise + 5G',        poe:false, fw:29,   tp:15,   vpn:12,   sess:2500000,   cps:240000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3430',    price:66780,  gp:1800,  zones:1000, policies:30000, ipsec:8000,  ssl:250000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:null, poeW:null },
+    { id:'PA-3440',   s:'PA-3400', f:'1U Rack',     color:'#2dd4bf', target:'Enterprise+ + 5G',       poe:false, fw:35,   tp:20,   vpn:14.5, sess:3000000,   cps:268000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3440',    price:77616,  gp:2000,  zones:1000, policies:30000, ipsec:8000,  ssl:300000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:500, poeW:null },
+    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',     color:'#b45309', target:'Large Enterprise',       poe:false, fw:52,   tp:32,   vpn:20,   sess:5000000,   cps:270000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'10 / 20',  haAA:true,  m5g:true,  sku:'PAN-PA-5410-AC', price:91554,  gp:15000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:20,   secProf:750, poeW:null },
+    { id:'PA-5420',   s:'PA-5400', f:'2U Rack',     color:'#d97706', target:'Large Enterprise',       poe:false, fw:70,   tp:50,   vpn:28,   sess:7000000,   cps:370000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'15 / 65',  haAA:true,  m5g:true,  sku:'PAN-PA-5420-AC', price:142884, gp:22000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:65,   secProf:750, poeW:null },
+    { id:'PA-5430',   s:'PA-5400', f:'2U Rack',     color:'#f59e0b', target:'Large Enterprise',       poe:false, fw:80,   tp:60,   vpn:42,   sess:9000000,   cps:380000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 125', haAA:true,  m5g:true,  sku:'PAN-PA-5430-AC', price:204414, gp:30000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:125,  secProf:750, poeW:null },
+    { id:'PA-5440',   s:'PA-5400', f:'2U Rack',     color:'#fbbf24', target:'Large Enterprise',       poe:false, fw:85,   tp:70,   vpn:58,   sess:20000000,  cps:390000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5440-AC', price:265356, gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
+    { id:'PA-5445',   s:'PA-5400', f:'2U Rack',     color:'#fcd34d', target:'Large Enterprise',       poe:false, fw:90,   tp:76,   vpn:64,   sess:48000000,  cps:449000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5445-AC', price:308700, gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
+    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U',  color:'#7c3aed', target:'Hyperscale / DC',        poe:false, fw:343,  tp:184,  vpn:190,  sess:245000000, cps:4000000,rj45:0,  sfp1:48, sfp10:48, sfp25:0,  sfp100:24, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7050',    price:null,   gp:40000, zones:17000, policies:65000, ipsec:12000, ssl:4000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U', color:'#6d28d9', target:'Hyperscale / DC',        poe:false, fw:590,  tp:305,  vpn:310,  sess:416000000, cps:6000000,rj45:0,  sfp1:80, sfp10:80, sfp25:0,  sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7080',    price:null,   gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:6000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    // PA-7500 : config ref. 6×DPC-A + 2×NPC-A + 1×MPC-A | Interfaces : 24×SFP-DD (100G/25G/10G) + 16×QSFP-DD (400G/100G)
+    { id:'PA-7500',   s:'PA-7500', f:'Chassis 14U', color:'#be123c', target:'Hyperscale Max',         poe:false, fw:1500, tp:1440, vpn:407,  sess:440000000, cps:7200000,rj45:0,  sfp1:0,  sfp10:24, sfp25:24, sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7500',    price:null,   gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:44000000, addr:160000, nat:64000, sdwanT:null, sdwanR:8192, vsysMax:225, secProf:750, poeW:null },
+  ];
+
+  const ROWS = [
+    { cat:'perf',  label:'App-ID Firewall (appmix)',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'Threat Prevention (appmix)',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'IPsec VPN',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
+    { cat:'sess',  label:'Nouvelles sessions/s',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'cap',   label:'Tunnels GlobalProtect max',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
+    { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
+    { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
+    { cat:'cap',   label:'Sessions SSL/TLS déchiffrement',   fn: m => m.ssl       != null ? fmtN(m.ssl)       : '—', num: m => m.ssl       != null ? m.ssl       : null },
+    { cat:'cap',   label:'Objets adresses max',              fn: m => m.addr      != null ? fmtN(m.addr)      : '—', num: m => m.addr      != null ? m.addr      : null },
+    { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
+    { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
+    { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
+    { cat:'cap',   label:'Systèmes virtuels max',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
+    { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
+    { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
+    { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
+    { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
+    { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
+    { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
+    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
+    { cat:'prix',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
+    { cat:'prix',  label:'Prix indicatif HT (€)',           fn: m => m.price ? fmtPrice(m.price) : (m.eos ? '<span style="color:var(--text-muted);font-size:11px">EoS</span>' : '<span style="color:var(--text-muted);font-size:11px">Sur devis</span>'), num: m => m.price },
+  ];
+
+  const CATS = {
+    perf:  { label:'Performances',    icon:'▸' },
+    sess:  { label:'Sessions',        icon:'▸' },
+    cap:   { label:'Capacités',       icon:'▸' },
+    vpn:   { label:'VPN & SD-WAN',    icon:'▸' },
+    ports: { label:'Interfaces',      icon:'▸' },
+    hw:    { label:'Hardware',        icon:'▸' },
+    feat:  { label:'Fonctionnalités', icon:'▸' },
+    prix:  { label:'Prix & SKU',      icon:'▸' },
+  };
+
+  /* ══ State ══ */
+  let activeCat    = 'all';
+  let activeSeries = 'all';
+  let activeForm   = 'all';
+  let selected     = new Set();
+
+  /* ══ Build table ══ */
+  function buildTable() {
+    const visible = MODELS.filter(m =>
+      (activeSeries === 'all' || m.s === activeSeries) &&
+      (activeForm   === 'all' || m.f.startsWith(activeForm))
+    );
+
+    // Header
+    const hRow = document.getElementById('header-row');
+    const DS_URLS = {
+      'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+      'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
+      'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+      'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+      'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+      'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+      'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
+    };
+    hRow.innerHTML = `<th class="th-corner"></th>` +
+      visible.map(m => `
+        <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
+          <div class="model-card-clip">
+            <div class="model-card-top" style="background:${m.color}">
+              <span class="model-name">${m.id}</span>
+              <span class="model-target">${m.target}</span>
+            </div>
+            <div class="model-card-bot" style="background:${m.color}22">
+              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
+              <div class="sel-dot"></div>
+            </div>
+          </div>
+        </th>`).join('');
+
+    // Body
+    let seenCats = new Set();
+    let html     = '';
+    let delay    = 0;
+
+    ROWS.forEach(row => {
+      if (activeCat !== 'all' && row.cat !== activeCat) return;
+
+      // Category separator
+      const catKey = row.cat;
+      if (!seenCats.has(catKey) && CATS[catKey]) {
+        seenCats.add(catKey);
+        html += `<tr class="cat-row">
+          <td class="cat-label-cell">
+            <div class="cat-inner">
+              <span class="cat-inner-text">${CATS[catKey].label}</span>
+            </div>
+          </td>
+          ${visible.map(() => '<td class="cat-spacer"></td>').join('')}
+        </tr>`;
+      }
+
+      // Find max numeric value across visible models (for highlighting)
+      let maxVal = -Infinity;
+      if (row.num) {
+        visible.forEach(m => { const v = row.num(m); if(v > maxVal) maxVal = v; });
+      }
+
+      const cells = visible.map(m => {
+        const raw = row.fn(m);
+        const num = row.num ? row.num(m) : null;
+        const isMax = num !== null && num === maxVal && maxVal > 0;
+        const isNa  = raw === '—';
+        let cls = 'val-cell';
+        if (isMax) cls += ' val-max';
+        else if (isNa) cls += ' val-na';
+        return `<td class="${cls}" style="border-left-color:${m.color}22">${raw}</td>`;
+      }).join('');
+
+      html += `<tr class="data-row" style="animation-delay:${delay}ms">
+        <td class="spec-label-cell">${row.label}</td>
+        ${cells}
+      </tr>`;
+      delay += 12;
+    });
+
+    document.getElementById('table-body').innerHTML = html;
+    document.getElementById('stat-models').textContent = visible.length;
+  }
+
+  /* ══ Filters ══ */
+  function filterCat(btn) {
+    document.querySelectorAll('#cat-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeCat = btn.dataset.cat;
+    buildTable();
+  }
+
+  function filterSeries(btn) {
+    document.querySelectorAll('#series-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeSeries = btn.dataset.series;
+    buildTable();
+  }
+
+  function filterForm(btn) {
+    document.querySelectorAll('#form-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeForm = btn.dataset.form;
+    buildTable();
+  }
+
+  /* ══ Selection ══ */
+  function toggleSel(id) {
+    if (selected.has(id)) {
+      selected.delete(id);
+    } else {
+      if (selected.size >= 4) return;
+      selected.add(id);
+    }
+    document.querySelectorAll(`[id="mh-${id}"]`).forEach(el => el.classList.toggle('selected', selected.has(id)));
+    const fab   = document.getElementById('cmp-fab');
+    const count = document.getElementById('cmp-count');
+    count.textContent = selected.size;
+    fab.classList.toggle('visible', selected.size >= 2);
+  }
+
+  /* ══ Compare ══ */
+  function openCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    const head = `<thead><tr><th></th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
+
+    const body = ROWS.map(row => {
+      const vals = models.map(m => row.fn(m));
+      const nums = models.map(m => row.num ? row.num(m) : null);
+      const maxN = Math.max(...nums.filter(n => n !== null));
+      const cells = vals.map((v, i) => {
+        const isBest = nums[i] !== null && nums[i] === maxN && maxN > 0;
+        return `<td class="${isBest ? 'ct-max' : 'ct-val'}">${v}</td>`;
+      }).join('');
+      return `<tr><td>${row.label}</td>${cells}</tr>`;
+    }).join('');
+
+    document.getElementById('cmp-table').innerHTML = head + `<tbody>${body}</tbody>`;
+    document.getElementById('cmp-overlay').classList.add('open');
+  }
+
+  function closeCompare() {
+    document.getElementById('cmp-overlay').classList.remove('open');
+  }
+
+  /* ══ Utils ══ */
+  function fmtN(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(n%1000000===0?0:1) + 'M';
+    if (n >= 1000)    return (n/1000).toFixed(0) + 'K';
+    return String(n);
+  }
+
+  function fmtPrice(p) {
+    if (!p) return '—';
+    return new Intl.NumberFormat('fr-FR', { style:'currency', currency:'EUR', maximumFractionDigits:0 }).format(p);
+  }
+
+  buildTable();
+  </script>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
+</body>
+</html>

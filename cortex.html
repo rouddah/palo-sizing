@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Cortex</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: border-color .15s;
+    }
+    .product-card:hover { border-color: var(--border2); }
+    .product-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .product-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .product-card-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+    .product-card-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+    .product-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .product-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    .section-title {
+      margin: 36px 0 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--mono);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .info-note {
+      margin-bottom: 24px;
+      padding: 13px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .info-note strong { color: var(--text); }
+    .info-note.blue {
+      border-left-color: var(--blue-bright);
+    }
+    .info-note.green {
+      border-left-color: var(--green);
+    }
+    .info-note.purple {
+      border-left-color: var(--purple);
+    }
+    .cap-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+    .cap-badge.green {
+      background: var(--green-dim);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green);
+    }
+    .cap-badge.yellow {
+      background: var(--yellow-dim);
+      border: 1px solid rgba(245,158,11,0.3);
+      color: var(--yellow);
+    }
+    .cap-badge.red {
+      background: var(--red-dim);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red);
+    }
+    .cap-badge.accent {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    .cap-badge.purple {
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.3);
+      color: var(--purple);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-val {
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .xsiam-module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .xsiam-module {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .xsiam-module-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .xsiam-module-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>Cortex — Security Operations Platform</h1>
+      <p>Cortex XDR · XSIAM · XSOAR · Xpanse · Cortex Data Lake</p>
+    </div>
+
+    <!-- Product overview -->
+    <div class="section-title">Vue d'ensemble — 4 produits Cortex</div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-card-header">
+          <div class="product-icon" style="background:rgba(232,75,26,0.15);border:1px solid rgba(232,75,26,0.3)">🛡️</div>
+          <div>
+            <div class="product-card-name">Cortex XDR</div>
+            <div class="product-card-sub">Extended Detection &amp; Response</div>
+          </div>
+        </div>
+        <div class="product-card-desc">Plateforme EDR/XDR unifiée : protection des endpoints, analyse comportementale, corrélation des alertes réseau/cloud/endpoint, investigation forensique et réponse automatisée. MITRE ATT&amp;CK framework natif.</div>
+        <span class="product-tag">Par endpoint / an</span>
+      </div>
+      <div class="product-card">
+        <div class="product-card-header">
+          <div class="product-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3)">🧠</div>
+          <div>
+            <div class="product-card-name">Cortex XSIAM</div>
+            <div class="product-card-sub">AI-driven SOC Platform</div>
+          </div>
+        </div>
+        <div class="product-card-desc">Plateforme SOC IA native : remplace SIEM + SOAR + EDR + Threat Intel en une seule plateforme. Cortex Analytics Engine réduit le volume d'alertes de 75%+ via la corrélation ML. Inclut XDR, XSOAR et CDL.</div>
+        <span class="product-tag" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:var(--purple)">Par Go/jour ingéré</span>
+      </div>
+      <div class="product-card">
+        <div class="product-card-header">
+          <div class="product-icon" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25)">⚙️</div>
+          <div>
+            <div class="product-card-name">Cortex XSOAR</div>
+            <div class="product-card-sub">Orchestration &amp; Automation</div>
+          </div>
+        </div>
+        <div class="product-card-desc">Plateforme SOAR : orchestration des réponses aux incidents, 900+ intégrations (content packs), playbooks visuels drag &amp; drop, war room collaboratif et case management. Inclus dans XSIAM ou vendu séparément.</div>
+        <span class="product-tag" style="background:var(--green-dim);border-color:rgba(34,197,94,0.3);color:var(--green)">Par analyste / use case</span>
+      </div>
+      <div class="product-card">
+        <div class="product-card-header">
+          <div class="product-icon" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25)">🌐</div>
+          <div>
+            <div class="product-card-name">Cortex Xpanse</div>
+            <div class="product-card-sub">Attack Surface Management</div>
+          </div>
+        </div>
+        <div class="product-card-desc">Découverte continue de la surface d'attaque exposée sur internet : assets inconnus, misconfigurés ou vulnérables — cloud, on-prem, supply chain tierce. Inventaire automatique et scoring de risque.</div>
+        <span class="product-tag" style="background:var(--yellow-dim);border-color:rgba(245,158,11,0.3);color:var(--yellow)">SaaS — Sur devis</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CORTEX XDR                                      -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section-title" id="xdr">Cortex XDR — Comparatif des éditions</div>
+
+    <div class="info-note">
+      <strong>3 éditions XDR :</strong> Prevent (protection endpoint seule) · Pro per Endpoint (XDR complet, tarifé par endpoint) · Pro per TB (XDR complet, tarifé par volume ingéré). Les éditions Pro permettent d'ingérer les logs réseau (PAN-OS, NGFW, Prisma Access), cloud (AWS CloudTrail, Azure AD, GCP) et tierces via des connecteurs.
+    </div>
+
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:280px">Capacité</th>
+            <th>XDR Prevent</th>
+            <th>XDR Pro / Endpoint</th>
+            <th>XDR Pro / TB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SKU de référence</strong></td>
+            <td class="val-low" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRT</td>
+            <td class="val-med" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRO-EP</td>
+            <td class="val-high" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRO-TB</td>
+          </tr>
+          <tr>
+            <td><strong>Prix indicatif HT (1 an)</strong></td>
+            <td class="val-low" style="font-family:var(--mono);font-weight:700;color:var(--accent)">Sur devis</td>
+            <td class="val-med" style="font-family:var(--mono);font-weight:700;color:var(--accent)">Sur devis</td>
+            <td class="val-high" style="font-family:var(--mono);font-weight:700;color:var(--accent)">Sur devis</td>
+          </tr>
+          <tr>
+            <td><strong>Unité de licence</strong></td>
+            <td>Par endpoint</td>
+            <td>Par endpoint</td>
+            <td>Par Go/jour ingéré</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="4">Protection Endpoint</td></tr>
+          <tr>
+            <td>Anti-malware (signatures + ML local)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Behavioral Threat Protection (BTP)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>WildFire (sandbox cloud)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Exploit Prevention</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Device Control (USB, Bluetooth…)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Host Firewall</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Disk Encryption (BitLocker/FileVault)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+
+          <tr class="section-row"><td colspan="4">Détection &amp; Investigation (XDR)</td></tr>
+          <tr>
+            <td>Causality Analysis Chain (CAC)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Analyse comportementale UEBA</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Corrélation alertes multi-sources</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Host Forensics &amp; Investigation</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Threat Hunting (XQL)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>MITRE ATT&amp;CK mapping</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Ingestion logs NGFW / Prisma Access</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Ingestion logs cloud (AWS, Azure, GCP)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Ingestion logs 3rd party (SIEM…)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-med"><span class="cap-badge yellow">Limité</span></td>
+            <td class="val-high"><span class="cap-badge green">✓ Illimité</span></td>
+          </tr>
+          <tr>
+            <td>Rétention données</td>
+            <td class="val-low">30 jours</td>
+            <td class="val-med">30 jours (ext. dispo)</td>
+            <td class="val-high">12 mois inclus</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="4">Réponse aux incidents</td></tr>
+          <tr>
+            <td>Isolation de l'endpoint (network)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Kill process / quarantaine fichier</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Live Terminal (remote shell)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+          </tr>
+          <tr>
+            <td>Réponse automatisée (playbooks XSOAR)</td>
+            <td class="val-low"><span class="cap-badge red">—</span></td>
+            <td class="val-med"><span class="cap-badge yellow">Add-on XSOAR</span></td>
+            <td class="val-high"><span class="cap-badge green">✓ (inclus XSIAM)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- OS Support -->
+    <div class="section-title">Compatibilité OS — Agent Cortex XDR</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Système d'exploitation</th>
+            <th>Version minimale</th>
+            <th>Versions supportées</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Windows (Desktop)</strong></td>
+            <td>Windows 7 SP1</td>
+            <td style="font-size:12px;color:var(--text-muted)">7 SP1, 8.1, 10, 11</td>
+            <td style="font-size:12px;color:var(--text-muted)">x64 · Win7 support limité (agent v7)</td>
+          </tr>
+          <tr>
+            <td><strong>Windows Server</strong></td>
+            <td>Server 2008 R2 SP1</td>
+            <td style="font-size:12px;color:var(--text-muted)">2008 R2, 2012/R2, 2016, 2019, 2022</td>
+            <td style="font-size:12px;color:var(--text-muted)">Core &amp; GUI · 2008 R2 support agent &lt; v8</td>
+          </tr>
+          <tr>
+            <td><strong>macOS</strong></td>
+            <td>High Sierra (10.13)</td>
+            <td style="font-size:12px;color:var(--text-muted)">10.13+, 11 (Big Sur), 12 (Monterey), 13 (Ventura), 14 (Sonoma), 15 (Sequoia)</td>
+            <td style="font-size:12px;color:var(--text-muted)">Apple Silicon (M1/M2/M3/M4) natif · agent 8.9 (juil. 2025)</td>
+          </tr>
+          <tr>
+            <td><strong>Linux — RHEL / CentOS / Rocky</strong></td>
+            <td>RHEL 7.0</td>
+            <td style="font-size:12px;color:var(--text-muted)">7.x, 8.x, 9.x</td>
+            <td style="font-size:12px;color:var(--text-muted)">kernel 3.10+ · SELinux compatible</td>
+          </tr>
+          <tr>
+            <td><strong>Linux — Ubuntu</strong></td>
+            <td>Ubuntu 16.04 LTS</td>
+            <td style="font-size:12px;color:var(--text-muted)">16.04, 18.04, 20.04, 22.04, 24.04 LTS</td>
+            <td style="font-size:12px;color:var(--text-muted)">glibc 2.17+</td>
+          </tr>
+          <tr>
+            <td><strong>Linux — Amazon Linux</strong></td>
+            <td>Amazon Linux 2</td>
+            <td style="font-size:12px;color:var(--text-muted)">Amazon Linux 2, 2023</td>
+            <td style="font-size:12px;color:var(--text-muted)">Instances EC2 + on-prem</td>
+          </tr>
+          <tr>
+            <td><strong>Linux — SLES / Debian / Oracle</strong></td>
+            <td>SLES 12, Debian 10, OL 7</td>
+            <td style="font-size:12px;color:var(--text-muted)">SLES 12+/15+, Debian 10+, Oracle Linux 7+</td>
+            <td style="font-size:12px;color:var(--text-muted)">Vérifier release notes agent pour versions exactes</td>
+          </tr>
+          <tr>
+            <td><strong>Android</strong></td>
+            <td>Android 5.0 (Lollipop)</td>
+            <td style="font-size:12px;color:var(--text-muted)">5.0+ (capacités Prevent uniquement)</td>
+            <td style="font-size:12px;color:var(--text-muted)">XDR Prevent mobile — via EMM/MDM</td>
+          </tr>
+          <tr>
+            <td><strong>iOS</strong></td>
+            <td>iOS 15+</td>
+            <td style="font-size:12px;color:var(--text-muted)">iOS 15, 16, 17</td>
+            <td style="font-size:12px;color:var(--text-muted)">Threat Prevention mobile — capacités limitées vs desktop</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Agent technical specs -->
+    <div class="section-title">Spécifications techniques — Agent XDR</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-val">8.9</span>
+        <span class="metric-label">Version agent actuelle<br>(juillet 2025)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">100%</span>
+        <span class="metric-label">MITRE ATT&amp;CK Round 6<br>6 ans consécutifs</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">98%</span>
+        <span class="metric-label">Réduction alertes<br>via AI grouping</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">SaaS</span>
+        <span class="metric-label">Aucune infra on-prem<br>Management cloud</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">30 j</span>
+        <span class="metric-label">Rétention hot data<br>XDR Pro (défaut)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">800+</span>
+        <span class="metric-label">Content packs XSOAR<br>(marketplace)</span>
+      </div>
+    </div>
+
+    <div class="info-note blue">
+      <strong>Threat Hunting avec XQL :</strong> Cortex XDR Pro inclut le langage XQL (eXtended Query Language) propriétaire PAN, permettant des requêtes forensiques sur l'ensemble des données endpoint, réseau et cloud. Similaire à KQL (Sentinel) ou SPL (Splunk) mais optimisé pour les données Cortex. Rétention des données requêtables : 30 jours (Pro/EP) ou 12 mois (Pro/TB et XSIAM).
+    </div>
+
+    <!-- MITRE coverage -->
+    <div class="section-title">Couverture MITRE ATT&CK — Cortex XDR Pro</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Résultat MITRE ATT&CK Evaluations</th>
+            <th>XDR Pro</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MITRE ATT&amp;CK Evaluations — Détection</td>
+            <td class="val-high"><span class="cap-badge green">100% Round 6</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100% detection coverage, Round 6 MITRE ATT&amp;CK Enterprise — 6 années consécutives top résultats (source : mitre-engenuity.org)</td>
+          </tr>
+          <tr>
+            <td>Protection (blocage) — MITRE</td>
+            <td class="val-high"><span class="cap-badge green">100% bloqué</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100% protection dans les évaluations MITRE ATT&amp;CK Turla 2024</td>
+          </tr>
+          <tr>
+            <td>AV-Comparatives EPR 2025</td>
+            <td class="val-high"><span class="cap-badge green">99% / 99%</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">99% Threat Prevention + 99% Response — seul «Market Leader» à atteindre ce double score selon AV-Comparatives (source officielle PAN blog)</td>
+          </tr>
+          <tr>
+            <td>Réduction alertes (IA XDR)</td>
+            <td class="val-high"><span class="cap-badge green">98%</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">98% réduction des alertes brutes via AI grouping &amp; déduplication — en incidents actionnables</td>
+          </tr>
+          <tr>
+            <td>Faux positifs — Évaluations MITRE</td>
+            <td class="val-high"><span class="cap-badge green">0</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Zéro faux positif enregistré lors des évaluations MITRE ATT&amp;CK récentes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CORTEX XSIAM                                    -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section-title" id="xsiam">Cortex XSIAM — Plateforme SOC IA</div>
+
+    <div class="info-note purple">
+      <strong>XSIAM = SIEM + SOAR + EDR + Threat Intel + ASM</strong> — en une seule plateforme cloud-native. Lancé en 2022, XSIAM est conçu pour remplacer l'ensemble de la stack SOC traditionnelle. Le moteur d'IA de Cortex corrèle les millions d'événements bruts en quelques incidents actionnables. Il inclut nativement Cortex XDR Pro, XSOAR et le Cortex Data Lake (CDL).
+    </div>
+
+    <div class="xsiam-module-grid">
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🛡️ Cortex XDR (inclus)</div>
+        <div class="xsiam-module-desc">Protection et détection endpoint — toutes les capacités XDR Pro per TB incluses dans XSIAM.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">⚙️ Cortex AgentiX / XSOAR (inclus)</div>
+        <div class="xsiam-module-desc">Orchestration et automation — 800+ content packs, playbooks visuels, war room, case management. AgentiX (IA agentique) remplace progressivement XSOAR depuis oct. 2025.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🗄️ Cortex Data Lake (CDL)</div>
+        <div class="xsiam-module-desc">Stockage unifié de toutes les données de sécurité — 15 PB/jour max ingestion. Schéma normalisé. Rétention 12 mois par défaut (extensible 24 mois).</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🧠 Precision AI — 2 900+ modèles ML</div>
+        <div class="xsiam-module-desc">2 900+ modèles ML + 2 600+ modèles analytiques. Corrélation IA des alertes — jusqu'à 99% de réduction du bruit. 13 300+ détections OOTB.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🔍 Threat Intelligence (TIM)</div>
+        <div class="xsiam-module-desc">Threat Intelligence Management — feeds Unit 42, TAXII/STIX, enrichissement automatique IOCs. Entraîné sur 1,2 milliard d'exécutions de playbooks réels.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🌐 Email Security (XSIAM 3.0)</div>
+        <div class="xsiam-module-desc">Détection phishing/BEC par LLM natif — intégrée dans XSIAM 3.0. Analyse comportementale des emails en complément des gateways existants.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">📊 Exposure Management (XSIAM 3.0)</div>
+        <div class="xsiam-module-desc">Priorisation IA des vulnérabilités — corrèle les CVEs avec le contexte métier et la surface d'attaque (intégré Xpanse). Guidance de remédiation IA.</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">📋 Case Management</div>
+        <div class="xsiam-module-desc">Gestion des incidents et cas — SLA tracking, assignments, collaboration inter-analystes. MTTR réduit de 98% (source : études de cas PAN).</div>
+      </div>
+      <div class="xsiam-module">
+        <div class="xsiam-module-name">🔗 1 000+ Connecteurs natifs</div>
+        <div class="xsiam-module-desc">Ingestion Microsoft (M365, Azure AD, Defender), AWS, GCP, Okta, Cisco, IBM QRadar SaaS (acquis 2024), et 1 000+ autres sources.</div>
+      </div>
+    </div>
+
+    <div class="section-title">XSIAM — Capacités et métriques clés</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:260px">Capacité</th>
+            <th>Valeur</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="3">Données &amp; Ingestion</td></tr>
+          <tr>
+            <td>Unité de licence</td>
+            <td class="val-high">Par Go/jour ingéré</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Compression effective : 1 Go raw ≈ 0.2-0.3 Go CDL selon type de logs</td>
+          </tr>
+          <tr>
+            <td>Rétention hot data (requêtable)</td>
+            <td class="val-high">12 mois (défaut)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Extension jusqu'à 24 mois disponible en option</td>
+          </tr>
+          <tr>
+            <td>Capacité max d'ingestion</td>
+            <td class="val-high">15 PB / jour</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Capacité maximale publiée par PAN — architecture cloud scalable automatiquement</td>
+          </tr>
+          <tr>
+            <td>Connecteurs out-of-the-box</td>
+            <td class="val-high">1 000+</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Microsoft, AWS, GCP, Okta, Cisco, IBM QRadar (acquis 2024), Splunk, etc.</td>
+          </tr>
+          <tr>
+            <td>Sources PAN natives (sans config)</td>
+            <td class="val-high">Toutes</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">PAN-OS NGFW, Prisma Access, GlobalProtect, Cortex XDR, Panorama, Cloud NGFW</td>
+          </tr>
+          <tr>
+            <td>Protocoles d'ingestion</td>
+            <td>Syslog, CEF, LEEF, API REST, XDRC</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">XDRC = agent Cortex léger pour collecte syslog sur infra on-prem</td>
+          </tr>
+          <tr>
+            <td>FedRAMP</td>
+            <td class="val-high">High authorized</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Certification FedRAMP High — utilisable par agences gouvernementales US (ex: 6 branches US Military)</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Détection &amp; IA</td></tr>
+          <tr>
+            <td>Modèles ML (Precision AI)</td>
+            <td class="val-high">2 900+ modèles ML</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">2 900+ ML models + 2 600+ analytics models — entraînés en continu sur la telemetry PAN globale</td>
+          </tr>
+          <tr>
+            <td>Détections OOTB (règles)</td>
+            <td class="val-high">13 300+</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">13 300+ détections prêtes à l'emploi, mises à jour en continu par Unit 42</td>
+          </tr>
+          <tr>
+            <td>Réduction bruit / alertes (IA)</td>
+            <td class="val-high">Jusqu'à 99%</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Via corrélation ML — exemple : State of Louisiana MTTR 24h → 2 min, 86% incidents automatisés</td>
+          </tr>
+          <tr>
+            <td>MITRE ATT&amp;CK coverage (XSIAM)</td>
+            <td class="val-high">100%</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100% coverage MITRE ATT&amp;CK Enterprise — mapping automatique de chaque alerte</td>
+          </tr>
+          <tr>
+            <td>Cortex AgentiX (IA agentique)</td>
+            <td class="val-high">Disponible oct. 2025</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Agents IA autonomes — triage, investigation, réponse avec guardrails humains. Entraîné sur 1,2 Mrd d'exécutions XSOAR.</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Automatisation &amp; ROI</td></tr>
+          <tr>
+            <td>Playbooks (AgentiX / XSOAR)</td>
+            <td class="val-high">Illimité — 800+ OOTB</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">800+ content packs marketplace XSOAR — builder visuel drag &amp; drop</td>
+          </tr>
+          <tr>
+            <td>MTTR réduction (études de cas)</td>
+            <td class="val-high">−98%</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">CBTS : MTTR jours → secondes. Oneida Nation : résolution en 43 secondes. (source : cas clients PAN)</td>
+          </tr>
+          <tr>
+            <td>ROI (Forrester TEI)</td>
+            <td class="val-high">257% — payback &lt; 6 mois</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Étude Forrester Total Economic Impact 2024 — 73% réduction coût vs stack SIEM+SOAR+EDR traditionnel</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- XSIAM vs SIEM comparison -->
+    <div class="section-title">XSIAM vs SIEM traditionnel</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px">Critère</th>
+            <th>Cortex XSIAM</th>
+            <th>SIEM traditionnel (Splunk, QRadar…)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Architecture</td>
+            <td class="val-high">Cloud-native SaaS</td>
+            <td class="val-low">On-prem ou cloud lift-and-shift</td>
+          </tr>
+          <tr>
+            <td>Modèle de tarification</td>
+            <td class="val-high">Go/jour ingéré</td>
+            <td class="val-low">Go/jour + infra + licences</td>
+          </tr>
+          <tr>
+            <td>EDR intégré</td>
+            <td class="val-high">Natif (Cortex XDR Pro)</td>
+            <td class="val-low">Intégration tierce requise</td>
+          </tr>
+          <tr>
+            <td>SOAR intégré</td>
+            <td class="val-high">Natif (XSOAR inclus)</td>
+            <td class="val-low">Module séparé ou produit tiers</td>
+          </tr>
+          <tr>
+            <td>IA/ML nativ</td>
+            <td class="val-high">Cortex Analytics Engine</td>
+            <td class="val-med">Modules IA optionnels (UEBA payant)</td>
+          </tr>
+          <tr>
+            <td>Ingestion logs PAN-OS</td>
+            <td class="val-high">Natif — 0 configuration</td>
+            <td class="val-low">Parser/connector requis + tuning</td>
+          </tr>
+          <tr>
+            <td>Mise en œuvre</td>
+            <td class="val-high">Jours à semaines</td>
+            <td class="val-low">Mois (infra + parsing + tuning)</td>
+          </tr>
+          <tr>
+            <td>Maintenance infrastructure</td>
+            <td class="val-high">0 (SaaS géré PAN)</td>
+            <td class="val-low">Élevée (serveurs, storage, upgrade)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CORTEX XSOAR                                    -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section-title" id="xsoar">Cortex XSOAR — Orchestration &amp; Automation</div>
+
+    <div class="info-note" style="border-left-color:var(--yellow)">
+      <strong>⚠ Transition vers Cortex AgentiX :</strong> Les SKUs de services professionnels XSOAR sont entrés en end-of-sale (EOS) en octobre 2025. XSOAR est remplacé progressivement par <strong>Cortex AgentiX</strong> (lancé oct. 2025) — plateforme SOAR de nouvelle génération basée sur des agents IA autonomes entraînés sur 1,2 milliard d'exécutions réelles. XSOAR reste vendu et supporté pendant la période de transition. Tout nouveau projet SOC devrait cibler XSIAM + AgentiX plutôt que XSOAR standalone.
+    </div>
+    <div class="info-note green">
+      <strong>Modes de déploiement XSOAR :</strong> Inclus dans XSIAM (recommandé nouveaux projets) ou vendu séparément pour SOC existants. Standalone : on-prem (VM/Docker) ou cloud-hosted (XSOAR Cloud).
+    </div>
+
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px">Édition</th>
+            <th>XSOAR Community</th>
+            <th>XSOAR Essentials</th>
+            <th>XSOAR Enterprise</th>
+            <th>XSIAM (inclus)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prix</td>
+            <td class="val-high" style="color:var(--green);font-weight:700">Gratuit</td>
+            <td class="val-med" style="color:var(--accent)">Sur devis</td>
+            <td class="val-high" style="color:var(--accent)">Sur devis</td>
+            <td class="val-high" style="color:var(--accent)">Inclus XSIAM</td>
+          </tr>
+          <tr>
+            <td>Utilisateurs</td>
+            <td>5 max</td>
+            <td>Illimité</td>
+            <td>Illimité</td>
+            <td>Illimité</td>
+          </tr>
+          <tr>
+            <td>Incidents / mois</td>
+            <td>500 max</td>
+            <td>Illimité</td>
+            <td>Illimité</td>
+            <td>Illimité</td>
+          </tr>
+          <tr>
+            <td>Content packs (intégrations)</td>
+            <td class="val-med">900+ (marketplace)</td>
+            <td class="val-high">900+ (marketplace)</td>
+            <td class="val-high">900+ (marketplace)</td>
+            <td class="val-high">900+ (marketplace)</td>
+          </tr>
+          <tr>
+            <td>HA / Multi-tenant</td>
+            <td class="val-low">—</td>
+            <td class="val-med">Partiel</td>
+            <td class="val-high">✓ Complet</td>
+            <td class="val-high">✓ (SaaS)</td>
+          </tr>
+          <tr>
+            <td>Déploiement</td>
+            <td>On-prem / Docker</td>
+            <td>On-prem / Cloud</td>
+            <td>On-prem / Cloud</td>
+            <td>Cloud (SaaS PAN)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CORTEX XPANSE                                   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="section-title" id="xpanse">Cortex Xpanse — Attack Surface Management</div>
+
+    <div class="info-note">
+      <strong>Principe :</strong> Xpanse scanne l'intégralité de l'espace IPv4 (4,3 milliards d'adresses) plusieurs fois par jour, soit plus de 500 milliards de ports/jour, pour découvrir TOUS les assets exposés de votre organisation — y compris les inconnus (shadow IT, cloud mal configuré, supply chain). En moyenne, Xpanse trouve +35% d'assets que l'inventaire existant du client. Aucun agent requis — vue 100% externe, comme un attaquant.
+    </div>
+
+    <!-- Xpanse key metrics -->
+    <div class="metrics-grid" style="margin-bottom:24px">
+      <div class="metric-card">
+        <span class="metric-val">4,3 Mrd</span>
+        <span class="metric-label">Adresses IPv4 scannées<br>(espace internet complet)</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">500 Mrd</span>
+        <span class="metric-label">Ports scannés<br>par jour</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">+35%</span>
+        <span class="metric-label">Assets supplémentaires<br>vs. inventaire existant</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">25%</span>
+        <span class="metric-label">Expositions = RDP<br>présent dans 50% ransomwares</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">45 min</span>
+        <span class="metric-label">Délai moyen attaquant<br>pour trouver une vulnérabilité</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-val">3+ sem.</span>
+        <span class="metric-label">Délai moyen entreprise<br>pour découvrir la même faille</span>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:260px">Capacité Xpanse</th>
+            <th>Disponibilité</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="3">Découverte de la surface d'attaque</td></tr>
+          <tr>
+            <td>Découverte automatique des assets</td>
+            <td class="val-high"><span class="cap-badge green">Continu</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">IPs, domaines, certificates, sous-domaines, cloud assets — scan internet complet</td>
+          </tr>
+          <tr>
+            <td>Assets cloud non-autorisés (Shadow IT)</td>
+            <td class="val-high"><span class="cap-badge green">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Détection des ressources cloud (AWS, Azure, GCP) non inventoriées dans le CMDB</td>
+          </tr>
+          <tr>
+            <td>Couverture supply chain / tiers</td>
+            <td class="val-high"><span class="cap-badge green">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Découverte des assets exposés par vos prestataires et partenaires stratégiques</td>
+          </tr>
+          <tr>
+            <td>Attribution automatique d'assets</td>
+            <td class="val-high"><span class="cap-badge green">ML-powered</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">ML attribue automatiquement les assets découverts à votre organisation (BGP, WHOIS, certs)</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Détection des expositions (50+ types)</td></tr>
+          <tr>
+            <td>Services non sécurisés exposés</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">RDP, Telnet, FTP, SMB, databases (MySQL, MongoDB, Redis) exposés sur internet</td>
+          </tr>
+          <tr>
+            <td>Certificats expirés / mal configurés</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">TLS/SSL expiré, faible cipher, self-signed, wildcards dangereux</td>
+          </tr>
+          <tr>
+            <td>CVEs critiques (corrélation)</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Corrélation entre services découverts et CVEs connus — priorisation par exploitabilité</td>
+          </tr>
+          <tr>
+            <td>Appareils avec credentials par défaut</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Routeurs, cameras, IoT avec credentials factory détectés</td>
+          </tr>
+          <tr>
+            <td>Gestion des règles de remédiation</td>
+            <td class="val-high"><span class="cap-badge green">✓</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Workflows de remédiation intégrés — tickets automatiques vers ITSM (ServiceNow, JIRA)</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="3">Intégrations SOC</td></tr>
+          <tr>
+            <td>Intégration XSIAM</td>
+            <td class="val-high"><span class="cap-badge green">Natif</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Findings Xpanse remontent automatiquement en incidents XSIAM — playbooks XSOAR</td>
+          </tr>
+          <tr>
+            <td>API REST</td>
+            <td class="val-high"><span class="cap-badge green">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Intégration custom avec CMDB, ITSM, SOAR tiers via API REST documentée</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sizing guidance -->
+    <div class="section-title">Guide de dimensionnement — Quel produit pour quel besoin ?</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:220px">Besoin client</th>
+            <th>Recommandation</th>
+            <th>Justification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Protection endpoint uniquement (sans SOC)</td>
+            <td class="val-high"><span class="cap-badge accent">XDR Prevent</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">AV next-gen + BTP + WildFire. Pas d'investigation/forensics requis.</td>
+          </tr>
+          <tr>
+            <td>EDR + investigation forensique + threat hunting</td>
+            <td class="val-high"><span class="cap-badge accent">XDR Pro / Endpoint</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">SOC interne avec analystes L2/L3. Corrélation réseau+endpoint sans SIEM dédié.</td>
+          </tr>
+          <tr>
+            <td>XDR + remplacement SIEM + gestion de gros volumes de logs</td>
+            <td class="val-high"><span class="cap-badge accent">XDR Pro / TB</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Tarification par TB — rentable à partir de ~1000 endpoints ou gros volumes 3rd party.</td>
+          </tr>
+          <tr>
+            <td>SOC complet : SIEM + SOAR + EDR + Threat Intel</td>
+            <td class="val-high"><span class="cap-badge purple">XSIAM</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Consolidation totale de la stack SOC en une plateforme. ROI : réduction analysts/alertes.</td>
+          </tr>
+          <tr>
+            <td>Automatisation sur SIEM existant (sans migration)</td>
+            <td class="val-high"><span class="cap-badge green">XSOAR standalone</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Ajouter SOAR sans changer le SIEM existant. 900+ connecteurs vers outils tiers.</td>
+          </tr>
+          <tr>
+            <td>Découverte surface d'attaque internet</td>
+            <td class="val-high"><span class="cap-badge yellow">Xpanse</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Aucun agent requis — priorité pour les grandes organisations avec shadow IT / multi-cloud.</td>
+          </tr>
+          <tr>
+            <td>SOC managé (MSSP) — multi-tenants</td>
+            <td class="val-high"><span class="cap-badge purple">XSIAM + XSOAR Enterprise</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Architecture multi-tenant native — chaque client dans son tenant isolé, console MSSP unifiée.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resources -->
+    <div class="section-title">Ressources officielles</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="tool-card" href="https://www.paloaltonetworks.com/cortex/cortex-xdr" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">Cortex XDR<span class="card-arrow">↗</span></div>
+        <div class="card-description">Page produit officielle Cortex XDR</div>
+      </a>
+      <a class="tool-card" href="https://www.paloaltonetworks.com/cortex/cortex-xsiam" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Cortex XSIAM<span class="card-arrow">↗</span></div>
+        <div class="card-description">Page produit officielle Cortex XSIAM</div>
+      </a>
+      <a class="tool-card" href="https://docs.paloaltonetworks.com/cortex/cortex-xdr" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Documentation XDR<span class="card-arrow">↗</span></div>
+        <div class="card-description">Documentation admin et agent — release notes, compatibilité OS</div>
+      </a>
+      <a class="tool-card" href="https://www.paloaltonetworks.com/resources/datasheets/cortex-xdr" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">📄</div>
+        <div class="card-title">Datasheet XDR<span class="card-arrow">↗</span></div>
+        <div class="card-description">Fiche technique officielle Cortex XDR</div>
+      </a>
+      <a class="tool-card" href="https://attackevals.mitre-engenuity.org/" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">🎯</div>
+        <div class="card-title">MITRE ATT&CK Evaluations<span class="card-arrow">↗</span></div>
+        <div class="card-description">Résultats officiels des évaluations MITRE ATT&CK — comparer les vendors</div>
+      </a>
+      <a class="tool-card" href="https://xsoar.pan.dev/" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">XSOAR Developer<span class="card-arrow">↗</span></div>
+        <div class="card-description">Documentation développeur XSOAR — content packs, API, playbooks</div>
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
+</body>
+</html>

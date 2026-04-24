@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Prisma Access</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .val-opt { color: var(--text-muted); font-family: var(--mono); font-size: 12px; font-style: italic; }
+    .ztna-note {
+      margin-bottom: 24px;
+      padding: 13px 16px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+    .ztna-note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .section-title {
+      margin: 32px 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--mono);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .addon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .addon-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .addon-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+    .addon-card-name { font-size: 12px; font-weight: 600; color: var(--text-bright); }
+    .addon-card-price { font-size: 13px; font-weight: 700; color: var(--accent); font-family: var(--mono); white-space: nowrap; }
+    .addon-card-sku  { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 4px; }
+    .addon-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+    .price-ht { font-weight: 700; color: var(--accent); font-family: var(--mono); }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>Prisma Access — SASE &amp; Zero Trust</h1>
+      <p>Architecture SASE cloud-delivered · GlobalProtect · Remote Networks · Service Connections</p>
+    </div>
+
+    <!-- Architecture overview cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:36px">
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔗</div>
+        <div class="card-title">Remote Users (MU)</div>
+        <div class="card-description">GlobalProtect avec ZTNA 2.0 natif — accès sécurisé pour les utilisateurs nomades. Vendu par utilisateur/an.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Remote Networks (Sites)</div>
+        <div class="card-description">Connexion des sites distants via IPsec — SD-WAN intégré, politique de sécurité unifiée. Vendu par Mbps/an.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Service Connections</div>
+        <div class="card-description">Connexion sécurisée vers les datacenters et environnements cloud privés via IPsec depuis les PoP Prisma Access.</div>
+      </div>
+      <div class="tool-card" style="cursor:default">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">150+ PoP mondiaux</div>
+        <div class="card-description">Infrastructure cloud-delivered distribuée mondialement. SLA de disponibilité 99.999%. Routage optimal automatique.</div>
+      </div>
+    </div>
+
+    <div class="ztna-note">
+      <span class="ztna-note-icon">ℹ</span>
+      <span><strong>3 éditions Mobile Users, 2 éditions Remote Networks.</strong> L'Enterprise Edition inclut à la fois la sécurité internet sortant et l'accès aux apps privées. La SWG Edition couvre uniquement la sécurité internet. La ZTNA Edition couvre uniquement l'accès aux apps privées. Les add-ons s'appliquent indépendamment de l'édition.</span>
+    </div>
+
+    <!-- ── ÉDITIONS MU ── -->
+    <div class="section-title">Éditions Mobile Users — par utilisateur / an</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:240px">Fonctionnalité</th>
+            <th>SWG Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-BUSINESS-PRM</small></th>
+            <th>ZTNA Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-ZTNA-SIG</small></th>
+            <th>Enterprise Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-ENTERPRISE</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prix indicatif HT (user/an)</td>
+            <td class="price-ht">132 €</td>
+            <td class="price-ht">144 €</td>
+            <td class="price-ht">210 €</td>
+          </tr>
+
+          <tr class="section-row"><td colspan="4">Sécurité internet sortant</td></tr>
+          <tr><td>App-ID / URL Filtering (PAN-DB)</td><td class="val-check">✓</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>Threat Prevention / WildFire</td><td class="val-check">✓</td><td class="val-check">✓ (Adv.)</td><td class="val-check">✓</td></tr>
+          <tr><td>DNS Security / SSL Decryption</td><td class="val-check">✓</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Accès apps privées (ZTNA 2.0)</td></tr>
+          <tr><td>Accès apps privées</td><td class="val-na">—<small style="color:var(--text-muted)"> (add-on +84€)</small></td><td class="val-check">✓ (inclus)</td><td class="val-check">✓ (inclus)</td></tr>
+          <tr><td>Service Connections</td><td class="val-na">—<small style="color:var(--text-muted)"> (add-on)</small></td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Continuous trust verification</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Gestion (inclus dans toutes les éditions)</td></tr>
+          <tr><td>Strata Cloud Manager (base)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>GlobalProtect (150+ PoP, 99.999% SLA)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>ADEM + AIOps</td><td class="val-na">+90 €</td><td class="val-na">+90 €</td><td class="val-na">+90 €</td></tr>
+          <tr><td>Strata Logging Service</td><td class="val-na">+6 €</td><td class="val-na">+6 €</td><td class="val-na">+6 €</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── ÉDITIONS NET ── -->
+    <div class="section-title">Éditions Remote Networks / Sites — par Mbps / an</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:240px">Fonctionnalité</th>
+            <th>SWG Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-NET-BUSINESS-PRM</small></th>
+            <th>Enterprise Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-NET-ENTERPRISE</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prix indicatif HT (Mbps/an)</td>
+            <td class="price-ht">132 €</td>
+            <td class="price-ht">210 €</td>
+          </tr>
+          <tr><td>Sécurité internet sortant</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Accès apps privées (ZTNA 2.0)</td><td class="val-na">—<small> (add-on +84€)</small></td><td class="val-check">✓ (inclus)</td></tr>
+          <tr><td>ADEM + AIOps</td><td class="val-na">+90 €/Mbps</td><td class="val-na">+90 €/Mbps</td></tr>
+          <tr><td>Strata Logging Service</td><td class="val-na">+12 €/Mbps</td><td class="val-na">+12 €/Mbps</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── ADD-ONS MU ── -->
+    <div class="section-title">Add-ons Mobile Users (par user/an)</div>
+    <div class="addon-grid">
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">SaaS Inline Security</span>
+          <span class="addon-card-price">24 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SAAS-INLINE</div>
+        <div class="addon-card-desc">SaaS Inline Security uniquement — option économique sans DLP. À distinguer du NG-CASB complet.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">DLP standalone</span>
+          <span class="addon-card-price">42 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-DLP</div>
+        <div class="addon-card-desc">Data Loss Prevention uniquement, sans les fonctions SaaS Security du NG-CASB.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Private App Access</span>
+          <span class="addon-card-price">84 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-PRIVAPP</div>
+        <div class="addon-card-desc">Ajoute accès aux apps privées et Service Connections pour les utilisateurs SWG Edition.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Private App Security</span>
+          <span class="addon-card-price">48 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-PVT-APPSEC</div>
+        <div class="addon-card-desc">Protection spécifique par application pour les apps privées (inspection approfondie).</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">NG-CASB (bundle complet)</span>
+          <span class="addon-card-price">168 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-CASB</div>
+        <div class="addon-card-desc">Bundle : SaaS Security Inline + DLP Inline + SaaS Security API + DLP API. Plus complet que SaaS Inline seul ou DLP seul.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">ADEM + AIOps (SCM Pro)</span>
+          <span class="addon-card-price">90 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SCM-PRO</div>
+        <div class="addon-card-desc">Autonomous Digital Experience Management + AIOps via Strata Cloud Manager.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">App Acceleration</span>
+          <span class="addon-card-price">90 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-APP-ACCL</div>
+        <div class="addon-card-desc">Accélération applicative pour les utilisateurs via Prisma Access.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">IoT Security</span>
+          <span class="addon-card-price">54 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-IOT</div>
+        <div class="addon-card-desc">Sécurité IoT pour le réseau — détection et segmentation des appareils IoT/OT.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Privileged Remote Access (PRA)</span>
+          <span class="addon-card-price">120 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-PRVLGED-RA</div>
+        <div class="addon-card-desc">Accès navigateur aux apps non-web (SSH, RDP, DB…) sans agent sur les serveurs cibles.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">ZTNA Connector</span>
+          <span class="addon-card-price">84 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-ZTNACONN-PR</div>
+        <div class="addon-card-desc">Connecteur ZTNA pour un nombre illimité d'applications privées.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Traffic Replication</span>
+          <span class="addon-card-price">120 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-TRAFFIC-REPLICA</div>
+        <div class="addon-card-desc">Copie du trafic traversant Prisma Access (mirroring pour analyse externe).</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Prisma Browser (add-on PA)</span>
+          <span class="addon-card-price">144 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-SEB-UPG</div>
+        <div class="addon-card-desc">Ajoute le Secure Enterprise Browser à une souscription Prisma Access existante.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Strata Logging Service</span>
+          <span class="addon-card-price">6 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SLS</div>
+        <div class="addon-card-desc">Rétention des logs cloud 1 an pour les utilisateurs mobiles.</div>
+      </div>
+    </div>
+
+    <!-- ── ADD-ONS NET ── -->
+    <div class="section-title">Add-ons Remote Networks (par Mbps/an sauf indication)</div>
+    <div class="addon-grid">
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">SaaS Inline Security</span>
+          <span class="addon-card-price">24 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-SAAS-INLINE</div>
+        <div class="addon-card-desc">SaaS Inline Security pour les sites Remote Networks.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Private App Access</span>
+          <span class="addon-card-price">84 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-PRIVAPP</div>
+        <div class="addon-card-desc">Ajoute accès apps privées et ZTNA pour les sites SWG Edition.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Private App Security</span>
+          <span class="addon-card-price">48 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-PVT-APPSEC</div>
+        <div class="addon-card-desc">Protection spécifique par application pour les apps privées sur les sites.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">App Acceleration</span>
+          <span class="addon-card-price">90 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-APP-ACCL</div>
+        <div class="addon-card-desc">Accélération applicative pour les sites Remote Networks.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Interconnect</span>
+          <span class="addon-card-price">42 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-INTERCONCT</div>
+        <div class="addon-card-desc">Connexion sécurisée réseau à réseau entre sites Remote Networks.</div>
+      </div>
+      <div class="addon-card">
+        <div class="addon-card-header">
+          <span class="addon-card-name">Strata Logging Service</span>
+          <span class="addon-card-price">12 €</span>
+        </div>
+        <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-SLS</div>
+        <div class="addon-card-desc">Rétention des logs cloud 1 an pour les sites Remote Networks.</div>
+      </div>
+    </div>
+
+    <!-- ── PRISMA BROWSER ── -->
+    <div class="section-title">Prisma Browser — produit autonome (par user/an)</div>
+    <div class="table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:240px">Caractéristique</th>
+            <th>Browser Core<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-BROWSER-CORE</small></th>
+            <th>Browser Pro<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-BROWSER-PRO</small></th>
+            <th>Standalone SEB<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-STANDALONE-SEB</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prix indicatif HT (user/an)</td>
+            <td class="price-ht">66 €</td>
+            <td class="price-ht">120 €</td>
+            <td class="price-ht">144 €</td>
+          </tr>
+          <tr><td>Enterprise Browser (SWG)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Accès Internet / SaaS</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Accès apps privées</td><td class="val-na">—</td><td class="val-check">✓</td><td class="val-na">—</td></tr>
+          <tr><td>Nécessite Prisma Access</td><td class="val-na">Non (autonome)</td><td class="val-na">Non (autonome)</td><td class="val-na">Non (autonome)</td></tr>
+          <tr><td>Add-on Prisma Access existant</td><td class="val-opt">compatible</td><td class="val-opt">compatible</td><td class="val-check">✓ (via PAN-PRISMA-ACCESS-SEB-UPG 144€)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
+      Toutes les informations de prix proviennent de la liste de prix Palo Alto Networks (mars 2026), prix en € HT indicatifs par unité/an. Le NG-CASB (168€) bundle SaaS Inline + DLP Inline + API — à distinguer du SaaS Inline seul (24€) ou du DLP standalone (42€).
+      Pour un devis précis, contacter Exclusive Networks via
+      <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+  </footer>
+</body>
+</html>
