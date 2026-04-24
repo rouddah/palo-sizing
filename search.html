@@ -593,6 +593,7 @@
         <div class="ff-group">
           <button class="ff-btn series-btn active" data-series="all"    onclick="setSeries(this)">Tous</button>
           <button class="ff-btn series-btn"        data-series="PA-400" onclick="setSeries(this)">PA-400</button>
+          <button class="ff-btn series-btn"        data-series="PA-500" onclick="setSeries(this)">PA-500 <span style="font-size:9px;color:#4ade80">New</span></button>
           <button class="ff-btn series-btn"        data-series="PA-800" onclick="setSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;opacity:0.6">EoS</span></button>
           <button class="ff-btn series-btn"        data-series="PA-1400" onclick="setSeries(this)">PA-1400</button>
           <button class="ff-btn series-btn"        data-series="PA-3400" onclick="setSeries(this)">PA-3400</button>
@@ -702,6 +703,7 @@
   /* ══ Datasheet URLs par série ══ */
   const DS_URLS = {
     'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+    'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
     'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
     'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
     'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
@@ -724,6 +726,15 @@
     { id:'PA-455',    series:'PA-400',  form:'Desktop',    poe:true,  fw:3.6,   tp:2.3,   vpn:1.8,  sess:300000,     cps:56000,   rj45:4,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
     { id:'PA-455-5G', series:'PA-400',  form:'Desktop',    poe:true,  fw:3.2,   tp:1.8,   vpn:1.6,  sess:300000,     cps:48000,   rj45:6,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
     { id:'PA-460',    series:'PA-400',  form:'Desktop',    poe:false, fw:4.2,   tp:3.0,   vpn:2.3,  sess:400000,     cps:67000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    // PA-500 Series — août 2025 | Source : datasheet officielle PAN-OS 12.1
+    { id:'PA-505',    series:'PA-500',  form:'1U Rack',    poe:false, fw:1.2,   tp:0.8,   vpn:0.4,  sess:64000,      cps:10000,   rj45:7,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-510',    series:'PA-500',  form:'1U Rack',    poe:false, fw:1.8,   tp:1.2,   vpn:0.8,  sess:98000,      cps:15000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-520',    series:'PA-500',  form:'1U Rack',    poe:false, fw:2.8,   tp:1.8,   vpn:1.5,  sess:148000,     cps:25000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-540',    series:'PA-500',  form:'1U Rack',    poe:false, fw:3.8,   tp:2.2,   vpn:2.0,  sess:248000,     cps:50000,   rj45:8,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-545-POE',series:'PA-500',  form:'1U Rack',    poe:true,  fw:5.0,   tp:3.0,   vpn:3.0,  sess:298000,     cps:55000,   rj45:12, sfp1:4,  sfp10:0,  sfp25:0, sfp100:0 },
+    { id:'PA-550',    series:'PA-500',  form:'1U Rack',    poe:false, fw:6.5,   tp:4.5,   vpn:4.0,  sess:398000,     cps:70000,   rj45:12, sfp1:2,  sfp10:2,  sfp25:0, sfp100:0 },
+    { id:'PA-555-POE',series:'PA-500',  form:'1U Rack',    poe:true,  fw:7.5,   tp:5.0,   vpn:4.5,  sess:448000,     cps:75000,   rj45:12, sfp1:2,  sfp10:2,  sfp25:0, sfp100:0 },
+    { id:'PA-560',    series:'PA-500',  form:'1U Rack',    poe:false, fw:8.5,   tp:6.0,   vpn:5.5,  sess:598000,     cps:100000,  rj45:16, sfp1:4,  sfp10:4,  sfp25:0, sfp100:0 },
     { id:'PA-1410',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:8.5,   tp:4.5,   vpn:4.1,  sess:945000,     cps:100000,  rj45:8,  sfp1:6,  sfp10:4,  sfp25:0, sfp100:0 },
     { id:'PA-1420',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:9.5,   tp:6.2,   vpn:5.6,  sess:1400000,    cps:140000,  rj45:4,  sfp1:2,  sfp10:8,  sfp25:0, sfp100:0 },
     { id:'PA-3410',   series:'PA-3400', form:'1U Rack',    poe:false, fw:14,    tp:7.5,   vpn:6.6,  sess:1400000,    cps:145000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:0 },
