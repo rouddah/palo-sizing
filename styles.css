@@ -1,8 +1,47 @@
 /* ============================================================
-   Palo Alto Networks — Sizing Guide CSS  v2
+   Palo Alto Networks — Sizing Guide CSS  v3
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* ── Self-hosted fonts (RGPD : pas de CDN Google) ──
+   Corps : Poppins — alternatives possibles : Space Grotesk, IBM Plex Sans
+   (changer uniquement la variable --font et les @font-face correspondants)
+   Mono  : JetBrains Mono (variable weight, latin)
+*/
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/poppins-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/poppins-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/poppins-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/poppins-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('fonts/jetbrainsmono-latin.woff2') format('woff2');
+}
 
 /* ── Custom properties (dark) ── */
 :root {
@@ -35,7 +74,7 @@
   --radius-lg:    16px;
   --shadow:       0 8px 32px rgba(0,0,0,0.5);
   --shadow-accent:0 8px 24px rgba(232,75,26,0.2);
-  --font:         'Inter', sans-serif;
+  --font:         'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono:         'JetBrains Mono', monospace;
   --header-h:     60px;
 }
