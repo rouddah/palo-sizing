@@ -11,7 +11,7 @@ const LINKS_DATA = {
         {
           "icon": "⭐",
           "title": "Partner Connect — Exclusive Networks",
-          "description": "Portail partenaire Exclusive Networks : ressources, prix, enregistrement de deals et outils PAN dédiés",
+          "description": "Portail partenaire Exclusive Networks : ressources, enregistrement de deals et outils PAN dédiés",
           "href": "https://partner-connect.exclusive-labs.com",
           "type": "external",
           "highlight": true
