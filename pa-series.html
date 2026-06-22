@@ -333,6 +333,154 @@
     /* ── Hidden modifier ── */
     .col-hidden { display: none; }
 
+    /* ── Glossary tooltips ── */
+    .glossary-tip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted var(--text-muted);
+    }
+    .glossary-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface3);
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 1.5;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      white-space: normal;
+      width: max-content;
+      max-width: 280px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 100;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .glossary-tip:hover::after { opacity: 1; }
+
+    /* ── Sizing wizard ── */
+    .wizard-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--accent);
+      padding: 0;
+      overflow: hidden;
+    }
+    .wizard-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .wizard-toggle:hover { background: var(--surface2); }
+    .wizard-toggle .chevron {
+      transition: transform .2s;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .wizard-panel.open .wizard-toggle .chevron { transform: rotate(180deg); }
+    .wizard-body {
+      display: none;
+      padding: 0 20px 20px;
+    }
+    .wizard-panel.open .wizard-body { display: block; }
+    .wizard-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .wiz-field label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .wiz-field select, .wiz-field input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+    }
+    .wiz-field select:focus, .wiz-field input:focus {
+      border-color: var(--accent);
+    }
+    .wiz-btn {
+      padding: 10px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .wiz-btn:hover { background: var(--accent-hover); }
+    .wiz-results {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .wiz-results.visible { display: block; }
+    .wiz-results h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+    }
+    .wiz-match {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .wiz-match-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-bright);
+      min-width: 100px;
+    }
+    .wiz-match-reason {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
     /* ── Compare button ── */
     .cmp-fab {
       position: fixed;
@@ -410,6 +558,57 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
+  <!-- ── Sizing wizard ── -->
+  <div class="wizard-panel" id="wizard-panel">
+    <button class="wizard-toggle" onclick="document.getElementById('wizard-panel').classList.toggle('open')">
+      <span>Assistant de sizing — trouver le bon modele</span>
+      <span class="chevron">▼</span>
+    </button>
+    <div class="wizard-body">
+      <div class="wizard-form">
+        <div class="wiz-field">
+          <label>Nombre d'utilisateurs</label>
+          <select id="wiz-users">
+            <option value="50">Moins de 50</option>
+            <option value="200" selected>50 a 200</option>
+            <option value="500">200 a 500</option>
+            <option value="1000">500 a 1 000</option>
+            <option value="5000">1 000 a 5 000</option>
+            <option value="10000">5 000+</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Debit internet (Mbps)</label>
+          <select id="wiz-bw">
+            <option value="100">Jusqu'a 100 Mbps</option>
+            <option value="500" selected>100 a 500 Mbps</option>
+            <option value="1000">500 Mbps a 1 Gbps</option>
+            <option value="5000">1 a 5 Gbps</option>
+            <option value="10000">5 a 10 Gbps</option>
+            <option value="50000">10 Gbps+</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Dechiffrement SSL</label>
+          <select id="wiz-ssl">
+            <option value="no">Non requis</option>
+            <option value="yes" selected>Oui, souhaite</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Type de site</label>
+          <select id="wiz-type">
+            <option value="branch" selected>Branch / agence</option>
+            <option value="campus">Campus / siege</option>
+            <option value="dc">Datacenter / internet gateway</option>
+          </select>
+        </div>
+      </div>
+      <button class="wiz-btn" onclick="runWizard()">Recommander des modeles</button>
+      <div class="wiz-results" id="wiz-results"></div>
+    </div>
+  </div>
+
   <!-- ── Toolbars ── -->
   <div class="tb-wrap">
     <div class="toolbar">
@@ -453,7 +652,7 @@
     <div class="stats-bar">
       <span>Modèles affichés : <strong id="stat-models">25</strong></span>
       <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
-      <span class="stats-note">Débits mesurés avec App-ID activé (appmix) · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions reelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs actives.">Debits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
     </div>
   </div>
 
@@ -544,12 +743,12 @@
   ];
 
   const ROWS = [
-    { cat:'perf',  label:'App-ID Firewall (appmix)',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
-    { cat:'perf',  label:'Threat Prevention (appmix)',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
-    { cat:'perf',  label:'IPsec VPN',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit firewall avec App-ID active et trafic applicatif mixte (appmix). Represente les conditions reelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit avec toutes les protections activees : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit du tunnel VPN IPsec chiffre, mesure avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
     { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
-    { cat:'sess',  label:'Nouvelles sessions/s',            fn: m => fmtN(m.cps),       num: m => m.cps   },
-    { cat:'cap',   label:'Tunnels GlobalProtect max',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut etablir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'acces distant securise des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
     { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
     { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
     { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
@@ -558,7 +757,7 @@
     { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
     { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
     { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
-    { cat:'cap',   label:'Systèmes virtuels max',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systemes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
@@ -749,11 +948,56 @@
     return String(n);
   }
 
+  /* ══ Sizing Wizard ══ */
+  function runWizard() {
+    const users = parseInt(document.getElementById('wiz-users').value);
+    const bw    = parseInt(document.getElementById('wiz-bw').value);
+    const ssl   = document.getElementById('wiz-ssl').value === 'yes';
+    const type  = document.getElementById('wiz-type').value;
+
+    const bwGbps = bw / 1000;
+    const needTp = ssl ? bwGbps * 1.5 : bwGbps;
+
+    const candidates = MODELS
+      .filter(m => !m.eos)
+      .filter(m => {
+        if (type === 'branch') return m.f === 'Desktop' || m.f === '1U Rack';
+        if (type === 'campus') return m.f === '1U Rack' || m.f === '2U Rack';
+        return m.f === '2U Rack' || m.f.startsWith('Chassis');
+      })
+      .filter(m => m.tp >= needTp)
+      .sort((a, b) => a.fw - b.fw)
+      .slice(0, 3);
+
+    const box = document.getElementById('wiz-results');
+    if (candidates.length === 0) {
+      box.innerHTML = '<h4>Aucun modele ne correspond</h4><p style="font-size:12px;color:var(--text-muted)">Essayez de modifier les criteres ou contactez Exclusive Networks pour un dimensionnement sur-mesure.</p>';
+      box.classList.add('visible');
+      return;
+    }
+
+    let html = '<h4>Modeles recommandes (' + candidates.length + ')</h4>';
+    candidates.forEach((m, i) => {
+      const fit = i === 0 ? 'Meilleur rapport performance/besoin' : (i === 1 ? 'Alternative avec marge de croissance' : 'Capacite maximale dans la gamme');
+      html += `<div class="wiz-match">
+        <span class="wiz-match-name" style="color:${m.color}">${m.id}</span>
+        <span class="wiz-match-reason">
+          FW ${m.fw} Gbps · TP ${m.tp} Gbps · ${fmtN(m.sess)} sessions · ${m.f}
+          <br><em style="color:var(--accent);font-size:11px">${fit}</em>
+        </span>
+      </div>`;
+    });
+    html += '<p style="font-size:11px;color:var(--text-muted);margin-top:10px">Ces recommandations sont indicatives. Pour un sizing precis, consultez votre partenaire Exclusive Networks.</p>';
+    box.innerHTML = html;
+    box.classList.add('visible');
+  }
+
   buildTable();
   </script>
 
   <footer class="site-footer">
-    Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a>
+    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Donnees issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Derniere mise a jour : juin 2026</div>
   </footer>
 </body>
 </html>
