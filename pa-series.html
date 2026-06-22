@@ -437,7 +437,7 @@
         <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
         <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
         <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
-        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)">PA-7000</button>
+        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)" title="End of Sale — décembre 2025">PA-7000 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
         <button class="fb" data-series="PA-7500" onclick="filterSeries(this)">PA-7500</button>
       </div>
       <div class="tb-sep"></div>
@@ -489,10 +489,18 @@
 
   <script>
   /* ══ DATA ══
-     Source : datasheets officielles PAN-OS 12.1 (PA-7000 : 11.2, PA-7500 : 11.1)
-     Débits : App-ID activé, mesure appmix (trafic mixte réel)
-     PA-800 : End of Sale août 2024 — remplacement conseillé PA-1400
-     PA-7500 : config de référence = 6 DPC-A + 2 NPC-A + 1 MPC-A
+     Sources : datasheets officielles Palo Alto Networks, consultées le 22 juin 2026
+       - PA-400 : strata_ds_pa-400-series_022326 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-400-series
+       - PA-500 : strata_ds_pa-500-series (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-500-series
+       - PA-800 : strata_ds_pa-800-series (PAN-OS 11.1) — End of Sale aout 2024
+       - PA-1400 : strata_ds_pa-1400-series_012726 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series
+       - PA-3400 : strata_ds_pa-3400-series_021126 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series
+       - PA-5400 : strata_ds_pa-5400-series_032026 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series
+       - PA-7000 : strata_ds_pa-7000-series_071624 (PAN-OS 11.2) — End of Sale dec. 2025
+       - PA-7500 : strata_ds_pa-7500_031126 (PAN-OS 11.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series
+       - EoS/EoL : https://www.paloaltonetworks.com/services/support/end-of-life-announcements/hardware-end-of-life-dates
+     Debits : App-ID active, mesure appmix (trafic mixte reel)
+     PA-7500 : config de reference = 6 DPC-A + 2 NPC-A + 1 MPC-A
   ══ */
   const MODELS = [
     // id, série, format, couleur, cible, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1, sfp10, sfp25, sfp100, eos, vsys(base/max), haAA, m5g, sku, gp(tunnels GP max), zones(max), policies(max)
@@ -523,13 +531,14 @@
     { id:'PA-3420',   s:'PA-3400', f:'1U Rack',     color:'#0d9488', target:'Enterprise',             poe:false, fw:19,   tp:10,   vpn:9.9,  sess:2200000,   cps:220000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false, sku:'PAN-PA-3420',  gp:1800,  zones:1000, policies:10000, ipsec:5000,  ssl:200000, addr:30000, nat:4500, sdwanT:3000, sdwanR:400, vsysMax:11,   secProf:375, poeW:null },
     { id:'PA-3430',   s:'PA-3400', f:'1U Rack',     color:'#14b8a6', target:'Enterprise + 5G',        poe:false, fw:29,   tp:15,   vpn:12,   sess:2500000,   cps:240000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3430',  gp:1800,  zones:1000, policies:30000, ipsec:8000,  ssl:250000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:null, poeW:null },
     { id:'PA-3440',   s:'PA-3400', f:'1U Rack',     color:'#2dd4bf', target:'Enterprise+ + 5G',       poe:false, fw:35,   tp:20,   vpn:14.5, sess:3000000,   cps:268000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3440',  gp:2000,  zones:1000, policies:30000, ipsec:8000,  ssl:300000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:500, poeW:null },
-    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',     color:'#b45309', target:'Large Enterprise',       poe:false, fw:52,   tp:32,   vpn:20,   sess:5000000,   cps:270000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'10 / 20',  haAA:true,  m5g:true,  sku:'PAN-PA-5410-AC',  gp:15000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:20,   secProf:750, poeW:null },
+    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',     color:'#b45309', target:'Large Enterprise',       poe:false, fw:52,   tp:35,   vpn:20,   sess:5000000,   cps:270000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'10 / 20',  haAA:true,  m5g:true,  sku:'PAN-PA-5410-AC',  gp:15000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:20,   secProf:750, poeW:null },
     { id:'PA-5420',   s:'PA-5400', f:'2U Rack',     color:'#d97706', target:'Large Enterprise',       poe:false, fw:70,   tp:50,   vpn:28,   sess:7000000,   cps:370000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'15 / 65',  haAA:true,  m5g:true,  sku:'PAN-PA-5420-AC',  gp:22000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:65,   secProf:750, poeW:null },
     { id:'PA-5430',   s:'PA-5400', f:'2U Rack',     color:'#f59e0b', target:'Large Enterprise',       poe:false, fw:80,   tp:60,   vpn:42,   sess:9000000,   cps:380000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 125', haAA:true,  m5g:true,  sku:'PAN-PA-5430-AC',  gp:30000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:125,  secProf:750, poeW:null },
     { id:'PA-5440',   s:'PA-5400', f:'2U Rack',     color:'#fbbf24', target:'Large Enterprise',       poe:false, fw:85,   tp:70,   vpn:58,   sess:20000000,  cps:390000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5440-AC',  gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
     { id:'PA-5445',   s:'PA-5400', f:'2U Rack',     color:'#fcd34d', target:'Large Enterprise',       poe:false, fw:90,   tp:76,   vpn:64,   sess:48000000,  cps:449000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5445-AC',  gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
-    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U',  color:'#7c3aed', target:'Hyperscale / DC',        poe:false, fw:343,  tp:184,  vpn:190,  sess:245000000, cps:4000000,rj45:0,  sfp1:48, sfp10:48, sfp25:0,  sfp100:24, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7050',  gp:40000, zones:17000, policies:65000, ipsec:12000, ssl:4000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
-    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U', color:'#6d28d9', target:'Hyperscale / DC',        poe:false, fw:590,  tp:305,  vpn:310,  sess:416000000, cps:6000000,rj45:0,  sfp1:80, sfp10:80, sfp25:0,  sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7080',  gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:6000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    // PA-7000 — End of Sale déc. 2025 | Remplacement : PA-7500 | Source : datasheet PAN-OS 11.2 | Ports : SFP/SFP+ (1G/10G) + QSFP+/QSFP28 (40G/100G)
+    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U',  color:'#7c3aed', target:'Hyperscale / DC — EoS',  poe:false, fw:343,  tp:184,  vpn:190,  sess:245000000, cps:4000000,rj45:0,  sfp1:0,  sfp10:48, sfp25:0,  sfp100:24, eos:true,  vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7050',  gp:40000, zones:17000, policies:65000, ipsec:12000, ssl:4000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U', color:'#6d28d9', target:'Hyperscale / DC — EoS',  poe:false, fw:590,  tp:305,  vpn:310,  sess:416000000, cps:6000000,rj45:0,  sfp1:0,  sfp10:80, sfp25:0,  sfp100:40, eos:true,  vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7080',  gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:6000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
     // PA-7500 : config ref. 6×DPC-A + 2×NPC-A + 1×MPC-A | Interfaces : 24×SFP-DD (100G/25G/10G) + 16×QSFP-DD (400G/100G)
     { id:'PA-7500',   s:'PA-7500', f:'Chassis 14U', color:'#be123c', target:'Hyperscale Max',         poe:false, fw:1500, tp:1440, vpn:407,  sess:440000000, cps:7200000,rj45:0,  sfp1:0,  sfp10:24, sfp25:24, sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7500',  gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:44000000, addr:160000, nat:64000, sdwanT:null, sdwanR:8192, vsysMax:225, secProf:750, poeW:null },
   ];
