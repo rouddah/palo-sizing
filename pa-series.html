@@ -333,6 +333,124 @@
     /* ── Hidden modifier ── */
     .col-hidden { display: none; }
 
+    /* ── Mode toggle bar ── */
+    .mode-bar {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .mode-btn:hover { border-color: var(--border2); color: var(--text-bright); }
+    .mode-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .wiz-help {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+    .wiz-disclaimer {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .wiz-disclaimer strong { color: var(--yellow); }
+    .wiz-family-card {
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .wiz-family-name {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .wiz-family-why {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .wiz-family-positioning {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .wiz-link-tech {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      text-decoration: underline;
+    }
+    .wiz-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .wiz-action-btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all .15s;
+    }
+    .wiz-action-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .wiz-action-btn.primary:hover { background: var(--accent-hover); }
+    .wiz-action-btn.secondary {
+      background: transparent;
+      color: var(--text-muted);
+    }
+    .wiz-action-btn.secondary:hover { color: var(--text-bright); border-color: var(--border2); }
+
     /* ── Glossary tooltips ── */
     .glossary-tip {
       position: relative;
@@ -558,54 +676,85 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
 
-  <!-- ── Sizing wizard ── -->
-  <div class="wizard-panel" id="wizard-panel">
-    <button class="wizard-toggle" onclick="document.getElementById('wizard-panel').classList.toggle('open')">
-      <span>Assistant de sizing — trouver le bon modele</span>
-      <span class="chevron">▼</span>
-    </button>
-    <div class="wizard-body">
-      <div class="wizard-form">
+  <!-- ── Mode toggle ── -->
+  <div class="mode-bar">
+    <button class="mode-btn active" id="mode-commercial" onclick="setMode('commercial')">Qualification rapide</button>
+    <button class="mode-btn" id="mode-technique" onclick="setMode('technique')">Comparateur technique</button>
+  </div>
+
+  <!-- ── Qualification rapide (commercial) ── -->
+  <div class="commercial-view" id="view-commercial">
+    <div class="page-wrap" style="padding-top:24px;padding-bottom:24px">
+      <div style="text-align:center;margin-bottom:28px">
+        <h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Quel firewall pour votre client ?</h2>
+        <p style="font-size:13px;color:var(--text-muted)">Repondez a quelques questions pour identifier la gamme adaptee, sans jargon technique.</p>
+      </div>
+
+      <div class="wizard-form" style="max-width:700px;margin:0 auto">
         <div class="wiz-field">
-          <label>Nombre d'utilisateurs</label>
+          <label>Combien de collaborateurs ? <span class="wiz-help" title="Nombre total de personnes utilisant le reseau (postes fixes, portables, mobiles). En cas de doute, arrondissez vers le haut.">?</span></label>
           <select id="wiz-users">
-            <option value="50">Moins de 50</option>
-            <option value="200" selected>50 a 200</option>
-            <option value="500">200 a 500</option>
-            <option value="1000">500 a 1 000</option>
-            <option value="5000">1 000 a 5 000</option>
-            <option value="10000">5 000+</option>
+            <option value="30">Moins de 30</option>
+            <option value="75">30 a 100</option>
+            <option value="250" selected>100 a 500</option>
+            <option value="750">500 a 1 000</option>
+            <option value="2500">1 000 a 5 000</option>
+            <option value="7500">5 000 a 10 000</option>
+            <option value="15000">Plus de 10 000</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Debit internet (Mbps)</label>
+          <label>Combien de sites a securiser ? <span class="wiz-help" title="Un site = un lieu physique avec sa propre connexion internet (siege, agence, entrepot, usine).">?</span></label>
+          <select id="wiz-sites">
+            <option value="1" selected>1 site (siege unique)</option>
+            <option value="3">2 a 5 sites</option>
+            <option value="10">5 a 15 sites</option>
+            <option value="30">15 a 50 sites</option>
+            <option value="100">Plus de 50 sites</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Type de site principal <span class="wiz-help" title="Agence = bureau distant, petite equipe. Siege = bureau principal ou campus. Datacenter = salle serveurs hebergeant des applications.">?</span></label>
+          <select id="wiz-type">
+            <option value="branch" selected>Agence / bureau distant</option>
+            <option value="campus">Siege / campus</option>
+            <option value="dc">Datacenter / centre de donnees</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Debit de la connexion Internet <span class="wiz-help" title="Le debit de votre lien Internet (fibre, MPLS). Si vous ne connaissez pas la valeur exacte, estimez selon l'usage : visio/cloud intensif = 500 Mbps+.">?</span></label>
           <select id="wiz-bw">
-            <option value="100">Jusqu'a 100 Mbps</option>
-            <option value="500" selected>100 a 500 Mbps</option>
+            <option value="50">Jusqu'a 50 Mbps</option>
+            <option value="200" selected>50 a 200 Mbps</option>
+            <option value="500">200 a 500 Mbps</option>
             <option value="1000">500 Mbps a 1 Gbps</option>
             <option value="5000">1 a 5 Gbps</option>
             <option value="10000">5 a 10 Gbps</option>
-            <option value="50000">10 Gbps+</option>
+            <option value="50000">Plus de 10 Gbps</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Dechiffrement SSL</label>
+          <label>Inspection du trafic chiffre (HTTPS) ? <span class="wiz-help" title="Le dechiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommande pour la securite, mais necessite plus de puissance.">?</span></label>
           <select id="wiz-ssl">
-            <option value="no">Non requis</option>
+            <option value="no">Non, pas necessaire</option>
             <option value="yes" selected>Oui, souhaite</option>
+            <option value="maybe">Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Type de site</label>
-          <select id="wiz-type">
-            <option value="branch" selected>Branch / agence</option>
-            <option value="campus">Campus / siege</option>
-            <option value="dc">Datacenter / internet gateway</option>
+          <label>Usage cloud / visio intensif ? <span class="wiz-help" title="Si les equipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanees.">?</span></label>
+          <select id="wiz-cloud">
+            <option value="low">Usage classique (mail, web)</option>
+            <option value="high" selected>Intensif (M365, Teams, SaaS)</option>
           </select>
         </div>
       </div>
-      <button class="wiz-btn" onclick="runWizard()">Recommander des modeles</button>
-      <div class="wiz-results" id="wiz-results"></div>
+
+      <div style="text-align:center;margin-top:20px">
+        <button class="wiz-btn" onclick="runCommercialWizard()" style="padding:12px 32px;font-size:14px">Identifier la gamme adaptee</button>
+      </div>
+
+      <div class="wiz-results" id="wiz-results-commercial"></div>
     </div>
   </div>
 
@@ -948,46 +1097,104 @@
     return String(n);
   }
 
-  /* ══ Sizing Wizard ══ */
-  function runWizard() {
-    const users = parseInt(document.getElementById('wiz-users').value);
-    const bw    = parseInt(document.getElementById('wiz-bw').value);
-    const ssl   = document.getElementById('wiz-ssl').value === 'yes';
-    const type  = document.getElementById('wiz-type').value;
+  /* ══ Mode toggle ══ */
+  let currentMode = 'commercial';
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('mode-commercial').classList.toggle('active', mode === 'commercial');
+    document.getElementById('mode-technique').classList.toggle('active', mode === 'technique');
+    document.getElementById('view-commercial').style.display = mode === 'commercial' ? 'block' : 'none';
+    document.querySelector('.tb-wrap').style.display = mode === 'technique' ? 'block' : 'none';
+    document.querySelector('.table-outer').style.display = mode === 'technique' ? 'block' : 'none';
+    document.getElementById('cmp-fab').style.display = 'none';
+  }
+  document.addEventListener('DOMContentLoaded', () => setMode('commercial'));
 
-    const bwGbps = bw / 1000;
-    const needTp = ssl ? bwGbps * 1.5 : bwGbps;
+  /* ══ Commercial wizard ══
+     Logique de recommandation par famille, basee sur le debit Threat Prevention (appmix)
+     Seuils issus des bornes reelles des datasheets officielles :
+       PA-400 : TP max 3.0 Gbps (PA-460)     — source : datasheet PA-400 PAN-OS 12.1
+       PA-500 : TP max 6.0 Gbps (PA-560)     — source : datasheet PA-500 PAN-OS 12.1
+       PA-1400 : TP max 6.2 Gbps (PA-1420)   — source : datasheet PA-1400 PAN-OS 12.1
+       PA-3400 : TP max 20 Gbps (PA-3440)    — source : datasheet PA-3400 PAN-OS 12.1
+       PA-5400 : TP max 76 Gbps (PA-5445)    — source : datasheet PA-5400 PAN-OS 12.1
+       PA-7500 : TP max 1440 Gbps            — source : datasheet PA-7500 PAN-OS 11.1
+     Marge de securite : ne pas depasser 60-70% de la capacite max du modele le plus bas de la famille
+  ══ */
+  const FAMILIES = [
+    { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, ideal pour les petits bureaux et sites distants avec un besoin de securite avance sans complexite.' },
+    { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE integre, pensee pour les sites distants necessitant plus de capacite que la PA-400 et une haute disponibilite active/active.' },
+    { id:'PA-1400', tpMin:4.5, tpMax:6.2,  sessMax:1400000,  form:'1U Rack',   pos:'Sieges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapte aux sieges de PME et aux campus de taille moyenne necessitant dechiffrement SSL et SD-WAN.' },
+    { id:'PA-3400', tpMin:7.5, tpMax:20,   sessMax:3000000,  form:'1U Rack',   pos:'Sieges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sieges de grandes entreprises, les passerelles Internet et les environnements multi-sites.' },
+    { id:'PA-5400', tpMin:35,  tpMax:76,   sessMax:48000000, form:'2U Rack',   pos:'Grands campus, datacenters et operateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services necessitant une capacite extreme.' },
+    { id:'PA-7500', tpMin:1440,tpMax:1440, sessMax:440000000,form:'Chassis',   pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de derniere generation pour les environnements hyperscale. Remplace la PA-7000 (End of Sale dec. 2025).' },
+  ];
 
-    const candidates = MODELS
-      .filter(m => !m.eos)
-      .filter(m => {
-        if (type === 'branch') return m.f === 'Desktop' || m.f === '1U Rack';
-        if (type === 'campus') return m.f === '1U Rack' || m.f === '2U Rack';
-        return m.f === '2U Rack' || m.f.startsWith('Chassis');
-      })
-      .filter(m => m.tp >= needTp)
-      .sort((a, b) => a.fw - b.fw)
-      .slice(0, 3);
+  function runCommercialWizard() {
+    const users  = parseInt(document.getElementById('wiz-users').value);
+    const sites  = parseInt(document.getElementById('wiz-sites').value);
+    const type   = document.getElementById('wiz-type').value;
+    const bwMbps = parseInt(document.getElementById('wiz-bw').value);
+    const ssl    = document.getElementById('wiz-ssl').value;
+    const cloud  = document.getElementById('wiz-cloud').value;
 
-    const box = document.getElementById('wiz-results');
-    if (candidates.length === 0) {
-      box.innerHTML = '<h4>Aucun modele ne correspond</h4><p style="font-size:12px;color:var(--text-muted)">Essayez de modifier les criteres ou contactez Exclusive Networks pour un dimensionnement sur-mesure.</p>';
+    const bwGbps = bwMbps / 1000;
+    const sslFactor = ssl === 'yes' ? 1.5 : (ssl === 'maybe' ? 1.3 : 1.0);
+    const needTp = bwGbps * sslFactor;
+
+    const sessPerUser = cloud === 'high' ? 35 : 10;
+    const needSess = Math.round(users * sessPerUser * 1.5);
+
+    const reco = [];
+    for (const fam of FAMILIES) {
+      const tpAt70 = fam.tpMax * 0.7;
+      if (needTp <= tpAt70) {
+        let why = '';
+        if (type === 'branch' && (fam.id === 'PA-400' || fam.id === 'PA-500')) {
+          why = 'Adapte a vos agences distantes avec ' + bwMbps + ' Mbps de debit internet.';
+        } else if (type === 'campus' && (fam.id === 'PA-1400' || fam.id === 'PA-3400')) {
+          why = 'Dimensionne pour un siege ou campus de ' + users + ' utilisateurs.';
+        } else if (type === 'dc' && (fam.id === 'PA-5400' || fam.id === 'PA-7500')) {
+          why = 'Concu pour les environnements datacenter avec ' + bwGbps.toFixed(1) + ' Gbps de capacite.';
+        } else {
+          why = 'Couvre votre besoin de ' + (needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps') + ' de debit securise' + (ssl === 'yes' ? ' avec dechiffrement HTTPS' : '') + '.';
+        }
+        reco.push({ ...fam, why });
+        if (reco.length >= 2) break;
+      }
+    }
+
+    const box = document.getElementById('wiz-results-commercial');
+    if (reco.length === 0) {
+      box.innerHTML = '<div class="wiz-disclaimer"><strong>Besoin hors gamme standard.</strong> Contactez directement votre ingenieur avant-vente Exclusive Networks pour un dimensionnement sur-mesure (PA-7500 ou architecture distribuee).</div>';
       box.classList.add('visible');
       return;
     }
 
-    let html = '<h4>Modeles recommandes (' + candidates.length + ')</h4>';
-    candidates.forEach((m, i) => {
-      const fit = i === 0 ? 'Meilleur rapport performance/besoin' : (i === 1 ? 'Alternative avec marge de croissance' : 'Capacite maximale dans la gamme');
-      html += `<div class="wiz-match">
-        <span class="wiz-match-name" style="color:${m.color}">${m.id}</span>
-        <span class="wiz-match-reason">
-          FW ${m.fw} Gbps · TP ${m.tp} Gbps · ${fmtN(m.sess)} sessions · ${m.f}
-          <br><em style="color:var(--accent);font-size:11px">${fit}</em>
-        </span>
+    let html = '<h4 style="margin-top:24px;font-size:14px;color:var(--text-bright)">Gammes recommandees</h4>';
+    reco.forEach((f, i) => {
+      html += `<div class="wiz-family-card">
+        <div class="wiz-family-name">${f.id} Series</div>
+        <div class="wiz-family-positioning">${f.pos}</div>
+        <div class="wiz-family-why">${f.why}</div>
+        <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px">${f.desc}</p>
+        <button class="wiz-link-tech" onclick="setMode('technique');filterSeries(document.querySelector('[data-series=&quot;${f.id}&quot;]'))">Voir les modeles ${f.id} dans le comparateur technique</button>
       </div>`;
     });
-    html += '<p style="font-size:11px;color:var(--text-muted);margin-top:10px">Ces recommandations sont indicatives. Pour un sizing precis, consultez votre partenaire Exclusive Networks.</p>';
+
+    const summary = `Utilisateurs: ${users} | Sites: ${sites} | Type: ${type === 'branch' ? 'Agence' : type === 'campus' ? 'Siege' : 'Datacenter'} | Debit: ${bwMbps} Mbps | SSL: ${ssl === 'yes' ? 'Oui' : ssl === 'no' ? 'Non' : 'A determiner'} | Usage cloud: ${cloud === 'high' ? 'Intensif' : 'Standard'}`;
+    const recoText = reco.map(f => f.id + ' Series — ' + f.pos).join(' / ');
+    const mailto = 'mailto:?subject=' + encodeURIComponent('Qualification firewall Palo Alto Networks') + '&body=' + encodeURIComponent('Bonjour,\n\nVoici une premiere qualification realisee via l\'outil Sizing Guide PANW :\n\n' + summary + '\n\nRecommandation indicative : ' + recoText + '\n\nMerci de valider cette premiere approche et de proposer un dimensionnement definitif.\n\nCordialement');
+
+    html += `<div class="wiz-actions">
+      <a class="wiz-action-btn primary" href="${mailto}">Transmettre a l'avant-vente</a>
+      <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText('${summary.replace(/'/g,"\\'")}\\nRecommandation : ${recoText.replace(/'/g,"\\'")}');this.textContent='Copie !'">Copier le recapitulatif</button>
+    </div>`;
+
+    html += `<div class="wiz-disclaimer">
+      <strong>Estimation indicative de premiere qualification.</strong> Le dimensionnement definitif doit etre valide par un ingenieur avant-vente, idealement a partir d'un SLR (Security Lifecycle Review) ou de donnees de trafic reelles.
+    </div>`;
+
     box.innerHTML = html;
     box.classList.add('visible');
   }
