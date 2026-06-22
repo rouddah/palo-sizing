@@ -440,38 +440,69 @@
       </table>
     </div>
 
-    <!-- Licensing -->
-    <div class="section-title">Licence et SKU</div>
+    <!-- Editions : Education / Core / Pro -->
+    <!-- Source : deck de licensing Prisma Access Browser fourni par l'utilisateur, juin 2026 -->
+    <div class="section-title">Editions — Education / Core / Pro</div>
     <div class="info-note">
-      <strong>Modèle de licence :</strong> Abonnement annuel par utilisateur actif (concurrent ou named user selon accord). Le Prisma Access Browser est vendu en complement ou en bundle avec Prisma Access Enterprise Edition. L'intégration Strata Cloud Manager est incluse dans la licence. Pour un devis, contacter Exclusive Networks.
+      <strong>Modele de licence :</strong> Abonnement annuel par utilisateur. Trois editions, toutes incluant le navigateur securise Chromium et le Standard Support Plan. L'integration Strata Cloud Manager est incluse dans chaque edition. Pour un devis, contacter Exclusive Networks.
     </div>
     <div class="table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
-            <th style="text-align:left;min-width:220px">SKU / Édition</th>
-            <th>Contenu</th>
+            <th style="text-align:left;min-width:280px">Capacite</th>
+            <th>Education</th>
+            <th>Core</th>
+            <th>Pro</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="font-family:var(--mono);font-size:11px">PAN-PRISMA-BROWSER</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Licence de base : navigateur + Zero Trust + DLP de base + Threat Prevention</td>
-          </tr>
-          <tr>
-            <td style="font-family:var(--mono);font-size:11px">Add-on Enterprise DLP</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">DLP avancé avec classificateurs ML, empreintes digitales, intégration CASB</td>
-          </tr>
-          <tr>
-            <td style="font-family:var(--mono);font-size:11px">Add-on Remote Browser Isolation</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Isolation complète des sessions pour catégories de sites à risque élevé</td>
-          </tr>
-          <tr>
-            <td style="font-family:var(--mono);font-size:11px">Bundle Prisma Access Enterprise + Browser</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Package combiné : SASE complet + Browser pour déploiement unifié</td>
-          </tr>
+          <tr class="section-row"><td colspan="4">Navigateur securise</td></tr>
+          <tr><td>Enterprise Browser (Internet / SaaS)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>SWG (Secure Web Gateway)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Enterprise DLP</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>AI Access Security (controle des apps GenAI)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Management Console (SCM)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Standard Support Plan</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Acces aux apps privees (PRO uniquement)</td></tr>
+          <tr><td>Acces ZTNA aux apps privees (RDP, SSH, web) sans VPN</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>Prisma Browser Connector (region cloud optimale)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>NGFW Connector (via PAN-OS >= 12.1.5 / Panorama)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Protection avancee (PRO uniquement)</td></tr>
+          <tr><td>Advanced Web Protection (AWP / AXS / ABP)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>Advanced Data Protection (Prisma Browser Beyond)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>Advanced Identity Protection (Account Protection / Web PAM)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+          <tr><td>ADEM RUM (Real User Monitoring)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check">✓</td></tr>
+
+          <tr class="section-row"><td colspan="4">Connectivite supplementaire (options PRO)</td></tr>
+          <tr><td>Service Connection</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-med"><span class="cap-badge yellow">Option</span></td></tr>
+          <tr><td>ZTNA Connector</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-med"><span class="cap-badge yellow">Option</span></td></tr>
+          <tr><td>Colo Connect</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-med"><span class="cap-badge yellow">Option</span></td></tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Detail PRO -->
+    <div class="section-title">Detail des capacites PRO</div>
+    <div class="policy-grid">
+      <div class="policy-card">
+        <div class="policy-card-name">Advanced Web Protection (AWP / AXS / ABP)</div>
+        <div class="policy-card-desc">Inspection en temps reel du contenu et des scripts pendant l'execution de la page. AXS surveille les extensions du navigateur, ABP bloque les menaces zero-day post-chargement (phishing masque, code genere par IA). Mecanisme exact (signatures vs comportement) a confirmer.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Advanced Data Protection (Browser Beyond)</div>
+        <div class="policy-card-desc">Etend les controles anti-exfiltration au-dela du navigateur : protection des logiciels installes sur le poste (Outlook, Slack, Excel, Teams) contre les fuites de donnees.</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">Advanced Identity Protection (Web PAM)</div>
+        <div class="policy-card-desc">Securise les applications hors SSO et les comptes partages. Les mots de passe sont geres centralement et jamais visibles par l'utilisateur final (Account Protection).</div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-card-name">ADEM RUM (Real User Monitoring)</div>
+        <div class="policy-card-desc">Mesure de l'experience utilisateur reelle directement depuis le navigateur (latence, temps de chargement, qualite de connexion). Donnees remontees dans Strata Cloud Manager.</div>
+      </div>
     </div>
 
     <!-- Key points -->
