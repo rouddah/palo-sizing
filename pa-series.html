@@ -2007,6 +2007,7 @@
     const rawRemote = document.getElementById('wiz-remote')?.value || 'unknown';
     const rawGrowth = document.getElementById('wiz-growth')?.value || 'unknown';
 
+    const validationWarning = validateInputs();
     const assumptions = [];
     const openQuestions = [];
 
@@ -2070,6 +2071,10 @@
     }
 
     let html = '';
+
+    if (validationWarning) {
+      html += `<div class="wiz-assumption" style="margin-top:16px;background:var(--red-dim);border-color:rgba(239,68,68,0.2);color:var(--red)"><span class="wiz-assumption-icon">&#9888;</span> ${validationWarning}</div>`;
+    }
 
     html += `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px;margin-bottom:16px">
       <h4 style="font-size:14px;color:var(--text-bright);margin:0">Recommandation</h4>
@@ -2268,6 +2273,102 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
     box.innerHTML = html;
     box.classList.add('visible');
     box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ══ Golden cases (scenarios de reference) ══
+     Profils types avec resultat attendu. A rejouer apres chaque mise a jour
+     des donnees pour detecter les regressions.
+     Usage : ouvrir la console navigateur et executer runGoldenCases()
+  ══ */
+  const GOLDEN_CASES = [
+    {
+      name: 'TPE mono-site',
+      desc: '20 utilisateurs, 1 site agence, 50 Mbps, pas de SSL',
+      inputs: { users:'30', sites:'1', type:'branch', bw:'50', ssl:'no', cloud:'low', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      expect: { families: ['PA-400'], confidenceMin: 'green' }
+    },
+    {
+      name: 'PME multi-sites avec dechiffrement',
+      desc: '200 utilisateurs, 5 sites, siege, 200 Mbps, SSL oui, SaaS intensif',
+      inputs: { users:'250', sites:'3', type:'campus', bw:'200', ssl:'yes', cloud:'high', sector:'services', existing:'fortinet', iot:'none', ha:'yes', remote:'medium', growth:'moderate' },
+      expect: { families: ['PA-400','PA-500','PA-1400'], confidenceMin: 'green' }
+    },
+    {
+      name: 'ETI avec datacenter',
+      desc: '2000 utilisateurs, 10 sites, datacenter, 5 Gbps, SSL oui, forte croissance',
+      inputs: { users:'2500', sites:'10', type:'dc', bw:'5000', ssl:'yes', cloud:'high', sector:'finance', existing:'cisco', iot:'moderate', ha:'yes', remote:'high', growth:'strong' },
+      expect: { families: ['PA-5400','PA-7500'], confidenceMin: 'green' }
+    },
+    {
+      name: 'Tout inconnu',
+      desc: 'Toutes les reponses a "je ne sais pas"',
+      inputs: { users:'unknown', sites:'unknown', type:'unknown', bw:'unknown', ssl:'unknown', cloud:'unknown', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      expect: { families: ['PA-400','PA-500'], confidenceMin: 'red' }
+    },
+  ];
+
+  function runGoldenCases() {
+    const results = [];
+    const fieldMap = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
+
+    for (const gc of GOLDEN_CASES) {
+      Object.entries(gc.inputs).forEach(([k, v]) => {
+        const el = document.getElementById(fieldMap[k]);
+        if (el) el.value = v;
+      });
+      setDepth('advanced');
+      runCommercialWizard();
+
+      const box = document.getElementById('wiz-results-commercial');
+      const confBadge = box.querySelector('.confidence-badge');
+      const familyCards = box.querySelectorAll('.wiz-family-name');
+      const foundFamilies = [...familyCards].map(el => el.textContent.replace(' Series',''));
+      const confLevel = confBadge?.classList.contains('confidence-green') ? 'green' : confBadge?.classList.contains('confidence-orange') ? 'orange' : 'red';
+
+      const confOrder = { green: 0, orange: 1, red: 2 };
+      const familyMatch = gc.expect.families.some(f => foundFamilies.includes(f));
+      const confMatch = confOrder[confLevel] <= confOrder[gc.expect.confidenceMin];
+      const pass = familyMatch && confMatch;
+
+      results.push({
+        name: gc.name,
+        pass,
+        found: foundFamilies.join(', '),
+        expected: gc.expect.families.join(', '),
+        confidence: confLevel,
+        expectedConf: gc.expect.confidenceMin
+      });
+    }
+
+    console.group('Golden Cases — resultats');
+    let allPass = true;
+    results.forEach(r => {
+      const icon = r.pass ? '✅' : '❌';
+      console.log(`${icon} ${r.name} | Familles: ${r.found} (attendu: ${r.expected}) | Confiance: ${r.confidence} (min attendu: ${r.expectedConf})`);
+      if (!r.pass) allPass = false;
+    });
+    console.log(allPass ? '\n✅ Tous les golden cases passent.' : '\n❌ Certains golden cases echouent.');
+    console.groupEnd();
+    return results;
+  }
+
+  /* ══ Input validation ══ */
+  function validateInputs() {
+    const users = document.getElementById('wiz-users').value;
+    const sites = document.getElementById('wiz-sites').value;
+    const bw = document.getElementById('wiz-bw').value;
+
+    if (users !== 'unknown' && sites !== 'unknown') {
+      const u = parseInt(users);
+      const s = parseInt(sites);
+      if (u < 30 && s > 10) {
+        return 'Incoherence : moins de 30 utilisateurs pour plus de 10 sites semble inhabituel. Verifiez les reponses.';
+      }
+      if (u > 5000 && s === 1 && bw !== 'unknown' && parseInt(bw) < 200) {
+        return 'Incoherence : plus de 5000 utilisateurs sur un seul site avec moins de 200 Mbps semble sous-dimensionne cote debit.';
+      }
+    }
+    return null;
   }
 
   buildTable();
