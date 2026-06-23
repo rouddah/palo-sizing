@@ -1161,16 +1161,21 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Existant à remplacer <span class="wiz-help glossary-tip" data-tip="La marque actuelle du firewall permet d'orienter les arguments concurrentiels.">?</span></label>
-          <select id="wiz-existing">
+          <label>Marque du firewall actuel <span class="wiz-help glossary-tip" data-tip="La marque actuelle du firewall permet d'orienter les arguments concurrentiels et de proposer un équivalent PA-Series.">?</span></label>
+          <select id="wiz-existing" onchange="updateExistingModels()">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="fortinet">Fortinet (FortiGate)</option>
+            <option value="checkpoint">Check Point (Quantum)</option>
             <option value="cisco">Cisco (Firepower / ASA)</option>
-            <option value="checkpoint">Check Point</option>
             <option value="sophos">Sophos</option>
-            <option value="zscaler">Zscaler</option>
             <option value="none">Pas d'existant (nouveau projet)</option>
             <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="wiz-field" id="wiz-model-field" style="display:none">
+          <label>Modèle exact <span class="wiz-help glossary-tip" data-tip="Si vous connaissez le modèle exact du firewall en place, l'outil proposera directement l'équivalent PA-Series.">?</span></label>
+          <select id="wiz-existing-model">
+            <option value="unknown" selected>Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
@@ -2067,6 +2072,89 @@
        PA-7500 : TP 1440 Gbps           — source : datasheet PA-7500 PAN-OS 11.1
      Garde-fou : ne pas depasser 60-70% de la capacite datasheet
   ══ */
+  /* ══ Base concurrents — mapping vers PA-Series ══
+     Sources : datasheets officielles Fortinet (Product Matrix 2026) et Check Point (Appliance Comparison 2026)
+     Throughput : IPS/Threat Prevention en conditions enterprise, pas les débits firewall bruts
+     Le mapping PA-Series est basé sur le débit TP comparable (fourchette)
+  ══ */
+  const COMPETITOR_MODELS = {
+    fortinet: [
+      { id:'FG-30G',   tp:0.5,  target:'Home office / TPE',              pa:'PA-410' },
+      { id:'FG-40F',   tp:0.6,  target:'SMB',                            pa:'PA-410' },
+      { id:'FG-50G',   tp:1.1,  target:'Petite agence',                  pa:'PA-440' },
+      { id:'FG-60F',   tp:0.7,  target:'Petite agence / retail',         pa:'PA-410' },
+      { id:'FG-70F',   tp:0.8,  target:'SMB',                            pa:'PA-440' },
+      { id:'FG-70G',   tp:1.3,  target:'SMB',                            pa:'PA-445' },
+      { id:'FG-80F',   tp:0.9,  target:'SMB desktop',                    pa:'PA-440' },
+      { id:'FG-90G',   tp:2.2,  target:'PME (50-250 users)',             pa:'PA-460' },
+      { id:'FG-120G',  tp:2.8,  target:'Campus PME',                     pa:'PA-540' },
+      { id:'FG-200F',  tp:3.5,  target:'Agence distribuée',              pa:'PA-550' },
+      { id:'FG-200G',  tp:6,    target:'Multi-sites (50-250 users)',     pa:'PA-560' },
+      { id:'FG-400F',  tp:9,    target:'Siège entreprise',               pa:'PA-1420' },
+      { id:'FG-600F',  tp:10,   target:'Campus enterprise',              pa:'PA-3410' },
+      { id:'FG-700G',  tp:26,   target:'Campus haute densité',           pa:'PA-3440' },
+      { id:'FG-900G',  tp:30,   target:'Périmètre enterprise',           pa:'PA-5410' },
+      { id:'FG-1000F', tp:13,   target:'Enterprise tier 1',              pa:'PA-3420' },
+      { id:'FG-1800F', tp:15,   target:'Service provider',               pa:'PA-3430' },
+      { id:'FG-2600F', tp:25,   target:'Datacenter',                     pa:'PA-5410' },
+      { id:'FG-3000F', tp:33,   target:'Hyperscale',                     pa:'PA-5410' },
+      { id:'FG-3200F', tp:45,   target:'Enterprise haut de gamme',       pa:'PA-5420' },
+      { id:'FG-3500F', tp:63,   target:'Datacenter',                     pa:'PA-5430' },
+      { id:'FG-3700F', tp:75,   target:'Hyperscale datacenter',          pa:'PA-5445' },
+      { id:'FG-4200F', tp:45,   target:'Enterprise',                     pa:'PA-5420' },
+      { id:'FG-4400F', tp:75,   target:'Datacenter haute capacité',      pa:'PA-5445' },
+    ],
+    checkpoint: [
+      { id:'1535',    tp:0.44, target:'PME',                             pa:'PA-410' },
+      { id:'1555',    tp:0.6,  target:'PME',                             pa:'PA-410' },
+      { id:'1575',    tp:0.65, target:'PME',                             pa:'PA-410' },
+      { id:'1595',    tp:0.9,  target:'PME',                             pa:'PA-440' },
+      { id:'1600',    tp:1.5,  target:'PME',                             pa:'PA-445' },
+      { id:'1800',    tp:2,    target:'PME',                             pa:'PA-460' },
+      { id:'2530',    tp:0.75, target:'Small office / retail',           pa:'PA-410' },
+      { id:'2550',    tp:1,    target:'Small office',                    pa:'PA-440' },
+      { id:'2560',    tp:1.5,  target:'Small office',                    pa:'PA-445' },
+      { id:'2570',    tp:2.6,  target:'Small office',                    pa:'PA-460' },
+      { id:'2580',    tp:3.25, target:'Small office',                    pa:'PA-540' },
+      { id:'3920',    tp:3.2,  target:'Campus corporate',               pa:'PA-540' },
+      { id:'3950',    tp:5.5,  target:'Campus corporate',               pa:'PA-1410' },
+      { id:'3970',    tp:4.25, target:'Campus corporate',               pa:'PA-1410' },
+      { id:'3980',    tp:7,    target:'Campus corporate',               pa:'PA-1420' },
+      { id:'9100',    tp:6.5,  target:'Périmètre enterprise',           pa:'PA-1420' },
+      { id:'9200',    tp:8,    target:'Périmètre enterprise',           pa:'PA-3410' },
+      { id:'9300',    tp:10.5, target:'Périmètre enterprise',           pa:'PA-3420' },
+      { id:'9400',    tp:14,   target:'Grande enterprise',              pa:'PA-3430' },
+      { id:'9700',    tp:20,   target:'Grande enterprise',              pa:'PA-3440' },
+      { id:'9800',    tp:25,   target:'Grande enterprise',              pa:'PA-5410' },
+      { id:'7000',    tp:9.5,  target:'Datacenter (legacy)',            pa:'PA-3410' },
+      { id:'16200',   tp:15,   target:'Datacenter (legacy)',            pa:'PA-3430' },
+      { id:'26000',   tp:24,   target:'Datacenter (legacy)',            pa:'PA-5410' },
+      { id:'28000',   tp:30,   target:'Datacenter (legacy)',            pa:'PA-5410' },
+      { id:'19100',   tp:35,   target:'Datacenter (Force)',             pa:'PA-5410' },
+      { id:'19200',   tp:44,   target:'Datacenter (Force)',             pa:'PA-5420' },
+      { id:'29100',   tp:60,   target:'Datacenter (Force)',             pa:'PA-5430' },
+      { id:'29200',   tp:75,   target:'Datacenter (Force)',             pa:'PA-5445' },
+    ],
+  };
+
+  function updateExistingModels() {
+    const brand = document.getElementById('wiz-existing').value;
+    const modelField = document.getElementById('wiz-model-field');
+    const modelSelect = document.getElementById('wiz-existing-model');
+    if (brand === 'fortinet' || brand === 'checkpoint') {
+      modelField.style.display = '';
+      const models = COMPETITOR_MODELS[brand];
+      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>' +
+        models.map(m => {
+          const prefix = brand === 'fortinet' ? '' : 'Quantum ';
+          return `<option value="${m.id}">${prefix}${m.id} (TP ${m.tp} Gbps, ${m.target})</option>`;
+        }).join('');
+    } else {
+      modelField.style.display = 'none';
+      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>';
+    }
+  }
+
   const FAMILIES = [
     { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   modeles:'PA-410 à PA-460',       form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
     { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   modeles:'PA-505 à PA-560',       form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
@@ -2124,6 +2212,7 @@
     const rawCloud  = document.getElementById('wiz-cloud').value;
     const rawSector = document.getElementById('wiz-sector')?.value || 'unknown';
     const rawExist  = document.getElementById('wiz-existing')?.value || 'unknown';
+    const rawExistModel = document.getElementById('wiz-existing-model')?.value || 'unknown';
     const rawIot    = document.getElementById('wiz-iot')?.value || 'unknown';
     const rawHa     = document.getElementById('wiz-ha')?.value || 'unknown';
     const rawRemote = document.getElementById('wiz-remote')?.value || 'unknown';
@@ -2209,6 +2298,29 @@
         html += `<div class="wiz-assumption"><span class="wiz-assumption-icon">&#9888;</span> ${a}</div>`;
       });
       html += '</div>';
+    }
+
+    if (rawExistModel !== 'unknown' && (rawExist === 'fortinet' || rawExist === 'checkpoint')) {
+      const compModels = COMPETITOR_MODELS[rawExist];
+      const match = compModels.find(m => m.id === rawExistModel);
+      if (match) {
+        const paModel = MODELS.find(m => m.id === match.pa);
+        const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
+        html += `<div class="reco-section"><div class="reco-section-title">Équivalence boîtier existant</div>`;
+        html += `<div class="reco-archi-card" style="border-left-color:var(--green)">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+            <span style="font-size:14px;font-weight:600;color:var(--text-muted);text-decoration:line-through">${brandName}${match.id}</span>
+            <span style="font-size:18px;color:var(--text-muted)">→</span>
+            <span style="font-size:16px;font-weight:700;color:var(--green)">${match.pa}</span>
+          </div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6">
+            Le <strong>${brandName}${match.id}</strong> (${match.target}, TP ~${match.tp} Gbps) correspond au <strong>${match.pa}</strong>
+            ${paModel ? '(TP ' + paModel.tp + ' Gbps, ' + fmtN(paModel.sess) + ' sessions)' : ''} en termes de capacité Threat Prevention.
+            <br><span style="font-size:11px;color:var(--text-muted)">Comparaison indicative basée sur les débits Threat Prevention des datasheets respectives. Les méthodologies de mesure diffèrent entre constructeurs.</span>
+          </div>
+          ${paModel ? `<button class="wiz-link-tech" style="margin-top:8px" onclick="setMode('technique');document.getElementById('model-search').value='${match.pa}';filterSearch('${match.pa}')">Voir ${match.pa} dans le comparateur</button>` : ''}
+        </div></div>`;
+      }
     }
 
     html += '<div class="reco-section"><div class="reco-section-title">Architecture recommandée</div>';
@@ -2340,7 +2452,7 @@ RÉPONSES CLIENT
   Déchiffrement SSL : ${sslLabel}${rawSsl === 'unknown' ? ' (hypothèse : oui)' : ''}
   Usage cloud : ${cloudLabel}
   Secteur : ${rawSector === 'unknown' ? 'Non renseigné' : rawSector}
-  Existant : ${rawExist === 'unknown' ? 'Non renseigné' : rawExist}
+  Existant : ${rawExist === 'unknown' ? 'Non renseigné' : rawExist}${rawExistModel !== 'unknown' ? ' (' + rawExistModel + ')' : ''}
   IoT : ${rawIot === 'unknown' ? 'Non renseigné' : rawIot}
   HA : ${rawHa === 'unknown' ? 'Non renseigné' : rawHa}
   Nomades : ${rawRemote === 'unknown' ? 'Non renseigné' : rawRemote}
@@ -2382,8 +2494,8 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
       </div>
       <div class="brief-actions">
         <a class="wiz-action-btn primary" href="${mailto}">Envoyer par mail</a>
-        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(briefText)}'));this.textContent='Copié !'">Copier le brief</button>
-        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText('${shareUrl}');this.textContent='Lien copié !'">Copier le lien de session</button>
+        <button class="wiz-action-btn secondary" id="btn-copy-brief">Copier le brief</button>
+        <button class="wiz-action-btn secondary" id="btn-copy-link">Copier le lien de session</button>
       </div>
     </div>`;
 
@@ -2395,6 +2507,13 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
     box.innerHTML = html;
     box.classList.add('visible');
     box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    document.getElementById('btn-copy-brief')?.addEventListener('click', function() {
+      navigator.clipboard.writeText(briefText).then(() => { this.textContent = 'Copié !'; });
+    });
+    document.getElementById('btn-copy-link')?.addEventListener('click', function() {
+      navigator.clipboard.writeText(shareUrl).then(() => { this.textContent = 'Lien copié !'; });
+    });
   }
 
   /* ══ Golden cases (scenarios de reference) ══
