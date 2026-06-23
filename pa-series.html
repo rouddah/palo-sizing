@@ -1079,6 +1079,17 @@
         <button class="wiz-depth-btn" id="depth-advanced" onclick="setDepth('advanced')">Mode approfondi</button>
       </div>
 
+      <div style="max-width:700px;margin:0 auto 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="wiz-field">
+          <label>Nom du client</label>
+          <input type="text" id="wiz-client" placeholder="Ex: Société Dupont SAS" value="">
+        </div>
+        <div class="wiz-field">
+          <label>Partenaire / commercial</label>
+          <input type="text" id="wiz-partner" placeholder="Ex: Jean Martin, Exclusive Networks" value="">
+        </div>
+      </div>
+
       <div class="wizard-form" style="max-width:700px;margin:0 auto" id="wiz-form">
         <div class="wiz-field">
           <label>Nombre de collaborateurs <span class="wiz-help glossary-tip" data-tip="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). Entrez un nombre précis ou laissez vide si inconnu.">?</span></label>
@@ -2014,12 +2025,12 @@
 
   /* ══ URL encode/decode for shareable sessions ══ */
   function encodeSession() {
-    const fields = ['wiz-users','wiz-sites','wiz-type','wiz-bw','wiz-ssl','wiz-cloud','wiz-sector','wiz-existing','wiz-iot','wiz-ha','wiz-remote','wiz-growth'];
+    const fields = ['wiz-client','wiz-partner','wiz-users','wiz-sites','wiz-type','wiz-bw','wiz-ssl','wiz-cloud','wiz-sector','wiz-existing','wiz-iot','wiz-ha','wiz-remote','wiz-growth'];
     const params = new URLSearchParams();
     params.set('d', wizDepth);
     fields.forEach(f => {
       const el = document.getElementById(f);
-      if (el) params.set(f.replace('wiz-',''), el.value);
+      if (el && el.value) params.set(f.replace('wiz-',''), el.value);
     });
     return window.location.origin + window.location.pathname + '?' + params.toString();
   }
@@ -2027,7 +2038,7 @@
   function loadFromURL() {
     const params = new URLSearchParams(window.location.search);
     if (params.size === 0) return;
-    const map = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
+    const map = { client:'wiz-client', partner:'wiz-partner', users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
     Object.entries(map).forEach(([k, id]) => {
       const v = params.get(k);
       const el = document.getElementById(id);
@@ -2180,6 +2191,8 @@
 
   function runCommercialWizard() {
     const _v = id => { const el = document.getElementById(id); return el ? (el.value === '' ? 'unknown' : el.value) : 'unknown'; };
+    const clientName = document.getElementById('wiz-client')?.value?.trim() || '';
+    const partnerName = document.getElementById('wiz-partner')?.value?.trim() || '';
     const rawUsers  = _v('wiz-users');
     const rawSites  = _v('wiz-sites');
     const rawType   = _v('wiz-type');
@@ -2424,8 +2437,8 @@
 
     const briefText = `QUALIFICATION FIREWALL PALO ALTO NETWORKS
 ============================================
-Date : ${new Date().toLocaleDateString('fr-FR')}
-Confiance : ${confLabel}
+${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Partenaire : ' + partnerName + '\n' : ''}Date : ${new Date().toLocaleDateString('fr-FR')}
+${confLabel}
 
 RÉPONSES CLIENT
   Utilisateurs : ${rawUsers === 'unknown' ? 'Non connu (hypothèse 250)' : users}
@@ -2453,12 +2466,16 @@ Estimation indicative de première qualification.
 Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`;
 
     const shareUrl = encodeSession();
-    const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks');
+    const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks' + (clientName ? ' — ' + clientName : ''));
     const mailBody = encodeURIComponent('Bonjour,\n\nVoici une première qualification réalisée via l\'outil Sizing Guide PANW :\n\n' + briefText + '\n\nLien direct vers la qualification : ' + shareUrl + '\n\nCordialement');
     const mailto = 'mailto:?subject=' + mailSubject + '&body=' + mailBody;
 
     html += `<div class="brief-card">
       <div class="brief-title">Brief transmissible à l'avant-vente</div>
+      ${clientName || partnerName ? `<div class="brief-section" style="display:flex;gap:24px;flex-wrap:wrap">
+        ${clientName ? `<div><div class="brief-section-label">Client</div><div class="brief-section-content" style="font-weight:600">${clientName}</div></div>` : ''}
+        ${partnerName ? `<div><div class="brief-section-label">Partenaire</div><div class="brief-section-content">${partnerName}</div></div>` : ''}
+      </div>` : ''}
       <div class="brief-section">
         <div class="brief-section-label">Résumé</div>
         <div class="brief-section-content">${users} utilisateurs, ${sites} site(s) (${typeLabel}), ${bwMbps} Mbps, SSL ${sslLabel}. Reco : ${recoText}.</div>
@@ -2503,11 +2520,11 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
         date: new Date().toLocaleDateString('fr-FR'),
         confidence, confLabel,
         users, sites, typeLabel, bwMbps, sslLabel, cloudLabel,
+        clientName, partnerName,
         sector: rawSector, existing: rawExist, existingModel: rawExistModel,
         iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
         recoText, reco, needTp, needSess,
         assumptions, openQuestions, subs,
-        existingMapping: null,
       });
       const brand = rawExist;
       if ((brand === 'fortinet' || brand === 'checkpoint') && rawExistModel !== 'unknown') {
@@ -2571,10 +2588,11 @@ table td:last-child { color:#1e293b; }
   <img src="${LOGO_PAN}" alt="Palo Alto Networks">
 </div>
 <h1>Qualification Firewall Palo Alto Networks</h1>
-<h2>Brief avant-vente</h2>
+${d.clientName ? `<h2 style="font-size:16px;color:#0f172a;margin-bottom:2px">${d.clientName}</h2>` : ''}
 <div class="meta">
   <span>Date : ${d.date}</span>
-  <span class="conf-badge" style="background:${confBg};color:${confColor};border:1px solid ${confColor}30">Qualification : ${d.confidence === 'green' ? 'Complète' : d.confidence === 'orange' ? 'Partielle' : 'À approfondir'}</span>
+  ${d.partnerName ? `<span>Partenaire : ${d.partnerName}</span>` : ''}
+  <span class="conf-badge" style="background:${confBg};color:${confColor};border:1px solid ${confColor}30">${d.confLabel}</span>
 </div>
 
 <div class="section">
