@@ -84,14 +84,19 @@
     /* ── Table container ── */
     .table-outer {
       position: relative; z-index: 1;
-      overflow: auto;
-      height: calc(100vh - var(--header-h) - 110px);
+      overflow-x: scroll;
+      overflow-y: auto;
+      height: calc(100vh - var(--header-h) - 150px);
       -webkit-overflow-scrolling: touch;
     }
-    .table-outer::-webkit-scrollbar { height: 10px; }
-    .table-outer::-webkit-scrollbar-track { background: var(--bg2); }
-    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 5px; }
+    .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
+    .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; min-height: 40px; }
     .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .table-outer::-webkit-scrollbar-corner { background: var(--bg2); }
+    @supports (scrollbar-width: auto) {
+      .table-outer { scrollbar-width: auto; scrollbar-color: var(--border2) var(--bg2); }
+    }
 
     .pa-table {
       border-collapse: separate;
@@ -612,101 +617,116 @@
     /* ── Guide de qualification ── */
     .guide-view { position: relative; z-index: 1; }
     .guide-wrap {
-      max-width: 900px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 24px 24px 60px;
+      padding: 32px 24px 60px;
     }
     .guide-header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
     .guide-header h2 {
-      font-size: 22px;
+      font-family: var(--font);
+      font-size: 26px;
       font-weight: 700;
       color: var(--text-bright);
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
     }
     .guide-header p {
-      font-size: 13px;
+      font-family: var(--font);
+      font-size: 14px;
       color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 16px;
+      max-width: 560px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
     }
     .guide-print-btn {
-      padding: 8px 20px;
-      background: var(--surface2);
+      padding: 10px 24px;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
       color: var(--text-muted);
       font-family: var(--font);
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       transition: all .15s;
     }
-    .guide-print-btn:hover { color: var(--text-bright); border-color: var(--border2); }
+    .guide-print-btn:hover { color: var(--text-bright); border-color: var(--accent); background: var(--accent-dim); }
     .guide-category {
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
     .guide-cat-title {
-      
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent);
-      padding-bottom: 8px;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-bright);
+      padding: 12px 0;
       border-bottom: 2px solid var(--accent);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .guide-cat-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
     }
     .guide-question {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 12px;
-      transition: border-color .15s;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 14px;
+      transition: border-color .2s, box-shadow .2s;
     }
-    .guide-question:hover { border-color: var(--border2); }
+    .guide-question:hover { border-color: var(--border2); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
     .guide-q-main {
-      font-size: 15px;
+      font-family: var(--font);
+      font-size: 16px;
       font-weight: 600;
       color: var(--text-bright);
-      margin-bottom: 12px;
-      line-height: 1.4;
+      margin-bottom: 16px;
+      line-height: 1.5;
     }
     .guide-q-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
     @media (max-width: 640px) {
       .guide-q-grid { grid-template-columns: 1fr; }
     }
     .guide-q-block {
-      padding: 12px;
+      padding: 16px;
       background: var(--bg2);
-      border-radius: 8px;
-      border-left: 3px solid var(--border2);
+      border-radius: 10px;
+      border-left: 4px solid var(--border2);
     }
-    .guide-q-block.represents { border-left-color: var(--blue-bright); }
-    .guide-q-block.matters { border-left-color: var(--green); }
-    .guide-q-block.fallback { border-left-color: var(--yellow); }
+    .guide-q-block.represents { border-left-color: var(--blue-bright); background: rgba(26,95,212,0.04); }
+    .guide-q-block.matters { border-left-color: var(--green); background: rgba(34,197,94,0.04); }
+    .guide-q-block.fallback { border-left-color: var(--yellow); background: rgba(245,158,11,0.04); }
     .guide-q-block.question-label { border-left-color: var(--accent); }
     .guide-q-block-label {
-      
-      font-size: 9px;
+      font-family: var(--font);
+      font-size: 11px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      letter-spacing: 0.2px;
+      margin-bottom: 6px;
     }
     .guide-q-block.represents .guide-q-block-label { color: var(--blue-bright); }
     .guide-q-block.matters .guide-q-block-label { color: var(--green); }
     .guide-q-block.fallback .guide-q-block-label { color: var(--yellow); }
     .guide-q-block-text {
-      font-size: 12px;
+      font-family: var(--font);
+      font-size: 13px;
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.65;
     }
     @media print {
       body::before, body::after, .site-header, .mode-bar, .site-footer { display: none !important; }
