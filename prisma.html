@@ -5,6 +5,10 @@
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sizing Guide — Prisma Access</title>
+  <meta name="description" content="Prisma Access SASE, editions Mobile Users et Remote Networks, CDSS Precision AI, Prisma SD-WAN ION et Prisma Browser." />
+  <meta property="og:title" content="Sizing Guide — Prisma Access SASE" />
+  <meta property="og:description" content="Architecture SASE Prisma Access, editions, CDSS Precision AI et SD-WAN." />
+  <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
     .val-opt { color: var(--text-muted); font-family: var(--mono); font-size: 12px; font-style: italic; }
@@ -91,11 +95,47 @@
     </div>
 
     <!-- Source : deck Prisma SASE fourni par l'utilisateur + docs.paloaltonetworks.com, juin 2026 -->
+    <!-- Source Precision AI Pro Bundle : datasheet officielle PAN janv. 2025, blog PAN "Precision AI Pro - Now with Integrated Device Security", EoS notice dec. 2025 -->
+
+    <!-- ── Precision AI Pro Bundle ── -->
+    <div class="section-title">Precision AI Pro Bundle — subscriptions NGFW</div>
+    <div class="info-note" style="border-left-color:var(--green)">
+      <strong>Precision AI Pro Bundle</strong> est le bundle de subscriptions recommandé pour tous les NGFW PA-Series. Il regroupe l'ensemble des Cloud-Delivered Security Services (CDSS) en une seule souscription, powered by Precision AI. Ce bundle remplace l'ancien "Precision AI Network Security Bundle" (End of Sale dec. 2025, SKU PAN-PA-xxxx-BND-CORESEC). Le nouveau bundle Pro intègre Device Security (ex-IoT/OT Security) en plus du socle CDSS existant.
+    </div>
+
+    <div class="table-wrapper" style="margin-bottom:24px">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;min-width:240px">Service inclus</th>
+            <th>Precision AI Pro Bundle</th>
+            <th>Fonction</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Advanced Threat Prevention (ATP)</strong></td><td class="val-check">✓</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">IPS en temps réel, signatures et analyse comportementale Precision AI</td></tr>
+          <tr><td><strong>Advanced WildFire (AWF)</strong></td><td class="val-check">✓</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Sandboxing cloud pour l'analyse des fichiers inconnus et malwares avancés</td></tr>
+          <tr><td><strong>Advanced URL Filtering (AURL)</strong></td><td class="val-check">✓</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Catégorisation et filtrage des URLs via PAN-DB (85+ catégories, ML inline)</td></tr>
+          <tr><td><strong>Advanced DNS Security (ADNS)</strong></td><td class="val-check">✓</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Protection contre le DNS tunneling, DGA et domaines malveillants</td></tr>
+          <tr><td><strong>Advanced SD-WAN</strong></td><td class="val-check">✓</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">SD-WAN intégré au NGFW, routage intelligent et QoS applicatif</td></tr>
+          <tr><td><strong>Device Security (ex-IoT/OT Security)</strong></td><td class="val-check">✓ <span style="font-size:10px;color:var(--green)">Nouveau</span></td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Découverte, classification et segmentation automatique de tous les appareils connectés (IT, IoT, OT, médical) via Device-ID (3 600+ attributs)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px">
+      <div class="info-note" style="margin-bottom:0">
+        <strong>Pourquoi un bundle ?</strong> Souscrire les services individuellement coûte plus cher et laisse des angles morts. Le bundle Precision AI Pro garantit une couverture complète et une gestion simplifiée via une seule licence par appliance.
+      </div>
+      <div class="info-note" style="margin-bottom:0;border-left-color:var(--yellow)">
+        <strong>Transition depuis l'ancien bundle.</strong> L'ancien "Precision AI Network Security Bundle" (sans Device Security) est en End of Sale depuis décembre 2025 (commercial) et mars 2026 (secteur public). Les clients existants conservent leur souscription jusqu'à expiration, puis migrent vers le Pro Bundle.
+      </div>
+    </div>
 
     <!-- ── CDSS : Cloud-Delivered Security Services ── -->
     <div class="section-title">Cloud-Delivered Security Services (CDSS), powered by Precision AI</div>
     <div class="info-note">
-      <strong>Socle de securite commun</strong> a toutes les editions Prisma Access. Ces services sont delivres depuis le cloud et mis a jour en continu par Palo Alto Networks. Le perimetre exact inclus par defaut varie selon l'edition (voir les tableaux ci-dessous).
+      <strong>Socle de sécurité commun</strong> à toutes les éditions Prisma Access et inclus dans le Precision AI Pro Bundle pour les NGFW. Ces services sont délivrés depuis le cloud et mis à jour en continu par Palo Alto Networks. Le périmètre exact inclus par défaut varie selon l'édition (voir les tableaux ci-dessous).
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:32px">
       <div class="tool-card" style="cursor:default;padding:14px">

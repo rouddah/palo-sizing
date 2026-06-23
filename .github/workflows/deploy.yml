@@ -1,3 +1,8 @@
+# Ce workflow copie main vers gh-pages a chaque push.
+# Le deploiement reel vers Cloudflare Pages se fait via :
+#   npx wrangler pages deploy . --project-name palo-sizing
+# avec le token Cloudflare lu depuis le Desktop (tokencloudflare.txt).
+# Ce workflow est conserve comme sauvegarde (gh-pages = miroir de main).
 name: Deploy
 
 on:

@@ -45,13 +45,13 @@
 
 /* ── Custom properties (dark) ── */
 :root {
-  --bg:           #080b12;
-  --bg2:          #0d1120;
-  --surface:      #111827;
-  --surface2:     #1a2235;
-  --surface3:     #212d45;
-  --border:       #1e2d45;
-  --border2:      #2d4070;
+  --bg:           #0f1419;
+  --bg2:          #141c26;
+  --surface:      #17202e;
+  --surface2:     #1e2838;
+  --surface3:     #263248;
+  --border:       #253040;
+  --border2:      #354565;
   --accent:       #e84b1a;
   --accent-hover: #ff5c24;
   --accent-dim:   rgba(232,75,26,0.12);
@@ -109,7 +109,7 @@ body {
   transition: background .3s, color .3s;
 }
 
-/* Animated grid background */
+/* Subtle static background */
 body::before {
   content: '';
   position: fixed;
@@ -117,28 +117,10 @@ body::before {
   background-image:
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.25;
+  background-size: 60px 60px;
+  opacity: 0.08;
   pointer-events: none;
-  z-index: 0;
-  animation: gridDrift 30s linear infinite;
-}
-
-@keyframes gridDrift {
-  0%   { background-position: 0 0; }
-  100% { background-position: 48px 48px; }
-}
-
-/* Radial glow top */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 40% at 50% -5%, rgba(232,75,26,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 80% 100%, rgba(0,48,135,0.06) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* ── Header ── */
@@ -240,7 +222,7 @@ body::after {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--mono);
+  font-family: var(--font);
   font-size: 10px;
   font-weight: 500;
   padding: 3px 8px;
@@ -366,7 +348,7 @@ body::after {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--mono);
+  font-family: var(--font);
   font-size: 11px;
   font-weight: 500;
   color: var(--accent);
@@ -386,7 +368,6 @@ body::after {
   letter-spacing: -1px;
   line-height: 1.2;
   margin-bottom: 14px;
-  animation: heroIn .6s ease backwards;
 }
 
 .hero h1 span {
@@ -395,25 +376,13 @@ body::after {
   display: inline-block;
 }
 
-/* Animated underline on accent word */
+/* Accent underline */
 .hero h1 span::after {
   content: '';
   position: absolute;
   bottom: -2px; left: 0; right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--accent), transparent);
-  animation: lineGrow .8s .4s ease backwards;
-  transform-origin: left;
-}
-
-@keyframes lineGrow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero p {
@@ -421,7 +390,6 @@ body::after {
   font-size: 15px;
   max-width: 500px;
   margin: 0 auto;
-  animation: heroIn .6s .1s ease backwards;
 }
 
 /* ── App container ── */
@@ -496,12 +464,6 @@ body::after {
   transition: border-color .2s, transform .2s, box-shadow .25s, background .2s;
   position: relative;
   overflow: hidden;
-  animation: cardIn .35s ease backwards;
-}
-
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .tool-card::before {
@@ -514,26 +476,17 @@ body::after {
   transition: opacity .2s;
 }
 
-/* Shine effect on hover */
-.tool-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity .2s;
-  pointer-events: none;
-}
+/* Clean hover (no shine) */
+.tool-card::after { display: none; }
 
 .tool-card:hover {
   border-color: var(--border2);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--border2), 0 0 20px rgba(232,75,26,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   background: var(--surface2);
 }
 
 .tool-card:hover::before { opacity: 1; }
-.tool-card:hover::after  { opacity: 1; }
 
 .card-icon {
   width: 36px;
@@ -598,7 +551,6 @@ body::after {
   text-align: center;
   padding: 48px;
   color: var(--text-muted);
-  font-family: var(--mono);
   font-size: 13px;
 }
 
@@ -627,15 +579,14 @@ body::after {
 
 .page-header p {
   color: var(--text-muted);
-  font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .source-tag {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: var(--mono);
+  font-family: var(--font);
   font-size: 10px;
   color: var(--green);
   background: var(--green-dim);
@@ -654,7 +605,7 @@ body::after {
 }
 
 .series-tab {
-  font-family: var(--mono);
+  font-family: var(--font);
   font-size: 11px;
   font-weight: 500;
   padding: 6px 14px;
@@ -883,8 +834,7 @@ body::after {
   border-top: 1px solid var(--border);
   padding: 24px;
   text-align: center;
-  font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
