@@ -478,8 +478,7 @@
       content: attr(data-tip);
       position: absolute;
       bottom: calc(100% + 6px);
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
       background: var(--surface3);
       color: var(--text-bright);
       font-family: var(--font);
@@ -492,11 +491,11 @@
       border: 1px solid var(--border2);
       white-space: normal;
       width: max-content;
-      max-width: 280px;
+      max-width: 260px;
       pointer-events: none;
       opacity: 0;
       transition: opacity .15s;
-      z-index: 100;
+      z-index: 200;
       box-shadow: 0 4px 16px rgba(0,0,0,0.4);
     }
     .glossary-tip:hover::after { opacity: 1; }
@@ -2493,9 +2492,10 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
         <div class="brief-section-content"><span class="${confClass} confidence-badge" style="font-size:10px"><span class="confidence-dot"></span> ${confidence === 'green' ? 'Élevé' : confidence === 'orange' ? 'Moyen' : 'Faible'}</span></div>
       </div>
       <div class="brief-actions">
-        <a class="wiz-action-btn primary" href="${mailto}">Envoyer par mail</a>
-        <button class="wiz-action-btn secondary" id="btn-copy-brief">Copier le brief</button>
-        <button class="wiz-action-btn secondary" id="btn-copy-link">Copier le lien de session</button>
+        <button class="wiz-action-btn primary" id="btn-pdf">Télécharger le PDF</button>
+        <a class="wiz-action-btn secondary" href="${mailto}">Envoyer par mail</a>
+        <button class="wiz-action-btn secondary" id="btn-copy-brief">Copier le texte</button>
+        <button class="wiz-action-btn secondary" id="btn-copy-link">Copier le lien</button>
       </div>
     </div>`;
 
@@ -2514,6 +2514,131 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
     document.getElementById('btn-copy-link')?.addEventListener('click', function() {
       navigator.clipboard.writeText(shareUrl).then(() => { this.textContent = 'Lien copié !'; });
     });
+    document.getElementById('btn-pdf')?.addEventListener('click', function() {
+      generatePDF({
+        date: new Date().toLocaleDateString('fr-FR'),
+        confidence, confLabel,
+        users, sites, typeLabel, bwMbps, sslLabel, cloudLabel,
+        sector: rawSector, existing: rawExist, existingModel: rawExistModel,
+        iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
+        recoText, reco, needTp, needSess,
+        assumptions, openQuestions, subs,
+        existingMapping: null,
+      });
+      const brand = rawExist;
+      if ((brand === 'fortinet' || brand === 'checkpoint') && rawExistModel !== 'unknown') {
+        const m = COMPETITOR_MODELS[brand]?.find(x => x.id === rawExistModel);
+        if (m) arguments.callee.existingMapping = m;
+      }
+    });
+  }
+
+  const LOGO_EXN = 'data:image/png;base64,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';
+  const LOGO_PAN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAJYCAMAAACJuGjuAAAC91BMVEX////+/v5nZ2djY2P9/f1lZWU4ODjv7+87Ozvw8PDu7u43NzdbW1u2trafn5/BwcG+vr6urq7MzMwTExPQ0NCYmJjExMSJiYmtra1wcHBpaWlqamp6enp1dXVfX19PT082NjYKCgqxsbFXV1f7+/tZWVn6+vpVVVVycnJQUFBSUlL5+flRUVFtbW15eXl4eHikpKSEhIShoaHHx8eqqqqLi4vwVSv3qZT++ff85uD0f1/zdVP839f+9/X3oYrwUij2nof+9fP2mH/+9PL2l3383dXzc1H83NTzck/729LycE372c/ybUr71szya0j71MryaUX70sf85d70fF385N3zelr849zzeFj84drzdlX84Nn70MXyZ0L6z8P4t6b+/Pv4taP++vn4rJjwVi34rpv4sp/4sJ3++/v4s6HwWC/wTiPxWjH5uaj+/Pz5u6v+/f35wbLxXzj5wrT+/v36xLb97+z95+L0gWL96eP0hWf96+b0h2r1iWz97en1i2/wTyT1jnP98O31kHXwTyX1kXb98u71knf1knimpqZubm59fX3wUyliYmJ7e3vY2NgdHR28vLwLCwu6uroMDAy/v7+CgoKDg4OHh4fc3NwfHx/W1tYbGxvU1NTe3t4hISGioqKQkJCZmZni4uIoKCjj4+MnJyc/Pz/x8fE9PT2ampqTk5ORkZGVlZW1tbUlJSXa2trCwsIODg4DAwMPDw/FxcXo6OgvLy/n5+csLCypqalJSUkjIyPg4OAkJCSzs7OSkpJFRUVeXl53d3eAgID4+PhNTU339/fIyMgRERHKysoUFBTOzs4WFhbS0tIYGBjR0dHz8/NCQkJLS0uXl5d0dHSMjIyNjY3f39/l5eUqKirm5uYtLS3q6uqvr68HBwe4uLgJCQm3t7fp6ekyMjLr6+szMzPs7Ow1NTVERERAQED09PT29vZHR0f19fWdnZ0BAQEAAAAFBQWrq6sEBASnp6dhYWH8/PwegweGAAAaOElEQVR42uzBAQEAAAQAIL8Z7wZUsQUAAAAAAAAAAAAA';
+
+  function generatePDF(d) {
+    const confColor = d.confidence === 'green' ? '#16a34a' : d.confidence === 'orange' ? '#d97706' : '#dc2626';
+    const confBg = d.confidence === 'green' ? '#f0fdf4' : d.confidence === 'orange' ? '#fffbeb' : '#fef2f2';
+
+    let existingLine = '';
+    if (d.existing !== 'unknown' && d.existing !== 'none') {
+      const brandLabel = d.existing === 'fortinet' ? 'Fortinet FortiGate' : d.existing === 'checkpoint' ? 'Check Point Quantum' : d.existing === 'cisco' ? 'Cisco' : d.existing;
+      existingLine = `<tr><td>Existant</td><td>${brandLabel}${d.existingModel !== 'unknown' ? ' ' + d.existingModel : ''}</td></tr>`;
+      if (d.existingModel !== 'unknown' && (d.existing === 'fortinet' || d.existing === 'checkpoint')) {
+        const m = COMPETITOR_MODELS[d.existing]?.find(x => x.id === d.existingModel);
+        if (m) existingLine += `<tr><td>Équivalent PA-Series</td><td style="color:#16a34a;font-weight:600">${m.pa} (TP ${MODELS.find(x=>x.id===m.pa)?.tp || '?'} Gbps)</td></tr>`;
+      }
+    }
+
+    const subsHtml = d.subs.map(s => `<span style="display:inline-block;padding:3px 10px;margin:2px;border-radius:12px;font-size:11px;${s.included ? 'background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0' : 'background:#f8fafc;color:#475569;border:1px solid #e2e8f0'}">${s.name}</span>`).join('');
+
+    const recoHtml = d.reco.map(f => `
+      <div style="padding:14px;border:1px solid #e2e8f0;border-left:3px solid #e84b1a;border-radius:8px;margin-bottom:8px">
+        <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px">${f.id} Series</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:6px">${f.pos}</div>
+        <div style="font-size:12px;color:#334155">Modèles : ${f.modeles} · TP ${f.tpMin}-${f.tpMax} Gbps · ${fmtN(f.sessMax)} sessions max · Charge estimée : ${f.utilPct}%</div>
+      </div>
+    `).join('');
+
+    const pdfHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Poppins',system-ui,sans-serif; color:#1e293b; font-size:13px; line-height:1.6; padding:32px 40px; }
+.header { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:2px solid #e84b1a; margin-bottom:24px; }
+.header img { height:36px; }
+h1 { font-size:20px; font-weight:700; color:#0f172a; margin-bottom:4px; }
+h2 { font-size:14px; font-weight:600; color:#475569; margin-bottom:16px; }
+.meta { display:flex; gap:16px; font-size:11px; color:#64748b; margin-bottom:20px; }
+.section { margin-bottom:20px; }
+.section-title { font-size:12px; font-weight:600; color:#e84b1a; text-transform:uppercase; letter-spacing:0.5px; padding-bottom:4px; border-bottom:1px solid #f1f5f9; margin-bottom:10px; }
+table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px; }
+table td { padding:6px 10px; border-bottom:1px solid #f1f5f9; }
+table td:first-child { font-weight:500; color:#64748b; width:40%; }
+table td:last-child { color:#1e293b; }
+.conf-badge { display:inline-block; padding:4px 12px; border-radius:12px; font-size:11px; font-weight:600; }
+.assumptions { padding:10px 14px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; font-size:11px; color:#92400e; margin-bottom:12px; }
+.questions { padding:10px 14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; font-size:11px; color:#1e40af; margin-bottom:12px; }
+.footer { margin-top:24px; padding-top:12px; border-top:1px solid #e2e8f0; font-size:10px; color:#94a3b8; text-align:center; }
+@media print { body { padding:20px 24px; } }
+</style></head><body>
+<div class="header">
+  <img src="${LOGO_EXN}" alt="Exclusive Networks">
+  <img src="${LOGO_PAN}" alt="Palo Alto Networks">
+</div>
+<h1>Qualification Firewall Palo Alto Networks</h1>
+<h2>Brief avant-vente</h2>
+<div class="meta">
+  <span>Date : ${d.date}</span>
+  <span class="conf-badge" style="background:${confBg};color:${confColor};border:1px solid ${confColor}30">Confiance : ${d.confidence === 'green' ? 'Élevée' : d.confidence === 'orange' ? 'Moyenne' : 'Faible'}</span>
+</div>
+
+<div class="section">
+  <div class="section-title">Réponses client</div>
+  <table>
+    <tr><td>Utilisateurs</td><td>${d.users}</td></tr>
+    <tr><td>Sites</td><td>${d.sites}</td></tr>
+    <tr><td>Type de site</td><td>${d.typeLabel}</td></tr>
+    <tr><td>Débit Internet</td><td>${d.bwMbps} Mbps</td></tr>
+    <tr><td>Déchiffrement SSL</td><td>${d.sslLabel}</td></tr>
+    <tr><td>Usage cloud</td><td>${d.cloudLabel}</td></tr>
+    ${d.sector !== 'unknown' ? `<tr><td>Secteur</td><td>${d.sector}</td></tr>` : ''}
+    ${existingLine}
+    ${d.ha !== 'unknown' ? `<tr><td>Haute disponibilité</td><td>${d.ha}</td></tr>` : ''}
+    ${d.remote !== 'unknown' ? `<tr><td>Utilisateurs nomades</td><td>${d.remote}</td></tr>` : ''}
+    ${d.growth !== 'unknown' ? `<tr><td>Croissance à 3 ans</td><td>${d.growth}</td></tr>` : ''}
+  </table>
+</div>
+
+${d.assumptions.length > 0 ? `<div class="assumptions"><strong>Hypothèses retenues :</strong> ${d.assumptions.join(' · ')}</div>` : ''}
+
+<div class="section">
+  <div class="section-title">Recommandation</div>
+  ${recoHtml}
+  <table>
+    <tr><td>Débit TP nécessaire (estimé)</td><td>${d.needTp < 1 ? (d.needTp * 1000).toFixed(0) + ' Mbps' : d.needTp.toFixed(1) + ' Gbps'}</td></tr>
+    <tr><td>Sessions concurrentes (estimées)</td><td>~${fmtN(d.needSess)}</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Subscriptions recommandées</div>
+  <div>${subsHtml}</div>
+</div>
+
+${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à poser au client :</strong><br>${d.openQuestions.map(q => '· ' + q).join('<br>')}</div>` : ''}
+
+<div class="footer">
+  Estimation indicative de première qualification. Le dimensionnement définitif doit être validé par un ingénieur avant-vente.<br>
+  Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · ${d.date}<br>
+  Généré par Sizing Guide PANW · Exclusive Networks
+</div>
+</body></html>`;
+
+    const w = window.open('', '_blank', 'width=800,height=1100');
+    w.document.write(pdfHtml);
+    w.document.close();
+    setTimeout(() => w.print(), 500);
   }
 
   /* ══ Golden cases (scenarios de reference) ══
