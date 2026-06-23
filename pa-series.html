@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
-      --label-w: 200px;
+      --label-w: 220px;
       --col-w:   148px;
     }
 
@@ -124,12 +124,14 @@
 
     .spec-label-cell {
       background: var(--surface);
-      padding: 8px 16px;
+      padding: 8px 14px;
       font-size: 12px;
       color: var(--text);
       border-bottom: 1px solid var(--border);
       border-right: 2px solid var(--border2);
-      white-space: nowrap;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
       transition: background .1s, border-right-color .1s;
       box-shadow: 2px 0 6px rgba(0,0,0,0.15);
     }
@@ -535,18 +537,18 @@
     .wizard-panel.open .wizard-body { display: block; }
     .wizard-form {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
       margin-bottom: 16px;
     }
     .wiz-field label {
-      display: block;
-      
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
       margin-bottom: 6px;
     }
     .wiz-field select, .wiz-field input {
@@ -1045,13 +1047,13 @@
     }
     .cmp-close:hover { color: var(--text-bright); }
 
-    .cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; overflow: auto; }
-    .cmp-table th, .cmp-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); text-align: center; }
-    .cmp-table thead th { background: var(--surface2); font-family: var(--mono); font-size: 12px; font-weight: 700; position: sticky; top: 0; }
-    .cmp-table td:first-child { text-align: left; color: var(--text-muted); font-family: var(--mono); font-size: 11px; background: var(--surface); position: sticky; left: 0; }
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font); overflow: auto; }
+    .cmp-table th, .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .cmp-table thead th { background: var(--surface2); font-family: var(--font); font-size: 14px; font-weight: 700; position: sticky; top: 0; }
+    .cmp-table td:first-child { text-align: left; color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; background: var(--surface); position: sticky; left: 0; }
     .cmp-table tr:hover td { background: var(--surface2) !important; }
-    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); }
-    .ct-val { font-family: var(--mono); color: var(--text); }
+    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 13px; }
+    .ct-val { font-family: var(--mono); font-size: 13px; color: var(--text); }
   </style>
 </head>
 <body>
@@ -1080,7 +1082,7 @@
 
       <div class="wizard-form" style="max-width:700px;margin:0 auto" id="wiz-form">
         <div class="wiz-field">
-          <label>Combien de collaborateurs ? <span class="wiz-help" title="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). En cas de doute, arrondissez vers le haut.">?</span></label>
+          <label>Combien de collaborateurs ? <span class="wiz-help glossary-tip" data-tip="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). En cas de doute, arrondissez vers le haut.">?</span></label>
           <select id="wiz-users">
             <option value="30">Moins de 30</option>
             <option value="75">30 à 100</option>
@@ -1093,7 +1095,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Combien de sites à sécuriser ? <span class="wiz-help" title="Un site = un lieu physique avec sa propre connexion internet (siège, agence, entrepôt, usine).">?</span></label>
+          <label>Combien de sites à sécuriser ? <span class="wiz-help glossary-tip" data-tip="Un site = un lieu physique avec sa propre connexion internet (siège, agence, entrepôt, usine).">?</span></label>
           <select id="wiz-sites">
             <option value="1" selected>1 site (siège unique)</option>
             <option value="3">2 à 5 sites</option>
@@ -1104,7 +1106,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Type de site principal <span class="wiz-help" title="Agence = bureau distant, petite équipe. Siège = bureau principal ou campus. Datacenter = salle serveurs hébergeant des applications.">?</span></label>
+          <label>Type de site principal <span class="wiz-help glossary-tip" data-tip="Agence = bureau distant, petite équipe. Siège = bureau principal ou campus. Datacenter = salle serveurs hébergeant des applications.">?</span></label>
           <select id="wiz-type">
             <option value="branch" selected>Agence / bureau distant</option>
             <option value="campus">Siège / campus</option>
@@ -1113,7 +1115,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Débit de la connexion Internet <span class="wiz-help" title="Le débit de votre lien Internet (fibre, MPLS). Si vous ne connaissez pas la valeur exacte, estimez selon l'usage : visio/cloud intensif = 500 Mbps+.">?</span></label>
+          <label>Débit de la connexion Internet <span class="wiz-help glossary-tip" data-tip="Le débit de votre lien Internet (fibre, MPLS). Si vous ne connaissez pas la valeur exacte, estimez selon l'usage : visio/cloud intensif = 500 Mbps+.">?</span></label>
           <select id="wiz-bw">
             <option value="50">Jusqu'à 50 Mbps</option>
             <option value="200" selected>50 à 200 Mbps</option>
@@ -1126,7 +1128,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Inspection du trafic chiffré (HTTPS) ? <span class="wiz-help" title="Le déchiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommandé pour la sécurité, mais nécessite plus de puissance.">?</span></label>
+          <label>Inspection du trafic chiffré (HTTPS) ? <span class="wiz-help glossary-tip" data-tip="Le déchiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommandé pour la sécurité, mais nécessite plus de puissance.">?</span></label>
           <select id="wiz-ssl">
             <option value="no">Non, pas nécessaire</option>
             <option value="yes" selected>Oui, souhaité</option>
@@ -1136,7 +1138,7 @@
         <!-- ── Advanced fields ── -->
         <div class="wiz-advanced-fields" id="wiz-advanced">
         <div class="wiz-field">
-          <label>Usage cloud / visio <span class="wiz-help" title="Si les équipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanées.">?</span></label>
+          <label>Usage cloud / visio <span class="wiz-help glossary-tip" data-tip="Si les équipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanées.">?</span></label>
           <select id="wiz-cloud">
             <option value="low">Usage classique (mail, web)</option>
             <option value="high">Intensif (M365, Teams, SaaS)</option>
@@ -1144,7 +1146,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Secteur d'activité <span class="wiz-help" title="Le secteur oriente les exigences de conformité et les arguments de vente.">?</span></label>
+          <label>Secteur d'activité <span class="wiz-help glossary-tip" data-tip="Le secteur oriente les exigences de conformité et les arguments de vente.">?</span></label>
           <select id="wiz-sector">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="finance">Finance / Banque / Assurance</option>
@@ -1159,7 +1161,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Existant à remplacer <span class="wiz-help" title="La marque actuelle du firewall permet d'orienter les arguments concurrentiels.">?</span></label>
+          <label>Existant à remplacer <span class="wiz-help glossary-tip" data-tip="La marque actuelle du firewall permet d'orienter les arguments concurrentiels.">?</span></label>
           <select id="wiz-existing">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="fortinet">Fortinet (FortiGate)</option>
@@ -1172,7 +1174,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Objets connectés / IoT <span class="wiz-help" title="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription IoT Security.">?</span></label>
+          <label>Objets connectés / IoT <span class="wiz-help glossary-tip" data-tip="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription IoT Security.">?</span></label>
           <select id="wiz-iot">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="none">Aucun ou négligeable</option>
@@ -1181,7 +1183,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Haute disponibilité <span class="wiz-help" title="HA = paire de firewalls pour zéro coupure. Double le nombre d'appliances.">?</span></label>
+          <label>Haute disponibilité <span class="wiz-help glossary-tip" data-tip="HA = paire de firewalls pour zéro coupure. Double le nombre d'appliances.">?</span></label>
           <select id="wiz-ha">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="yes">Oui, indispensable</option>
@@ -1189,7 +1191,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Utilisateurs nomades / télétravail <span class="wiz-help" title="Nombre de personnes se connectant à distance via VPN ou ZTNA.">?</span></label>
+          <label>Utilisateurs nomades / télétravail <span class="wiz-help glossary-tip" data-tip="Nombre de personnes se connectant à distance via VPN ou ZTNA.">?</span></label>
           <select id="wiz-remote">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="0">Aucun</option>
@@ -1199,7 +1201,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Croissance à 3 ans <span class="wiz-help" title="Prévision de croissance du nombre d'utilisateurs ou de débit pour dimensionner avec marge.">?</span></label>
+          <label>Croissance à 3 ans <span class="wiz-help glossary-tip" data-tip="Prévision de croissance du nombre d'utilisateurs ou de débit pour dimensionner avec marge.">?</span></label>
           <select id="wiz-growth">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="stable">Stable</option>
