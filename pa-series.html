@@ -86,7 +86,12 @@
       position: relative; z-index: 1;
       overflow: auto;
       height: calc(100vh - var(--header-h) - 110px);
+      -webkit-overflow-scrolling: touch;
     }
+    .table-outer::-webkit-scrollbar { height: 10px; }
+    .table-outer::-webkit-scrollbar-track { background: var(--bg2); }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 5px; }
+    .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
     .pa-table {
       border-collapse: separate;
@@ -103,7 +108,7 @@
       width: var(--label-w);
       min-width: var(--label-w);
       max-width: var(--label-w);
-      z-index: 10;
+      z-index: 20;
     }
 
     .th-corner {
@@ -121,6 +126,7 @@
       border-right: 2px solid var(--border2);
       white-space: nowrap;
       transition: background .1s, border-right-color .1s;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.15);
     }
 
     /* ── Sticky header row ── */
@@ -1357,7 +1363,7 @@
         <div class="guide-cat-title">Besoins de sécurité et usages</div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quelles protections activer : IPS, antivirus/sandbox, filtrage web, DNS, DLP, controle SaaS, encadrement GenAI ?</div>
+          <div class="guide-q-main">Quelles protections activer : IPS, antivirus/sandbox, filtrage web, DNS, DLP, contrôle SaaS, encadrement GenAI ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
@@ -1423,25 +1429,25 @@
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander si des applications sont hebergees dans le cloud public (« vous avez des serveurs chez AWS, Azure ou GCP ? »).</div>
+              <div class="guide-q-block-text">Demander si des applications sont hébergées dans le cloud public (« vous avez des serveurs chez AWS, Azure ou GCP ? »).</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Besoin de detection, SOC, EDR ou correlation d'evenements ?</div>
+          <div class="guide-q-main">Besoin de détection, SOC, EDR ou corrélation d'événements ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">La detection et la reponse aux incidents (XDR/SIEM) complete la prevention (firewall). C'est le volet « operations de securite ».</div>
+              <div class="guide-q-block-text">La détection et la réponse aux incidents (XDR/SIEM) complète la prévention (firewall). C'est le volet « opérations de sécurité ».</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Oriente vers Cortex XDR (EDR/XDR), XSIAM (SIEM+SOAR AI-native) ou XSOAR (orchestration). Offre complementaire au NGFW.</div>
+              <div class="guide-q-block-text">Oriente vers Cortex XDR (EDR/XDR), XSIAM (SIEM+SOAR AI-native) ou XSOAR (orchestration). Offre complémentaire au NGFW.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander s'il existe une equipe securite interne et un outil de supervision des alertes (« qui surveille vos alertes de securite aujourd'hui ? »).</div>
+              <div class="guide-q-block-text">Demander s'il existe une équipe sécurité interne et un outil de supervision des alertes (« qui surveille vos alertes de sécurité aujourd'hui ? »).</div>
             </div>
           </div>
         </div>
@@ -1451,19 +1457,19 @@
         <div class="guide-cat-title">Contraintes et exploitation</div>
 
         <div class="guide-question">
-          <div class="guide-q-main">La haute disponibilite est-elle requise ?</div>
+          <div class="guide-q-main">La haute disponibilité est-elle requise ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">La HA implique une paire d'appliances (active/passive ou active/active) pour garantir la continuite en cas de panne.</div>
+              <div class="guide-q-block-text">La HA implique une paire d'appliances (active/passive ou active/active) pour garantir la continuité en cas de panne.</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Double le nombre d'appliances et donc le budget. A prevoir systematiquement pour les sites critiques (siege, datacenter).</div>
+              <div class="guide-q-block-text">Double le nombre d'appliances et donc le budget. À prévoir systématiquement pour les sites critiques (siège, datacenter).</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander si une coupure du site est acceptable (« combien de temps pouvez-vous rester sans Internet ? »). Si la reponse est « zero », c'est HA.</div>
+              <div class="guide-q-block-text">Demander si une coupure du site est acceptable (« combien de temps pouvez-vous rester sans Internet ? »). Si la réponse est « zéro », c'est HA.</div>
             </div>
           </div>
         </div>
@@ -1473,61 +1479,61 @@
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">Determine le format de l'appliance : desktop (pas de salle serveur), rack 1U/2U, modele avec PoE integre, modele rugged pour environnement industriel.</div>
+              <div class="guide-q-block-text">Détermine le format de l'appliance : desktop (pas de salle serveur), rack 1U/2U, modèle avec PoE intégré, modèle rugged pour environnement industriel.</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Certains modeles ont du PoE integre (PA-415, PA-445, PA-455, PA-545-POE, PA-555-POE, PA-1410, PA-1420), du 5G (PA-415-5G, PA-455-5G), ou un format compact sans ventilateur (PA-400).</div>
+              <div class="guide-q-block-text">Certains modèles ont du PoE intégré (PA-415, PA-445, PA-455, PA-545-POE, PA-555-POE, PA-1410, PA-1420), du 5G (PA-415-5G, PA-455-5G), ou un format compact sans ventilateur (PA-400).</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander ou l'equipement sera installe (« dans une baie serveur ? un placard technique ? un site industriel ? »).</div>
+              <div class="guide-q-block-text">Demander où l'équipement sera installé (« dans une baie serveur ? un placard technique ? un site industriel ? »).</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Gestion centralisee de plusieurs sites attendue ?</div>
+          <div class="guide-q-main">Gestion centralisée de plusieurs sites attendue ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">La gestion centralisee (Panorama ou Strata Cloud Manager) permet de piloter tous les firewalls depuis une console unique.</div>
+              <div class="guide-q-block-text">La gestion centralisée (Panorama ou Strata Cloud Manager) permet de piloter tous les firewalls depuis une console unique.</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Recommande des 2 a 3 sites. Indispensable pour la coherence des politiques, le deploiement et le reporting multi-sites.</div>
+              <div class="guide-q-block-text">Recommandé dès 2 à 3 sites. Indispensable pour la cohérence des politiques, le déploiement et le reporting multi-sites.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Si le client a plus d'un site, la reponse est probablement « oui ». Proposer Panorama (on-prem) ou SCM (cloud).</div>
+              <div class="guide-q-block-text">Si le client a plus d'un site, la réponse est probablement « oui ». Proposer Panorama (on-prem) ou SCM (cloud).</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quel horizon de croissance a trois ans ?</div>
+          <div class="guide-q-main">Quel horizon de croissance à trois ans ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">La marge de dimensionnement : le firewall doit pouvoir absorber la croissance prevue sans remplacement premature.</div>
+              <div class="guide-q-block-text">La marge de dimensionnement : le firewall doit pouvoir absorber la croissance prévue sans remplacement prématuré.</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Fixe la marge entre la charge actuelle et la capacite de l'appliance. Un dimensionnement trop juste oblige a changer d'equipement en 2 ans.</div>
+              <div class="guide-q-block-text">Fixe la marge entre la charge actuelle et la capacité de l'appliance. Un dimensionnement trop juste oblige à changer d'équipement en 2 ans.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Appliquer une marge de croissance par defaut de 30 a 50% (coefficient x1.3 a x1.5 sur les besoins actuels).</div>
+              <div class="guide-q-block-text">Appliquer une marge de croissance par défaut de 30 à 50% (coefficient x1.3 à x1.5 sur les besoins actuels).</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Contraintes de souverainete ou d'hebergement des donnees (UE) ?</div>
+          <div class="guide-q-main">Contraintes de souveraineté ou d'hébergement des données (UE) ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">Certaines organisations exigent que les donnees (logs, configurations, flux analyses) restent hebergees dans l'Union Europeenne.</div>
+              <div class="guide-q-block-text">Certaines organisations exigent que les données (logs, configurations, flux analysés) restent hébergées dans l'Union Européenne.</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
@@ -1535,14 +1541,14 @@
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander s'il existe des exigences reglementaires sur la localisation des donnees (« vos donnees doivent rester en France / en Europe ? »).</div>
+              <div class="guide-q-block-text">Demander s'il existe des exigences réglementaires sur la localisation des données (« vos données doivent rester en France / en Europe ? »).</div>
             </div>
           </div>
         </div>
       </div>
 
       <div style="text-align:center;margin-top:24px">
-        <button class="wiz-btn" onclick="setMode('commercial')" style="padding:10px 28px">Passer a la qualification rapide</button>
+        <button class="wiz-btn" onclick="setMode('commercial')" style="padding:10px 28px">Passer à la qualification rapide</button>
       </div>
     </div>
   </div>
@@ -1587,10 +1593,24 @@
         <button class="fb" data-form="Chassis"    onclick="filterForm(this)">Chassis</button>
       </div>
     </div>
+    <div class="toolbar">
+      <span class="tb-label">Recherche</span>
+      <div class="tb-sep"></div>
+      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
+      <div class="tb-sep"></div>
+      <span class="tb-label">Trier par</span>
+      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
+        <option value="default">Ordre par défaut</option>
+        <option value="tp">Débit Threat Prevention</option>
+        <option value="fw">Débit App-ID</option>
+        <option value="sess">Sessions concurrentes</option>
+        <option value="cps">CPS</option>
+      </select>
+    </div>
     <div class="stats-bar">
       <span>Modèles affichés : <strong id="stat-models">25</strong></span>
       <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
-      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions reelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs actives.">Debits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
     </div>
   </div>
 
@@ -1621,6 +1641,7 @@
       <div class="cmp-title">Comparaison</div>
       <button class="cmp-close" onclick="closeCompare()">✕</button>
       <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
+      <div id="cmp-actions"></div>
     </div>
   </div>
 
@@ -1681,12 +1702,12 @@
   ];
 
   const ROWS = [
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit firewall avec App-ID active et trafic applicatif mixte (appmix). Represente les conditions reelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit avec toutes les protections activees : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Debit du tunnel VPN IPsec chiffre, mesure avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
     { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
-    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut etablir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => fmtN(m.cps),       num: m => m.cps   },
-    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'acces distant securise des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
     { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
     { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
     { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
@@ -1695,7 +1716,7 @@
     { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
     { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
     { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
-    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systemes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
@@ -1734,12 +1755,22 @@
   let activeForm   = 'all';
   let selected     = new Set();
 
+  const EOS_REPLACEMENTS = {
+    'PA-820': 'PA-1410', 'PA-850': 'PA-1420',
+    'PA-7050': 'PA-7500', 'PA-7080': 'PA-7500',
+  };
+
   /* ══ Build table ══ */
   function buildTable() {
-    const visible = MODELS.filter(m =>
+    let visible = MODELS.filter(m =>
       (activeSeries === 'all' || m.s === activeSeries) &&
-      (activeForm   === 'all' || m.f.startsWith(activeForm))
+      (activeForm   === 'all' || m.f.startsWith(activeForm)) &&
+      (searchQuery === '' || m.id.toLowerCase().includes(searchQuery) || m.target.toLowerCase().includes(searchQuery))
     );
+    if (sortMetric !== 'default') {
+      const key = { tp:'tp', fw:'fw', sess:'sess', cps:'cps' }[sortMetric];
+      if (key) visible = [...visible].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+    }
 
     // Header
     const hRow = document.getElementById('header-row');
@@ -1754,19 +1785,22 @@
       'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
     };
     hRow.innerHTML = `<th class="th-corner"></th>` +
-      visible.map(m => `
+      visible.map(m => {
+        const repl = m.eos && EOS_REPLACEMENTS[m.id] ? `<span style="display:block;font-size:8px;color:var(--yellow);margin-top:2px">→ ${EOS_REPLACEMENTS[m.id]}</span>` : '';
+        return `
         <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
           <div class="model-card-clip">
             <div class="model-card-top" style="background:${m.color}">
               <span class="model-name">${m.id}</span>
-              <span class="model-target">${m.target}</span>
+              <span class="model-target">${m.target}${repl}</span>
             </div>
             <div class="model-card-bot" style="background:${m.color}22">
               <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
               <div class="sel-dot"></div>
             </div>
           </div>
-        </th>`).join('');
+        </th>`;
+      }).join('');
 
     // Body
     let seenCats = new Set();
@@ -1819,6 +1853,9 @@
   }
 
   /* ══ Filters ══ */
+  let searchQuery = '';
+  let sortMetric = 'default';
+
   function filterCat(btn) {
     document.querySelectorAll('#cat-filters .fb').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
@@ -1840,6 +1877,16 @@
     buildTable();
   }
 
+  function filterSearch(q) {
+    searchQuery = q.trim().toLowerCase();
+    buildTable();
+  }
+
+  function sortModels(metric) {
+    sortMetric = metric;
+    buildTable();
+  }
+
   /* ══ Selection ══ */
   function toggleSel(id) {
     if (selected.has(id)) {
@@ -1856,27 +1903,73 @@
   }
 
   /* ══ Compare ══ */
+  let cmpDiffOnly = false;
+
   function openCompare() {
     const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
-    const head = `<thead><tr><th></th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
+    renderCompare(models);
+    document.getElementById('cmp-overlay').classList.add('open');
+    const cmpUrl = window.location.origin + window.location.pathname + '?cmp=' + models.map(m => m.id).join(',');
+    history.replaceState(null, '', cmpUrl);
+  }
+
+  function renderCompare(models) {
+    const head = `<thead><tr><th style="text-align:left">
+      <label style="font-size:10px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px">
+        <input type="checkbox" ${cmpDiffOnly?'checked':''} onchange="cmpDiffOnly=this.checked;renderCompare([${models.map(m=>`MODELS.find(x=>x.id==='${m.id}')`).join(',')}])"> Différences uniquement
+      </label>
+    </th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
 
     const body = ROWS.map(row => {
       const vals = models.map(m => row.fn(m));
       const nums = models.map(m => row.num ? row.num(m) : null);
+      if (cmpDiffOnly && row.num) {
+        const unique = new Set(nums.filter(n => n !== null));
+        if (unique.size <= 1) return '';
+      }
       const maxN = Math.max(...nums.filter(n => n !== null));
       const cells = vals.map((v, i) => {
         const isBest = nums[i] !== null && nums[i] === maxN && maxN > 0;
         return `<td class="${isBest ? 'ct-max' : 'ct-val'}">${v}</td>`;
       }).join('');
       return `<tr><td>${row.label}</td>${cells}</tr>`;
-    }).join('');
+    }).filter(Boolean).join('');
+
+    const actions = `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="wiz-action-btn secondary" onclick="copyCompare()">Copier la comparaison</button>
+      <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copié !'">Partager le lien</button>
+    </div>`;
 
     document.getElementById('cmp-table').innerHTML = head + `<tbody>${body}</tbody>`;
-    document.getElementById('cmp-overlay').classList.add('open');
+    const actionsEl = document.getElementById('cmp-actions');
+    if (actionsEl) actionsEl.innerHTML = actions;
+  }
+
+  function copyCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n';
+    text += models.map(m => m.id).join(' | ') + '\n\n';
+    ROWS.forEach(row => {
+      const vals = models.map(m => row.fn(m).replace(/<[^>]+>/g, ''));
+      const label = row.label.replace(/<[^>]+>/g, '');
+      text += label + ' : ' + vals.join(' | ') + '\n';
+    });
+    text += '\nEstimation indicative. Données issues des datasheets officielles Palo Alto Networks.';
+    navigator.clipboard.writeText(text);
   }
 
   function closeCompare() {
     document.getElementById('cmp-overlay').classList.remove('open');
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  function loadCompareFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const cmp = params.get('cmp');
+    if (cmp) {
+      cmp.split(',').forEach(id => { if (MODELS.find(m => m.id === id)) selected.add(id); });
+      if (selected.size >= 2) { setMode('technique'); openCompare(); }
+    }
   }
 
   /* ══ Utils ══ */
@@ -1897,12 +1990,15 @@
     document.getElementById('view-guide').style.display = mode === 'guide' ? 'block' : 'none';
     document.querySelector('.tb-wrap').style.display = mode === 'technique' ? 'block' : 'none';
     document.querySelector('.table-outer').style.display = mode === 'technique' ? 'block' : 'none';
-    document.getElementById('cmp-fab').style.display = 'none';
+    const fab = document.getElementById('cmp-fab');
+    if (mode !== 'technique') fab.classList.remove('visible');
+    else if (selected.size >= 2) fab.classList.add('visible');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   document.addEventListener('DOMContentLoaded', () => {
     setMode('commercial');
     loadFromURL();
+    loadCompareFromURL();
   });
 
   /* ══ Wizard depth toggle ══ */
@@ -1950,49 +2046,49 @@
      Garde-fou : ne pas depasser 60-70% de la capacite datasheet
   ══ */
   const FAMILIES = [
-    { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   modeles:'PA-410 a PA-460',       form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, ideal pour les petits bureaux et sites distants avec un besoin de securite avance sans complexite.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
-    { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   modeles:'PA-505 a PA-560',       form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE integre, pensee pour les sites distants necessitant plus de capacite que la PA-400 et une haute disponibilite active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
-    { id:'PA-1400', tpMin:4.5, tpMax:6.2,  sessMax:1400000,  modeles:'PA-1410 et PA-1420',    form:'1U Rack',   pos:'Sieges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapte aux sieges de PME et aux campus de taille moyenne necessitant dechiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
-    { id:'PA-3400', tpMin:7.5, tpMax:20,   sessMax:3000000,  modeles:'PA-3410 a PA-3440',     form:'1U Rack',   pos:'Sieges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sieges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
-    { id:'PA-5400', tpMin:35,  tpMax:76,   sessMax:48000000, modeles:'PA-5410 a PA-5445',     form:'2U Rack',   pos:'Grands campus, datacenters et operateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services necessitant une capacite extreme.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
-    { id:'PA-7500', tpMin:1440,tpMax:1440, sessMax:440000000,modeles:'PA-7500 (chassis)',     form:'Chassis',   pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de derniere generation pour les environnements hyperscale. Remplace la PA-7000 (End of Sale dec. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series' },
+    { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   modeles:'PA-410 à PA-460',       form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
+    { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   modeles:'PA-505 à PA-560',       form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
+    { id:'PA-1400', tpMin:4.5, tpMax:6.2,  sessMax:1400000,  modeles:'PA-1410 et PA-1420',    form:'1U Rack',   pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
+    { id:'PA-3400', tpMin:7.5, tpMax:20,   sessMax:3000000,  modeles:'PA-3410 à PA-3440',     form:'1U Rack',   pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
+    { id:'PA-5400', tpMin:35,  tpMax:76,   sessMax:48000000, modeles:'PA-5410 à PA-5445',     form:'2U Rack',   pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
+    { id:'PA-7500', tpMin:1440,tpMax:1440, sessMax:440000000,modeles:'PA-7500 (chassis)',     form:'Chassis',   pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series' },
   ];
 
   const COMPETITOR_ARGS = {
     fortinet: {
       name: 'Fortinet (FortiGate)',
       args: [
-        { title:'Securite sans compromis sur les performances', text:'Les debits Palo Alto sont mesures en conditions reelles (appmix), pas en conditions de laboratoire. La comparaison sur les debits Threat Prevention en trafic reel est souvent favorable a Palo Alto.' },
-        { title:'App-ID vs port-based', text:'App-ID identifie les applications en continu dans le flux, la ou Fortinet reste majoritairement base sur les ports et signatures. La granularite de controle est nativement superieure.' },
+        { title:'Sécurité sans compromis sur les performances', text:'Les débits Palo Alto sont mesurés en conditions réelles (appmix), pas en conditions de laboratoire. La comparaison sur les débits Threat Prevention en trafic réel est souvent favorable à Palo Alto.' },
+        { title:'App-ID vs port-based', text:'App-ID identifie les applications en continu dans le flux, là où Fortinet reste majoritairement basé sur les ports et signatures. La granularité de contrôle est nativement supérieure.' },
       ]
     },
     cisco: {
       name: 'Cisco (Firepower / ASA)',
       args: [
-        { title:'Plateforme unifiee vs assemblage', text:'Palo Alto propose une architecture single-pass (App-ID + Content-ID + User-ID en un seul passage), la ou Cisco empile des modules (AMP, Snort, AVC) avec un impact sur les performances.' },
-        { title:'Migration simplifiee', text:'Palo Alto fournit des outils de migration Expedition pour convertir les regles Cisco ASA/Firepower vers PAN-OS.' },
+        { title:'Plateforme unifiée vs assemblage', text:'Palo Alto propose une architecture single-pass (App-ID + Content-ID + User-ID en un seul passage), là où Cisco empile des modules (AMP, Snort, AVC) avec un impact sur les performances.' },
+        { title:'Migration simplifiée', text:'Palo Alto fournit des outils de migration Expedition pour convertir les règles Cisco ASA/Firepower vers PAN-OS.' },
       ]
     },
     checkpoint: {
       name: 'Check Point',
       args: [
-        { title:'Innovation continue vs heritage', text:'Palo Alto investit massivement dans l\'IA (Precision AI, Nebula) et le cloud-native, la ou Check Point reste centre sur une architecture traditionnelle.' },
-        { title:'Gestion cloud-native', text:'Strata Cloud Manager (SCM) offre une gestion unifiee NGFW + SASE + SD-WAN, la ou Check Point necessite des consoles separees.' },
+        { title:'Innovation continue vs héritage', text:'Palo Alto investit massivement dans l\'IA (Precision AI, Nebula) et le cloud-native, là où Check Point reste centré sur une architecture traditionnelle.' },
+        { title:'Gestion cloud-native', text:'Strata Cloud Manager (SCM) offre une gestion unifiée NGFW + SASE + SD-WAN, là où Check Point nécessite des consoles séparées.' },
       ]
     },
     zscaler: {
       name: 'Zscaler',
       args: [
-        { title:'Approche complementaire', text:'Zscaler est une solution proxy cloud (SWG/CASB). Palo Alto couvre le meme perimetre avec Prisma Access, mais offre en plus le NGFW on-prem, le SD-WAN et Cortex XDR pour une plateforme unifiee.' },
-        { title:'Visibilite complete', text:'Palo Alto inspecte tout le trafic (pas seulement HTTP/HTTPS) et offre App-ID pour identifier les applications, y compris celles qui n\'utilisent pas le web.' },
+        { title:'Approche complémentaire', text:'Zscaler est une solution proxy cloud (SWG/CASB). Palo Alto couvre le même périmètre avec Prisma Access, mais offre en plus le NGFW on-prem, le SD-WAN et Cortex XDR pour une plateforme unifiée.' },
+        { title:'Visibilité complète', text:'Palo Alto inspecte tout le trafic (pas seulement HTTP/HTTPS) et offre App-ID pour identifier les applications, y compris celles qui n\'utilisent pas le web.' },
       ]
     },
     default: {
-      name: 'Concurrent generique',
+      name: 'Concurrent générique',
       args: [
-        { title:'Leader du Gartner Magic Quadrant', text:'Palo Alto Networks est leader du Magic Quadrant for Network Firewalls depuis plus de 10 annees consecutives (Gartner).' },
-        { title:'Plateforme unifiee', text:'Seul acteur proposant NGFW + SASE + XDR + Cloud Security sur une plateforme integree (Strata + Prisma + Cortex), avec une IA transversale (Precision AI).' },
-        { title:'Zero Trust natif', text:'Architecture ZTNA 2.0 native avec App-ID, User-ID et Device-ID pour un controle granulaire en continu, pas seulement a la connexion.' },
+        { title:'Leader du Gartner Magic Quadrant', text:'Palo Alto Networks est leader du Magic Quadrant for Network Firewalls depuis plus de 10 années consécutives (Gartner).' },
+        { title:'Plateforme unifiée', text:'Seul acteur proposant NGFW + SASE + XDR + Cloud Security sur une plateforme intégrée (Strata + Prisma + Cortex), avec une IA transversale (Precision AI).' },
+        { title:'Zero Trust natif', text:'Architecture ZTNA 2.0 native avec App-ID, User-ID et Device-ID pour un contrôle granulaire en continu, pas seulement à la connexion.' },
       ]
     },
   };
@@ -2015,21 +2111,21 @@
     const assumptions = [];
     const openQuestions = [];
 
-    const users = rawUsers === 'unknown' ? (assumptions.push('Nombre d\'utilisateurs : hypothese 250 (PME moyenne)'), 250) : parseInt(rawUsers);
-    const sites = rawSites === 'unknown' ? (assumptions.push('Nombre de sites : hypothese 1 site unique'), 1) : parseInt(rawSites);
-    const type = rawType === 'unknown' ? (assumptions.push('Type de site : hypothese siege/campus'), openQuestions.push('Quel est le type de site principal (agence, siege, datacenter) ?'), 'campus') : rawType;
-    const bwMbps = rawBw === 'unknown' ? (assumptions.push('Debit Internet : hypothese 200 Mbps (PME standard)'), openQuestions.push('Quel est le debit de la connexion Internet principale ?'), 200) : parseInt(rawBw);
-    const ssl = rawSsl === 'unknown' ? (assumptions.push('Dechiffrement SSL : hypothese active (recommandation securitaire)'), 'yes') : rawSsl;
-    const cloud = rawCloud === 'unknown' ? (assumptions.push('Profil de trafic : hypothese usage mixte SaaS'), 'high') : rawCloud;
-    const growth = rawGrowth === 'unknown' ? (assumptions.push('Croissance : hypothese +30% a 3 ans'), 'moderate') : rawGrowth;
+    const users = rawUsers === 'unknown' ? (assumptions.push('Nombre d\'utilisateurs : hypothèse 250 (PME moyenne)'), 250) : parseInt(rawUsers);
+    const sites = rawSites === 'unknown' ? (assumptions.push('Nombre de sites : hypothèse 1 site unique'), 1) : parseInt(rawSites);
+    const type = rawType === 'unknown' ? (assumptions.push('Type de site : hypothèse siège/campus'), openQuestions.push('Quel est le type de site principal (agence, siège, datacenter) ?'), 'campus') : rawType;
+    const bwMbps = rawBw === 'unknown' ? (assumptions.push('Débit Internet : hypothèse 200 Mbps (PME standard)'), openQuestions.push('Quel est le débit de la connexion Internet principale ?'), 200) : parseInt(rawBw);
+    const ssl = rawSsl === 'unknown' ? (assumptions.push('Déchiffrement SSL : hypothèse activé (recommandation sécuritaire)'), 'yes') : rawSsl;
+    const cloud = rawCloud === 'unknown' ? (assumptions.push('Profil de trafic : hypothèse usage mixte SaaS'), 'high') : rawCloud;
+    const growth = rawGrowth === 'unknown' ? (assumptions.push('Croissance : hypothèse +30% à 3 ans'), 'moderate') : rawGrowth;
 
-    if (rawUsers === 'unknown') openQuestions.push('Combien de collaborateurs utilisent le reseau ?');
-    if (rawSites === 'unknown') openQuestions.push('Combien de sites physiques a securiser ?');
-    if (rawBw === 'unknown') openQuestions.push('Quel debit Internet est souscrit (par site cle) ?');
-    if (rawSector === 'unknown') openQuestions.push('Quel est le secteur d\'activite du client ?');
-    if (rawIot === 'unknown') openQuestions.push('Y a-t-il des objets connectes / IoT sur le reseau ?');
-    if (rawHa === 'unknown') openQuestions.push('La haute disponibilite est-elle requise ?');
-    if (rawRemote === 'unknown') openQuestions.push('Quelle part des utilisateurs est en teletravail ?');
+    if (rawUsers === 'unknown') openQuestions.push('Combien de collaborateurs utilisent le réseau ?');
+    if (rawSites === 'unknown') openQuestions.push('Combien de sites physiques à sécuriser ?');
+    if (rawBw === 'unknown') openQuestions.push('Quel débit Internet est souscrit (par site clé) ?');
+    if (rawSector === 'unknown') openQuestions.push('Quel est le secteur d\'activité du client ?');
+    if (rawIot === 'unknown') openQuestions.push('Y a-t-il des objets connectés / IoT sur le réseau ?');
+    if (rawHa === 'unknown') openQuestions.push('La haute disponibilité est-elle requise ?');
+    if (rawRemote === 'unknown') openQuestions.push('Quelle part des utilisateurs est en télétravail ?');
 
     const growthFactor = growth === 'strong' ? 1.5 : growth === 'moderate' ? 1.3 : 1.0;
     const bwGbps = (bwMbps / 1000) * growthFactor;
@@ -2043,11 +2139,11 @@
     const unknownCount = [rawUsers, rawSites, rawType, rawBw, rawSsl].filter(v => v === 'unknown').length;
     let confidence, confClass, confLabel;
     if (unknownCount === 0) {
-      confidence = 'green'; confClass = 'confidence-green'; confLabel = 'Confiance elevee : assez d\'informations pour une recommandation fiable';
+      confidence = 'green'; confClass = 'confidence-green'; confLabel = 'Confiance élevée : assez d\'informations pour une recommandation fiable';
     } else if (unknownCount <= 2) {
-      confidence = 'orange'; confClass = 'confidence-orange'; confLabel = 'Confiance moyenne : ' + assumptions.length + ' hypothese(s) retenue(s), listees ci-dessous';
+      confidence = 'orange'; confClass = 'confidence-orange'; confLabel = 'Confiance moyenne : ' + assumptions.length + ' hypothèse(s) retenue(s), listées ci-dessous';
     } else {
-      confidence = 'red'; confClass = 'confidence-red'; confLabel = 'Confiance faible : trop d\'inconnues, a qualifier avec un ingenieur avant-vente';
+      confidence = 'red'; confClass = 'confidence-red'; confLabel = 'Confiance faible : trop d\'inconnues, à qualifier avec un ingénieur avant-vente';
     }
 
     const reco = [];
@@ -2069,7 +2165,7 @@
 
     const box = document.getElementById('wiz-results-commercial');
     if (reco.length === 0) {
-      box.innerHTML = '<div class="wiz-disclaimer"><strong>Besoin hors gamme standard.</strong> Contactez directement votre ingenieur avant-vente Exclusive Networks pour un dimensionnement sur-mesure (PA-7500 ou architecture distribuee).</div>';
+      box.innerHTML = '<div class="wiz-disclaimer"><strong>Besoin hors gamme standard.</strong> Contactez directement votre ingénieur avant-vente Exclusive Networks pour un dimensionnement sur-mesure (PA-7500 ou architecture distribuée).</div>';
       box.classList.add('visible');
       return;
     }
@@ -2086,28 +2182,28 @@
     </div>`;
 
     if (assumptions.length > 0) {
-      html += '<div class="reco-section"><div class="reco-section-title">Hypotheses retenues (modifiables)</div>';
+      html += '<div class="reco-section"><div class="reco-section-title">Hypothèses retenues (modifiables)</div>';
       assumptions.forEach(a => {
         html += `<div class="wiz-assumption"><span class="wiz-assumption-icon">&#9888;</span> ${a}</div>`;
       });
       html += '</div>';
     }
 
-    html += '<div class="reco-section"><div class="reco-section-title">Architecture recommandee</div>';
+    html += '<div class="reco-section"><div class="reco-section-title">Architecture recommandée</div>';
 
     let archiDesc = '';
     if (sites >= 3 && type !== 'dc') {
       archiDesc = `<strong>Architecture multi-sites</strong> : ${reco[0].id} Series en agences`;
-      if (type === 'campus' || sites >= 5) archiDesc += `, modele superieur de la gamme au siege`;
-      archiDesc += `, avec Panorama ou Strata Cloud Manager pour la gestion centralisee`;
+      if (type === 'campus' || sites >= 5) archiDesc += `, modèle supérieur de la gamme au siège`;
+      archiDesc += `, avec Panorama ou Strata Cloud Manager pour la gestion centralisée`;
       if (rawRemote === 'high' || rawRemote === 'medium') archiDesc += `, et Prisma Access ou GlobalProtect pour les ${rawRemote === 'high' ? 'nombreux ' : ''}utilisateurs nomades`;
       archiDesc += '.';
     } else if (type === 'dc') {
-      archiDesc = `<strong>Architecture datacenter</strong> : ${reco[0].id} Series pour l'inspection perimeterique et la segmentation est-ouest`;
+      archiDesc = `<strong>Architecture datacenter</strong> : ${reco[0].id} Series pour l'inspection périmétrique et la segmentation est-ouest`;
       if (rawHa !== 'no') archiDesc += ', en paire HA active/passive';
       archiDesc += '.';
     } else {
-      archiDesc = `<strong>Site unique</strong> : ${reco[0].id} Series pour la protection perimeterique du site`;
+      archiDesc = `<strong>Site unique</strong> : ${reco[0].id} Series pour la protection périmétrique du site`;
       if (rawHa === 'yes') archiDesc += ', en paire HA';
       archiDesc += '.';
     }
@@ -2115,29 +2211,29 @@
     html += `<div class="reco-archi-card"><div class="reco-archi-desc">${archiDesc}</div></div>`;
 
     reco.forEach((f, i) => {
-      const rangeNote = f.tight ? ' (dimensionnement serre, considerer le cran au-dessus)' : '';
+      const rangeNote = f.tight ? ' (dimensionnement serré, considérer le cran au-dessus)' : '';
       const pctColor = f.utilPct > 65 ? 'var(--yellow)' : 'var(--green)';
       html += `<div class="wiz-family-card">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
           <div class="wiz-family-name">${f.id} Series</div>
-          <span style="font-family:var(--mono);font-size:11px;color:${pctColor}">${f.utilPct}% de charge estimee${rangeNote}</span>
+          <span style="font-family:var(--mono);font-size:11px;color:${pctColor}">${f.utilPct}% de charge estimée${rangeNote}</span>
         </div>
         <div class="wiz-family-positioning">${f.pos}</div>
         <p style="font-size:12px;color:var(--text-muted);margin:8px 0">${f.desc}</p>
-        <p style="font-size:12px;color:var(--text);margin-bottom:8px"><strong>Modeles candidats :</strong> ${f.modeles}</p>`;
+        <p style="font-size:12px;color:var(--text);margin-bottom:8px"><strong>Modèles candidats :</strong> ${f.modeles}</p>`;
 
-      html += '<div class="reco-section-title" style="margin-top:12px">Chiffres cles traduits</div>';
+      html += '<div class="reco-section-title" style="margin-top:12px">Chiffres clés traduits</div>';
       html += `<div class="reco-metric">
-        <span class="reco-metric-label">Debit Threat Prevention disponible</span>
-        <span class="reco-metric-value">${f.tpMin} a ${f.tpMax} Gbps<span class="reco-metric-note">selon le modele choisi dans la gamme</span></span>
+        <span class="reco-metric-label">Débit Threat Prevention disponible</span>
+        <span class="reco-metric-value">${f.tpMin} à ${f.tpMax} Gbps<span class="reco-metric-note">selon le modèle choisi dans la gamme</span></span>
       </div>`;
       html += `<div class="reco-metric">
-        <span class="reco-metric-label">Votre besoin estime (avec marge et SSL)</span>
+        <span class="reco-metric-label">Votre besoin estimé (avec marge et SSL)</span>
         <span class="reco-metric-value">${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}</span>
       </div>`;
       html += `<div class="reco-metric">
         <span class="reco-metric-label">Sessions concurrentes couvertes</span>
-        <span class="reco-metric-value">jusqu'a ${fmtN(f.sessMax)}<span class="reco-metric-note">votre besoin estime : ~${fmtN(needSess)}</span></span>
+        <span class="reco-metric-value">jusqu'à ${fmtN(f.sessMax)}<span class="reco-metric-note">votre besoin estimé : ~${fmtN(needSess)}</span></span>
       </div>`;
       html += `<div class="reco-metric">
         <span class="reco-metric-label">Format</span>
@@ -2145,35 +2241,35 @@
       </div>`;
 
       html += `<div style="margin-top:10px">
-        <button class="wiz-link-tech" onclick="setMode('technique');filterSeries(document.querySelector('[data-series=&quot;${f.id}&quot;]'))">Voir les modeles ${f.id} dans le comparateur technique</button>
+        <button class="wiz-link-tech" onclick="setMode('technique');filterSeries(document.querySelector('[data-series=&quot;${f.id}&quot;]'))">Voir les modèles ${f.id} dans le comparateur technique</button>
       </div></div>`;
     });
 
     if (alsoConsider.length > 0) {
-      html += `<p style="font-size:12px;color:var(--text-muted);margin:8px 0"><strong>A considerer egalement :</strong> ${alsoConsider[0].id} Series (${alsoConsider[0].pos}) si le debit reel confirme depasse l'estimation.</p>`;
+      html += `<p style="font-size:12px;color:var(--text-muted);margin:8px 0"><strong>À considérer également :</strong> ${alsoConsider[0].id} Series (${alsoConsider[0].pos}) si le débit réel confirmé dépasse l'estimation.</p>`;
     }
 
     html += '</div>';
 
     const subs = [];
-    subs.push({ name:'Threat Prevention', included:true, reason:'Socle de securite : IPS, antivirus, antispyware' });
-    subs.push({ name:'URL Filtering', included:true, reason:'Filtrage web par categorie, blocage des sites malveillants' });
+    subs.push({ name:'Threat Prevention', included:true, reason:'Socle de sécurité : IPS, antivirus, antispyware' });
+    subs.push({ name:'URL Filtering', included:true, reason:'Filtrage web par catégorie, blocage des sites malveillants' });
     subs.push({ name:'WildFire', included:true, reason:'Sandbox cloud pour l\'analyse des fichiers inconnus' });
     subs.push({ name:'DNS Security', included:true, reason:'Protection contre les attaques via DNS (C2, DGA, tunneling)' });
     if (rawIot === 'moderate' || rawIot === 'heavy' || rawSector === 'industry' || rawSector === 'health') {
-      subs.push({ name:'IoT Security', included:false, reason:'Visibilite et controle des objets connectes' });
+      subs.push({ name:'IoT Security', included:false, reason:'Visibilité et contrôle des objets connectés' });
     }
     if (rawSector === 'finance' || rawSector === 'health' || rawSector === 'public') {
-      subs.push({ name:'Enterprise DLP', included:false, reason:'Prevention des fuites de donnees (conformite)' });
+      subs.push({ name:'Enterprise DLP', included:false, reason:'Prévention des fuites de données (conformité)' });
     }
     if (sites >= 3) {
-      subs.push({ name:'Panorama / SCM', included:false, reason:'Gestion centralisee multi-sites' });
+      subs.push({ name:'Panorama / SCM', included:false, reason:'Gestion centralisée multi-sites' });
     }
     if (rawRemote === 'medium' || rawRemote === 'high') {
-      subs.push({ name:'GlobalProtect / Prisma Access', included:false, reason:'Acces distant securise pour les nomades' });
+      subs.push({ name:'GlobalProtect / Prisma Access', included:false, reason:'Accès distant sécurisé pour les nomades' });
     }
 
-    html += '<div class="reco-section"><div class="reco-section-title">Subscriptions et services a associer</div>';
+    html += '<div class="reco-section"><div class="reco-section-title">Subscriptions et services à associer</div>';
     html += '<div class="reco-sub-list">';
     subs.forEach(s => {
       html += `<span class="reco-sub-tag ${s.included ? 'included' : ''}" title="${s.reason}">${s.name}${s.included ? ' (socle)' : ''}</span>`;
@@ -2182,14 +2278,14 @@
 
     const existing = rawExist !== 'unknown' ? rawExist : 'default';
     const compArgs = COMPETITOR_ARGS[existing] || COMPETITOR_ARGS.default;
-    html += '<div class="reco-section"><div class="reco-section-title">Arguments de vente' + (compArgs.name !== 'Concurrent generique' ? ' (face a ' + compArgs.name + ')' : '') + '</div>';
+    html += '<div class="reco-section"><div class="reco-section-title">Arguments de vente' + (compArgs.name !== 'Concurrent générique' ? ' (face à ' + compArgs.name + ')' : '') + '</div>';
     compArgs.args.forEach(a => {
       html += `<div class="reco-arg-card"><div class="reco-arg-title">${a.title}</div><div class="reco-arg-text">${a.text}</div></div>`;
     });
     html += '</div>';
 
     if (openQuestions.length > 0) {
-      html += '<div class="reco-section"><div class="reco-section-title">Questions a poser au client lors du prochain echange</div>';
+      html += '<div class="reco-section"><div class="reco-section-title">Questions à poser au client lors du prochain échange</div>';
       openQuestions.forEach(q => {
         html += `<div class="reco-open-q"><span class="reco-open-q-icon">?</span> ${q}</div>`;
       });
@@ -2203,55 +2299,55 @@
     html += '<a class="reco-link" href="https://www.paloaltonetworks.com/partners/nextwave" target="_blank" rel="noopener">Enregistrement de deal NextWave</a>';
     html += '</div></div>';
 
-    const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siege' : 'Datacenter';
-    const sslLabel = ssl === 'yes' ? 'Oui' : ssl === 'no' ? 'Non' : 'A confirmer';
+    const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siège' : 'Datacenter';
+    const sslLabel = ssl === 'yes' ? 'Oui' : ssl === 'no' ? 'Non' : 'À confirmer';
     const cloudLabel = cloud === 'high' ? 'Intensif (SaaS)' : 'Standard';
     const recoText = reco.map(f => f.id + ' Series (' + f.modeles + ')').join(' ou ');
-    const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (recommande)')).join(', ');
+    const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (recommandé)')).join(', ');
 
     const briefText = `QUALIFICATION FIREWALL PALO ALTO NETWORKS
 ============================================
 Date : ${new Date().toLocaleDateString('fr-FR')}
 Confiance : ${confLabel}
 
-REPONSES CLIENT
-  Utilisateurs : ${rawUsers === 'unknown' ? 'Non connu (hypothese 250)' : users}
-  Sites : ${rawSites === 'unknown' ? 'Non connu (hypothese 1)' : sites}
-  Type de site : ${typeLabel}${rawType === 'unknown' ? ' (hypothese)' : ''}
-  Debit Internet : ${rawBw === 'unknown' ? 'Non connu (hypothese 200 Mbps)' : bwMbps + ' Mbps'}
-  Dechiffrement SSL : ${sslLabel}${rawSsl === 'unknown' ? ' (hypothese : oui)' : ''}
+RÉPONSES CLIENT
+  Utilisateurs : ${rawUsers === 'unknown' ? 'Non connu (hypothèse 250)' : users}
+  Sites : ${rawSites === 'unknown' ? 'Non connu (hypothèse 1)' : sites}
+  Type de site : ${typeLabel}${rawType === 'unknown' ? ' (hypothèse)' : ''}
+  Débit Internet : ${rawBw === 'unknown' ? 'Non connu (hypothèse 200 Mbps)' : bwMbps + ' Mbps'}
+  Déchiffrement SSL : ${sslLabel}${rawSsl === 'unknown' ? ' (hypothèse : oui)' : ''}
   Usage cloud : ${cloudLabel}
-  Secteur : ${rawSector === 'unknown' ? 'Non renseigne' : rawSector}
-  Existant : ${rawExist === 'unknown' ? 'Non renseigne' : rawExist}
-  IoT : ${rawIot === 'unknown' ? 'Non renseigne' : rawIot}
-  HA : ${rawHa === 'unknown' ? 'Non renseigne' : rawHa}
-  Nomades : ${rawRemote === 'unknown' ? 'Non renseigne' : rawRemote}
-  Croissance : ${rawGrowth === 'unknown' ? 'Non renseigne (hypothese +30%)' : rawGrowth}
+  Secteur : ${rawSector === 'unknown' ? 'Non renseigné' : rawSector}
+  Existant : ${rawExist === 'unknown' ? 'Non renseigné' : rawExist}
+  IoT : ${rawIot === 'unknown' ? 'Non renseigné' : rawIot}
+  HA : ${rawHa === 'unknown' ? 'Non renseigné' : rawHa}
+  Nomades : ${rawRemote === 'unknown' ? 'Non renseigné' : rawRemote}
+  Croissance : ${rawGrowth === 'unknown' ? 'Non renseigné (hypothèse +30%)' : rawGrowth}
 
 RECOMMANDATION
   Gamme(s) : ${recoText}
-  Debit TP estime necessaire : ${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}
-  Sessions estimees : ~${fmtN(needSess)}
+  Débit TP estimé nécessaire : ${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}
+  Sessions estimées : ~${fmtN(needSess)}
   Subscriptions : ${subsList}
 
-${assumptions.length > 0 ? 'HYPOTHESES RETENUES\n  ' + assumptions.join('\n  ') + '\n' : ''}
+${assumptions.length > 0 ? 'HYPOTHÈSES RETENUES\n  ' + assumptions.join('\n  ') + '\n' : ''}
 ${openQuestions.length > 0 ? 'QUESTIONS OUVERTES\n  ' + openQuestions.join('\n  ') + '\n' : ''}
-Estimation indicative de premiere qualification.
-Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
+Estimation indicative de première qualification.
+Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`;
 
     const shareUrl = encodeSession();
     const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks');
-    const mailBody = encodeURIComponent('Bonjour,\n\nVoici une premiere qualification realisee via l\'outil Sizing Guide PANW :\n\n' + briefText + '\n\nLien direct vers la qualification : ' + shareUrl + '\n\nCordialement');
+    const mailBody = encodeURIComponent('Bonjour,\n\nVoici une première qualification réalisée via l\'outil Sizing Guide PANW :\n\n' + briefText + '\n\nLien direct vers la qualification : ' + shareUrl + '\n\nCordialement');
     const mailto = 'mailto:?subject=' + mailSubject + '&body=' + mailBody;
 
     html += `<div class="brief-card">
-      <div class="brief-title">Brief transmissible a l'avant-vente</div>
+      <div class="brief-title">Brief transmissible à l'avant-vente</div>
       <div class="brief-section">
-        <div class="brief-section-label">Resume</div>
+        <div class="brief-section-label">Résumé</div>
         <div class="brief-section-content">${users} utilisateurs, ${sites} site(s) (${typeLabel}), ${bwMbps} Mbps, SSL ${sslLabel}. Reco : ${recoText}.</div>
       </div>
       ${assumptions.length > 0 ? `<div class="brief-section">
-        <div class="brief-section-label">Hypotheses</div>
+        <div class="brief-section-label">Hypothèses</div>
         <div class="brief-section-content">${assumptions.join(' · ')}</div>
       </div>` : ''}
       ${openQuestions.length > 0 ? `<div class="brief-section">
@@ -2260,18 +2356,18 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
       </div>` : ''}
       <div class="brief-section">
         <div class="brief-section-label">Niveau de confiance</div>
-        <div class="brief-section-content"><span class="${confClass} confidence-badge" style="font-size:10px"><span class="confidence-dot"></span> ${confidence === 'green' ? 'Eleve' : confidence === 'orange' ? 'Moyen' : 'Faible'}</span></div>
+        <div class="brief-section-content"><span class="${confClass} confidence-badge" style="font-size:10px"><span class="confidence-dot"></span> ${confidence === 'green' ? 'Élevé' : confidence === 'orange' ? 'Moyen' : 'Faible'}</span></div>
       </div>
       <div class="brief-actions">
         <a class="wiz-action-btn primary" href="${mailto}">Envoyer par mail</a>
-        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(briefText)}'));this.textContent='Copie !'">Copier le brief</button>
-        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText('${shareUrl}');this.textContent='Lien copie !'">Copier le lien de session</button>
+        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(briefText)}'));this.textContent='Copié !'">Copier le brief</button>
+        <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText('${shareUrl}');this.textContent='Lien copié !'">Copier le lien de session</button>
       </div>
     </div>`;
 
     html += `<div class="wiz-disclaimer" style="margin-top:16px">
-      <strong>Estimation indicative de premiere qualification.</strong> Le dimensionnement definitif doit etre valide par un ingenieur avant-vente, idealement a partir d'un SLR (Security Lifecycle Review) ou de donnees de trafic reelles.
-      <br><span style="font-size:10px;margin-top:4px;display:inline-block">Donnees issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · Juin 2026</span>
+      <strong>Estimation indicative de première qualification.</strong> Le dimensionnement définitif doit être validé par un ingénieur avant-vente, idéalement à partir d'un SLR (Security Lifecycle Review) ou de données de trafic réelles.
+      <br><span style="font-size:10px;margin-top:4px;display:inline-block">Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · Juin 2026</span>
     </div>`;
 
     box.innerHTML = html;
@@ -2292,8 +2388,8 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
       expect: { families: ['PA-400'], confidenceMin: 'green' }
     },
     {
-      name: 'PME multi-sites avec dechiffrement',
-      desc: '200 utilisateurs, 5 sites, siege, 200 Mbps, SSL oui, SaaS intensif',
+      name: 'PME multi-sites avec déchiffrement',
+      desc: '200 utilisateurs, 5 sites, siège, 200 Mbps, SSL oui, SaaS intensif',
       inputs: { users:'250', sites:'3', type:'campus', bw:'200', ssl:'yes', cloud:'high', sector:'services', existing:'fortinet', iot:'none', ha:'yes', remote:'medium', growth:'moderate' },
       expect: { families: ['PA-400','PA-500','PA-1400'], confidenceMin: 'green' }
     },
@@ -2305,7 +2401,7 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
     },
     {
       name: 'Tout inconnu',
-      desc: 'Toutes les reponses a "je ne sais pas"',
+      desc: 'Toutes les réponses à "je ne sais pas"',
       inputs: { users:'unknown', sites:'unknown', type:'unknown', bw:'unknown', ssl:'unknown', cloud:'unknown', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
       expect: { families: ['PA-400','PA-500'], confidenceMin: 'red' }
     },
@@ -2344,14 +2440,14 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
       });
     }
 
-    console.group('Golden Cases — resultats');
+    console.group('Golden Cases — résultats');
     let allPass = true;
     results.forEach(r => {
       const icon = r.pass ? '✅' : '❌';
       console.log(`${icon} ${r.name} | Familles: ${r.found} (attendu: ${r.expected}) | Confiance: ${r.confidence} (min attendu: ${r.expectedConf})`);
       if (!r.pass) allPass = false;
     });
-    console.log(allPass ? '\n✅ Tous les golden cases passent.' : '\n❌ Certains golden cases echouent.');
+    console.log(allPass ? '\n✅ Tous les golden cases passent.' : '\n❌ Certains golden cases échouent.');
     console.groupEnd();
     return results;
   }
@@ -2366,10 +2462,10 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
       const u = parseInt(users);
       const s = parseInt(sites);
       if (u < 30 && s > 10) {
-        return 'Incoherence : moins de 30 utilisateurs pour plus de 10 sites semble inhabituel. Verifiez les reponses.';
+        return 'Incohérence : moins de 30 utilisateurs pour plus de 10 sites semble inhabituel. Vérifiez les réponses.';
       }
       if (u > 5000 && s === 1 && bw !== 'unknown' && parseInt(bw) < 200) {
-        return 'Incoherence : plus de 5000 utilisateurs sur un seul site avec moins de 200 Mbps semble sous-dimensionne cote debit.';
+        return 'Incohérence : plus de 5000 utilisateurs sur un seul site avec moins de 200 Mbps semble sous-dimensionné côté débit.';
       }
     }
     return null;
@@ -2380,7 +2476,7 @@ Le dimensionnement definitif doit etre valide par un ingenieur avant-vente.`;
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Donnees issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Derniere mise a jour : juin 2026</div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Dernière mise à jour : juin 2026</div>
   </footer>
 </body>
 </html>
