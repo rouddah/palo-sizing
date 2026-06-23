@@ -5,6 +5,10 @@
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sizing Guide — PA-Series</title>
+  <meta name="description" content="Comparateur et outil de qualification PA-Series Palo Alto Networks. 35 modèles, de la PA-400 à la PA-7500, avec wizard de dimensionnement." />
+  <meta property="og:title" content="Sizing Guide — PA-Series NGFW" />
+  <meta property="og:description" content="Comparateur technique et qualification rapide des firewalls PA-Series Palo Alto Networks." />
+  <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
     :root {
@@ -1040,7 +1044,7 @@
     <div class="page-wrap" style="padding-top:24px;padding-bottom:24px">
       <div style="text-align:center;margin-bottom:28px">
         <h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Quel firewall pour votre client ?</h2>
-        <p style="font-size:13px;color:var(--text-muted)">Repondez a quelques questions pour identifier la gamme adaptee. "Je ne sais pas" est toujours une reponse valide.</p>
+        <p style="font-size:13px;color:var(--text-muted)">Répondez à quelques questions pour identifier la gamme adaptée. "Je ne sais pas" est toujours une réponse valide.</p>
       </div>
 
       <div class="wiz-depth-toggle">
@@ -1050,63 +1054,63 @@
 
       <div class="wizard-form" style="max-width:700px;margin:0 auto" id="wiz-form">
         <div class="wiz-field">
-          <label>Combien de collaborateurs ? <span class="wiz-help" title="Nombre total de personnes utilisant le reseau (postes fixes, portables, mobiles). En cas de doute, arrondissez vers le haut.">?</span></label>
+          <label>Combien de collaborateurs ? <span class="wiz-help" title="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). En cas de doute, arrondissez vers le haut.">?</span></label>
           <select id="wiz-users">
             <option value="30">Moins de 30</option>
-            <option value="75">30 a 100</option>
-            <option value="250" selected>100 a 500</option>
-            <option value="750">500 a 1 000</option>
-            <option value="2500">1 000 a 5 000</option>
-            <option value="7500">5 000 a 10 000</option>
+            <option value="75">30 à 100</option>
+            <option value="250" selected>100 à 500</option>
+            <option value="750">500 à 1 000</option>
+            <option value="2500">1 000 à 5 000</option>
+            <option value="7500">5 000 à 10 000</option>
             <option value="15000">Plus de 10 000</option>
             <option value="unknown">Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Combien de sites a securiser ? <span class="wiz-help" title="Un site = un lieu physique avec sa propre connexion internet (siege, agence, entrepot, usine).">?</span></label>
+          <label>Combien de sites à sécuriser ? <span class="wiz-help" title="Un site = un lieu physique avec sa propre connexion internet (siège, agence, entrepôt, usine).">?</span></label>
           <select id="wiz-sites">
-            <option value="1" selected>1 site (siege unique)</option>
-            <option value="3">2 a 5 sites</option>
-            <option value="10">5 a 15 sites</option>
-            <option value="30">15 a 50 sites</option>
+            <option value="1" selected>1 site (siège unique)</option>
+            <option value="3">2 à 5 sites</option>
+            <option value="10">5 à 15 sites</option>
+            <option value="30">15 à 50 sites</option>
             <option value="100">Plus de 50 sites</option>
             <option value="unknown">Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Type de site principal <span class="wiz-help" title="Agence = bureau distant, petite equipe. Siege = bureau principal ou campus. Datacenter = salle serveurs hebergeant des applications.">?</span></label>
+          <label>Type de site principal <span class="wiz-help" title="Agence = bureau distant, petite équipe. Siège = bureau principal ou campus. Datacenter = salle serveurs hébergeant des applications.">?</span></label>
           <select id="wiz-type">
             <option value="branch" selected>Agence / bureau distant</option>
-            <option value="campus">Siege / campus</option>
-            <option value="dc">Datacenter / centre de donnees</option>
+            <option value="campus">Siège / campus</option>
+            <option value="dc">Datacenter / centre de données</option>
             <option value="unknown">Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Debit de la connexion Internet <span class="wiz-help" title="Le debit de votre lien Internet (fibre, MPLS). Si vous ne connaissez pas la valeur exacte, estimez selon l'usage : visio/cloud intensif = 500 Mbps+.">?</span></label>
+          <label>Débit de la connexion Internet <span class="wiz-help" title="Le débit de votre lien Internet (fibre, MPLS). Si vous ne connaissez pas la valeur exacte, estimez selon l'usage : visio/cloud intensif = 500 Mbps+.">?</span></label>
           <select id="wiz-bw">
-            <option value="50">Jusqu'a 50 Mbps</option>
-            <option value="200" selected>50 a 200 Mbps</option>
-            <option value="500">200 a 500 Mbps</option>
-            <option value="1000">500 Mbps a 1 Gbps</option>
-            <option value="5000">1 a 5 Gbps</option>
-            <option value="10000">5 a 10 Gbps</option>
+            <option value="50">Jusqu'à 50 Mbps</option>
+            <option value="200" selected>50 à 200 Mbps</option>
+            <option value="500">200 à 500 Mbps</option>
+            <option value="1000">500 Mbps à 1 Gbps</option>
+            <option value="5000">1 à 5 Gbps</option>
+            <option value="10000">5 à 10 Gbps</option>
             <option value="50000">Plus de 10 Gbps</option>
             <option value="unknown">Je ne sais pas</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Inspection du trafic chiffre (HTTPS) ? <span class="wiz-help" title="Le dechiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommande pour la securite, mais necessite plus de puissance.">?</span></label>
+          <label>Inspection du trafic chiffré (HTTPS) ? <span class="wiz-help" title="Le déchiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommandé pour la sécurité, mais nécessite plus de puissance.">?</span></label>
           <select id="wiz-ssl">
-            <option value="no">Non, pas necessaire</option>
-            <option value="yes" selected>Oui, souhaite</option>
+            <option value="no">Non, pas nécessaire</option>
+            <option value="yes" selected>Oui, souhaité</option>
             <option value="unknown">Je ne sais pas</option>
           </select>
         </div>
         <!-- ── Advanced fields ── -->
         <div class="wiz-advanced-fields" id="wiz-advanced">
         <div class="wiz-field">
-          <label>Usage cloud / visio <span class="wiz-help" title="Si les equipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanees.">?</span></label>
+          <label>Usage cloud / visio <span class="wiz-help" title="Si les équipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanées.">?</span></label>
           <select id="wiz-cloud">
             <option value="low">Usage classique (mail, web)</option>
             <option value="high">Intensif (M365, Teams, SaaS)</option>
@@ -1114,14 +1118,14 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Secteur d'activite <span class="wiz-help" title="Le secteur oriente les exigences de conformite et les arguments de vente.">?</span></label>
+          <label>Secteur d'activité <span class="wiz-help" title="Le secteur oriente les exigences de conformité et les arguments de vente.">?</span></label>
           <select id="wiz-sector">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="finance">Finance / Banque / Assurance</option>
-            <option value="health">Sante / Pharma</option>
+            <option value="health">Santé / Pharma</option>
             <option value="industry">Industrie / OT</option>
             <option value="retail">Commerce / Distribution</option>
-            <option value="education">Education / Recherche</option>
+            <option value="education">Éducation / Recherche</option>
             <option value="public">Secteur public</option>
             <option value="services">Services / Conseil</option>
             <option value="tech">Tech / SaaS</option>
@@ -1129,7 +1133,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Existant a remplacer <span class="wiz-help" title="La marque actuelle du firewall permet d'orienter les arguments concurrentiels.">?</span></label>
+          <label>Existant à remplacer <span class="wiz-help" title="La marque actuelle du firewall permet d'orienter les arguments concurrentiels.">?</span></label>
           <select id="wiz-existing">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="fortinet">Fortinet (FortiGate)</option>
@@ -1142,38 +1146,38 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Objets connectes / IoT <span class="wiz-help" title="Cameras, capteurs, automates, equipements medicaux : chaque objet genere des flux et necessite la subscription IoT Security.">?</span></label>
+          <label>Objets connectés / IoT <span class="wiz-help" title="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription IoT Security.">?</span></label>
           <select id="wiz-iot">
             <option value="unknown" selected>Je ne sais pas</option>
-            <option value="none">Aucun ou negligeable</option>
+            <option value="none">Aucun ou négligeable</option>
             <option value="moderate">Quelques dizaines</option>
             <option value="heavy">Centaines ou plus</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Haute disponibilite <span class="wiz-help" title="HA = paire de firewalls pour zero coupure. Double le nombre d'appliances.">?</span></label>
+          <label>Haute disponibilité <span class="wiz-help" title="HA = paire de firewalls pour zéro coupure. Double le nombre d'appliances.">?</span></label>
           <select id="wiz-ha">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="yes">Oui, indispensable</option>
-            <option value="no">Non, pas necessaire</option>
+            <option value="no">Non, pas nécessaire</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Utilisateurs nomades / teletravail <span class="wiz-help" title="Nombre de personnes se connectant a distance via VPN ou ZTNA.">?</span></label>
+          <label>Utilisateurs nomades / télétravail <span class="wiz-help" title="Nombre de personnes se connectant à distance via VPN ou ZTNA.">?</span></label>
           <select id="wiz-remote">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="0">Aucun</option>
             <option value="low">Moins de 20%</option>
-            <option value="medium">20 a 50%</option>
+            <option value="medium">20 à 50%</option>
             <option value="high">Plus de 50%</option>
           </select>
         </div>
         <div class="wiz-field">
-          <label>Croissance a 3 ans <span class="wiz-help" title="Prevision de croissance du nombre d'utilisateurs ou de debit pour dimensionner avec marge.">?</span></label>
+          <label>Croissance à 3 ans <span class="wiz-help" title="Prévision de croissance du nombre d'utilisateurs ou de débit pour dimensionner avec marge.">?</span></label>
           <select id="wiz-growth">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="stable">Stable</option>
-            <option value="moderate">Croissance moderee (+20 a 50%)</option>
+            <option value="moderate">Croissance modérée (+20 à 50%)</option>
             <option value="strong">Forte croissance (+50% et plus)</option>
           </select>
         </div>
@@ -1181,7 +1185,7 @@
       </div>
 
       <div style="text-align:center;margin-top:20px">
-        <button class="wiz-btn" onclick="runCommercialWizard()" style="padding:12px 32px;font-size:14px">Identifier la gamme adaptee</button>
+        <button class="wiz-btn" onclick="runCommercialWizard()" style="padding:12px 32px;font-size:14px">Identifier la gamme adaptée</button>
       </div>
 
       <div class="wiz-results" id="wiz-results-commercial"></div>
@@ -1193,174 +1197,174 @@
     <div class="guide-wrap">
       <div class="guide-header">
         <h2>Guide de qualification</h2>
-        <p>Questions a poser au client pour preparer une recommandation firewall Palo Alto Networks. A consulter avant ou pendant un rendez-vous.</p>
+        <p>Questions à poser au client pour préparer une recommandation firewall Palo Alto Networks. À consulter avant ou pendant un rendez-vous.</p>
         <button class="guide-print-btn" onclick="window.print()">Imprimer le guide</button>
       </div>
 
       <div class="guide-category">
-        <div class="guide-cat-title">Perimetre et contexte</div>
+        <div class="guide-cat-title">Périmètre et contexte</div>
 
         <div class="guide-question">
           <div class="guide-q-main">Combien de collaborateurs / utilisateurs ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">La charge globale du reseau : nombre de connexions simultanees et de flux a traiter par le firewall.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La charge globale du réseau : nombre de connexions simultanées et de flux à traiter par le firewall.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Determine la taille de l'appliance (sessions concurrentes, CPS) et le nombre de licences utilisateur (GlobalProtect, Prisma Access).</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Détermine la taille de l'appliance (sessions concurrentes, CPS) et le nombre de licences utilisateur (GlobalProtect, Prisma Access).</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander l'effectif total de l'entreprise et la part en teletravail. En l'absence de reponse, l'outil prend une hypothese prudente basee sur la tranche declaree.</div>
+              <div class="guide-q-block-text">Demander l'effectif total de l'entreprise et la part en télétravail. En l'absence de réponse, l'outil prend une hypothèse prudente basée sur la tranche déclarée.</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Combien de sites, et de quels types (siege, agences, datacenter, usine) ?</div>
+          <div class="guide-q-main">Combien de sites, et de quels types (siège, agences, datacenter, usine) ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">La topologie du reseau : chaque site physique avec sa propre connexion Internet necessite un equipement ou un service de securite.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La topologie du réseau : chaque site physique avec sa propre connexion Internet nécessite un équipement ou un service de sécurité.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Conditionne l'architecture : un site unique appelle un NGFW, du multi-sites appelle SD-WAN ou Prisma Access, un datacenter appelle un modele haute capacite.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Conditionne l'architecture : un site unique appelle un NGFW, du multi-sites appelle SD-WAN ou Prisma Access, un datacenter appelle un modèle haute capacité.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander une liste meme approximative des implantations (« vous avez des bureaux en region ? un datacenter heberge ? »).</div>
+              <div class="guide-q-block-text">Demander une liste même approximative des implantations (« vous avez des bureaux en région ? un datacenter hébergé ? »).</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quel est le secteur d'activite ?</div>
+          <div class="guide-q-main">Quel est le secteur d'activité ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Oriente les exigences de conformite (sante, finance, industrie) et les arguments de vente adaptes au metier.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Oriente les exigences de conformité (santé, finance, industrie) et les arguments de vente adaptés au métier.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Un hopital a des contraintes HIPAA/HDS, une banque du PCI-DSS, une usine de l'OT/IoT. L'architecture et les subscriptions changent.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Un hôpital a des contraintes HIPAA/HDS, une banque du PCI-DSS, une usine de l'OT/IoT. L'architecture et les subscriptions changent.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander simplement la nature de l'activite (« que fait votre entreprise ? »). C'est rarement inconnu.</div>
+              <div class="guide-q-block-text">Demander simplement la nature de l'activité (« que fait votre entreprise ? »). C'est rarement inconnu.</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quel est l'existant a remplacer, et quel constructeur ?</div>
+          <div class="guide-q-main">Quel est l'existant à remplacer, et quel constructeur ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Indique une migration, une fin de support, et l'angle concurrentiel a adopter (Fortinet, Cisco, Check Point, Zscaler, etc.).</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Indique une migration, une fin de support, et l'angle concurrentiel à adopter (Fortinet, Cisco, Check Point, Zscaler, etc.).</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Permet de calibrer les arguments differenciateurs et de proposer un modele au moins equivalent en capacite.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Permet de calibrer les arguments différenciateurs et de proposer un modèle au moins équivalent en capacité.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander la marque et l'age approximatif des equipements en place (« c'est du Fortinet ? Ca a combien d'annees ? »).</div>
+              <div class="guide-q-block-text">Demander la marque et l'âge approximatif des équipements en place (« c'est du Fortinet ? Ça a combien d'années ? »).</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="guide-category">
-        <div class="guide-cat-title">Reseau et trafic</div>
+        <div class="guide-cat-title">Réseau et trafic</div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quel est le debit de la connexion Internet principale (par site cle) ?</div>
+          <div class="guide-q-main">Quel est le débit de la connexion Internet principale (par site clé) ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">C'est le facteur de dimensionnement numero un. Le firewall doit pouvoir inspecter tout le trafic au debit souscrit, via le debit Threat Prevention.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">C'est le facteur de dimensionnement numéro un. Le firewall doit pouvoir inspecter tout le trafic au débit souscrit, via le débit Threat Prevention.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Si le debit TP du firewall est inferieur au debit Internet, il devient le goulot d'etranglement du reseau.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Si le débit TP du firewall est inférieur au débit Internet, il devient le goulot d'étranglement du réseau.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander l'abonnement operateur souscrit (« fibre 1 Gbps ? MPLS 100 Mbps ? »). C'est un bon proxy du debit a couvrir.</div>
+              <div class="guide-q-block-text">Demander l'abonnement opérateur souscrit (« fibre 1 Gbps ? MPLS 100 Mbps ? »). C'est un bon proxy du débit à couvrir.</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Quel est le profil de trafic : bureautique leger, usage cloud/SaaS intensif, ou datacenter ?</div>
+          <div class="guide-q-main">Quel est le profil de trafic : bureautique léger, usage cloud/SaaS intensif, ou datacenter ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Modifie le nombre de flux par utilisateur et la charge de dechiffrement. Un usage SaaS intensif (Teams, M365, Salesforce) genere 3 a 5 fois plus de sessions.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Modifie le nombre de flux par utilisateur et la charge de déchiffrement. Un usage SaaS intensif (Teams, M365, Salesforce) génère 3 à 5 fois plus de sessions.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Impacte les sessions concurrentes et le CPS. Un profil cloud intensif peut necessiter une gamme superieure meme a debit egal.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Impacte les sessions concurrentes et le CPS. Un profil cloud intensif peut nécessiter une gamme supérieure même à débit égal.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Hypothese prudente : « usage mixte SaaS ». Demander si les equipes utilisent beaucoup de visioconference et d'applications cloud.</div>
+              <div class="guide-q-block-text">Hypothèse prudente : « usage mixte SaaS ». Demander si les équipes utilisent beaucoup de visioconférence et d'applications cloud.</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Faut-il inspecter le trafic chiffre HTTPS (dechiffrement SSL) ?</div>
+          <div class="guide-q-main">Faut-il inspecter le trafic chiffré HTTPS (déchiffrement SSL) ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Le dechiffrement SSL permet d'inspecter 80 a 90% du trafic web (HTTPS). Sans lui, la plupart des menaces passent a travers le firewall sans etre analysees.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Le déchiffrement SSL permet d'inspecter 80 à 90% du trafic web (HTTPS). Sans lui, la plupart des menaces passent à travers le firewall sans être analysées.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Point critique : le dechiffrement reduit fortement le debit utile, c'est souvent le vrai goulot d'etranglement. Il faut dimensionner en consequence.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Point critique : le déchiffrement réduit fortement le débit utile, c'est souvent le vrai goulot d'étranglement. Il faut dimensionner en conséquence.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Hypothese prudente : dechiffrement active sur la majorite du trafic. C'est la recommandation securitaire standard.</div>
+              <div class="guide-q-block-text">Hypothèse prudente : déchiffrement activé sur la majorité du trafic. C'est la recommandation sécuritaire standard.</div>
             </div>
           </div>
         </div>
 
         <div class="guide-question">
-          <div class="guide-q-main">Y a-t-il beaucoup d'objets connectes, IoT ou OT ?</div>
+          <div class="guide-q-main">Y a-t-il beaucoup d'objets connectés, IoT ou OT ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Cameras, capteurs, automates industriels, equipements medicaux : chaque objet genere des flux supplementaires et appelle une securite adaptee (IoT Security).</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Caméras, capteurs, automates industriels, équipements médicaux : chaque objet génère des flux supplémentaires et appelle une sécurité adaptée (IoT Security).</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
-              <div class="guide-q-block-text">Les objets connectes multiplient les sessions concurrentes et necessitent la subscription IoT Security pour la visibilite et le controle.</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Les objets connectés multiplient les sessions concurrentes et nécessitent la subscription IoT Security pour la visibilité et le contrôle.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
-              <div class="guide-q-block-text">Demander s'il y a des cameras de surveillance, des capteurs, des automates, des imprimantes reseau ou des equipements medicaux/industriels.</div>
+              <div class="guide-q-block-text">Demander s'il y a des caméras de surveillance, des capteurs, des automates, des imprimantes réseau ou des équipements médicaux/industriels.</div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="guide-category">
-        <div class="guide-cat-title">Besoins de securite et usages</div>
+        <div class="guide-cat-title">Besoins de sécurité et usages</div>
 
         <div class="guide-question">
           <div class="guide-q-main">Quelles protections activer : IPS, antivirus/sandbox, filtrage web, DNS, DLP, controle SaaS, encadrement GenAI ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
-              <div class="guide-q-block-text">Chaque protection correspond a une subscription (CDSS) : Threat Prevention, URL Filtering, WildFire, DNS Security, Enterprise DLP, SaaS Security, AI Access Security.</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Chaque protection correspond à une subscription (CDSS) : Threat Prevention, URL Filtering, WildFire, DNS Security, Enterprise DLP, SaaS Security, AI Access Security.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Determine les subscriptions a associer a l'appliance. Le socle standard (TP + URL + WildFire + DNS) est recommande dans tous les cas.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1374,11 +1378,11 @@
           <div class="guide-q-main">Teletravail et acces distant : combien d'utilisateurs nomades ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">Les utilisateurs en teletravail se connectent via VPN (GlobalProtect) ou ZTNA (Prisma Access). Cela impacte les tunnels GP et la bande passante.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Oriente vers GlobalProtect (integre au NGFW) pour un petit volume, ou Prisma Access pour un deploiement massif et distribue.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1392,11 +1396,11 @@
           <div class="guide-q-main">Acces depuis des appareils non geres, BYOD ou sous-traitants ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">Les appareils personnels ou de prestataires ne peuvent pas installer d'agent VPN. Il faut une solution sans agent (navigateur securise).</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Oriente vers Prisma Browser (ZTNA sans agent, DLP navigateur, controle des extensions) pour securiser ces acces.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1410,11 +1414,11 @@
           <div class="guide-q-main">Cloud public (AWS, Azure, GCP) a securiser ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">Les workloads heberges dans le cloud public necessitent un firewall cloud-native (Cloud NGFW) ou des VM-Series pour la segmentation et l'inspection.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Oriente vers Cloud NGFW (managed par Palo Alto) ou VM-Series (auto-gere) selon le niveau de controle souhaite.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1428,11 +1432,11 @@
           <div class="guide-q-main">Besoin de detection, SOC, EDR ou correlation d'evenements ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">La detection et la reponse aux incidents (XDR/SIEM) complete la prevention (firewall). C'est le volet « operations de securite ».</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Oriente vers Cortex XDR (EDR/XDR), XSIAM (SIEM+SOAR AI-native) ou XSOAR (orchestration). Offre complementaire au NGFW.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1450,11 +1454,11 @@
           <div class="guide-q-main">La haute disponibilite est-elle requise ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">La HA implique une paire d'appliances (active/passive ou active/active) pour garantir la continuite en cas de panne.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Double le nombre d'appliances et donc le budget. A prevoir systematiquement pour les sites critiques (siege, datacenter).</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1468,11 +1472,11 @@
           <div class="guide-q-main">Contraintes physiques : rack, PoE, 5G/LTE, environnement industriel ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">Determine le format de l'appliance : desktop (pas de salle serveur), rack 1U/2U, modele avec PoE integre, modele rugged pour environnement industriel.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Certains modeles ont du PoE integre (PA-415, PA-445, PA-455, PA-545-POE, PA-555-POE, PA-1410, PA-1420), du 5G (PA-415-5G, PA-455-5G), ou un format compact sans ventilateur (PA-400).</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1486,11 +1490,11 @@
           <div class="guide-q-main">Gestion centralisee de plusieurs sites attendue ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">La gestion centralisee (Panorama ou Strata Cloud Manager) permet de piloter tous les firewalls depuis une console unique.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Recommande des 2 a 3 sites. Indispensable pour la coherence des politiques, le deploiement et le reporting multi-sites.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1504,11 +1508,11 @@
           <div class="guide-q-main">Quel horizon de croissance a trois ans ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">La marge de dimensionnement : le firewall doit pouvoir absorber la croissance prevue sans remplacement premature.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Fixe la marge entre la charge actuelle et la capacite de l'appliance. Un dimensionnement trop juste oblige a changer d'equipement en 2 ans.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
@@ -1522,11 +1526,11 @@
           <div class="guide-q-main">Contraintes de souverainete ou d'hebergement des donnees (UE) ?</div>
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
-              <div class="guide-q-block-label">Ce que ca represente</div>
+              <div class="guide-q-block-label">Ce que ça représente</div>
               <div class="guide-q-block-text">Certaines organisations exigent que les donnees (logs, configurations, flux analyses) restent hebergees dans l'Union Europeenne.</div>
             </div>
             <div class="guide-q-block matters">
-              <div class="guide-q-block-label">Pourquoi ca compte</div>
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
               <div class="guide-q-block-text">Influence le choix entre cloud (Prisma Access, SCM) et on-prem (NGFW + Panorama). Certaines certifications imposent du on-prem.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
