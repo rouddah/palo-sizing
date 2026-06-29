@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mode Guidé -Sizing Palo Alto</title>
+  <meta name="description" content="Wizard de sizing Palo Alto Networks pour profils non-techniques. 7 questions business pour obtenir une recommandation de premier niveau." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .wizard-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+    .wizard-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .progress-bar-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .progress-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .question-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+    .question-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .question-tooltip {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border-radius: var(--radius);
+      border-left: 3px solid var(--border2);
+    }
+    .answer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .answer-grid.single-col {
+      grid-template-columns: 1fr;
+    }
+    .mode-btn {
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .15s, background .15s;
+    }
+    .mode-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .mode-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .input-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .wizard-input {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      color: var(--text-bright);
+      font-size: 15px;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .wizard-input:focus {
+      border-color: var(--accent);
+    }
+    .wizard-select {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      color: var(--text-bright);
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .wizard-select:focus {
+      border-color: var(--accent);
+    }
+    .wizard-nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-next {
+      padding: 12px 28px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-next:hover { opacity: 0.88; }
+    .btn-next:disabled { opacity: 0.4; cursor: default; }
+    .btn-back {
+      padding: 12px 20px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-back:hover { border-color: var(--border); color: var(--text); }
+
+    /* Results */
+    .result-wrap {
+      display: none;
+    }
+    .result-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .result-block-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .result-line {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+    .result-line strong { color: var(--text); }
+    .result-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      margin-right: 6px;
+      margin-bottom: 4px;
+    }
+    .result-tag.yellow {
+      background: var(--yellow-dim);
+      border-color: rgba(245,158,11,0.3);
+      color: var(--yellow);
+    }
+    .result-tag.green {
+      background: var(--green-dim);
+      border-color: rgba(34,197,94,0.3);
+      color: var(--green);
+    }
+    .result-tag.purple {
+      background: rgba(139,92,246,0.12);
+      border-color: rgba(139,92,246,0.3);
+      color: var(--purple);
+    }
+    .result-detail-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: border-color .15s, color .15s;
+    }
+    .result-detail-link:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-restart {
+      padding: 12px 24px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-restart:hover { border-color: var(--accent); color: var(--accent); }
+
+    @media (max-width: 460px) {
+      .answer-grid { grid-template-columns: 1fr; }
+      .question-block { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="wizard-wrap">
+    <div class="page-header" style="margin-bottom:28px">
+      <h1>🧙 Mode guidé</h1>
+      <p>Recommandation Palo Alto en 7 questions · Pas de jargon technique requis</p>
+    </div>
+
+    <!-- WIZARD FORM -->
+    <div id="wizard-form">
+      <div class="wizard-progress">
+        <span class="progress-label" id="progress-label">Question 1 / 7</span>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar" style="width:14%"></div>
+        </div>
+      </div>
+
+      <div class="question-block" id="question-block">
+        <!-- Question content injected by JS -->
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="wizard-result" class="result-wrap">
+      <!-- Results injected by JS -->
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Recommandation indicative de premier niveau · Ne remplace pas un sizing officiel Palo Alto</div>
+  </footer>
+
+  <script>
+  (function () {
+    var STORAGE_KEY = 'pan-wizard';
+    var answers = {};
+    var currentQ = 1;
+    var TOTAL_Q = 7;
+
+    // Try to restore from sessionStorage
+    try {
+      var saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) { answers = JSON.parse(saved); }
+    } catch(e) {}
+
+    function save() {
+      try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch(e) {}
+    }
+
+    var questions = [
+      {
+        id: 1,
+        title: 'Combien de collaborateurs travaillent depuis vos bureaux (sur site) ?',
+        tooltip: 'Le nombre total de personnes connectées au réseau local de vos sites.',
+        type: 'number',
+        key: 'onsite',
+        placeholder: 'ex : 200'
+      },
+      {
+        id: 2,
+        title: 'Combien de collaborateurs travaillent en télétravail ou en mobilité ?',
+        tooltip: 'Personnes qui se connectent à distance, depuis chez eux ou en déplacement.',
+        type: 'number',
+        key: 'remote',
+        placeholder: 'ex : 80'
+      },
+      {
+        id: 3,
+        title: 'Combien de sites distants à connecter, et quelle est leur taille typique ?',
+        tooltip: 'Agences, filiales, boutiques, usines. Un site = un emplacement physique connecté.',
+        type: 'sites',
+        keyCount: 'siteCount',
+        keySize: 'siteSize'
+      },
+      {
+        id: 4,
+        title: 'Avez-vous besoin de filtrer le trafic Internet de vos utilisateurs (web, SaaS) ?',
+        tooltip: 'Filtrage des sites web, blocage des catégories à risque, contrôle des SaaS comme Office 365, Dropbox…',
+        type: 'choices',
+        key: 'webFilter',
+        choices: ['Oui', 'Non', 'Je ne sais pas']
+      },
+      {
+        id: 5,
+        title: 'Avez-vous des applications internes (intranet, ERP, fichiers, code source) que vos utilisateurs doivent atteindre à distance ?',
+        tooltip: 'Applications hébergées dans votre datacenter ou réseau interne, accessibles en télétravail.',
+        type: 'choices',
+        key: 'privateApps',
+        choices: ['Oui', 'Non', 'Je ne sais pas']
+      },
+      {
+        id: 6,
+        title: 'Avez-vous des objets connectés non-PC (imprimantes, caméras, IoT, matériel industriel/médical) à protéger sur votre réseau ?',
+        tooltip: 'Tout appareil connecté qui n\'est pas un PC ou serveur classique.',
+        type: 'choices',
+        key: 'iot',
+        choices: ['Oui', 'Non', 'Je ne sais pas']
+      },
+      {
+        id: 7,
+        title: 'Disposez-vous déjà d\'un SOC ou d\'une équipe de supervision des alertes de sécurité ?',
+        tooltip: 'Un SOC (Security Operations Center) surveille les alertes de sécurité en temps réel.',
+        type: 'choices',
+        key: 'soc',
+        choices: ['Oui, mature', 'Oui, à moderniser', 'Non, à construire', 'Je ne sais pas']
+      }
+    ];
+
+    function renderQuestion(q) {
+      var block = document.getElementById('question-block');
+      var saved = answers[q.key] || answers[q.keyCount] || '';
+      var html = '<div class="question-title">' + q.title + '</div>';
+      html += '<div class="question-tooltip">' + q.tooltip + '</div>';
+
+      if (q.type === 'number') {
+        var val = answers[q.key] || '';
+        html += '<div class="input-row">';
+        html += '<label class="input-label" for="wiz-input">Nombre</label>';
+        html += '<input class="wizard-input" id="wiz-input" type="number" min="0" placeholder="' + q.placeholder + '" value="' + val + '" />';
+        html += '</div>';
+      } else if (q.type === 'sites') {
+        var cnt = answers[q.keyCount] || '';
+        var sz = answers[q.keySize] || '';
+        html += '<div class="input-row">';
+        html += '<label class="input-label">Nombre de sites</label>';
+        html += '<input class="wizard-input" id="wiz-count" type="number" min="0" placeholder="ex : 5" value="' + cnt + '" />';
+        html += '<label class="input-label" style="margin-top:6px">Taille typique d\'un site</label>';
+        html += '<select class="wizard-select" id="wiz-size">';
+        html += '<option value="">-- Sélectionner --</option>';
+        var sizes = ['Petit (moins de 25 personnes)', 'Moyen (25 à 100 personnes)', 'Grand (100 à 500 personnes)', 'Très grand (plus de 500 personnes)'];
+        sizes.forEach(function(s) {
+          var sel = (sz === s) ? ' selected' : '';
+          html += '<option value="' + s + '"' + sel + '>' + s + '</option>';
+        });
+        html += '</select>';
+        html += '</div>';
+      } else if (q.type === 'choices') {
+        var isMany = q.choices.length > 2;
+        html += '<div class="answer-grid' + (isMany ? ' single-col' : '') + '">';
+        q.choices.forEach(function(c) {
+          var sel = (answers[q.key] === c) ? ' selected' : '';
+          html += '<button class="mode-btn' + sel + '" data-val="' + c + '">' + c + '</button>';
+        });
+        html += '</div>';
+      }
+
+      var isFirst = (q.id === 1);
+      html += '<div class="wizard-nav">';
+      if (!isFirst) {
+        html += '<button class="btn-back" id="btn-back">← Retour</button>';
+      }
+      html += '<button class="btn-next" id="btn-next">Suivant →</button>';
+      html += '</div>';
+
+      block.innerHTML = html;
+
+      // bind choice buttons
+      if (q.type === 'choices') {
+        block.querySelectorAll('.mode-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            block.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('selected'); });
+            btn.classList.add('selected');
+            answers[q.key] = btn.dataset.val;
+            save();
+          });
+        });
+      }
+
+      if (document.getElementById('btn-back')) {
+        document.getElementById('btn-back').addEventListener('click', function() {
+          currentQ--;
+          render();
+        });
+      }
+
+      document.getElementById('btn-next').addEventListener('click', function() {
+        if (!collectCurrent(q)) return;
+        if (currentQ < TOTAL_Q) {
+          currentQ++;
+          render();
+        } else {
+          showResult();
+        }
+      });
+    }
+
+    function collectCurrent(q) {
+      if (q.type === 'number') {
+        var v = document.getElementById('wiz-input').value.trim();
+        if (v === '' || isNaN(parseInt(v, 10))) { alert('Veuillez saisir un nombre.'); return false; }
+        answers[q.key] = parseInt(v, 10);
+        save();
+      } else if (q.type === 'sites') {
+        var cnt = document.getElementById('wiz-count').value.trim();
+        var sz = document.getElementById('wiz-size').value;
+        if (cnt === '' || isNaN(parseInt(cnt, 10))) { alert('Veuillez indiquer le nombre de sites.'); return false; }
+        answers[q.keyCount] = parseInt(cnt, 10);
+        answers[q.keySize] = sz || 'Moyen (25 à 100 personnes)';
+        save();
+      } else if (q.type === 'choices') {
+        if (!answers[q.key]) { alert('Veuillez sélectionner une réponse.'); return false; }
+      }
+      return true;
+    }
+
+    function render() {
+      var pct = Math.round((currentQ / TOTAL_Q) * 100);
+      document.getElementById('progress-label').textContent = 'Question ' + currentQ + ' / ' + TOTAL_Q;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      renderQuestion(questions[currentQ - 1]);
+    }
+
+    function mbpsForSize(sz) {
+      if (!sz) return 100;
+      if (sz.indexOf('Petit') !== -1) return 50;
+      if (sz.indexOf('Moyen') !== -1) return 100;
+      if (sz.indexOf('Grand') !== -1 && sz.indexOf('Très') === -1) return 250;
+      return 500;
+    }
+
+    function prismaEdition() {
+      var web = answers.webFilter;
+      var priv = answers.privateApps;
+      if ((web === 'Oui' || web === 'Je ne sais pas') && priv === 'Non') {
+        return { edition: 'SWG Edition', reason: 'Filtrage Internet et SaaS uniquement, pas d\'applications privées.' };
+      }
+      if (priv === 'Oui' && web === 'Non') {
+        return { edition: 'ZTNA Edition', reason: 'Accès aux applications internes uniquement, sans besoin de filtrage Internet.' };
+      }
+      return { edition: 'Enterprise Edition', reason: 'Couvre à la fois la sécurité Internet et l\'accès aux applications privées.' };
+    }
+
+    function ngfwSeries(total) {
+      if (total === 0) return null;
+      if (total < 50) return { series: 'PA-400 Series', reason: 'Idéal pour les petits sites (moins de 50 utilisateurs).' };
+      if (total < 250) return { series: 'PA-1400 Series', reason: 'Dimensionné pour les sites moyens (50 à 250 utilisateurs).' };
+      if (total < 1000) return { series: 'PA-3400 Series', reason: 'Performant pour les sites importants (250 à 1 000 utilisateurs).' };
+      if (total < 5000) return { series: 'PA-5400 Series', reason: 'Architecture haute capacité pour les grands déploiements (1 000 à 5 000 utilisateurs).' };
+      return { series: 'PA-7000 / PA-7500', reason: 'Chassis datacenter pour les très grands environnements (plus de 5 000 utilisateurs).' };
+    }
+
+    function socReco() {
+      var soc = answers.soc;
+      if (!soc || soc === 'Je ne sais pas') {
+        return { prod: 'XDR Prevent', detail: 'Démarrer par Cortex XDR Prevent pour la prévention endpoint. Monter en gamme selon l\'évolution du besoin SOC.' };
+      }
+      if (soc === 'Oui, mature') {
+        return { prod: 'Cortex AgentiX (standalone)', detail: 'Votre SOC est mature -Cortex AgentiX augmente l\'existant avec des agents IA autonomes (disponible standalone depuis début 2026).' };
+      }
+      if (soc === 'Oui, à moderniser') {
+        return { prod: 'Cortex XSIAM', detail: 'XSIAM consolide SIEM + SOAR + EDR en une plateforme IA. Inclut AgentiX. Idéal pour moderniser un SOC existant.' };
+      }
+      return { prod: 'Cortex XDR Pro per Endpoint', detail: 'Premier pas accessible : XDR Pro couvre la détection endpoint, la corrélation réseau/cloud et le threat hunting. Évolutif vers XSIAM si le SOC se structure.' };
+    }
+
+    function showResult() {
+      document.getElementById('wizard-form').style.display = 'none';
+      var r = document.getElementById('wizard-result');
+      r.style.display = 'block';
+
+      var onsite = answers.onsite || 0;
+      var remote = answers.remote || 0;
+      var total = onsite + remote;
+      var siteCount = answers.siteCount || 0;
+      var siteSize = answers.siteSize || '';
+      var mbps = mbpsForSize(siteSize) * siteCount;
+      var pa = prismaEdition();
+      var ngfw = ngfwSeries(onsite);
+      var soc = socReco();
+      var iot = answers.iot;
+      var priv = answers.privateApps;
+
+      var html = '';
+
+      // Header
+      html += '<div style="margin-bottom:20px">';
+      html += '<h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Votre recommandation de premier niveau</h2>';
+      html += '<p style="font-size:12px;color:var(--text-muted)">Basée sur vos réponses · Indicatif uniquement · Mis à jour juin 2026</p>';
+      html += '</div>';
+
+      // Bloc 1 - Prisma Access
+      if (remote > 0 || siteCount > 0) {
+        html += '<div class="result-block">';
+        html += '<div class="result-block-title">☁️ Prisma Access -SASE</div>';
+        html += '<div class="result-line"><strong>Edition recommandée :</strong> <span class="result-tag">' + pa.edition + '</span></div>';
+        html += '<div class="result-line" style="color:var(--text-muted);font-size:12px">' + pa.reason + '</div>';
+        if (remote > 0) {
+          html += '<div class="result-line" style="margin-top:10px"><strong>Mobile Users (MU) :</strong> ' + remote + ' utilisateurs</div>';
+        }
+        if (siteCount > 0) {
+          html += '<div class="result-line"><strong>Remote Networks (RN) :</strong> ' + siteCount + ' site(s) -' + mbps + ' Mbps estimés</div>';
+          html += '<div class="result-line" style="font-size:11px;color:var(--text-muted)">(ratio : ' + mbpsForSize(siteSize) + ' Mbps par site ' + siteSize.split(' ')[0].toLowerCase() + ')</div>';
+        }
+        var addons = [];
+        if (iot === 'Oui') addons.push('<span class="result-tag yellow">Device Security</span>');
+        if (priv === 'Oui' && pa.edition === 'SWG Edition') addons.push('<span class="result-tag yellow">Private App Access (add-on)</span>');
+        if (addons.length) {
+          html += '<div class="result-line" style="margin-top:10px"><strong>Add-ons recommandés :</strong> ' + addons.join(' ') + '</div>';
+        }
+        html += '<a class="result-detail-link" href="prisma.html">Voir les détails techniques Prisma Access →</a>';
+        html += '</div>';
+      }
+
+      // Bloc 2 - NGFW
+      if (onsite > 0 && ngfw) {
+        html += '<div class="result-block">';
+        html += '<div class="result-block-title">🔒 Firewalls PA-Series -NGFW sur site</div>';
+        html += '<div class="result-line"><strong>Gamme recommandée :</strong> <span class="result-tag">' + ngfw.series + '</span></div>';
+        html += '<div class="result-line" style="color:var(--text-muted);font-size:12px">' + ngfw.reason + '</div>';
+        html += '<div class="result-line" style="margin-top:10px"><strong>Bundle recommandé :</strong> <span class="result-tag green">Precision AI Pro Bundle</span></div>';
+        html += '<div class="result-line" style="font-size:12px;color:var(--text-muted)">Inclut Advanced Threat Prevention, WildFire, URL Filtering, DNS Security, SD-WAN et Device Security -recommandation Palo Alto actuelle.</div>';
+        html += '<a class="result-detail-link" href="pa-series.html">Voir les débits et spécifications techniques PA-Series →</a>';
+        html += '</div>';
+      }
+
+      // Bloc 3 - SecOps
+      html += '<div class="result-block">';
+      html += '<div class="result-block-title">🧠 SecOps -Cortex</div>';
+      html += '<div class="result-line"><strong>Recommandation :</strong> <span class="result-tag purple">' + soc.prod + '</span></div>';
+      html += '<div class="result-line" style="color:var(--text-muted);font-size:12px">' + soc.detail + '</div>';
+      html += '<a class="result-detail-link" href="cortex.html">Voir les produits Cortex en détail →</a>';
+      html += '</div>';
+
+      // Bloc 4 - Eléments obligatoires
+      html += '<div class="result-block">';
+      html += '<div class="result-block-title">⚠️ Éléments souvent oubliés</div>';
+      var must = [
+        '<strong>Strata Logging Service</strong> -obligatoire avec Prisma Access (SKU séparée)',
+        '<strong>Strata Cloud Manager Essentials</strong> -gratuit, inclus par défaut',
+        '<strong>Cloud Identity Engine</strong> -gratuit, pour l\'authentification des utilisateurs',
+      ];
+      if (siteCount > 3 || onsite > 200) {
+        must.push('<strong>Panorama</strong> -recommandé si plus de 3 sites ou besoin de cohérence multi-NGFW');
+      }
+      must.forEach(function(m) {
+        html += '<div class="result-line">· ' + m + '</div>';
+      });
+      html += '<a class="result-detail-link" href="panorama.html">Panorama et Strata Cloud Manager →</a>';
+      html += '</div>';
+
+      // Bloc 5 - Disclaimer
+      html += '<div class="result-block" style="border-left:3px solid var(--yellow)">';
+      html += '<div class="result-block-title" style="color:var(--yellow)">ℹ️ Ce que cette recommandation n\'est pas</div>';
+      html += '<div class="result-line">Cette recommandation est indicative pour qualification de premier niveau. Elle ne remplace pas un POC ni un sizing officiel Palo Alto. Le tarif n\'est jamais affiché : pour un devis, contacter votre interlocuteur Exclusive Networks.</div>';
+      html += '<a class="result-detail-link" href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="border-color:var(--yellow);color:var(--yellow)">Contacter Exclusive Networks →</a>';
+      html += '</div>';
+
+      html += '<div style="margin-top:24px">';
+      html += '<button class="btn-restart" id="btn-restart">↺ Recommencer le wizard</button>';
+      html += '</div>';
+
+      r.innerHTML = html;
+
+      document.getElementById('btn-restart').addEventListener('click', function() {
+        answers = {};
+        currentQ = 1;
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) {}
+        r.style.display = 'none';
+        document.getElementById('wizard-form').style.display = 'block';
+        render();
+      });
+    }
+
+    // Init
+    render();
+  })();
+  </script>
+</body>
+</html>
