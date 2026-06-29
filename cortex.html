@@ -191,7 +191,7 @@
   <div class="page-wrap">
     <div class="page-header">
       <h1>Cortex — Security Operations Platform</h1>
-      <p>Cortex XDR · XSIAM · XSOAR · Xpanse · Cortex Data Lake</p>
+      <p>Cortex XDR · XSIAM · XSOAR · AgentiX · Xpanse · Cortex Cloud</p>
     </div>
 
     <!-- Note : aucun deck de licensing Cortex fourni par l'utilisateur.
@@ -209,7 +209,7 @@
     </div>
 
     <!-- Product overview -->
-    <div class="section-title">Vue d'ensemble — 4 produits Cortex</div>
+    <div class="section-title">Vue d'ensemble — 5 produits Cortex</div>
     <div class="product-grid">
       <div class="product-card">
         <div class="product-card-header">
@@ -230,7 +230,7 @@
             <div class="product-card-sub">AI-driven SOC Platform</div>
           </div>
         </div>
-        <div class="product-card-desc">Plateforme SOC IA native : remplace SIEM + SOAR + EDR + Threat Intel en une seule plateforme. Cortex Analytics Engine réduit le volume d'alertes de 75%+ via la corrélation ML. Inclut XDR, XSOAR et CDL.</div>
+        <div class="product-card-desc">Plateforme SOC IA native : remplace SIEM + SOAR + EDR + Threat Intel en une seule plateforme. Cortex Analytics Engine réduit le volume d'alertes de 75%+ via la corrélation ML. Inclut XDR, AgentiX et Strata Logging Service.</div>
         <span class="product-tag" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:var(--purple)">Par Go/jour ingéré</span>
       </div>
       <div class="product-card">
@@ -254,6 +254,17 @@
         </div>
         <div class="product-card-desc">Découverte continue de la surface d'attaque exposée sur internet : assets inconnus, misconfigurés ou vulnérables — cloud, on-prem, supply chain tierce. Inventaire automatique et scoring de risque.</div>
         <span class="product-tag" style="background:var(--yellow-dim);border-color:rgba(245,158,11,0.3);color:var(--yellow)">SaaS — Sur devis</span>
+      </div>
+      <div class="product-card">
+        <div class="product-card-header">
+          <div class="product-icon" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25)">☁️</div>
+          <div>
+            <div class="product-card-name">Cortex Cloud</div>
+            <div class="product-card-sub">Cloud Native Application Protection + Cloud Detection &amp; Response</div>
+          </div>
+        </div>
+        <div class="product-card-desc">Plateforme cloud unifiée CNAPP + CDR. Remplace Prisma Cloud (transition automatique). Couvre cloud posture (CSPM/CIEM/DSPM/AI-SPM), runtime (workloads, containers, serverless) et SOC cloud (CDR) sur la plateforme Cortex. Cortex Cloud 2.0 disponible depuis oct. 2025.</div>
+        <span class="product-tag" style="background:var(--yellow-dim);border-color:rgba(245,158,11,0.3);color:var(--yellow)">SaaS · Sur devis</span>
       </div>
     </div>
 
@@ -576,7 +587,7 @@
     <div class="section-title" id="xsiam">Cortex XSIAM — Plateforme SOC IA</div>
 
     <div class="info-note purple">
-      <strong>XSIAM = SIEM + SOAR + EDR + Threat Intel + ASM</strong> — en une seule plateforme cloud-native. Lancé en 2022, XSIAM est conçu pour remplacer l'ensemble de la stack SOC traditionnelle. Le moteur d'IA de Cortex corrèle les millions d'événements bruts en quelques incidents actionnables. Il inclut nativement Cortex XDR Pro, XSOAR et le Cortex Data Lake (CDL).
+      <strong>XSIAM = SIEM + SOAR + EDR + Threat Intel + ASM</strong> — en une seule plateforme cloud-native. Lancé en 2022, XSIAM est conçu pour remplacer l'ensemble de la stack SOC traditionnelle. Le moteur d'IA de Cortex corrèle les millions d'événements bruts en quelques incidents actionnables. Il inclut nativement Cortex XDR Pro, XSOAR et le Strata Logging Service (ex-CDL).
     </div>
 
     <div class="xsiam-module-grid">
@@ -589,7 +600,7 @@
         <div class="xsiam-module-desc">Orchestration et automation — 800+ content packs, playbooks visuels, war room, case management. AgentiX (IA agentique) remplace progressivement XSOAR depuis oct. 2025.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name">🗄️ Cortex Data Lake (CDL)</div>
+        <div class="xsiam-module-name">🗄️ Strata Logging Service (ex-CDL)</div>
         <div class="xsiam-module-desc">Stockage unifié de toutes les données de sécurité — 15 PB/jour max ingestion. Schéma normalisé. Rétention 12 mois par défaut (extensible 24 mois).</div>
       </div>
       <div class="xsiam-module">
@@ -775,7 +786,7 @@
     <div class="section-title" id="xsoar">Cortex XSOAR — Orchestration &amp; Automation</div>
 
     <div class="info-note" style="border-left-color:var(--yellow)">
-      <strong>⚠ Transition vers Cortex AgentiX :</strong> Les SKUs de services professionnels XSOAR sont entrés en end-of-sale (EOS) en octobre 2025. XSOAR est remplacé progressivement par <strong>Cortex AgentiX</strong> (lancé oct. 2025) — plateforme SOAR de nouvelle génération basée sur des agents IA autonomes entraînés sur 1,2 milliard d'exécutions réelles. XSOAR reste vendu et supporté pendant la période de transition. Tout nouveau projet SOC devrait cibler XSIAM + AgentiX plutôt que XSOAR standalone.
+      <strong>⚠ Transition vers Cortex AgentiX :</strong> Cortex AgentiX est disponible en standalone depuis début 2026, en plus de son intégration native à Cortex XSIAM, Cortex Cloud et Cortex XDR. Les SKUs services pros XSOAR sont entrés en End-of-Sale en octobre 2025. XSOAR reste vendu et supporté pendant la transition. Tout nouveau projet SOC devrait cibler XSIAM + AgentiX plutôt que XSOAR standalone.
     </div>
     <div class="info-note green">
       <strong>Modes de déploiement XSOAR :</strong> Inclus dans XSIAM (recommandé nouveaux projets) ou vendu séparément pour SOC existants. Standalone : on-prem (VM/Docker) ou cloud-hosted (XSOAR Cloud).
@@ -1033,6 +1044,11 @@
         <div class="card-icon">⚙️</div>
         <div class="card-title">XSOAR Developer<span class="card-arrow">↗</span></div>
         <div class="card-description">Documentation développeur XSOAR — content packs, API, playbooks</div>
+      </a>
+      <a class="tool-card" href="https://www.paloaltonetworks.com/cortex/cloud" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">☁️</div>
+        <div class="card-title">Cortex Cloud<span class="card-arrow">↗</span></div>
+        <div class="card-description">Page produit officielle Cortex Cloud (ex-Prisma Cloud)</div>
       </a>
     </div>
   </div>
