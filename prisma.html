@@ -67,7 +67,11 @@
   <div class="page-wrap">
     <div class="page-header">
       <h1>Prisma Access — SASE &amp; Zero Trust</h1>
-      <p>Architecture SASE cloud-delivered · GlobalProtect · Remote Networks · Service Connections</p>
+      <p>Architecture SASE cloud-delivered · Prisma Access Agent (ex-GlobalProtect SKUs) · Remote Networks · Service Connections</p>
+    </div>
+
+    <div class="info-note" style="border-left-color:var(--yellow)">
+      <strong>Transition GlobalProtect SKUs</strong> : depuis le 15 août 2025, les SKUs GlobalProtect sur form factor NGFW sont EoS. Les nouveaux déploiements utilisent les SKUs <strong>Prisma Access Agent</strong>. La fonction GlobalProtect reste opérationnelle côté Prisma Access.
     </div>
 
     <!-- Architecture overview cards -->
@@ -89,7 +93,7 @@
       </div>
       <div class="tool-card" style="cursor:default">
         <div class="card-icon">☁️</div>
-        <div class="card-title">150+ PoP mondiaux</div>
+        <div class="card-title">100+ PoP mondiaux</div>
         <div class="card-description">Infrastructure cloud-delivered distribuée mondialement. SLA de disponibilité 99.999%. Routage optimal automatique.</div>
       </div>
     </div>
@@ -155,7 +159,7 @@
         <div class="card-description" style="font-size:11px">Protection contre le DNS tunneling, DGA, et les domaines malveillants en temps reel.</div>
       </div>
       <div class="tool-card" style="cursor:default;padding:14px">
-        <div class="card-title" style="font-size:12px">IoT / Device Security</div>
+        <div class="card-title" style="font-size:12px">Device Security</div>
         <div class="card-description" style="font-size:11px">Detection et segmentation automatique des appareils IoT et OT sur le reseau.</div>
       </div>
       <div class="tool-card" style="cursor:default;padding:14px">
@@ -184,7 +188,7 @@
     <div class="info-note" style="border-left-color:var(--green)">
       <strong>Connectivite :</strong> GlobalProtect (Mobile Users), Remote Networks (IPsec sites), Service Connections (datacenter), ZTNA Connector, Colo Connect.
       <strong>SLA annonces :</strong> 99,999 % uptime, 10 ms de latence de traitement.
-      <strong>Infrastructure :</strong> 150+ Points of Presence mondiaux.
+      <strong>Infrastructure :</strong> 100+ Points of Presence mondiaux.
     </div>
 
     <div class="ztna-note">
@@ -216,10 +220,11 @@
           <tr><td>Continuous trust verification</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
 
           <tr class="section-row"><td colspan="4">Gestion (inclus dans toutes les éditions)</td></tr>
-          <tr><td>Strata Cloud Manager (base)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
-          <tr><td>GlobalProtect (150+ PoP, 99.999% SLA)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Strata Cloud Manager Essentials</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
+          <tr><td>Strata Cloud Manager Pro</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+          <tr><td>GlobalProtect (100+ PoP, 99.999% SLA)</td><td class="val-check">✓</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>ADEM + AIOps</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
-          <tr><td>Strata Logging Service</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+          <tr><td>Strata Logging Service</td><td class="val-na"><span style="color:var(--yellow)">requis</span> · SKU séparée</td><td class="val-na"><span style="color:var(--yellow)">requis</span> · SKU séparée</td><td class="val-na"><span style="color:var(--yellow)">requis</span> · SKU séparée</td></tr>
         </tbody>
       </table>
     </div>
@@ -239,7 +244,7 @@
           <tr><td>Sécurité internet sortant</td><td class="val-check">✓</td><td class="val-check">✓</td></tr>
           <tr><td>Accès apps privées (ZTNA 2.0)</td><td class="val-na">—<small> (add-on)</small></td><td class="val-check">✓ (inclus)</td></tr>
           <tr><td>ADEM + AIOps</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
-          <tr><td>Strata Logging Service</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+          <tr><td>Strata Logging Service</td><td class="val-na"><span style="color:var(--yellow)">requis</span> · SKU séparée</td><td class="val-na"><span style="color:var(--yellow)">requis</span> · SKU séparée</td></tr>
         </tbody>
       </table>
     </div>
@@ -298,10 +303,10 @@
       </div>
       <div class="addon-card">
         <div class="addon-card-header">
-          <span class="addon-card-name">IoT Security</span>
+          <span class="addon-card-name">Device Security</span>
         </div>
         <div class="addon-card-sku">PAN-PRISMA-ACCESS-IOT</div>
-        <div class="addon-card-desc">Sécurité IoT pour le réseau — détection et segmentation des appareils IoT/OT.</div>
+        <div class="addon-card-desc">Sécurité Device Security pour le réseau — détection et segmentation des appareils IoT/OT.</div>
       </div>
       <div class="addon-card">
         <div class="addon-card-header">
