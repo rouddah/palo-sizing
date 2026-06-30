@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mode Guidé - Sizing Palo Alto</title>
+  <title>Mode Guid&eacute; - Sizing Palo Alto</title>
   <meta name="description" content="Wizard de sizing Palo Alto Networks pour profils non-techniques. 7 questions business pour obtenir une recommandation de premier niveau." />
   <link rel="stylesheet" href="styles.css" />
   <style>
@@ -52,15 +52,14 @@
       margin-bottom: 8px;
       line-height: 1.4;
     }
-    .wiz-q-tip {
-      font-size: 12px;
+    .wiz-helper {
       color: var(--text-muted);
-      margin-bottom: 28px;
-      line-height: 1.6;
-      padding: 10px 14px;
-      background: var(--surface2);
-      border-radius: var(--radius);
-      border-left: 3px solid var(--border2);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 8px 0 20px 0;
+      padding: 0;
+      border: none;
+      background: none;
     }
     .wiz-input-label {
       font-size: 11px;
@@ -104,37 +103,61 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 24px;
+      margin: 20px 0;
+    }
+    .wiz-choice {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .wiz-choice:hover {
+      border-color: var(--accent);
+      background: var(--surface);
+    }
+    .wiz-choice.selected {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
     .wiz-nav {
       display: flex;
+      justify-content: space-between;
       gap: 12px;
-      align-items: center;
-      margin-top: 8px;
+      margin-top: 24px;
     }
     .wiz-btn-next {
       padding: 12px 28px;
       background: var(--accent);
       color: #fff;
-      border: none;
+      border: 1px solid var(--accent);
       border-radius: var(--radius);
       font-size: 14px;
       font-weight: 600;
+      font-family: var(--font);
       cursor: pointer;
-      transition: opacity .15s;
+      transition: filter .15s;
     }
-    .wiz-btn-next:hover { opacity: 0.88; }
+    .wiz-btn-next:hover { filter: brightness(1.1); }
     .wiz-btn-back {
       padding: 12px 20px;
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       font-size: 14px;
+      font-family: var(--font);
       cursor: pointer;
-      transition: border-color .15s, color .15s;
+      transition: border-color .15s;
     }
-    .wiz-btn-back:hover { border-color: var(--accent); color: var(--text); }
+    .wiz-btn-back:hover { border-color: var(--text-muted); }
     /* Results */
     .wiz-result-block {
       background: var(--surface);
@@ -206,6 +229,51 @@
       color: var(--text-muted);
       line-height: 1.8;
     }
+    /* Pitch block */
+    .wiz-pitch {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .wiz-pitch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .wiz-pitch-header h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 0;
+    }
+    .wiz-copy-btn {
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .wiz-copy-btn:hover { opacity: 0.85; }
+    .wiz-pitch-content {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+      line-height: 1.7;
+      border: none;
+      background: none;
+      padding: 0;
+    }
     .wiz-action-row {
       display: flex;
       gap: 10px;
@@ -219,6 +287,7 @@
       border: 1px solid var(--border2);
       border-radius: var(--radius);
       font-size: 13px;
+      font-family: var(--font);
       cursor: pointer;
       transition: border-color .15s, color .15s;
     }
@@ -230,6 +299,7 @@
       border: 1px solid var(--border2);
       border-radius: var(--radius);
       font-size: 13px;
+      font-family: var(--font);
       cursor: pointer;
       transition: border-color .15s;
     }
@@ -253,6 +323,8 @@
     @media (max-width: 480px) {
       .wiz-q-block { padding: 20px 16px; }
       .wiz-wrap { padding: 24px 12px 60px; }
+      .wiz-nav { flex-direction: column-reverse; }
+      .wiz-btn-next, .wiz-btn-back { width: 100%; }
     }
   </style>
 </head>
@@ -262,8 +334,8 @@
 
   <div class="wiz-wrap">
     <div class="page-header" style="margin-bottom:28px">
-      <h1>Mode guidé</h1>
-      <p>Recommandation Palo Alto en 7 questions - Pas de jargon technique requis</p>
+      <h1>Mode guid&eacute;</h1>
+      <p>Recommandation Palo Alto en 7 questions &mdash; Pas de jargon technique requis</p>
     </div>
 
     <div id="wiz-form">
@@ -274,18 +346,18 @@
         </div>
       </div>
       <div class="wiz-q-block" id="wiz-q-block">
-        <!-- injected by JS -->
+        <!-- inject&eacute; par JS -->
       </div>
     </div>
 
     <div id="wiz-result" style="display:none">
-      <!-- injected by JS -->
+      <!-- inject&eacute; par JS -->
     </div>
   </div>
 
   <footer class="site-footer">
-    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Recommandation indicative de premier niveau - Ne remplace pas un sizing officiel Palo Alto</div>
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Recommandation indicative de premier niveau &mdash; Ne remplace pas un sizing officiel Palo Alto</div>
   </footer>
 
   <script>
@@ -298,59 +370,58 @@
     try { var _s = sessionStorage.getItem(STORAGE_KEY); if (_s) state = JSON.parse(_s); } catch(e) {}
     function save() { try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
 
-    /* Bandwidth mapping per site size (Mbps per site) */
     var SITE_BW = { 'Tres petit': 20, 'Petit': 50, 'Moyen': 100, 'Grand': 250, 'Tres grand': 500 };
 
     var SITE_SIZES = [
-      { val: 'Tres petit',  label: 'Tres petit (1 - 10 personnes)'   },
-      { val: 'Petit',       label: 'Petit (10 - 50 personnes)'        },
-      { val: 'Moyen',       label: 'Moyen (50 - 150 personnes)'       },
-      { val: 'Grand',       label: 'Grand (150 - 500 personnes)'      },
-      { val: 'Tres grand',  label: 'Tres grand (500+ personnes)'      }
+      { val: 'Tres petit',  label: 'Très petit (1 - 10 personnes)'   },
+      { val: 'Petit',       label: 'Petit (10 - 50 personnes)'              },
+      { val: 'Moyen',       label: 'Moyen (50 - 150 personnes)'             },
+      { val: 'Grand',       label: 'Grand (150 - 500 personnes)'            },
+      { val: 'Tres grand',  label: 'Très grand (500+ personnes)'      }
     ];
 
     var QUESTIONS = [
       {
-        n: 1, key: 'users_onsite', type: 'number', ph: 'ex : 200',
-        title: 'Combien de collaborateurs travaillent depuis vos sites (bureaux, agences, magasins, usines) ?',
-        tip: 'Personnes connectees au reseau local de l\'un de vos sites.'
+        n: 1, key: 'users_onsite', type: 'number', ph: 'ex : 200',
+        title: 'Combien de collaborateurs travaillent depuis vos sites (bureaux, agences, magasins, usines) ?',
+        tip: 'Personnes connectées au réseau local de l’un de vos sites.'
       },
       {
-        n: 2, key: 'users_remote', type: 'number', ph: 'ex : 80',
-        title: 'Combien travaillent en teletravail, en mobilite ou depuis l\'exterieur de vos sites ?',
-        tip: 'Personnes qui se connectent a distance, depuis chez elles ou en deplacement. Inclut les hybrides.'
+        n: 2, key: 'users_remote', type: 'number', ph: 'ex : 80',
+        title: 'Combien travaillent en télétravail, en mobilité ou depuis l’extérieur de vos sites ?',
+        tip: 'Personnes qui se connectent à distance, depuis chez elles ou en déplacement. Inclut les profils hybrides.'
       },
       {
         n: 3, type: 'sites',
-        title: 'Combien de sites distants a connecter, et quelle est leur taille typique ?',
-        tip: 'Un site = un emplacement physique. Si vous avez des sites de tailles tres differentes, choisissez la taille moyenne.'
+        title: 'Combien de sites distants avez-vous à connecter, et quelle est leur taille typique ?',
+        tip: 'Un site = un emplacement physique. Si vos sites ont des tailles très différentes, choisissez la taille moyenne.'
       },
       {
         n: 4, key: 'internet_filtering', type: 'choices',
-        title: 'Avez-vous besoin de filtrer le trafic Internet de vos utilisateurs (categories web, controle des SaaS) ?',
-        tip: 'Filtrage des sites web, blocage des categories a risque, controle des SaaS comme Office 365, Dropbox...',
+        title: 'Avez-vous besoin de filtrer le trafic Internet de vos utilisateurs (catégories web, contrôle des SaaS) ?',
+        tip: 'Filtrage des sites web, blocage des catégories à risque, contrôle des SaaS comme Office 365, Dropbox…',
         choices: ['Oui', 'Non', 'Je ne sais pas']
       },
       {
         n: 5, key: 'private_apps', type: 'choices',
-        title: 'Avez-vous des applications internes (intranet, ERP, fichiers, code source, bases de donnees) que vos utilisateurs doivent atteindre a distance ?',
-        tip: 'Applications hebergees dans votre datacenter ou reseau interne, accessibles en teletravail.',
+        title: 'Avez-vous des applications internes (intranet, ERP, fichiers, code source, bases de données) que vos utilisateurs doivent atteindre à distance ?',
+        tip: 'Applications hébergées dans votre datacenter ou réseau interne, accessibles en télétravail.',
         choices: ['Oui', 'Non', 'Je ne sais pas']
       },
       {
         n: 6, key: 'iot_ot', type: 'choices',
-        title: 'Avez-vous des objets connectes non-PC (imprimantes, cameras, IoT, materiel industriel/medical) a proteger sur votre reseau ?',
-        tip: 'Tout appareil connecte qui n\'est pas un PC ou serveur classique.',
+        title: 'Avez-vous des objets connectés non-PC (imprimantes, caméras, IoT, matériel industriel/médical) à protéger sur votre réseau ?',
+        tip: 'Tout appareil connecté qui n’est pas un PC ou serveur classique.',
         choices: ['Oui', 'Non', 'Je ne sais pas']
       },
       {
         n: 7, key: 'soc_posture', type: 'choices',
-        title: 'Comment decririez-vous votre supervision des alertes de securite aujourd\'hui ?',
-        tip: 'Un SOC (Security Operations Center) surveille les alertes de securite en temps reel.',
+        title: 'Comment décririez-vous votre supervision des alertes de sécurité aujourd’hui ?',
+        tip: 'Un SOC (Security Operations Center) surveille les alertes de sécurité en temps réel.',
         choices: [
-          'SOC en place, on cherche a le moderniser',
+          'SOC en place, on cherche à le moderniser',
           'Pas de SOC, on veut en construire un',
-          'Pas de SOC interne, on prefere externaliser (MSSP/MDR)',
+          'Pas de SOC interne, on préfère externaliser (MSSP/MDR)',
           'Je ne sais pas'
         ]
       }
@@ -365,16 +436,16 @@
       var block = document.getElementById('wiz-q-block');
       var h = '';
       h += '<div class="wiz-q-title">' + q.title + '</div>';
-      h += '<div class="wiz-q-tip">' + q.tip + '</div>';
+      h += '<p class="wiz-helper">' + q.tip + '</p>';
 
       if (q.type === 'number') {
         h += '<label class="wiz-input-label">Nombre</label>';
         h += '<input class="wiz-input" id="wiz-num" type="number" min="0" placeholder="' + q.ph + '" value="' + (state[q.key] !== undefined ? state[q.key] : '') + '" />';
       } else if (q.type === 'sites') {
         h += '<label class="wiz-input-label">Nombre de sites</label>';
-        h += '<input class="wiz-input" id="wiz-nb-sites" type="number" min="0" placeholder="ex : 5" value="' + (state.nb_sites !== undefined ? state.nb_sites : '') + '" />';
-        h += '<label class="wiz-input-label">Taille typique d\'un site</label>';
-        h += '<select class="wiz-select" id="wiz-site-size"><option value="">-- Selectionner --</option>';
+        h += '<input class="wiz-input" id="wiz-nb-sites" type="number" min="0" placeholder="ex : 5" value="' + (state.nb_sites !== undefined ? state.nb_sites : '') + '" />';
+        h += '<label class="wiz-input-label">Taille typique d’un site</label>';
+        h += '<select class="wiz-select" id="wiz-site-size"><option value="">-- Sélectionner --</option>';
         SITE_SIZES.forEach(function(sz) {
           h += '<option value="' + sz.val + '"' + (state.site_size === sz.val ? ' selected' : '') + '>' + sz.label + '</option>';
         });
@@ -382,21 +453,22 @@
       } else if (q.type === 'choices') {
         h += '<div class="wiz-choices">';
         q.choices.forEach(function(c) {
-          h += '<button class="mode-btn' + (state[q.key] === c ? ' selected' : '') + '" data-val="' + c + '">' + c + '</button>';
+          h += '<button type="button" class="wiz-choice' + (state[q.key] === c ? ' selected' : '') + '" data-val="' + c + '">' + c + '</button>';
         });
         h += '</div>';
       }
 
       h += '<div class="wiz-nav">';
-      if (step > 1) h += '<button class="wiz-btn-back" id="wiz-back">Precedent</button>';
-      h += '<button class="wiz-btn-next" id="wiz-next">' + (step < TOTAL ? 'Suivant' : 'Voir ma recommandation') + '</button>';
+      if (step > 1) h += '<button type="button" class="wiz-btn-back" id="wiz-back">← Précédent</button>';
+      else h += '<span></span>';
+      h += '<button type="button" class="wiz-btn-next" id="wiz-next">' + (step < TOTAL ? 'Suivant →' : 'Voir ma recommandation') + '</button>';
       h += '</div>';
       block.innerHTML = h;
 
       if (q.type === 'choices') {
-        block.querySelectorAll('.mode-btn').forEach(function(btn) {
+        block.querySelectorAll('.wiz-choice').forEach(function(btn) {
           btn.addEventListener('click', function() {
-            block.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('selected'); });
+            block.querySelectorAll('.wiz-choice').forEach(function(b) { b.classList.remove('selected'); });
             btn.classList.add('selected');
             state[q.key] = btn.dataset.val;
             save();
@@ -425,7 +497,7 @@
         state.site_size = document.getElementById('wiz-site-size').value || 'Moyen';
         save();
       } else if (q.type === 'choices') {
-        if (!state[q.key]) { alert('Veuillez selectionner une reponse.'); return false; }
+        if (!state[q.key]) { alert('Veuillez sélectionner une réponse.'); return false; }
       }
       return true;
     }
@@ -438,7 +510,6 @@
       return { mu: mu, mbps_rn: mbps_rn, total: mu + mbps_rn };
     }
 
-    /* Source: WIZARD_V2_DELTA.md — ~5 Mbps soutenu/user actif, marge 50% sur debit Threat Prevention */
     function ngfwModel(users) {
       if (!users || users <= 0) return null;
       var tiers = [
@@ -466,40 +537,126 @@
       var web = state.internet_filtering;
       var priv = state.private_apps;
       if (web === 'Je ne sais pas' || priv === 'Je ne sais pas') {
-        return { edition: 'Enterprise Edition', note: 'Configuration de couverture maximale, a raffiner avec le client.' };
+        return { edition: 'Enterprise Edition', note: 'Configuration de couverture maximale, à raffiner avec le client.' };
       }
       if (web === 'Oui' && priv === 'Non') {
-        return { edition: 'SWG Edition', note: 'Filtrage Internet et SaaS uniquement - pas d\'applications privees a securiser.' };
+        return { edition: 'SWG Edition', note: 'Filtrage Internet et SaaS uniquement - pas d’applications privées à sécuriser.' };
       }
       if (web === 'Non' && priv === 'Oui') {
-        return { edition: 'ZTNA Edition', note: 'Acces Zero Trust aux applications internes uniquement (Mobile Users seulement - Remote Networks non disponibles en ZTNA Edition).' };
+        return { edition: 'ZTNA Edition', note: 'Accès Zero Trust aux applications internes uniquement (Mobile Users seulement).' };
       }
-      return { edition: 'Enterprise Edition', note: 'Couvre a la fois la securite Internet et l\'acces aux applications privees.' };
+      return { edition: 'Enterprise Edition', note: 'Couvre la sécurité Internet et l’accès aux applications privées.' };
     }
 
+    /* V3 socReco — Cas A/B/C/D/E per WIZARD_V3_POLISH.md */
     function socReco() {
       var soc = state.soc_posture;
       var endpoints = (state.users_onsite || 0) + (state.users_remote || 0);
+
+      /* Cas A — externalise : aucun SKU Cortex, bloc MSSP uniquement */
+      if (soc === 'Pas de SOC interne, on préfère externaliser (MSSP/MDR)') {
+        return { type: 'mssp' };
+      }
+
+      /* Cas E — Je ne sais pas : questions de qualification uniquement */
+      if (soc === 'Je ne sais pas') {
+        return { type: 'unknown' };
+      }
+
+      /* Cas D — sous seuil commercial (Cas B ou C mais < 200 endpoints) */
       if (endpoints < 200) {
-        return {
-          belowThreshold: true,
-          prod: 'Cortex XDR Prevent',
-          note: 'Deux options : Cortex XDR Prevent comme remplacement antivirus avance, ou externalisation via Managed XSIAM ou Unit 42 MDR chez un MSSP partenaire (mutualisation des seuils).'
-        };
+        return { type: 'belowThreshold' };
       }
-      if (soc === 'SOC en place, on cherche a le moderniser') {
-        return { prod: 'Cortex XSIAM', note: 'XSIAM consolide SIEM + SOAR + EDR en une plateforme IA. Inclut Cortex AgentiX. Ideal pour moderniser et consolider un SOC existant.' };
+
+      /* Cas B — SOC à moderniser */
+      if (soc === 'SOC en place, on cherche à le moderniser') {
+        return { type: 'xsiam', prod: 'Cortex XSIAM', note: 'XSIAM consolide SIEM + SOAR + EDR en une plateforme IA. Inclut Cortex AgentiX. Idéal pour moderniser et consolider un SOC existant.' };
       }
+
+      /* Cas C — SOC à construire */
       if (soc === 'Pas de SOC, on veut en construire un') {
-        return { prod: 'Cortex XDR Pro per Endpoint', note: 'Point de depart accessible : XDR Pro couvre la detection endpoint, la correlation reseau/cloud et le threat hunting. Evolutif vers XSIAM si la volumetrie d\'ingest le justifie.' };
+        return { type: 'xdr', prod: 'Cortex XDR Pro per Endpoint', note: 'Point de départ accessible : XDR Pro couvre la détection endpoint, la corrélation réseau/cloud et le threat hunting. Évolutif vers XSIAM.' };
       }
-      if (soc === 'Pas de SOC interne, on prefere externaliser (MSSP/MDR)') {
-        return { prod: 'Managed XSIAM ou Unit 42 MDR', note: 'Externalisation via MSSP partenaire. Managed XSIAM pour une supervision SOC complete, Unit 42 MDR pour la reponse aux incidents et le threat hunting.' };
-      }
-      return { prod: 'XDR Prevent', note: 'Demarrer par Cortex XDR Prevent pour la prevention endpoint. Voir avec le SE Palo Alto pour la suite selon les besoins SOC.' };
+
+      return { type: 'unknown' };
     }
 
-    /* ── Export text (markdown, copiable) ── */
+    /* ── Build pitch text (gabarit selon profil) ── */
+    function buildPitch(units, ed, ngfw, soc) {
+      var onsite = state.users_onsite || 0;
+      var nb = state.nb_sites || 0;
+      var sz = state.site_size || 'Moyen';
+      var bw = SITE_BW[sz] || 100;
+      var hasSASE = (state.users_remote > 0 || nb > 0) && units.total >= 200;
+      var lines = [];
+
+      /* Gabarit 3 — MSSP */
+      if (soc.type === 'mssp') {
+        lines.push('Bonjour [Client],');
+        lines.push('');
+        lines.push('Vous m’avez indiqué que votre supervision sécurité est confiée à un MSSP. Je n’irai donc pas vous proposer de plateforme SOC en direct.');
+        lines.push('');
+        lines.push('En revanche, sur l’infrastructure réseau :');
+        if (ngfw) lines.push('• ' + onsite + ' utilisateurs sur site - firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+        if (hasSASE) lines.push('• Télétravail et sites distants - Prisma Access ' + ed.edition + ' (' + units.total + ' unités)');
+        lines.push('');
+        lines.push('Question utile : votre MSSP est-il déjà sur la plateforme Palo Alto (XSIAM, Cortex Cloud) ? Cela conditionne la cohérence end-to-end de votre stack.');
+        lines.push('');
+        lines.push('[Prénom]');
+        return lines.join('\n');
+      }
+
+      /* Gabarit 2 — SASE sous seuil ou NGFW seul */
+      var saseUndersized = (state.users_remote > 0 || nb > 0) && units.total < 200;
+      if (saseUndersized || (!hasSASE && ngfw)) {
+        lines.push('Bonjour [Client],');
+        lines.push('');
+        if (saseUndersized) {
+          lines.push('Compte tenu de votre volumétrie (' + units.mu + ' users télétravail, ' + units.mbps_rn + ' Mbps de sites distants), une solution SASE Prisma Access n’est pas dimensionnée pour votre contexte (seuil commercial Palo Alto à 200 unités minimum).');
+          lines.push('');
+        }
+        lines.push('Je vous propose une approche en deux temps :');
+        if (ngfw) lines.push('• NGFW de la famille ' + ngfw.family + ' sur vos sites avec le bundle Precision AI Pro (couvre URL filtering, threat prevention, DNS, SD-WAN et Device Security)');
+        lines.push('• Accès à distance via la fonction GlobalProtect native du firewall (sans surcoût SKU)');
+        lines.push('');
+        lines.push('Si votre besoin évolue ou si la mobilité prend de l’ampleur, nous pourrons étudier le passage à Prisma Access en mutualisant via un MSSP partenaire.');
+        lines.push('');
+        lines.push('[Prénom]');
+        return lines.join('\n');
+      }
+
+      /* Gabarit 4 — SOC à construire */
+      if (soc.type === 'xdr') {
+        lines.push('Bonjour [Client],');
+        lines.push('');
+        lines.push('Suite à notre échange sur la construction de votre SOC, voici la qualification de premier niveau :');
+        lines.push('');
+        if (ngfw) lines.push('• Infrastructure réseau : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+        if (hasSASE) lines.push('• SASE : Prisma Access ' + ed.edition + ' pour ' + units.mu + ' télétravailleurs' + (nb > 0 ? ' et ' + units.mbps_rn + ' Mbps Remote Networks' : ''));
+        lines.push('• SOC : démarrage avec Cortex XDR Pro per Endpoint, montée en gamme Cortex XSIAM possible quand votre équipe sera dimensionnée');
+        lines.push('');
+        lines.push('Je vous propose d’organiser un atelier de cadrage avec notre équipe d’avant-vente pour valider l’ambition.');
+        lines.push('');
+        lines.push('[Prénom]');
+        return lines.join('\n');
+      }
+
+      /* Gabarit 1 — cas le plus courant (SASE + NGFW + SOC interne) */
+      lines.push('Bonjour [Client],');
+      lines.push('');
+      lines.push('Suite à notre échange, voici une première qualification de votre architecture cible Palo Alto Networks :');
+      lines.push('');
+      if (ngfw) lines.push('• Bureaux sur site : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+      if (hasSASE) lines.push('• Télétravail et sites distants : Prisma Access ' + ed.edition + ', ' + units.mu + ' Mobile Users' + (nb > 0 ? ' + ' + units.mbps_rn + ' Mbps bande passante site-to-site' : ''));
+      if (soc.type === 'xsiam') lines.push('• SOC : Cortex XSIAM pour la supervision et la consolidation SIEM + SOAR + EDR');
+      lines.push('');
+      lines.push('Cette qualification est indicative. Je reviens vers vous avec un sizing détaillé et une proposition chiffrée d’ici [délai].');
+      lines.push('');
+      lines.push('[Prénom]');
+      return lines.join('\n');
+    }
+
+    /* ── Export text (markdown) ── */
     function buildExport(units, ed, ngfw, soc) {
       var onsite = state.users_onsite || 0;
       var remote = state.users_remote || 0;
@@ -508,59 +665,61 @@
       var bw = SITE_BW[sz] || 100;
       var lines = [];
       lines.push('# Recommandation Palo Alto - Premier niveau');
-      lines.push('Genere par Sizing Guide Exclusive Networks - ' + new Date().toLocaleDateString('fr-FR'));
+      lines.push('Généré par Sizing Guide Exclusive Networks - ' + new Date().toLocaleDateString('fr-FR'));
       lines.push('');
-      lines.push('## Donnees saisies');
+      lines.push('## Données saisies');
       lines.push('- Utilisateurs sur site : ' + onsite);
-      lines.push('- Utilisateurs en teletravail / mobilite : ' + remote);
+      lines.push('- Utilisateurs en télétravail / mobilité : ' + remote);
       lines.push('- Sites distants : ' + nb + ' (' + sz + ')');
       lines.push('- Filtrage Internet : ' + (state.internet_filtering || '-'));
-      lines.push('- Applications privees : ' + (state.private_apps || '-'));
-      lines.push('- Objets connectes IoT/OT : ' + (state.iot_ot || '-'));
-      lines.push('- Maturite SOC : ' + (state.soc_posture || '-'));
+      lines.push('- Applications privées : ' + (state.private_apps || '-'));
+      lines.push('- Objets connectés IoT/OT : ' + (state.iot_ot || '-'));
+      lines.push('- Maturité SOC : ' + (state.soc_posture || '-'));
       lines.push('');
       if (remote > 0 || nb > 0) {
         lines.push('## Prisma Access - SASE');
         if (units.total < 200) {
-          lines.push('- Volumetrie sous le seuil commercial (200 unites min)');
-          lines.push('- Total calcule : ' + units.mu + ' MU + ' + units.mbps_rn + ' Mbps RN = ' + units.total + ' unites');
-          lines.push('- Options : MSSP PAYG, surdimensionnement vers 200 unites, ou NGFW seul');
+          lines.push('- Volumétrie sous le seuil commercial (200 unités min)');
+          lines.push('- Total calculé : ' + units.mu + ' MU + ' + units.mbps_rn + ' Mbps RN = ' + units.total + ' unités');
         } else {
           var scope = units.total >= 1000 ? 'Worldwide Edition' : 'Local Edition';
-          lines.push('- Edition : ' + ed.edition + ' (' + scope + ')');
+          lines.push('- Édition : ' + ed.edition + ' (' + scope + ')');
           lines.push('- Mobile Users : ' + units.mu);
-          if (nb > 0) lines.push('- Remote Networks : ' + nb + ' sites / ' + units.mbps_rn + ' Mbps estimes (' + bw + ' Mbps/site ' + sz.toLowerCase() + ')');
-          lines.push('- Total unites SASE : ' + units.total);
+          if (nb > 0) lines.push('- Remote Networks : ' + nb + ' sites / ' + units.mbps_rn + ' Mbps estimés (' + bw + ' Mbps/site)');
+          lines.push('- Total unités SASE : ' + units.total);
           if (state.iot_ot === 'Oui') lines.push('- Add-on : Device Security');
-          if (remote > 500) lines.push('- Add-on : ADEM (monitoring experience utilisateur)');
+          if (remote > 500) lines.push('- Add-on : ADEM (monitoring expérience utilisateur)');
           if (['Moyen','Grand','Tres grand'].indexOf(sz) !== -1 && nb > 0) lines.push('- Add-on : App Acceleration');
         }
         lines.push('');
       }
       if (onsite > 0 && ngfw) {
         lines.push('## PA-Series - NGFW');
-        lines.push('- Modele entry : ' + ngfw.entry + ' (famille ' + ngfw.family + ')');
-        lines.push('- Modele confort : ' + ngfw.comfort);
-        lines.push('- Bundle recommande : Precision AI Pro Bundle');
-        lines.push('- Sizing base sur ~5 Mbps soutenu/user actif, marge 50% sur debit Threat Prevention');
-        if (nb >= 3) lines.push('- Management centralise recommande : Strata Cloud Manager ou Panorama');
-        lines.push('- Si HA requise : doubler les appliances');
+        lines.push('- Modèle entry : ' + ngfw.entry + ' (famille ' + ngfw.family + ')');
+        lines.push('- Modèle confort : ' + ngfw.comfort);
+        lines.push('- Bundle recommandé : Precision AI Pro Bundle');
+        lines.push('- Sizing basé sur ~5 Mbps soutenu/user actif, marge 50% sur débit Threat Prevention');
+        if (nb >= 3) lines.push('- Management centralisé recommandé : Strata Cloud Manager ou Panorama');
+        lines.push('- HA : doubler les appliances');
         lines.push('');
       }
       lines.push('## Cortex - SecOps');
-      lines.push('- Recommandation : ' + soc.prod);
-      lines.push('- ' + soc.note);
-      lines.push('');
-      lines.push('## Elements obligatoires a prevoir');
-      if ((remote > 0 || nb > 0) && units.total >= 200) {
-        lines.push('- Strata Logging Service (obligatoire avec Prisma Access, SKU separee)');
-        lines.push('- Strata Cloud Manager Essentials (gratuit)');
-        lines.push('- Cloud Identity Engine (gratuit, User-ID)');
+      if (soc.type === 'mssp') {
+        lines.push('- Client en externalisation MSSP - pas de SKU Cortex en vente directe');
+        lines.push('- Identifier le MSSP en place et vérifier s’il est sur plateforme Palo Alto');
+      } else if (soc.type === 'unknown') {
+        lines.push('- Information insuffisante pour qualifier le besoin SOC');
+        lines.push('- Questions à poser : SIEM existant ? Alertes/jour traitées ? MSSP en place ?');
+      } else if (soc.type === 'belowThreshold') {
+        lines.push('- Sous le seuil commercial Cortex Pro / XSIAM (200 endpoints minimum)');
+        lines.push('- Alternative : Cortex XDR Prevent comme remplacement antivirus avancé');
+      } else {
+        lines.push('- Recommandation : ' + soc.prod);
+        lines.push('- ' + soc.note);
       }
-      if (nb >= 2) lines.push('- Panorama ou Strata Cloud Manager (gestion multi-sites)');
       lines.push('');
       lines.push('## Avertissement');
-      lines.push('Recommandation indicative pour qualification de premier niveau. Ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Tarif non affiche. Pour un devis : partner-connect.exclusive-labs.com');
+      lines.push('Recommandation indicative pour qualification de premier niveau. Ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Tarif non affiché. Pour un devis : partner-connect.exclusive-labs.com');
       return lines.join('\n');
     }
 
@@ -580,11 +739,21 @@
       var soc = socReco();
       var hasSASE = (remote > 0 || nb > 0);
       var hasNGFW = (onsite > 0 || nb > 0) && ngfw;
+      var pitchText = buildPitch(units, ed, ngfw, soc);
 
       var h = '';
       h += '<div style="margin-bottom:20px">';
       h += '<h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Votre recommandation de premier niveau</h2>';
-      h += '<p style="font-size:12px;color:var(--text-muted)">Basee sur vos reponses - Indicatif - Mis a jour juin 2026</p>';
+      h += '<p style="font-size:12px;color:var(--text-muted)">Basée sur vos réponses - Indicatif - Mis à jour juin 2026</p>';
+      h += '</div>';
+
+      /* === Pitch copy-paste === */
+      h += '<div class="wiz-pitch">';
+      h += '<div class="wiz-pitch-header">';
+      h += '<h3>Pitch client &mdash; copy-paste</h3>';
+      h += '<button type="button" class="wiz-copy-btn" id="wiz-copy-pitch">Copier</button>';
+      h += '</div>';
+      h += '<pre class="wiz-pitch-content" id="wiz-pitch-text">' + escHtml(pitchText) + '</pre>';
       h += '</div>';
 
       /* === SASE === */
@@ -593,34 +762,34 @@
         h += '<div class="wiz-result-title">Prisma Access - SASE</div>';
         if (units.total < 200) {
           h += '<div class="wiz-threshold-note">';
-          h += '<strong style="color:var(--yellow)">Volumetrie sous le seuil commercial Prisma Access (200 unites minimum)</strong><br>';
-          h += 'Total calcule : ' + units.mu + ' Mobile Users + ' + units.mbps_rn + ' Mbps Remote Networks = <strong>' + units.total + ' unites</strong>.<br>';
-          h += '1 unite = 1 Mobile User OU 1 Mbps Remote Network.<br><br>';
+          h += '<strong style="color:var(--yellow)">Volumétrie sous le seuil commercial Prisma Access (200 unités minimum)</strong><br>';
+          h += 'Total calculé : ' + units.mu + ' Mobile Users + ' + units.mbps_rn + ' Mbps Remote Networks = <strong>' + units.total + ' unités</strong>.<br>';
+          h += '1 unité = 1 Mobile User OU 1 Mbps Remote Network.<br><br>';
           h += 'Options :<br>';
           h += '- Mutualiser via un MSSP partenaire en mode PAYG<br>';
-          h += '- Surdimensionner volontairement pour atteindre 200 unites si la croissance est prevue<br>';
-          h += '- Rester sur NGFW seul avec GlobalProtect sur l\'appliance (clients existants - SKUs GP NGFW en End-of-Sale depuis 15 aout 2025)';
+          h += '- Surdimensionner volontairement pour atteindre 200 unités si la croissance est prévue<br>';
+          h += '- Rester sur NGFW seul avec GlobalProtect sur l’appliance';
           h += '</div>';
         } else {
           var scope = units.total >= 1000 ? 'Worldwide Edition' : 'Local Edition';
-          h += '<div class="wiz-result-line"><strong>Edition :</strong> <span class="wiz-tag">' + ed.edition + '</span> <span class="wiz-tag">' + scope + '</span></div>';
+          h += '<div class="wiz-result-line"><strong>Édition :</strong> <span class="wiz-tag">' + ed.edition + '</span> <span class="wiz-tag">' + scope + '</span></div>';
           h += '<div class="wiz-result-line" style="font-size:12px">' + ed.note;
-          if (units.total >= 1000) h += ' Worldwide Edition : acces aux 100+ PoP mondiaux.';
-          else h += ' Local Edition : 5 PoP regionaux.';
+          if (units.total >= 1000) h += ' Worldwide Edition : accès aux 100+ PoP mondiaux.';
+          else h += ' Local Edition : 5 PoP régionaux.';
           h += '</div>';
           h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Mobile Users :</strong> ' + units.mu + '</div>';
           if (nb > 0) {
             var bw = SITE_BW[sz] || 100;
             h += '<div class="wiz-result-line"><strong>Remote Networks :</strong> ' + nb + ' site(s) - ' + units.mbps_rn + ' Mbps (' + bw + ' Mbps/site ' + sz.toLowerCase() + ')</div>';
           }
-          h += '<div class="wiz-result-line"><strong>Total unites SASE :</strong> ' + units.total + '</div>';
+          h += '<div class="wiz-result-line"><strong>Total unités SASE :</strong> ' + units.total + '</div>';
           var addons = [];
           if (state.iot_ot === 'Oui') addons.push('<span class="wiz-tag yellow">Device Security</span>');
           if (remote > 500) addons.push('<span class="wiz-tag yellow">ADEM</span>');
           if (['Moyen','Grand','Tres grand'].indexOf(sz) !== -1 && nb > 0) addons.push('<span class="wiz-tag yellow">App Acceleration</span>');
-          if (addons.length) h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Add-ons recommandes :</strong> ' + addons.join(' ') + '</div>';
+          if (addons.length) h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Add-ons recommandés :</strong> ' + addons.join(' ') + '</div>';
         }
-        h += '<a class="wiz-detail-link" href="prisma.html">Voir le detail Prisma Access</a>';
+        h += '<a class="wiz-detail-link" href="prisma.html">Voir le détail Prisma Access</a>';
         h += '</div>';
       }
 
@@ -628,52 +797,70 @@
       if (hasNGFW) {
         h += '<div class="wiz-result-block">';
         h += '<div class="wiz-result-title">Firewalls PA-Series - NGFW</div>';
-        h += '<div class="wiz-result-line"><strong>Modele entry :</strong> <span class="wiz-tag">' + ngfw.entry + '</span> <span style="font-size:11px;color:var(--text-muted)">famille ' + ngfw.family + '</span></div>';
-        h += '<div class="wiz-result-line"><strong>Modele confort :</strong> <span class="wiz-tag">' + ngfw.comfort + '</span></div>';
-        h += '<div class="wiz-result-line" style="font-size:11px;color:var(--text-muted);margin-top:2px">Sizing indicatif base sur ~5 Mbps soutenu par user actif et une marge a 50% du debit Threat Prevention de l\'appliance. Pour un sizing precis, contacter votre SE Palo Alto via Exclusive Networks.</div>';
-        h += '<div class="wiz-result-line" style="margin-top:12px"><strong>Bundle :</strong> <span class="wiz-tag green">Precision AI Pro Bundle</span></div>';
-        h += '<div class="wiz-result-line" style="font-size:12px;color:var(--text-muted)">Inclut Advanced Threat Prevention, WildFire, URL Filtering, DNS Security, SD-WAN et Device Security. Recommandation Palo Alto actuelle depuis le 18 dec. 2025.</div>';
+        h += '<div class="wiz-result-line"><strong>Modèle entry :</strong> <span class="wiz-tag">' + ngfw.entry + '</span> <span style="font-size:11px;color:var(--text-muted)">famille ' + ngfw.family + '</span></div>';
+        h += '<div class="wiz-result-line"><strong>Modèle confort :</strong> <span class="wiz-tag">' + ngfw.comfort + '</span></div>';
+        h += '<div class="wiz-result-line" style="font-size:11px;color:var(--text-muted);margin-top:2px">Sizing indicatif basé sur ~5 Mbps soutenu par user actif, marge 50% sur le débit Threat Prevention.</div>';
+        h += '<div class="wiz-result-line" style="margin-top:12px"><strong>Bundle :</strong> <span class="wiz-tag green">Precision AI Pro Bundle</span> <span style="font-size:11px;color:var(--text-muted)">(couvre threat + URL + DNS + SD-WAN + Device Security)</span></div>';
         if (nb >= 3) {
-          h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Management centralise recommande :</strong> Strata Cloud Manager (cloud) ou Panorama (on-prem).</div>';
+          h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Management centralisé recommandé :</strong> Strata Cloud Manager (cloud) ou Panorama (on-prem).</div>';
         }
-        h += '<div class="wiz-result-line" style="margin-top:8px;font-size:12px;color:var(--yellow)">Doubler les appliances si la haute disponibilite (HA) est requise.</div>';
-        h += '<a class="wiz-detail-link" href="pa-series.html">Voir le detail PA-Series</a>';
+        h += '<div class="wiz-result-line" style="margin-top:8px;font-size:12px;color:var(--yellow)">HA : doubler les appliances.</div>';
+        h += '<a class="wiz-detail-link" href="pa-series.html#PA-400">Voir le détail PA-Series</a>';
         h += '</div>';
       }
 
-      /* === Cortex === */
+      /* === Cortex / SecOps — V3 logic === */
       h += '<div class="wiz-result-block">';
       h += '<div class="wiz-result-title">SecOps - Cortex</div>';
-      if (soc.belowThreshold) {
+
+      if (soc.type === 'mssp') {
+        /* Cas A */
+        h += '<div class="wiz-result-line"><span class="wiz-tag">Le client a fait le choix de l’externalisation</span></div>';
+        h += '<div class="wiz-result-line" style="margin-top:10px">Pas de vente directe Cortex pertinente dans ce contexte. Le client passe par un MSSP : c’est le MSSP qui consomme les SKUs SOC.</div>';
+        h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Pistes commerciales :</strong></div>';
+        h += '<div class="wiz-result-line">- Identifier le MSSP actuel et vérifier s’il est NextWave Partner et s’il opère sur la plateforme Palo Alto (XSIAM, Cortex Cloud)</div>';
+        h += '<div class="wiz-result-line">- Si MSSP non-Palo Alto : proposer une migration ou une comparaison avec un MSSP partenaire</div>';
+        h += '<div class="wiz-result-line">- Si MSSP déjà Palo Alto-powered : aligner avec le partenaire, vendre le service NGFW + SASE supervisé par le MSSP</div>';
+      } else if (soc.type === 'unknown') {
+        /* Cas E */
+        h += '<div class="wiz-result-line">Information insuffisante pour qualifier le besoin SOC.</div>';
+        h += '<div class="wiz-result-line" style="margin-top:8px"><strong>Questions à poser au client :</strong></div>';
+        h += '<div class="wiz-result-line">- Avez-vous une équipe sécurité dédiée ?</div>';
+        h += '<div class="wiz-result-line">- Disposez-vous d’un SIEM ? Lequel ?</div>';
+        h += '<div class="wiz-result-line">- Combien d’alertes par jour traitez-vous ?</div>';
+        h += '<div class="wiz-result-line">- Êtes-vous accompagnés par un MSSP ?</div>';
+      } else if (soc.type === 'belowThreshold') {
+        /* Cas D */
         h += '<div class="wiz-threshold-note">';
-        h += '<strong style="color:var(--yellow)">Sous 200 endpoints</strong> : le seuil commercial Cortex XDR Pro / XSIAM est eleve.<br><br>';
-        h += soc.note;
+        h += '<strong style="color:var(--yellow)">Sous 200 endpoints</strong> : le seuil commercial Cortex XDR Pro / XSIAM est élevé.<br><br>';
+        h += 'Deux options :<br>';
+        h += '- <strong>Cortex XDR Prevent</strong> comme remplacement antivirus avancé<br>';
+        h += '- Externalisation via un MSSP Palo Alto-powered (mutualisation des seuils)';
         h += '</div>';
+        h += '<a class="wiz-detail-link" href="cortex.html">Voir le détail Cortex</a>';
       } else {
+        /* Cas B ou C */
         h += '<div class="wiz-result-line"><strong>Recommandation :</strong> <span class="wiz-tag purple">' + soc.prod + '</span></div>';
         h += '<div class="wiz-result-line" style="font-size:12px">' + soc.note + '</div>';
-        h += '<div class="wiz-result-line" style="margin-top:10px;font-size:12px;color:var(--text-muted)">Ajouter <strong style="color:var(--text)">Cortex Cloud</strong> si l\'organisation a des workloads dans AWS, Azure ou GCP (CNAPP + Cloud Detection and Response).</div>';
+        h += '<div class="wiz-result-line" style="margin-top:10px;font-size:12px;color:var(--text-muted)">Ajouter <strong style="color:var(--text)">Cortex Cloud</strong> si l’organisation a des workloads dans AWS, Azure ou GCP (CNAPP + Cloud Detection and Response).</div>';
+        h += '<a class="wiz-detail-link" href="cortex.html">Voir le détail Cortex</a>';
       }
-      h += '<a class="wiz-detail-link" href="cortex.html">Voir le detail Cortex</a>';
       h += '</div>';
 
       /* === Elements obligatoires === */
       h += '<div class="wiz-result-block">';
-      h += '<div class="wiz-result-title">Elements souvent oublies</div>';
+      h += '<div class="wiz-result-title">Éléments souvent oubliés</div>';
       var must = [];
       if (hasSASE && units.total >= 200) {
-        must.push('<strong>Strata Logging Service</strong> - obligatoire avec Prisma Access (SKU separee, a dimensionner)');
-        must.push('<strong>Strata Cloud Manager Essentials</strong> - gratuit, inclus par defaut');
-        must.push('<strong>Cloud Identity Engine</strong> - gratuit, recommande pour User-ID');
+        must.push('<strong>Strata Logging Service</strong> - obligatoire avec Prisma Access (SKU séparée)');
+        must.push('<strong>Strata Cloud Manager Essentials</strong> - gratuit, inclus par défaut');
+        must.push('<strong>Cloud Identity Engine</strong> - gratuit, recommandé pour User-ID');
       }
       if (hasNGFW && nb >= 2) {
-        must.push('<strong>Panorama ou Strata Cloud Manager</strong> - gestion multi-sites recommandee');
-      }
-      if ((soc.prod === 'Cortex XSIAM' || soc.prod === 'Cortex XDR Pro per Endpoint') && hasSASE && units.total >= 200) {
-        must.push('<strong>Strata Logging Service</strong> - mutualise avec Prisma Access si present');
+        must.push('<strong>Panorama ou Strata Cloud Manager</strong> - gestion multi-sites recommandée');
       }
       if (must.length === 0) {
-        must.push('Contacter votre SE Palo Alto pour la liste des pre-requis specifiques a votre architecture.');
+        must.push('Contacter votre SE Palo Alto pour la liste des pré-requis spécifiques à votre architecture.');
       }
       var seen = {};
       must.forEach(function(m) {
@@ -685,17 +872,42 @@
       /* === Disclaimer === */
       h += '<div class="wiz-result-block" style="border-left:3px solid var(--yellow)">';
       h += '<div class="wiz-result-title" style="color:var(--yellow)">Avertissement</div>';
-      h += '<div class="wiz-result-line">Cette recommandation est indicative pour qualification de premier niveau. Elle ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Le tarif n\'est jamais affiche : pour un devis, contacter votre interlocuteur Exclusive Networks via <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--yellow)">partner-connect.exclusive-labs.com</a>.</div>';
+      h += '<div class="wiz-result-line">Cette recommandation est indicative pour qualification de premier niveau. Elle ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Le tarif n’est jamais affiché : pour un devis, contacter votre interlocuteur Exclusive Networks via <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--yellow)">partner-connect.exclusive-labs.com</a>.</div>';
       h += '</div>';
 
       /* === Actions === */
       h += '<div class="wiz-action-row">';
-      h += '<button class="wiz-btn-restart" id="wiz-restart">Recommencer le wizard</button>';
-      h += '<button class="wiz-btn-export" id="wiz-export">Exporter le resultat</button>';
+      h += '<button type="button" class="wiz-btn-restart" id="wiz-restart">Recommencer</button>';
+      h += '<button type="button" class="wiz-btn-export" id="wiz-export">Exporter le résultat</button>';
       h += '</div>';
       h += '<div class="wiz-export-area" id="wiz-export-area"></div>';
 
       r.innerHTML = h;
+
+      /* Copy pitch button */
+      document.getElementById('wiz-copy-pitch').addEventListener('click', function() {
+        var txt = document.getElementById('wiz-pitch-text').innerText;
+        var btn = document.getElementById('wiz-copy-pitch');
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(txt).then(function() {
+            btn.textContent = '✓ Copié';
+            setTimeout(function() { btn.textContent = 'Copier'; }, 1500);
+          }).catch(function() { fallbackCopy(txt, btn); });
+        } else {
+          fallbackCopy(txt, btn);
+        }
+      });
+
+      function fallbackCopy(txt, btn) {
+        var ta = document.createElement('textarea');
+        ta.value = txt;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); btn.textContent = '✓ Copié'; setTimeout(function() { btn.textContent = 'Copier'; }, 1500); } catch(e) {}
+        document.body.removeChild(ta);
+      }
 
       document.getElementById('wiz-restart').addEventListener('click', function() {
         state = {}; step = 1;
@@ -712,18 +924,22 @@
       exportBtn.addEventListener('click', function() {
         if (exportArea.style.display === 'block') {
           exportArea.style.display = 'none';
-          exportBtn.textContent = 'Exporter le resultat';
+          exportBtn.textContent = 'Exporter le résultat';
           return;
         }
         exportArea.textContent = exportText;
         exportArea.style.display = 'block';
         if (navigator.clipboard) {
           navigator.clipboard.writeText(exportText).then(function() {
-            exportBtn.textContent = 'Copie dans le presse-papier !';
-            setTimeout(function() { exportBtn.textContent = 'Exporter le resultat'; }, 2500);
+            exportBtn.textContent = 'Copié dans le presse-papier !';
+            setTimeout(function() { exportBtn.textContent = 'Exporter le résultat'; }, 2500);
           }).catch(function() {});
         }
       });
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     renderStep();
