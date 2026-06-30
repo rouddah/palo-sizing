@@ -63,10 +63,18 @@
             <span class="dropdown-item-sub">XDR · XSIAM · AgentiX · Xpanse · Cloud</span>
           </div>
         </a>
+        <a class="dropdown-item" href="idira.html">
+          <div class="dropdown-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div>
+            <span class="dropdown-item-name">Idira</span>
+            <span class="dropdown-item-sub">Identity Security · PAM · IAM · EPM</span>
+          </div>
+        </a>
       </div>
     </div>
 
     <a class="nav-btn" href="search.html" ${isActive('search.html')}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Recherche</a>
+    <a class="nav-btn" href="wizard.html" ${isActive('wizard.html')} style="opacity:0.85">Mode guide</a>
 
     <div class="nav-divider"></div>
 
