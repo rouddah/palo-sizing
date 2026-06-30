@@ -1,5 +1,62 @@
 # Changelog
 
+## [Session 2] — 30 juin 2026
+
+### wizard.html (réécriture totale v2)
+- feat: v2 complète — spec WIZARD_V2_DELTA.md implémentée
+- feat: seuils commerciaux — Prisma Access < 200 unités → encart jaune avec alternatives
+- feat: seuils commerciaux — Cortex < 200 endpoints → XDR Prevent ou MSSP
+- feat: Local Edition (< 1000 unités) vs Worldwide Edition (>= 1000)
+- feat: sizing NGFW recalibré — 13 paliers PA-410 → PA-7500 (source WIZARD_V2_DELTA.md)
+- feat: Q3 tailles de site recalibrées — Tres petit 20 Mbps / Petit 50 / Moyen 100 / Grand 250 / Tres grand 500
+- feat: formulations Q1-Q7 exactes conformes spec v2
+- feat: bouton Export — génère texte markdown copiable + copie dans le presse-papier si disponible
+- feat: add-ons ADEM (users_remote > 500), App Acceleration (site_size >= Moyen)
+- feat: mention Cortex Cloud sur le bloc SecOps
+- fix: classe sessionStorage key renommée wiz_state
+- fix: classes CSS préfixées .wiz-
+
+### pa-series.html
+- fix: 4 occurrences "IoT Security" → "Device Security" (lignes 1174, 1361, 1365, 2390)
+
+### links.js
+- fix: "IoT Security" → "Device Security" dans description Subscriptions NGFW
+- fix: "150+ Points of Presence" → "100+" (cohérence avec prisma.html)
+- feat: ajout carte AI Runtime Security (AIRS) dans catégorie SASE & Cloud
+- feat: ajout catégorie "Identite" avec 5 cartes Idira (PAM, IAM, EPM, Agentic, overview)
+
+### header.js
+- feat: ajout entrée Idira dans le dropdown Produits
+- feat: ajout nav-btn "Mode guide" pointant vers wizard.html
+
+### browser.html
+- fix: "150+ mondiaux" → "100+ mondiaux" dans le noeud Prisma Access PoP (cohérence)
+- feat: lien "Toutes les ressources" ajouté en bas de section Ressources
+
+### cortex.html
+- feat: lien "Toutes les ressources" ajouté en bas de section Ressources officielles
+
+### prisma.html
+- feat: section Ressources ajoutée (4 liens : page produit, licensing guide, docs, LIVEcommunity)
+- feat: lien "Toutes les ressources" vers resources.html
+
+### panorama.html
+- feat: section Ressources ajoutée (4 liens : Panorama, SCM, Compatibility Matrix, LIVEcommunity)
+- feat: lien "Toutes les ressources" vers resources.html
+
+### pa-series.html
+- feat: lien "Toutes les ressources" ajouté dans le footer
+
+### resources.html (nouveau)
+- feat: page dédiée avec 9 catégories de liens validés (portails, pages produit, datasheets, docs, EoS/EoL, formation, benchmarks, partenaires, liens obsolètes)
+- feat: tableau "Liens à ne plus utiliser" (Beacon, Prisma Cloud, CDL docs, GP NGFW SKUs)
+
+### idira.html (nouveau)
+- feat: page Idira avec 3 domaines (humain, agentique, machine), tableau des 7 composants
+- feat: note d'intro : nouveau pilier identite, détails SKU en attente, contacter SE
+
+---
+
 ## [Refonte ciblée] — 29 juin 2026
 
 ### prisma.html
