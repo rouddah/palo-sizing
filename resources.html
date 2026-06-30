@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ressources officielles - Palo Alto Networks</title>
+  <meta name="description" content="Liens officiels Palo Alto Networks valides au 29 juin 2026 : portails, pages produit, datasheets, documentation, EoL/EoS, formation, programme partenaires." />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .res-section { margin-bottom: 48px; }
+    .res-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .res-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .res-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+    .res-table td:first-child { color: var(--text); font-weight: 500; }
+    .res-table a { color: var(--accent); text-decoration: none; }
+    .res-table a:hover { text-decoration: underline; }
+    .res-table tr:last-child td { border-bottom: none; }
+    .res-note {
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      display: inline-block;
+      margin-left: 6px;
+    }
+    .res-obsolete {
+      font-size: 11px;
+      color: var(--red);
+      background: var(--red-dim);
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+
+    <div class="page-header">
+      <h1>Ressources officielles</h1>
+      <p>Liens valides au 29 juin 2026 · Sources : pages officielles Palo Alto Networks et documentation officielle</p>
+    </div>
+
+    <div class="info-note">
+      Tous les liens ci-dessous ont ete verifies ou sources a partir de pages officielles Palo Alto Networks. Les liens marques <span class="res-note">acces partenaire</span> necessitent un compte NextWave Partner Portal. Pour toute question commerciale : <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">partner-connect.exclusive-labs.com</a>.
+    </div>
+
+    <!-- 1. Portails -->
+    <div class="res-section">
+      <div class="section-title">1. Portails et consoles</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Strata Cloud Manager (console)</td>
+            <td><a href="https://stratacloudmanager.paloaltonetworks.com" target="_blank" rel="noopener">stratacloudmanager.paloaltonetworks.com</a></td>
+            <td>Console SaaS de gestion unifiee NGFW + Prisma Access</td>
+          </tr>
+          <tr>
+            <td>Customer Hub</td>
+            <td><a href="https://apps.paloaltonetworks.com" target="_blank" rel="noopener">apps.paloaltonetworks.com</a></td>
+            <td>Portail client (licences, support, apps)</td>
+          </tr>
+          <tr>
+            <td>Customer Support Portal</td>
+            <td><a href="https://support.paloaltonetworks.com" target="_blank" rel="noopener">support.paloaltonetworks.com</a></td>
+            <td>Support, RMA, KB technique</td>
+          </tr>
+          <tr>
+            <td>NextWave Partner Portal</td>
+            <td><a href="https://www.paloaltonetworks.com/partners/nextwave-partner-portal" target="_blank" rel="noopener">paloaltonetworks.com/partners/nextwave-partner-portal</a></td>
+            <td><span class="res-note">acces partenaire</span> Contient l'outil Popsicle (sizing)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. Pages produit -->
+    <div class="res-section">
+      <div class="section-title">2. Pages produit officielles</div>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px">Network Security</div>
+      <table class="res-table" style="margin-bottom:28px">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Next-Generation Firewall (overview)</td><td><a href="https://www.paloaltonetworks.com/network-security/next-generation-firewall" target="_blank" rel="noopener">paloaltonetworks.com/.../next-generation-firewall</a></td></tr>
+          <tr><td>Hardware Firewalls</td><td><a href="https://www.paloaltonetworks.com/network-security/hardware-firewall-innovations" target="_blank" rel="noopener">paloaltonetworks.com/.../hardware-firewall-innovations</a></td></tr>
+          <tr><td>Software Firewalls (VM-Series, CN-Series, AIRS)</td><td><a href="https://www.paloaltonetworks.com/network-security/software-firewalls" target="_blank" rel="noopener">paloaltonetworks.com/.../software-firewalls</a></td></tr>
+          <tr><td>Strata Cloud Manager</td><td><a href="https://www.paloaltonetworks.com/network-security/strata-cloud-manager" target="_blank" rel="noopener">paloaltonetworks.com/.../strata-cloud-manager</a></td></tr>
+          <tr><td>Panorama</td><td><a href="https://www.paloaltonetworks.com/network-security/panorama" target="_blank" rel="noopener">paloaltonetworks.com/.../panorama</a></td></tr>
+          <tr><td>PAN-OS</td><td><a href="https://www.paloaltonetworks.com/network-security/pan-os" target="_blank" rel="noopener">paloaltonetworks.com/.../pan-os</a></td></tr>
+          <tr><td>SD-WAN for NGFW</td><td><a href="https://www.paloaltonetworks.com/network-security/sd-wan-subscription" target="_blank" rel="noopener">paloaltonetworks.com/.../sd-wan-subscription</a></td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px">SASE / Prisma</div>
+      <table class="res-table" style="margin-bottom:28px">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Prisma SASE (overview)</td><td><a href="https://www.paloaltonetworks.com/sase" target="_blank" rel="noopener">paloaltonetworks.com/sase</a></td></tr>
+          <tr><td>Prisma Access</td><td><a href="https://www.paloaltonetworks.com/sase/access" target="_blank" rel="noopener">paloaltonetworks.com/sase/access</a></td></tr>
+          <tr><td>Prisma Access Browser</td><td><a href="https://www.paloaltonetworks.com/sase/prisma-access-browser" target="_blank" rel="noopener">paloaltonetworks.com/sase/prisma-access-browser</a></td></tr>
+          <tr><td>Prisma SD-WAN</td><td><a href="https://www.paloaltonetworks.com/sase/sd-wan" target="_blank" rel="noopener">paloaltonetworks.com/sase/sd-wan</a></td></tr>
+          <tr><td>ADEM (Autonomous Digital Experience Management)</td><td><a href="https://www.paloaltonetworks.com/sase/adem" target="_blank" rel="noopener">paloaltonetworks.com/sase/adem</a></td></tr>
+          <tr><td>Application Acceleration</td><td><a href="https://www.paloaltonetworks.com/sase/app-acceleration" target="_blank" rel="noopener">paloaltonetworks.com/sase/app-acceleration</a></td></tr>
+          <tr><td>AI Access Security</td><td><a href="https://www.paloaltonetworks.com/sase/ai-access-security" target="_blank" rel="noopener">paloaltonetworks.com/sase/ai-access-security</a></td></tr>
+          <tr><td>SaaS Security</td><td><a href="https://www.paloaltonetworks.com/sase/saas-security" target="_blank" rel="noopener">paloaltonetworks.com/sase/saas-security</a></td></tr>
+          <tr><td>Enterprise DLP</td><td><a href="https://www.paloaltonetworks.com/sase/enterprise-data-loss-prevention" target="_blank" rel="noopener">paloaltonetworks.com/sase/enterprise-data-loss-prevention</a></td></tr>
+          <tr><td>Remote Browser Isolation</td><td><a href="https://www.paloaltonetworks.com/sase/remote-browser-isolation" target="_blank" rel="noopener">paloaltonetworks.com/sase/remote-browser-isolation</a></td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px">Cortex (SecOps)</div>
+      <table class="res-table" style="margin-bottom:28px">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Cortex (overview)</td><td><a href="https://www.paloaltonetworks.com/cortex" target="_blank" rel="noopener">paloaltonetworks.com/cortex</a></td></tr>
+          <tr><td>Cortex XSIAM</td><td><a href="https://www.paloaltonetworks.com/cortex/cortex-xsiam" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cortex-xsiam</a></td></tr>
+          <tr><td>Cortex XDR</td><td><a href="https://www.paloaltonetworks.com/cortex/cortex-xdr" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cortex-xdr</a></td></tr>
+          <tr><td>Cortex XSOAR</td><td><a href="https://www.paloaltonetworks.com/cortex/cortex-xsoar" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cortex-xsoar</a></td></tr>
+          <tr><td>Cortex AgentiX</td><td><a href="https://www.paloaltonetworks.com/cortex/agentix" target="_blank" rel="noopener">paloaltonetworks.com/cortex/agentix</a></td></tr>
+          <tr><td>Cortex Xpanse</td><td><a href="https://www.paloaltonetworks.com/cortex/cortex-xpanse" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cortex-xpanse</a></td></tr>
+          <tr><td>Cortex Cloud (remplace Prisma Cloud)</td><td><a href="https://www.paloaltonetworks.com/cortex/cloud" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cloud</a></td></tr>
+          <tr><td>Unit 42 MDR</td><td><a href="https://www.paloaltonetworks.com/cortex/managed-detection-and-response" target="_blank" rel="noopener">paloaltonetworks.com/cortex/managed-detection-and-response</a></td></tr>
+          <tr><td>Managed XSIAM</td><td><a href="https://www.paloaltonetworks.com/cortex/managed-xsiam" target="_blank" rel="noopener">paloaltonetworks.com/cortex/managed-xsiam</a></td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px">Identite (Idira - nouveau pilier 2026)</div>
+      <table class="res-table" style="margin-bottom:28px">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Idira (Next-Gen Identity Security Platform)</td><td><a href="https://www.paloaltonetworks.com/idira" target="_blank" rel="noopener">paloaltonetworks.com/idira</a></td></tr>
+          <tr><td>Privileged Access Management</td><td><a href="https://www.paloaltonetworks.com/idira/human/privileged-access-management" target="_blank" rel="noopener">paloaltonetworks.com/idira/human/privileged-access-management</a></td></tr>
+          <tr><td>Identity and Access Management</td><td><a href="https://www.paloaltonetworks.com/idira/human/identity-and-access-management" target="_blank" rel="noopener">paloaltonetworks.com/idira/human/identity-and-access-management</a></td></tr>
+          <tr><td>Endpoint Privilege Manager</td><td><a href="https://www.paloaltonetworks.com/idira/human/endpoint-privilege-manager" target="_blank" rel="noopener">paloaltonetworks.com/idira/human/endpoint-privilege-manager</a></td></tr>
+          <tr><td>Agentic Identities</td><td><a href="https://www.paloaltonetworks.com/idira/agentic" target="_blank" rel="noopener">paloaltonetworks.com/idira/agentic</a></td></tr>
+          <tr><td>Secrets Management</td><td><a href="https://www.paloaltonetworks.com/idira/machine/secrets-management" target="_blank" rel="noopener">paloaltonetworks.com/idira/machine/secrets-management</a></td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text-muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.5px">AI Security</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Prisma AIRS (AI Runtime Security)</td><td><a href="https://www.paloaltonetworks.com/prisma/prisma-ai-runtime-security" target="_blank" rel="noopener">paloaltonetworks.com/prisma/prisma-ai-runtime-security</a></td></tr>
+          <tr><td>Secure AI by Design (overview)</td><td><a href="https://www.paloaltonetworks.com/ai-security" target="_blank" rel="noopener">paloaltonetworks.com/ai-security</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 3. Datasheets -->
+    <div class="res-section">
+      <div class="section-title">3. Datasheets et guides de licensing</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>Product Summary Specsheet (toutes appliances)</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/product-summary-specsheet" target="_blank" rel="noopener">paloaltonetworks.com/.../product-summary-specsheet</a></td></tr>
+          <tr><td>Prisma Access Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/prisma-access" target="_blank" rel="noopener">paloaltonetworks.com/.../prisma-access</a></td></tr>
+          <tr><td>Prisma Access Specsheet (perf, capacites)</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/prisma-access-specsheet" target="_blank" rel="noopener">paloaltonetworks.com/.../prisma-access-specsheet</a></td></tr>
+          <tr><td><strong>Prisma Access Licensing Guide</strong></td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/prisma-access-licensing-guide" target="_blank" rel="noopener">paloaltonetworks.com/.../prisma-access-licensing-guide</a></td></tr>
+          <tr><td>Prisma SASE Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/prisma-sase" target="_blank" rel="noopener">paloaltonetworks.com/.../prisma-sase</a></td></tr>
+          <tr><td>Precision AI Pro Bundle Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/precision-ai-network-security-bundle" target="_blank" rel="noopener">paloaltonetworks.com/.../precision-ai-network-security-bundle</a></td></tr>
+          <tr><td>Cortex XDR Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/cortex-xdr" target="_blank" rel="noopener">paloaltonetworks.com/.../cortex-xdr</a></td></tr>
+          <tr><td>Cortex AgentiX Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/agentix" target="_blank" rel="noopener">paloaltonetworks.com/.../agentix</a></td></tr>
+          <tr><td>PA-400 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-400-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-400-series</a></td></tr>
+          <tr><td>PA-500 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-500-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-500-series</a></td></tr>
+          <tr><td>PA-1400 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-1400-series</a></td></tr>
+          <tr><td>PA-3400 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-3400-series</a></td></tr>
+          <tr><td>PA-5400 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-5400-series</a></td></tr>
+          <tr><td>PA-7000 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-7000-series</a></td></tr>
+          <tr><td>PA-7500 Series Datasheet</td><td><a href="https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series" target="_blank" rel="noopener">paloaltonetworks.com/.../pa-7500-series</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. Documentation -->
+    <div class="res-section">
+      <div class="section-title">4. Documentation technique</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>TechDocs (portail principal)</td><td><a href="https://docs.paloaltonetworks.com" target="_blank" rel="noopener">docs.paloaltonetworks.com</a></td></tr>
+          <tr><td><strong>Compatibility Matrix</strong> (PAN-OS, Panorama, plugins)</td><td><a href="https://docs.paloaltonetworks.com/compatibility-matrix" target="_blank" rel="noopener">docs.paloaltonetworks.com/compatibility-matrix</a></td></tr>
+          <tr><td>PA-Series supportes par PAN-OS</td><td><a href="https://docs.paloaltonetworks.com/compatibility-matrix/reference/supported-os-releases-by-model/palo-alto-networks-next-gen-firewalls" target="_blank" rel="noopener">docs...compatibility-matrix/...next-gen-firewalls</a></td></tr>
+          <tr><td>Documentation Prisma Access</td><td><a href="https://docs.paloaltonetworks.com/prisma-access" target="_blank" rel="noopener">docs.paloaltonetworks.com/prisma-access</a></td></tr>
+          <tr><td>Documentation PAN-OS</td><td><a href="https://docs.paloaltonetworks.com/pan-os" target="_blank" rel="noopener">docs.paloaltonetworks.com/pan-os</a></td></tr>
+          <tr><td>Documentation Panorama</td><td><a href="https://docs.paloaltonetworks.com/panorama" target="_blank" rel="noopener">docs.paloaltonetworks.com/panorama</a></td></tr>
+          <tr><td>Cortex Documentation Portal</td><td><a href="https://docs-cortex.paloaltonetworks.com" target="_blank" rel="noopener">docs-cortex.paloaltonetworks.com</a></td></tr>
+          <tr><td>pan.dev (developer hub, APIs)</td><td><a href="https://pan.dev" target="_blank" rel="noopener">pan.dev</a></td></tr>
+          <tr><td>Prisma SASE API Docs</td><td><a href="https://pan.dev/access" target="_blank" rel="noopener">pan.dev/access</a></td></tr>
+          <tr><td>Strata Logging Service docs</td><td><a href="https://docs.paloaltonetworks.com/strata-logging-service" target="_blank" rel="noopener">docs.paloaltonetworks.com/strata-logging-service</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. EoS / EoL -->
+    <div class="res-section">
+      <div class="section-title">5. Cycle de vie - EoS / EoL</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>End-of-Life Announcements</td><td><a href="https://www.paloaltonetworks.com/services/support/end-of-life-announcements" target="_blank" rel="noopener">paloaltonetworks.com/.../end-of-life-announcements</a></td></tr>
+          <tr><td><strong>End-of-Sale Announcements</strong></td><td><a href="https://www.paloaltonetworks.com/services/support/end-of-life-announcements/end-of-sale" target="_blank" rel="noopener">paloaltonetworks.com/.../end-of-sale</a></td></tr>
+          <tr><td>Hardware End-of-Life Dates</td><td><a href="https://www.paloaltonetworks.com/services/support/end-of-life-announcements/hardware-end-of-life-dates" target="_blank" rel="noopener">paloaltonetworks.com/.../hardware-end-of-life-dates</a></td></tr>
+          <tr><td>Software End-of-Life Summary</td><td><a href="https://www.paloaltonetworks.com/services/support/end-of-life-announcements/end-of-life-summary" target="_blank" rel="noopener">paloaltonetworks.com/.../end-of-life-summary</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6. Formation -->
+    <div class="res-section">
+      <div class="section-title">6. Formation et communaute</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>The Learning Center</strong></td>
+            <td><a href="https://learn.paloaltonetworks.com" target="_blank" rel="noopener">learn.paloaltonetworks.com</a></td>
+            <td>Remplace Beacon depuis mai 2025</td>
+          </tr>
+          <tr>
+            <td>LIVEcommunity (forum technique)</td>
+            <td><a href="https://live.paloaltonetworks.com" target="_blank" rel="noopener">live.paloaltonetworks.com</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Cyberpedia (vulgarisation securite)</td>
+            <td><a href="https://www.paloaltonetworks.com/cyberpedia" target="_blank" rel="noopener">paloaltonetworks.com/cyberpedia</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Unit 42 (threat intel)</td>
+            <td><a href="https://unit42.paloaltonetworks.com" target="_blank" rel="noopener">unit42.paloaltonetworks.com</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Blog Palo Alto</td>
+            <td><a href="https://www.paloaltonetworks.com/blog" target="_blank" rel="noopener">paloaltonetworks.com/blog</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Ignite Conference</td>
+            <td><a href="https://ignite.paloaltonetworks.com" target="_blank" rel="noopener">ignite.paloaltonetworks.com</a></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 7. Benchmarks -->
+    <div class="res-section">
+      <div class="section-title">7. Evaluations externes et benchmarks</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>MITRE ATT&amp;CK Evaluations</td>
+            <td><a href="https://attackevals.mitre-engenuity.org" target="_blank" rel="noopener">attackevals.mitre-engenuity.org</a></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Gartner Magic Quadrant SASE</td>
+            <td><a href="https://www.gartner.com" target="_blank" rel="noopener">gartner.com</a></td>
+            <td>Recherche manuelle - pas de lien direct stable</td>
+          </tr>
+          <tr>
+            <td>Forrester Wave SSE</td>
+            <td><a href="https://www.forrester.com" target="_blank" rel="noopener">forrester.com</a></td>
+            <td>Recherche manuelle - pas de lien direct stable</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 8. Programme partenaires / MSSP -->
+    <div class="res-section" id="mssp">
+      <div class="section-title">8. Programme partenaires</div>
+      <table class="res-table">
+        <thead><tr><th>Nom</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>NextWave Partner Program (overview)</td><td><a href="https://www.paloaltonetworks.com/partners" target="_blank" rel="noopener">paloaltonetworks.com/partners</a></td></tr>
+          <tr><td>NextWave Solution Providers</td><td><a href="https://www.paloaltonetworks.com/partners/nextwave-solution-providers" target="_blank" rel="noopener">paloaltonetworks.com/partners/nextwave-solution-providers</a></td></tr>
+          <tr><td>Partner Locator</td><td><a href="https://paloaltonetworks.my.site.com/NextWavePartnerProgram/s/partnerlocator" target="_blank" rel="noopener">paloaltonetworks.my.site.com/.../partnerlocator</a></td></tr>
+          <tr><td>Exclusive Networks Partner Connect</td><td><a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">partner-connect.exclusive-labs.com</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 9. Liens obsoletes -->
+    <div class="res-section">
+      <div class="section-title">9. Liens a ne plus utiliser</div>
+      <div class="info-note" style="border-left-color:var(--red)">
+        Ces liens sont obsoletes ou redirigent vers des contenus decommissionnes. Utiliser les remplacants indiques.
+      </div>
+      <table class="res-table">
+        <thead><tr><th>Nom obsolete</th><th>Remplace par</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="res-obsolete">beacon.paloaltonetworks.com</span></td>
+            <td>The Learning Center - <a href="https://learn.paloaltonetworks.com" target="_blank" rel="noopener">learn.paloaltonetworks.com</a></td>
+          </tr>
+          <tr>
+            <td><span class="res-obsolete">paloaltonetworks.com/prisma/cloud</span></td>
+            <td>Cortex Cloud - <a href="https://www.paloaltonetworks.com/cortex/cloud" target="_blank" rel="noopener">paloaltonetworks.com/cortex/cloud</a></td>
+          </tr>
+          <tr>
+            <td><span class="res-obsolete">Cortex Data Lake docs autonomes</span></td>
+            <td>Strata Logging Service docs - <a href="https://docs.paloaltonetworks.com/strata-logging-service" target="_blank" rel="noopener">docs.paloaltonetworks.com/strata-logging-service</a></td>
+          </tr>
+          <tr>
+            <td><span class="res-obsolete">GlobalProtect SKU pages NGFW</span></td>
+            <td>Prisma Access Agent SKUs (EoS depuis 15 aout 2025)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Liens valides au 29 juin 2026 · Sources : pages officielles Palo Alto Networks</div>
+  </footer>
+</body>
+</html>

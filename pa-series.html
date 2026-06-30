@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — PA-Series</title>
+  <meta name="description" content="Comparateur et outil de qualification PA-Series Palo Alto Networks. 35 modèles, de la PA-400 à la PA-7500, avec wizard de dimensionnement." />
+  <meta property="og:title" content="Sizing Guide — PA-Series NGFW" />
+  <meta property="og:description" content="Comparateur technique et qualification rapide des firewalls PA-Series Palo Alto Networks." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --label-w: 220px;
+      --col-w:   148px;
+    }
+
+    /* ── Toolbars ── */
+    .tb-wrap {
+      position: relative; z-index: 2;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar + .toolbar {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+
+    .tb-label {
+      
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .tb-sep {
+      width: 1px; height: 20px;
+      background: var(--border2);
+      flex-shrink: 0;
+    }
+
+    .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .fb {
+      
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .fb:hover { border-color: var(--border2); color: var(--text-bright); }
+    .fb.on    { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    .stats-bar {
+      padding: 5px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 20px;
+      
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .stats-bar strong { color: var(--accent); }
+
+    /* ── Table container ── */
+    .table-outer {
+      position: relative; z-index: 1;
+      overflow-x: scroll;
+      overflow-y: auto;
+      height: calc(100vh - var(--header-h) - 150px);
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
+    .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; min-height: 40px; }
+    .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .table-outer::-webkit-scrollbar-corner { background: var(--bg2); }
+    @supports (scrollbar-width: auto) {
+      .table-outer { scrollbar-width: auto; scrollbar-color: var(--border2) var(--bg2); }
+    }
+
+    .pa-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      min-width: max-content;
+    }
+
+    /* ── Sticky label column ── */
+    .th-corner,
+    .spec-label-cell {
+      position: sticky;
+      left: 0;
+      width: var(--label-w);
+      min-width: var(--label-w);
+      max-width: var(--label-w);
+      z-index: 20;
+    }
+
+    .th-corner {
+      background: var(--bg);
+      z-index: 62;
+      top: 0;
+    }
+
+    .spec-label-cell {
+      background: var(--surface);
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      border-right: 2px solid var(--border2);
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
+      transition: background .1s, border-right-color .1s;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.15);
+    }
+
+    /* ── Sticky header row ── */
+    .col-header-row th {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+    }
+
+    /* ── Model header card ── */
+    .model-th {
+      width: var(--col-w);
+      min-width: var(--col-w);
+      max-width: var(--col-w);
+      padding: 5px 4px 0;
+      vertical-align: bottom;
+    }
+
+    .model-card-clip { overflow: hidden; border-radius: 8px 8px 0 0; }
+
+    .model-card-top {
+      padding: 10px 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+    .model-card-top:hover { filter: brightness(1.15); }
+
+    .model-card-top::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background .15s;
+    }
+    .model-card-top:hover::before { background: rgba(255,255,255,0.08); }
+
+    .model-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .model-target {
+      font-size: 10px;
+      color: rgba(255,255,255,0.75);
+      font-family: var(--mono);
+      letter-spacing: 0.03em;
+    }
+
+    .model-card-bot {
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .model-ds-link {
+      
+      font-size: 9px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color .15s;
+    }
+    .model-ds-link:hover { color: rgba(255,255,255,0.9); }
+
+    .sel-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .model-th.selected .sel-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .model-th.selected .model-card-top { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* ── Value cells ── */
+    .val-cell {
+      width: var(--col-w);
+      padding: 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      border-left: 2px solid transparent;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      transition: background .1s;
+      white-space: nowrap;
+    }
+
+    /* Zebra */
+    tr.data-row:nth-child(even) .val-cell,
+    tr.data-row:nth-child(even) .spec-label-cell { background: var(--surface2); }
+
+    tr.data-row:hover .val-cell,
+    tr.data-row:hover .spec-label-cell {
+      background: rgba(232,75,26,0.06) !important;
+    }
+    tr.data-row:hover .spec-label-cell {
+      border-right-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    /* Max highlight */
+    .val-max {
+      color: var(--green) !important;
+      font-weight: 700;
+    }
+    .val-max::after {
+      content: ' ↑';
+      font-size: 9px;
+      opacity: 0.7;
+    }
+
+    .val-na { color: var(--text-muted); opacity: 0.45; }
+
+    .badge-yes {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green);
+    }
+
+    /* EoS model styling */
+    .badge-eos-pa {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 10px;
+      background: rgba(234,179,8,0.12);
+      border: 1px solid rgba(234,179,8,0.4);
+      color: #ca8a04;
+    }
+    .model-th.eos-model .model-card-top::after {
+      content: 'EoS';
+      position: absolute;
+      top: 5px; right: 7px;
+      background: rgba(234,179,8,0.25);
+      border: 1px solid rgba(234,179,8,0.6);
+      color: #fbbf24;
+      font-size: 8px;
+      
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      letter-spacing: 0.07em;
+    }
+
+    /* Measurement note in stats bar */
+    .stats-note {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Category rows ── */
+    .cat-row td {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 0;
+    }
+
+    .cat-row td.cat-label-cell {
+      position: sticky;
+      left: 0;
+      z-index: 40;
+      background: var(--bg2);
+      border-right: 2px solid var(--accent);
+    }
+
+    .cat-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+    }
+
+    .cat-inner-text {
+      
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-bright);
+    }
+
+    /* ── Row entrance animation ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    tr.data-row { animation: slideIn .2s ease backwards; }
+
+    /* ── Hidden modifier ── */
+    .col-hidden { display: none; }
+
+    /* ── Mode toggle bar ── */
+    .mode-bar {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-btn {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 24px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .mode-btn:hover { border-color: var(--border2); color: var(--text-bright); }
+    .mode-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .wiz-help {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: help;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+    .wiz-disclaimer {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .wiz-disclaimer strong { color: var(--yellow); }
+    .wiz-family-card {
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .wiz-family-name {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .wiz-family-why {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .wiz-family-positioning {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .wiz-link-tech {
+      
+      font-size: 11px;
+      color: var(--accent);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      text-decoration: underline;
+    }
+    .wiz-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .wiz-action-btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all .15s;
+    }
+    .wiz-action-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .wiz-action-btn.primary:hover { background: var(--accent-hover); }
+    .wiz-action-btn.secondary {
+      background: transparent;
+      color: var(--text-muted);
+    }
+    .wiz-action-btn.secondary:hover { color: var(--text-bright); border-color: var(--border2); }
+
+    /* ── Glossary tooltips ── */
+    .glossary-tip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted var(--text-muted);
+    }
+    .glossary-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      background: var(--surface3);
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 1.5;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      white-space: normal;
+      width: max-content;
+      max-width: 260px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 200;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .glossary-tip:hover::after { opacity: 1; }
+
+    /* ── Sizing wizard ── */
+    .wizard-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--accent);
+      padding: 0;
+      overflow: hidden;
+    }
+    .wizard-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .wizard-toggle:hover { background: var(--surface2); }
+    .wizard-toggle .chevron {
+      transition: transform .2s;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .wizard-panel.open .wizard-toggle .chevron { transform: rotate(180deg); }
+    .wizard-body {
+      display: none;
+      padding: 0 20px 20px;
+    }
+    .wizard-panel.open .wizard-body { display: block; }
+    .wizard-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .wiz-field label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .wiz-field select, .wiz-field input {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+    }
+    .wiz-field select:focus, .wiz-field input:focus {
+      border-color: var(--accent);
+    }
+    .wiz-btn {
+      padding: 10px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .wiz-btn:hover { background: var(--accent-hover); }
+    .wiz-results {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .wiz-results.visible { display: block; }
+    .wiz-results h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+    }
+    .wiz-match {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .wiz-match-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-bright);
+      min-width: 100px;
+    }
+    .wiz-match-reason {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ── Guide de qualification ── */
+    .guide-view { position: relative; z-index: 1; }
+    .guide-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+    .guide-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .guide-header h2 {
+      font-family: var(--font);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+    .guide-header p {
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+    .guide-print-btn {
+      padding: 10px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .guide-print-btn:hover { color: var(--text-bright); border-color: var(--accent); background: var(--accent-dim); }
+    .guide-category {
+      margin-bottom: 36px;
+    }
+    .guide-cat-title {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-bright);
+      padding: 12px 0;
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .guide-cat-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .guide-question {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .guide-question:hover { border-color: var(--border2); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .guide-q-main {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .guide-q-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .guide-q-grid { grid-template-columns: 1fr; }
+    }
+    .guide-q-block {
+      padding: 16px;
+      background: var(--bg2);
+      border-radius: 10px;
+      border-left: 4px solid var(--border2);
+    }
+    .guide-q-block.represents { border-left-color: var(--blue-bright); background: rgba(26,95,212,0.04); }
+    .guide-q-block.matters { border-left-color: var(--green); background: rgba(34,197,94,0.04); }
+    .guide-q-block.fallback { border-left-color: var(--yellow); background: rgba(245,158,11,0.04); }
+    .guide-q-block.question-label { border-left-color: var(--accent); }
+    .guide-q-block-label {
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 6px;
+    }
+    .guide-q-block.represents .guide-q-block-label { color: var(--blue-bright); }
+    .guide-q-block.matters .guide-q-block-label { color: var(--green); }
+    .guide-q-block.fallback .guide-q-block-label { color: var(--yellow); }
+    .guide-q-block-text {
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+    }
+    @media print {
+      body::before, body::after, .site-header, .mode-bar, .site-footer { display: none !important; }
+      .guide-view { display: block !important; }
+      .guide-question { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
+      .guide-q-block { background: #f5f5f5; }
+      body { background: #fff; color: #000; }
+      .guide-q-main { color: #000; }
+      .guide-q-block-text { color: #333; }
+    }
+
+    /* ── Confidence badge ── */
+    .confidence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .confidence-green {
+      background: var(--green-dim);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green);
+    }
+    .confidence-orange {
+      background: var(--yellow-dim);
+      border: 1px solid rgba(245,158,11,0.3);
+      color: var(--yellow);
+    }
+    .confidence-red {
+      background: var(--red-dim);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--red);
+    }
+    .confidence-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .confidence-green .confidence-dot { background: var(--green); }
+    .confidence-orange .confidence-dot { background: var(--yellow); }
+    .confidence-red .confidence-dot { background: var(--red); }
+
+    /* ── Wizard express/advanced toggle ── */
+    .wiz-depth-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+    .wiz-depth-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .wiz-depth-btn:hover { border-color: var(--border2); color: var(--text-bright); }
+    .wiz-depth-btn.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .wiz-advanced-fields { display: none; }
+    .wiz-advanced-fields.visible { display: contents; }
+    .wiz-assumption {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--yellow-dim);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--yellow);
+      margin-top: 4px;
+    }
+    .wiz-assumption-icon { font-size: 12px; }
+
+    /* ── Rich recommendation ── */
+    .reco-section { margin-top: 24px; }
+    .reco-section-title {
+      
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .reco-archi-card {
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .reco-archi-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .reco-archi-desc {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .reco-metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .reco-metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .reco-metric-value {
+      
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+    .reco-metric-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .reco-sub-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .reco-sub-tag {
+      padding: 4px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--text);
+    }
+    .reco-sub-tag.included {
+      background: var(--green-dim);
+      border-color: rgba(34,197,94,0.2);
+      color: var(--green);
+    }
+    .reco-arg-card {
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .reco-arg-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .reco-arg-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .reco-open-q {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--yellow-dim);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .reco-open-q-icon { color: var(--yellow); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .reco-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .reco-link {
+      padding: 6px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      transition: all .15s;
+    }
+    .reco-link:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+    /* ── Brief avant-vente ── */
+    .brief-card {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .brief-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brief-section {
+      margin-bottom: 14px;
+    }
+    .brief-section-label {
+      
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .brief-section-content {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .brief-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Compare button ── */
+    .cmp-fab {
+      position: fixed;
+      top: calc(var(--header-h) + 10px);
+      right: 20px;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232,75,26,0.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cmp-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,75,26,0.5); }
+    .cmp-fab.visible { display: flex; }
+
+    /* ── Compare modal ── */
+    .cmp-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+      overflow-y: auto;
+    }
+    .cmp-overlay.open { display: flex; }
+
+    .cmp-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 92vw;
+      max-width: 1000px;
+      position: relative;
+    }
+
+    .cmp-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 20px;
+    }
+
+    .cmp-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 30px; height: 30px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; cursor: pointer;
+      color: var(--text-muted); font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cmp-close:hover { color: var(--text-bright); }
+
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font); overflow: auto; }
+    .cmp-table th, .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .cmp-table thead th { background: var(--surface2); font-family: var(--font); font-size: 14px; font-weight: 700; position: sticky; top: 0; }
+    .cmp-table td:first-child { text-align: left; color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; background: var(--surface); position: sticky; left: 0; }
+    .cmp-table tr:hover td { background: var(--surface2) !important; }
+    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 13px; }
+    .ct-val { font-family: var(--mono); font-size: 13px; color: var(--text); }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <!-- ── Mode toggle ── -->
+  <div class="mode-bar">
+    <button class="mode-btn active" id="mode-commercial" onclick="setMode('commercial')">Qualification rapide</button>
+    <button class="mode-btn" id="mode-guide" onclick="setMode('guide')">Guide de qualification</button>
+    <button class="mode-btn" id="mode-technique" onclick="setMode('technique')">Comparateur technique</button>
+  </div>
+
+  <!-- ── Qualification rapide (commercial) ── -->
+  <div class="commercial-view" id="view-commercial">
+    <div class="page-wrap" style="padding-top:24px;padding-bottom:24px">
+      <div style="text-align:center;margin-bottom:28px">
+        <h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Quel firewall pour votre client ?</h2>
+        <p style="font-size:13px;color:var(--text-muted)">Répondez à quelques questions pour identifier la gamme adaptée. "Je ne sais pas" est toujours une réponse valide.</p>
+      </div>
+
+      <div class="wiz-depth-toggle">
+        <button class="wiz-depth-btn active" id="depth-express" onclick="setDepth('express')">Mode express (5 questions)</button>
+        <button class="wiz-depth-btn" id="depth-advanced" onclick="setDepth('advanced')">Mode approfondi</button>
+      </div>
+
+      <div style="max-width:700px;margin:0 auto 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="wiz-field">
+          <label>Nom du client</label>
+          <input type="text" id="wiz-client" placeholder="Ex: Société Dupont SAS" value="">
+        </div>
+        <div class="wiz-field">
+          <label>Partenaire / commercial</label>
+          <input type="text" id="wiz-partner" placeholder="Ex: Jean Martin, Exclusive Networks" value="">
+        </div>
+      </div>
+
+      <div class="wizard-form" style="max-width:700px;margin:0 auto" id="wiz-form">
+        <div class="wiz-field">
+          <label>Nombre de collaborateurs <span class="wiz-help glossary-tip" data-tip="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). Entrez un nombre précis ou laissez vide si inconnu.">?</span></label>
+          <input type="number" id="wiz-users" placeholder="Ex: 250" min="1" max="500000" value="">
+        </div>
+        <div class="wiz-field">
+          <label>Combien de sites à sécuriser ? <span class="wiz-help glossary-tip" data-tip="Un site = un lieu physique avec sa propre connexion internet (siège, agence, entrepôt, usine).">?</span></label>
+          <select id="wiz-sites">
+            <option value="1" selected>1 site (siège unique)</option>
+            <option value="3">2 à 5 sites</option>
+            <option value="10">5 à 15 sites</option>
+            <option value="30">15 à 50 sites</option>
+            <option value="100">Plus de 50 sites</option>
+            <option value="unknown">Je ne sais pas</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Type de site principal <span class="wiz-help glossary-tip" data-tip="Agence = bureau distant, petite équipe. Siège = bureau principal ou campus. Datacenter = salle serveurs hébergeant des applications.">?</span></label>
+          <select id="wiz-type">
+            <option value="branch" selected>Agence / bureau distant</option>
+            <option value="campus">Siège / campus</option>
+            <option value="dc">Datacenter / centre de données</option>
+            <option value="unknown">Je ne sais pas</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Débit Internet (Mbps) <span class="wiz-help glossary-tip" data-tip="Le débit de votre lien Internet (fibre, MPLS) en Mbps. Ex: 100, 500, 1000. Laissez vide si inconnu.">?</span></label>
+          <input type="number" id="wiz-bw" placeholder="Ex: 200" min="1" max="1000000" value="">
+        </div>
+        <div class="wiz-field">
+          <label>Inspection du trafic chiffré (HTTPS) ? <span class="wiz-help glossary-tip" data-tip="Le déchiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommandé pour la sécurité, mais nécessite plus de puissance.">?</span></label>
+          <select id="wiz-ssl">
+            <option value="no">Non, pas nécessaire</option>
+            <option value="yes" selected>Oui, souhaité</option>
+            <option value="unknown">Je ne sais pas</option>
+          </select>
+        </div>
+        <!-- ── Advanced fields ── -->
+        <div class="wiz-advanced-fields" id="wiz-advanced">
+        <div class="wiz-field">
+          <label>Usage cloud / visio <span class="wiz-help glossary-tip" data-tip="Si les équipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanées.">?</span></label>
+          <select id="wiz-cloud">
+            <option value="low">Usage classique (mail, web)</option>
+            <option value="high">Intensif (M365, Teams, SaaS)</option>
+            <option value="unknown" selected>Je ne sais pas</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Secteur d'activité <span class="wiz-help glossary-tip" data-tip="Le secteur oriente les exigences de conformité et les arguments de vente.">?</span></label>
+          <select id="wiz-sector">
+            <option value="unknown" selected>Je ne sais pas</option>
+            <option value="finance">Finance / Banque / Assurance</option>
+            <option value="health">Santé / Pharma</option>
+            <option value="industry">Industrie / OT</option>
+            <option value="retail">Commerce / Distribution</option>
+            <option value="education">Éducation / Recherche</option>
+            <option value="public">Secteur public</option>
+            <option value="services">Services / Conseil</option>
+            <option value="tech">Tech / SaaS</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Marque du firewall actuel <span class="wiz-help glossary-tip" data-tip="La marque actuelle du firewall permet d'orienter les arguments concurrentiels et de proposer un équivalent PA-Series.">?</span></label>
+          <select id="wiz-existing" onchange="updateExistingModels()">
+            <option value="unknown" selected>Je ne sais pas</option>
+            <option value="fortinet">Fortinet (FortiGate)</option>
+            <option value="checkpoint">Check Point (Quantum)</option>
+            <option value="cisco">Cisco (Firepower / ASA)</option>
+            <option value="sophos">Sophos</option>
+            <option value="none">Pas d'existant (nouveau projet)</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+        <div class="wiz-field" id="wiz-model-field" style="display:none">
+          <label>Modèle exact <span class="wiz-help glossary-tip" data-tip="Si vous connaissez le modèle exact du firewall en place, l'outil proposera directement l'équivalent PA-Series.">?</span></label>
+          <select id="wiz-existing-model">
+            <option value="unknown" selected>Je ne sais pas</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Objets connectés / IoT <span class="wiz-help glossary-tip" data-tip="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription Device Security.">?</span></label>
+          <select id="wiz-iot">
+            <option value="unknown" selected>Je ne sais pas</option>
+            <option value="none">Aucun ou négligeable</option>
+            <option value="moderate">Quelques dizaines</option>
+            <option value="heavy">Centaines ou plus</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Haute disponibilité <span class="wiz-help glossary-tip" data-tip="HA = paire de firewalls pour zéro coupure. Double le nombre d'appliances.">?</span></label>
+          <select id="wiz-ha">
+            <option value="unknown" selected>Je ne sais pas</option>
+            <option value="yes">Oui, indispensable</option>
+            <option value="no">Non, pas nécessaire</option>
+          </select>
+        </div>
+        <div class="wiz-field">
+          <label>Utilisateurs nomades <span class="wiz-help glossary-tip" data-tip="Nombre de personnes se connectant à distance via VPN ou ZTNA. Entrez un nombre précis ou laissez vide.">?</span></label>
+          <input type="number" id="wiz-remote" placeholder="Ex: 50" min="0" max="500000" value="">
+        </div>
+        <div class="wiz-field">
+          <label>Croissance à 3 ans <span class="wiz-help glossary-tip" data-tip="Prévision de croissance du nombre d'utilisateurs ou de débit pour dimensionner avec marge.">?</span></label>
+          <select id="wiz-growth">
+            <option value="unknown" selected>Je ne sais pas</option>
+            <option value="stable">Stable</option>
+            <option value="moderate">Croissance modérée (+20 à 50%)</option>
+            <option value="strong">Forte croissance (+50% et plus)</option>
+          </select>
+        </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:20px">
+        <button class="wiz-btn" onclick="runCommercialWizard()" style="padding:12px 32px;font-size:14px">Identifier la gamme adaptée</button>
+      </div>
+
+      <div class="wiz-results" id="wiz-results-commercial"></div>
+    </div>
+  </div>
+
+  <!-- ── Guide de qualification ── -->
+  <div class="guide-view" id="view-guide" style="display:none">
+    <div class="guide-wrap">
+      <div class="guide-header">
+        <h2>Guide de qualification</h2>
+        <p>Questions à poser au client pour préparer une recommandation firewall Palo Alto Networks. À consulter avant ou pendant un rendez-vous.</p>
+        <button class="guide-print-btn" onclick="window.print()">Imprimer le guide</button>
+      </div>
+
+      <div class="guide-category">
+        <div class="guide-cat-title">Périmètre et contexte</div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Combien de collaborateurs / utilisateurs ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La charge globale du réseau : nombre de connexions simultanées et de flux à traiter par le firewall.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Détermine la taille de l'appliance (sessions concurrentes, CPS) et le nombre de licences utilisateur (GlobalProtect, Prisma Access).</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander l'effectif total de l'entreprise et la part en télétravail. En l'absence de réponse, l'outil prend une hypothèse prudente basée sur la tranche déclarée.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Combien de sites, et de quels types (siège, agences, datacenter, usine) ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La topologie du réseau : chaque site physique avec sa propre connexion Internet nécessite un équipement ou un service de sécurité.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Conditionne l'architecture : un site unique appelle un NGFW, du multi-sites appelle SD-WAN ou Prisma Access, un datacenter appelle un modèle haute capacité.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander une liste même approximative des implantations (« vous avez des bureaux en région ? un datacenter hébergé ? »).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quel est le secteur d'activité ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Oriente les exigences de conformité (santé, finance, industrie) et les arguments de vente adaptés au métier.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Un hôpital a des contraintes HIPAA/HDS, une banque du PCI-DSS, une usine de l'OT/IoT. L'architecture et les subscriptions changent.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander simplement la nature de l'activité (« que fait votre entreprise ? »). C'est rarement inconnu.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quel est l'existant à remplacer, et quel constructeur ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Indique une migration, une fin de support, et l'angle concurrentiel à adopter (Fortinet, Cisco, Check Point, Zscaler, etc.).</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Permet de calibrer les arguments différenciateurs et de proposer un modèle au moins équivalent en capacité.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander la marque et l'âge approximatif des équipements en place (« c'est du Fortinet ? Ça a combien d'années ? »).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-category">
+        <div class="guide-cat-title">Réseau et trafic</div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quel est le débit de la connexion Internet principale (par site clé) ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">C'est le facteur de dimensionnement numéro un. Le firewall doit pouvoir inspecter tout le trafic au débit souscrit, via le débit Threat Prevention.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Si le débit TP du firewall est inférieur au débit Internet, il devient le goulot d'étranglement du réseau.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander l'abonnement opérateur souscrit (« fibre 1 Gbps ? MPLS 100 Mbps ? »). C'est un bon proxy du débit à couvrir.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quel est le profil de trafic : bureautique léger, usage cloud/SaaS intensif, ou datacenter ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Modifie le nombre de flux par utilisateur et la charge de déchiffrement. Un usage SaaS intensif (Teams, M365, Salesforce) génère 3 à 5 fois plus de sessions.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Impacte les sessions concurrentes et le CPS. Un profil cloud intensif peut nécessiter une gamme supérieure même à débit égal.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Hypothèse prudente : « usage mixte SaaS ». Demander si les équipes utilisent beaucoup de visioconférence et d'applications cloud.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Faut-il inspecter le trafic chiffré HTTPS (déchiffrement SSL) ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Le déchiffrement SSL permet d'inspecter 80 à 90% du trafic web (HTTPS). Sans lui, la plupart des menaces passent à travers le firewall sans être analysées.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Point critique : le déchiffrement réduit fortement le débit utile, c'est souvent le vrai goulot d'étranglement. Il faut dimensionner en conséquence.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Hypothèse prudente : déchiffrement activé sur la majorité du trafic. C'est la recommandation sécuritaire standard.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Y a-t-il beaucoup d'objets connectés, IoT ou OT ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Caméras, capteurs, automates industriels, équipements médicaux : chaque objet génère des flux supplémentaires et appelle une sécurité adaptée (Device Security).</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Les objets connectés multiplient les sessions concurrentes et nécessitent la subscription Device Security pour la visibilité et le contrôle.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander s'il y a des caméras de surveillance, des capteurs, des automates, des imprimantes réseau ou des équipements médicaux/industriels.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-category">
+        <div class="guide-cat-title">Besoins de sécurité et usages</div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quelles protections activer : IPS, antivirus/sandbox, filtrage web, DNS, DLP, contrôle SaaS, encadrement GenAI ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Chaque protection correspond à une subscription (CDSS) : Threat Prevention, URL Filtering, WildFire, DNS Security, Enterprise DLP, SaaS Security, AI Access Security.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Détermine les subscriptions à associer à l'appliance. Le socle standard (TP + URL + WildFire + DNS) est recommandé dans tous les cas.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Proposer le socle standard (Threat Prevention, URL Filtering, WildFire, DNS Security) et compléter selon les besoins révélés.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Télétravail et accès distant : combien d'utilisateurs nomades ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Les utilisateurs en télétravail se connectent via VPN (GlobalProtect) ou ZTNA (Prisma Access). Cela impacte les tunnels GP et la bande passante.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Oriente vers GlobalProtect (intégré au NGFW) pour un petit volume, ou Prisma Access pour un déploiement massif et distribué.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander la part d'employés travaillant régulièrement hors site (« quel pourcentage de l'équipe est en télétravail ou en déplacement ? »).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Accès depuis des appareils non gérés, BYOD ou sous-traitants ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Les appareils personnels ou de prestataires ne peuvent pas installer d'agent VPN. Il faut une solution sans agent (navigateur sécurisé).</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Oriente vers Prisma Browser (ZTNA sans agent, DLP navigateur, contrôle des extensions) pour sécuriser ces accès.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander si des prestataires ou des appareils personnels accèdent aux applications internes ou aux données sensibles.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Cloud public (AWS, Azure, GCP) à sécuriser ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Les workloads hébergés dans le cloud public nécessitent un firewall cloud-native (Cloud NGFW) ou des VM-Series pour la segmentation et l'inspection.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Oriente vers Cloud NGFW (managed par Palo Alto) ou VM-Series (auto-géré) selon le niveau de contrôle souhaité.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander si des applications sont hébergées dans le cloud public (« vous avez des serveurs chez AWS, Azure ou GCP ? »).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Besoin de détection, SOC, EDR ou corrélation d'événements ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La détection et la réponse aux incidents (XDR/SIEM) complète la prévention (firewall). C'est le volet « opérations de sécurité ».</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Oriente vers Cortex XDR (EDR/XDR), XSIAM (SIEM+SOAR AI-native) ou XSOAR (orchestration). Offre complémentaire au NGFW.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander s'il existe une équipe sécurité interne et un outil de supervision des alertes (« qui surveille vos alertes de sécurité aujourd'hui ? »).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-category">
+        <div class="guide-cat-title">Contraintes et exploitation</div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">La haute disponibilité est-elle requise ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La HA implique une paire d'appliances (active/passive ou active/active) pour garantir la continuité en cas de panne.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Double le nombre d'appliances et donc le budget. À prévoir systématiquement pour les sites critiques (siège, datacenter).</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander si une coupure du site est acceptable (« combien de temps pouvez-vous rester sans Internet ? »). Si la réponse est « zéro », c'est HA.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Contraintes physiques : rack, PoE, 5G/LTE, environnement industriel ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Détermine le format de l'appliance : desktop (pas de salle serveur), rack 1U/2U, modèle avec PoE intégré, modèle rugged pour environnement industriel.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Certains modèles ont du PoE intégré (PA-415, PA-445, PA-455, PA-545-POE, PA-555-POE, PA-1410, PA-1420), du 5G (PA-415-5G, PA-455-5G), ou un format compact sans ventilateur (PA-400).</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander où l'équipement sera installé (« dans une baie serveur ? un placard technique ? un site industriel ? »).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Gestion centralisée de plusieurs sites attendue ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La gestion centralisée (Panorama ou Strata Cloud Manager) permet de piloter tous les firewalls depuis une console unique.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Recommandé dès 2 à 3 sites. Indispensable pour la cohérence des politiques, le déploiement et le reporting multi-sites.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Si le client a plus d'un site, la réponse est probablement « oui ». Proposer Panorama (on-prem) ou SCM (cloud).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Quel horizon de croissance à trois ans ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">La marge de dimensionnement : le firewall doit pouvoir absorber la croissance prévue sans remplacement prématuré.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Fixe la marge entre la charge actuelle et la capacité de l'appliance. Un dimensionnement trop juste oblige à changer d'équipement en 2 ans.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Appliquer une marge de croissance par défaut de 30 à 50% (coefficient x1.3 à x1.5 sur les besoins actuels).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-question">
+          <div class="guide-q-main">Contraintes de souveraineté ou d'hébergement des données (UE) ?</div>
+          <div class="guide-q-grid">
+            <div class="guide-q-block represents">
+              <div class="guide-q-block-label">Ce que ça représente</div>
+              <div class="guide-q-block-text">Certaines organisations exigent que les données (logs, configurations, flux analysés) restent hébergées dans l'Union Européenne.</div>
+            </div>
+            <div class="guide-q-block matters">
+              <div class="guide-q-block-label">Pourquoi ça compte</div>
+              <div class="guide-q-block-text">Influence le choix entre cloud (Prisma Access, SCM) et on-prem (NGFW + Panorama). Certaines certifications imposent du on-prem.</div>
+            </div>
+            <div class="guide-q-block fallback" style="grid-column:1/-1">
+              <div class="guide-q-block-label">Si le client ne sait pas</div>
+              <div class="guide-q-block-text">Demander s'il existe des exigences réglementaires sur la localisation des données (« vos données doivent rester en France / en Europe ? »).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:24px">
+        <button class="wiz-btn" onclick="setMode('commercial')" style="padding:10px 28px">Passer à la qualification rapide</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toolbars ── -->
+  <div class="tb-wrap">
+    <div class="toolbar">
+      <span class="tb-label">Catégories</span>
+      <div class="tb-sep"></div>
+      <div class="filter-group" id="cat-filters">
+        <button class="fb on" data-cat="all" onclick="filterCat(this)">Toutes</button>
+        <button class="fb" data-cat="perf"  onclick="filterCat(this)">Performances</button>
+        <button class="fb" data-cat="sess"  onclick="filterCat(this)">Sessions</button>
+        <button class="fb" data-cat="ports" onclick="filterCat(this)">Interfaces</button>
+        <button class="fb" data-cat="hw"    onclick="filterCat(this)">Hardware</button>
+        <button class="fb" data-cat="cap"   onclick="filterCat(this)">Capacités</button>
+        <button class="fb" data-cat="vpn"   onclick="filterCat(this)">VPN & SD-WAN</button>
+        <button class="fb" data-cat="feat"  onclick="filterCat(this)">Fonctionnalités</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-label">Série</span>
+      <div class="tb-sep"></div>
+      <div class="filter-group" id="series-filters">
+        <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
+        <button class="fb" id="PA-400" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
+        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:9px;color:#4ade80">New</span></button>
+        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
+        <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
+        <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
+        <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
+        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)" title="End of Sale — décembre 2025">PA-7000 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
+        <button class="fb" data-series="PA-7500" onclick="filterSeries(this)">PA-7500</button>
+      </div>
+      <div class="tb-sep"></div>
+      <span class="tb-label">Format</span>
+      <div class="filter-group" id="form-filters">
+        <button class="fb on" data-form="all"     onclick="filterForm(this)">Tous</button>
+        <button class="fb" data-form="Desktop"    onclick="filterForm(this)">Desktop</button>
+        <button class="fb" data-form="1U Rack"    onclick="filterForm(this)">1U Rack</button>
+        <button class="fb" data-form="2U Rack"    onclick="filterForm(this)">2U Rack</button>
+        <button class="fb" data-form="Chassis"    onclick="filterForm(this)">Chassis</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-label">Recherche</span>
+      <div class="tb-sep"></div>
+      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
+      <div class="tb-sep"></div>
+      <span class="tb-label">Trier par</span>
+      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
+        <option value="default">Ordre par défaut</option>
+        <option value="tp">Débit Threat Prevention</option>
+        <option value="fw">Débit App-ID</option>
+        <option value="sess">Sessions concurrentes</option>
+        <option value="cps">CPS</option>
+      </select>
+    </div>
+    <div class="stats-bar">
+      <span>Modèles affichés : <strong id="stat-models">25</strong></span>
+      <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
+      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+    </div>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-outer">
+    <table class="pa-table" id="pa-table">
+      <thead>
+        <tr class="col-header-row" id="header-row">
+          <th class="th-corner"></th>
+          <!-- model columns injected by JS -->
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Compare FAB ── -->
+  <button class="cmp-fab" id="cmp-fab" onclick="openCompare()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Comparer (<span id="cmp-count">0</span>)
+  </button>
+
+  <!-- ── Compare modal ── -->
+  <div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompare()">
+    <div class="cmp-modal">
+      <div class="cmp-title">Comparaison</div>
+      <button class="cmp-close" onclick="closeCompare()">✕</button>
+      <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
+      <div id="cmp-actions"></div>
+    </div>
+  </div>
+
+  <script>
+  /* ══ DATA ══
+     Sources : datasheets officielles Palo Alto Networks, consultées le 22 juin 2026
+       - PA-400 : strata_ds_pa-400-series_022326 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-400-series
+       - PA-500 : strata_ds_pa-500-series (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-500-series
+       - PA-800 : strata_ds_pa-800-series (PAN-OS 11.1) — End of Sale aout 2024
+       - PA-1400 : strata_ds_pa-1400-series_012726 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series
+       - PA-3400 : strata_ds_pa-3400-series_021126 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series
+       - PA-5400 : strata_ds_pa-5400-series_032026 (PAN-OS 12.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series
+       - PA-7000 : strata_ds_pa-7000-series_071624 (PAN-OS 11.2) — End of Sale dec. 2025
+       - PA-7500 : strata_ds_pa-7500_031126 (PAN-OS 11.1) — https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series
+       - EoS/EoL : https://www.paloaltonetworks.com/services/support/end-of-life-announcements/hardware-end-of-life-dates
+     Debits : App-ID active, mesure appmix (trafic mixte reel)
+     PA-7500 : config de reference = 6 DPC-A + 2 NPC-A + 1 MPC-A
+  ══ */
+  const MODELS = [
+    // id, série, format, couleur, cible, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1, sfp10, sfp25, sfp100, eos, vsys(base/max), haAA, m5g, sku, gp(tunnels GP max), zones(max), policies(max)
+    { id:'PA-410',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch / SOHO',          poe:false, fw:1.4,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11000,  rj45:7,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-410',     gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:null },
+    { id:'PA-415',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'Branch PoE',             poe:true,  fw:1.5,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11000,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-415',     gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:91   },
+    { id:'PA-415-5G', s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'Branch PoE + 5G',        poe:true,  fw:1.5,  tp:0.8,  vpn:0.5,  sess:64000,     cps:11400,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-415-5G',  gp:250,   zones:25,   policies:500,   ipsec:1000,  ssl:6553,   addr:2500,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:91   },
+    { id:'PA-440',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'Branch / SMB',           poe:false, fw:2.4,  tp:1.2,  vpn:1.1,  sess:200000,    cps:34000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false, sku:'PAN-PA-440',  gp:1000,  zones:50,   policies:2000,  ipsec:2800,  ssl:19890,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:null },
+    { id:'PA-445',    s:'PA-400',  f:'Desktop',     color:'#1e40af', target:'Branch PoE / SMB',       poe:true,  fw:2.7,  tp:1.25, vpn:1.1,  sess:200000,    cps:34000,  rj45:5,  sfp1:1,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:false, m5g:false, sku:'PAN-PA-445',  gp:1000,  zones:50,   policies:2000,  ipsec:2800,  ssl:19890,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:91   },
+    { id:'PA-450',    s:'PA-400',  f:'Desktop',     color:'#1d4ed8', target:'SMB',                    poe:false, fw:3.3,  tp:2.1,  vpn:1.7,  sess:300000,    cps:48000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-450',  gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    { id:'PA-455',    s:'PA-400',  f:'Desktop',     color:'#2563eb', target:'SMB PoE',                poe:true,  fw:3.6,  tp:2.3,  vpn:1.8,  sess:300000,    cps:56000,  rj45:4,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-455',  gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:91   },
+    { id:'PA-455-5G', s:'PA-400',  f:'Desktop',     color:'#3b82f6', target:'SMB PoE + 5G',           poe:true,  fw:3.2,  tp:1.8,  vpn:1.6,  sess:300000,    cps:48000,  rj45:6,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-455-5G',  gp:1500,  zones:75,   policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:151  },
+    { id:'PA-460',    s:'PA-400',  f:'Desktop',     color:'#1e3a8a', target:'SMB / Mid-Market',       poe:false, fw:4.2,  tp:3.0,  vpn:2.3,  sess:400000,    cps:67000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:false, m5g:false, sku:'PAN-PA-460',  gp:1500,  zones:100,  policies:2500,  ipsec:2800,  ssl:null,   addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    // PA-500 Series — août 2025 | Enterprise Branch / Mid-Market | Source : datasheet officielle PAN-OS 12.1
+    { id:'PA-505',    s:'PA-500',  f:'1U Rack',     color:'#14532d', target:'Branch / SOHO',          poe:false, fw:1.2,  tp:0.8,  vpn:0.4,  sess:64000,     cps:10000,  rj45:7,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-505',  gp:500,   zones:25,   policies:500,   ipsec:500,   ssl:6600,   addr:2500,  nat:400,  sdwanT:500,  sdwanR:100, vsysMax:null, secProf:60,  poeW:null },
+    { id:'PA-510',    s:'PA-500',  f:'1U Rack',     color:'#166534', target:'Branch / SMB',           poe:false, fw:1.8,  tp:1.2,  vpn:0.8,  sess:98000,     cps:15000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-510',  gp:500,   zones:50,   policies:750,   ipsec:1000,  ssl:10000,  addr:5000,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:60,  poeW:null },
+    { id:'PA-520',    s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'SMB Branch',             poe:false, fw:2.8,  tp:1.8,  vpn:1.5,  sess:148000,    cps:25000,  rj45:8,  sfp1:0,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 1',    haAA:true,  m5g:false, sku:'PAN-PA-520',  gp:500,   zones:100,  policies:1000,  ipsec:1400,  ssl:15000,  addr:5000,  nat:400,  sdwanT:1000, sdwanR:100, vsysMax:null, secProf:75,  poeW:null },
+    { id:'PA-540',    s:'PA-500',  f:'1U Rack',     color:'#16a34a', target:'SMB / Mid-Market',       poe:false, fw:3.8,  tp:2.2,  vpn:2.0,  sess:248000,    cps:50000,  rj45:8,  sfp1:2,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:true,  m5g:false, sku:'PAN-PA-540',  gp:1000,  zones:200,  policies:2000,  ipsec:2800,  ssl:30000,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:null },
+    { id:'PA-545-POE',s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'SMB PoE / Mid-Market',   poe:true,  fw:5.0,  tp:3.0,  vpn:3.0,  sess:298000,    cps:55000,  rj45:12, sfp1:4,  sfp10:0,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 2',    haAA:true,  m5g:false, sku:'PAN-PA-545-POE',  gp:1000,  zones:200,  policies:2000,  ipsec:2800,  ssl:30000,  addr:10000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:2,    secProf:100, poeW:181  },
+    { id:'PA-550',    s:'PA-500',  f:'1U Rack',     color:'#166534', target:'Mid-Market Branch',      poe:false, fw:6.5,  tp:4.5,  vpn:4.0,  sess:398000,    cps:70000,  rj45:12, sfp1:2,  sfp10:2,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-550',  gp:1500,  zones:400,  policies:2500,  ipsec:2800,  ssl:45000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    { id:'PA-555-POE',s:'PA-500',  f:'1U Rack',     color:'#14532d', target:'Mid-Market PoE',         poe:true,  fw:7.5,  tp:5.0,  vpn:4.5,  sess:448000,    cps:75000,  rj45:12, sfp1:2,  sfp10:2,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-555-POE',  gp:1500,  zones:400,  policies:2500,  ipsec:2800,  ssl:45000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:330  },
+    { id:'PA-560',    s:'PA-500',  f:'1U Rack',     color:'#15803d', target:'Mid-Market+',            poe:false, fw:8.5,  tp:6.0,  vpn:5.5,  sess:598000,    cps:100000, rj45:16, sfp1:4,  sfp10:4,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 5',    haAA:true,  m5g:false, sku:'PAN-PA-560',  gp:1500,  zones:500,  policies:2500,  ipsec:3200,  ssl:60000,  addr:15000, nat:3000, sdwanT:2800, sdwanR:250, vsysMax:5,    secProf:150, poeW:null },
+    // PA-800 — End of Sale août 2024 | Remplacement : PA-1400
+    { id:'PA-820',    s:'PA-800',  f:'1U Rack',     color:'#854d0e', target:'Branch/SMB — EoS',       poe:false, fw:1.6,  tp:0.9,  vpn:1.3,  sess:128000,    cps:8100,   rj45:4,  sfp1:8,  sfp10:0,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-820',  gp:1000,  zones:50,   policies:2000,  ipsec:null,  ssl:null,   addr:null,  nat:null, sdwanT:null, sdwanR:null, vsysMax:null, secProf:null, poeW:null },
+    { id:'PA-850',    s:'PA-800',  f:'1U Rack',     color:'#a16207', target:'Branch/Campus — EoS',    poe:false, fw:2.0,  tp:1.0,  vpn:1.6,  sess:192000,    cps:13100,  rj45:4,  sfp1:4,  sfp10:4,  sfp25:0,  sfp100:0,  eos:true,  vsys:'1 / 1',    haAA:false, m5g:false, sku:'PAN-PA-850',  gp:1000,  zones:50,   policies:2000,  ipsec:null,  ssl:null,   addr:null,  nat:null, sdwanT:null, sdwanR:null, vsysMax:null, secProf:null, poeW:null },
+    { id:'PA-1410',   s:'PA-1400', f:'1U Rack',     color:'#0e7490', target:'Mid-Market',             poe:true,  fw:8.5,  tp:4.5,  vpn:4.1,  sess:945000,    cps:100000, rj45:8,  sfp1:6,  sfp10:4,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false, sku:'PAN-PA-1410',  gp:1500,  zones:1000, policies:10000, ipsec:3500,  ssl:51200,  addr:20000, nat:3000, sdwanT:2800, sdwanR:400, vsysMax:6,    secProf:150, poeW:151  },
+    { id:'PA-1420',   s:'PA-1400', f:'1U Rack',     color:'#0891b2', target:'Mid-Market+',            poe:true,  fw:9.5,  tp:6.2,  vpn:5.6,  sess:1400000,   cps:140000, rj45:4,  sfp1:2,  sfp10:8,  sfp25:0,  sfp100:0,  eos:false, vsys:'1 / 6',    haAA:false, m5g:false, sku:'PAN-PA-1420',  gp:1500,  zones:1000, policies:10000, ipsec:4000,  ssl:140000, addr:20000, nat:3000, sdwanT:2800, sdwanR:400, vsysMax:6,    secProf:150, poeW:151  },
+    { id:'PA-3410',   s:'PA-3400', f:'1U Rack',     color:'#0f766e', target:'Enterprise',             poe:false, fw:14,   tp:7.5,  vpn:6.6,  sess:1400000,   cps:145000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false, sku:'PAN-PA-3410',  gp:1800,  zones:1000, policies:10000, ipsec:5000,  ssl:140000, addr:30000, nat:3000, sdwanT:3000, sdwanR:400, vsysMax:11,   secProf:150, poeW:null },
+    { id:'PA-3420',   s:'PA-3400', f:'1U Rack',     color:'#0d9488', target:'Enterprise',             poe:false, fw:19,   tp:10,   vpn:9.9,  sess:2200000,   cps:220000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:0,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:false, sku:'PAN-PA-3420',  gp:1800,  zones:1000, policies:10000, ipsec:5000,  ssl:200000, addr:30000, nat:4500, sdwanT:3000, sdwanR:400, vsysMax:11,   secProf:375, poeW:null },
+    { id:'PA-3430',   s:'PA-3400', f:'1U Rack',     color:'#14b8a6', target:'Enterprise + 5G',        poe:false, fw:29,   tp:15,   vpn:12,   sess:2500000,   cps:240000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3430',  gp:1800,  zones:1000, policies:30000, ipsec:8000,  ssl:250000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:null, poeW:null },
+    { id:'PA-3440',   s:'PA-3400', f:'1U Rack',     color:'#2dd4bf', target:'Enterprise+ + 5G',       poe:false, fw:35,   tp:20,   vpn:14.5, sess:3000000,   cps:268000, rj45:0,  sfp1:0,  sfp10:22, sfp25:4,  sfp100:2,  eos:false, vsys:'1 / 11',   haAA:true,  m5g:true,  sku:'PAN-PA-3440',  gp:2000,  zones:1000, policies:30000, ipsec:8000,  ssl:300000, addr:30000, nat:6000, sdwanT:4000, sdwanR:500, vsysMax:11,   secProf:500, poeW:null },
+    { id:'PA-5410',   s:'PA-5400', f:'2U Rack',     color:'#b45309', target:'Large Enterprise',       poe:false, fw:52,   tp:35,   vpn:20,   sess:5000000,   cps:270000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'10 / 20',  haAA:true,  m5g:true,  sku:'PAN-PA-5410-AC',  gp:15000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:20,   secProf:750, poeW:null },
+    { id:'PA-5420',   s:'PA-5400', f:'2U Rack',     color:'#d97706', target:'Large Enterprise',       poe:false, fw:70,   tp:50,   vpn:28,   sess:7000000,   cps:370000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'15 / 65',  haAA:true,  m5g:true,  sku:'PAN-PA-5420-AC',  gp:22000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:65,   secProf:750, poeW:null },
+    { id:'PA-5430',   s:'PA-5400', f:'2U Rack',     color:'#f59e0b', target:'Large Enterprise',       poe:false, fw:80,   tp:60,   vpn:42,   sess:9000000,   cps:380000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 125', haAA:true,  m5g:true,  sku:'PAN-PA-5430-AC',  gp:30000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:125,  secProf:750, poeW:null },
+    { id:'PA-5440',   s:'PA-5400', f:'2U Rack',     color:'#fbbf24', target:'Large Enterprise',       poe:false, fw:85,   tp:70,   vpn:58,   sess:20000000,  cps:390000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5440-AC',  gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
+    { id:'PA-5445',   s:'PA-5400', f:'2U Rack',     color:'#fcd34d', target:'Large Enterprise',       poe:false, fw:90,   tp:76,   vpn:64,   sess:48000000,  cps:449000, rj45:0,  sfp1:0,  sfp10:20, sfp25:4,  sfp100:4,  eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-5445-AC',  gp:60000, zones:4000, policies:30000, ipsec:10000, ssl:500000, addr:80000, nat:6000, sdwanT:4000, sdwanR:800, vsysMax:225,  secProf:750, poeW:null },
+    // PA-7000 — End of Sale déc. 2025 | Remplacement : PA-7500 | Source : datasheet PAN-OS 11.2 | Ports : SFP/SFP+ (1G/10G) + QSFP+/QSFP28 (40G/100G)
+    { id:'PA-7050',   s:'PA-7000', f:'Chassis 9U',  color:'#7c3aed', target:'Hyperscale / DC — EoS',  poe:false, fw:343,  tp:184,  vpn:190,  sess:245000000, cps:4000000,rj45:0,  sfp1:0,  sfp10:48, sfp25:0,  sfp100:24, eos:true,  vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7050',  gp:40000, zones:17000, policies:65000, ipsec:12000, ssl:4000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    { id:'PA-7080',   s:'PA-7000', f:'Chassis 19U', color:'#6d28d9', target:'Hyperscale / DC — EoS',  poe:false, fw:590,  tp:305,  vpn:310,  sess:416000000, cps:6000000,rj45:0,  sfp1:0,  sfp10:80, sfp25:0,  sfp100:40, eos:true,  vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7080',  gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:6000000,  addr:160000, nat:16000, sdwanT:4000, sdwanR:700, vsysMax:225, secProf:750, poeW:null },
+    // PA-7500 : config ref. 6×DPC-A + 2×NPC-A + 1×MPC-A | Interfaces : 24×SFP-DD (100G/25G/10G) + 16×QSFP-DD (400G/100G)
+    { id:'PA-7500',   s:'PA-7500', f:'Chassis 14U', color:'#be123c', target:'Hyperscale Max',         poe:false, fw:1500, tp:1440, vpn:407,  sess:440000000, cps:7200000,rj45:0,  sfp1:0,  sfp10:24, sfp25:24, sfp100:40, eos:false, vsys:'25 / 225', haAA:true,  m5g:true,  sku:'PAN-PA-7500',  gp:60000, zones:17000, policies:65000, ipsec:12000, ssl:44000000, addr:160000, nat:64000, sdwanT:null, sdwanR:8192, vsysMax:225, secProf:750, poeW:null },
+  ];
+
+  const ROWS = [
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
+    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
+    { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
+    { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
+    { cat:'cap',   label:'Sessions SSL/TLS déchiffrement',   fn: m => m.ssl       != null ? fmtN(m.ssl)       : '—', num: m => m.ssl       != null ? m.ssl       : null },
+    { cat:'cap',   label:'Objets adresses max',              fn: m => m.addr      != null ? fmtN(m.addr)      : '—', num: m => m.addr      != null ? m.addr      : null },
+    { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
+    { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
+    { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
+    { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
+    { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
+    { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
+    { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
+    { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
+    { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
+    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
+    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
+    { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
+  ];
+
+  const CATS = {
+    perf:  { label:'Performances',    icon:'▸' },
+    sess:  { label:'Sessions',        icon:'▸' },
+    cap:   { label:'Capacités',       icon:'▸' },
+    vpn:   { label:'VPN & SD-WAN',    icon:'▸' },
+    ports: { label:'Interfaces',      icon:'▸' },
+    hw:    { label:'Hardware',        icon:'▸' },
+    feat:  { label:'Fonctionnalités', icon:'▸' },
+    ref:   { label:'Références / SKU', icon:'▸' },
+  };
+
+  /* ══ State ══ */
+  let activeCat    = 'all';
+  let activeSeries = 'all';
+  let activeForm   = 'all';
+  let selected     = new Set();
+
+  const EOS_REPLACEMENTS = {
+    'PA-820': 'PA-1410', 'PA-850': 'PA-1420',
+    'PA-7050': 'PA-7500', 'PA-7080': 'PA-7500',
+  };
+
+  /* ══ Build table ══ */
+  function buildTable() {
+    let visible = MODELS.filter(m =>
+      (activeSeries === 'all' || m.s === activeSeries) &&
+      (activeForm   === 'all' || m.f.startsWith(activeForm)) &&
+      (searchQuery === '' || m.id.toLowerCase().includes(searchQuery) || m.target.toLowerCase().includes(searchQuery))
+    );
+    if (sortMetric !== 'default') {
+      const key = { tp:'tp', fw:'fw', sess:'sess', cps:'cps' }[sortMetric];
+      if (key) visible = [...visible].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+    }
+
+    // Header
+    const hRow = document.getElementById('header-row');
+    const DS_URLS = {
+      'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+      'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
+      'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+      'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+      'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+      'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+      'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
+    };
+    hRow.innerHTML = `<th class="th-corner"></th>` +
+      visible.map(m => {
+        const repl = m.eos && EOS_REPLACEMENTS[m.id] ? `<span style="display:block;font-size:8px;color:var(--yellow);margin-top:2px">→ ${EOS_REPLACEMENTS[m.id]}</span>` : '';
+        return `
+        <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
+          <div class="model-card-clip">
+            <div class="model-card-top" style="background:${m.color}">
+              <span class="model-name">${m.id}</span>
+              <span class="model-target">${m.target}${repl}</span>
+            </div>
+            <div class="model-card-bot" style="background:${m.color}22">
+              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
+              <div class="sel-dot"></div>
+            </div>
+          </div>
+        </th>`;
+      }).join('');
+
+    // Body
+    let seenCats = new Set();
+    let html     = '';
+    let delay    = 0;
+
+    ROWS.forEach(row => {
+      if (activeCat !== 'all' && row.cat !== activeCat) return;
+
+      // Category separator
+      const catKey = row.cat;
+      if (!seenCats.has(catKey) && CATS[catKey]) {
+        seenCats.add(catKey);
+        html += `<tr class="cat-row">
+          <td class="cat-label-cell">
+            <div class="cat-inner">
+              <span class="cat-inner-text">${CATS[catKey].label}</span>
+            </div>
+          </td>
+          ${visible.map(() => '<td class="cat-spacer"></td>').join('')}
+        </tr>`;
+      }
+
+      // Find max numeric value across visible models (for highlighting)
+      let maxVal = -Infinity;
+      if (row.num) {
+        visible.forEach(m => { const v = row.num(m); if(v > maxVal) maxVal = v; });
+      }
+
+      const cells = visible.map(m => {
+        const raw = row.fn(m);
+        const num = row.num ? row.num(m) : null;
+        const isMax = num !== null && num === maxVal && maxVal > 0;
+        const isNa  = raw === '—';
+        let cls = 'val-cell';
+        if (isMax) cls += ' val-max';
+        else if (isNa) cls += ' val-na';
+        return `<td class="${cls}" style="border-left-color:${m.color}22">${raw}</td>`;
+      }).join('');
+
+      html += `<tr class="data-row" style="animation-delay:${delay}ms">
+        <td class="spec-label-cell">${row.label}</td>
+        ${cells}
+      </tr>`;
+      delay += 12;
+    });
+
+    document.getElementById('table-body').innerHTML = html;
+    document.getElementById('stat-models').textContent = visible.length;
+  }
+
+  /* ══ Filters ══ */
+  let searchQuery = '';
+  let sortMetric = 'default';
+
+  function filterCat(btn) {
+    document.querySelectorAll('#cat-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeCat = btn.dataset.cat;
+    buildTable();
+  }
+
+  function filterSeries(btn) {
+    document.querySelectorAll('#series-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeSeries = btn.dataset.series;
+    buildTable();
+  }
+
+  function filterForm(btn) {
+    document.querySelectorAll('#form-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeForm = btn.dataset.form;
+    buildTable();
+  }
+
+  function filterSearch(q) {
+    searchQuery = q.trim().toLowerCase();
+    buildTable();
+  }
+
+  function sortModels(metric) {
+    sortMetric = metric;
+    buildTable();
+  }
+
+  /* ══ Selection ══ */
+  function toggleSel(id) {
+    if (selected.has(id)) {
+      selected.delete(id);
+    } else {
+      if (selected.size >= 4) return;
+      selected.add(id);
+    }
+    document.querySelectorAll(`[id="mh-${id}"]`).forEach(el => el.classList.toggle('selected', selected.has(id)));
+    const fab   = document.getElementById('cmp-fab');
+    const count = document.getElementById('cmp-count');
+    count.textContent = selected.size;
+    fab.classList.toggle('visible', selected.size >= 2);
+  }
+
+  /* ══ Compare ══ */
+  let cmpDiffOnly = false;
+
+  function openCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    renderCompare(models);
+    document.getElementById('cmp-overlay').classList.add('open');
+    const cmpUrl = window.location.origin + window.location.pathname + '?cmp=' + models.map(m => m.id).join(',');
+    history.replaceState(null, '', cmpUrl);
+  }
+
+  function renderCompare(models) {
+    const head = `<thead><tr><th style="text-align:left">
+      <label style="font-size:10px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px">
+        <input type="checkbox" ${cmpDiffOnly?'checked':''} onchange="cmpDiffOnly=this.checked;renderCompare([${models.map(m=>`MODELS.find(x=>x.id==='${m.id}')`).join(',')}])"> Différences uniquement
+      </label>
+    </th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
+
+    const body = ROWS.map(row => {
+      const vals = models.map(m => row.fn(m));
+      const nums = models.map(m => row.num ? row.num(m) : null);
+      if (cmpDiffOnly && row.num) {
+        const unique = new Set(nums.filter(n => n !== null));
+        if (unique.size <= 1) return '';
+      }
+      const maxN = Math.max(...nums.filter(n => n !== null));
+      const cells = vals.map((v, i) => {
+        const isBest = nums[i] !== null && nums[i] === maxN && maxN > 0;
+        return `<td class="${isBest ? 'ct-max' : 'ct-val'}">${v}</td>`;
+      }).join('');
+      return `<tr><td>${row.label}</td>${cells}</tr>`;
+    }).filter(Boolean).join('');
+
+    const actions = `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="wiz-action-btn secondary" onclick="copyCompare()">Copier la comparaison</button>
+      <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copié !'">Partager le lien</button>
+    </div>`;
+
+    document.getElementById('cmp-table').innerHTML = head + `<tbody>${body}</tbody>`;
+    const actionsEl = document.getElementById('cmp-actions');
+    if (actionsEl) actionsEl.innerHTML = actions;
+  }
+
+  function copyCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n';
+    text += models.map(m => m.id).join(' | ') + '\n\n';
+    ROWS.forEach(row => {
+      const vals = models.map(m => row.fn(m).replace(/<[^>]+>/g, ''));
+      const label = row.label.replace(/<[^>]+>/g, '');
+      text += label + ' : ' + vals.join(' | ') + '\n';
+    });
+    text += '\nEstimation indicative. Données issues des datasheets officielles Palo Alto Networks.';
+    navigator.clipboard.writeText(text);
+  }
+
+  function closeCompare() {
+    document.getElementById('cmp-overlay').classList.remove('open');
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  function loadCompareFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const cmp = params.get('cmp');
+    if (cmp) {
+      cmp.split(',').forEach(id => { if (MODELS.find(m => m.id === id)) selected.add(id); });
+      if (selected.size >= 2) { setMode('technique'); openCompare(); }
+    }
+  }
+
+  /* ══ Utils ══ */
+  function fmtN(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(n%1000000===0?0:1) + 'M';
+    if (n >= 1000)    return (n/1000).toFixed(0) + 'K';
+    return String(n);
+  }
+
+  /* ══ Mode toggle (3 modes) ══ */
+  let currentMode = 'commercial';
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('mode-commercial').classList.toggle('active', mode === 'commercial');
+    document.getElementById('mode-guide').classList.toggle('active', mode === 'guide');
+    document.getElementById('mode-technique').classList.toggle('active', mode === 'technique');
+    document.getElementById('view-commercial').style.display = mode === 'commercial' ? 'block' : 'none';
+    document.getElementById('view-guide').style.display = mode === 'guide' ? 'block' : 'none';
+    document.querySelector('.tb-wrap').style.display = mode === 'technique' ? 'block' : 'none';
+    document.querySelector('.table-outer').style.display = mode === 'technique' ? 'block' : 'none';
+    const fab = document.getElementById('cmp-fab');
+    if (mode !== 'technique') fab.classList.remove('visible');
+    else if (selected.size >= 2) fab.classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    setMode('commercial');
+    loadFromURL();
+    loadCompareFromURL();
+  });
+
+  /* ══ Wizard depth toggle ══ */
+  let wizDepth = 'express';
+  function setDepth(d) {
+    wizDepth = d;
+    document.getElementById('depth-express').classList.toggle('active', d === 'express');
+    document.getElementById('depth-advanced').classList.toggle('active', d === 'advanced');
+    document.getElementById('wiz-advanced').classList.toggle('visible', d === 'advanced');
+  }
+
+  /* ══ URL encode/decode for shareable sessions ══ */
+  function encodeSession() {
+    const fields = ['wiz-client','wiz-partner','wiz-users','wiz-sites','wiz-type','wiz-bw','wiz-ssl','wiz-cloud','wiz-sector','wiz-existing','wiz-iot','wiz-ha','wiz-remote','wiz-growth'];
+    const params = new URLSearchParams();
+    params.set('d', wizDepth);
+    fields.forEach(f => {
+      const el = document.getElementById(f);
+      if (el && el.value) params.set(f.replace('wiz-',''), el.value);
+    });
+    return window.location.origin + window.location.pathname + '?' + params.toString();
+  }
+
+  function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.size === 0) return;
+    const map = { client:'wiz-client', partner:'wiz-partner', users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
+    Object.entries(map).forEach(([k, id]) => {
+      const v = params.get(k);
+      const el = document.getElementById(id);
+      if (v && el) el.value = v;
+    });
+    if (params.get('d') === 'advanced') setDepth('advanced');
+    runCommercialWizard();
+  }
+
+  /* ══ Commercial wizard — recommendation engine ══
+     Seuils issus des bornes reelles des datasheets officielles :
+       PA-400 : TP 0.8–3.0 Gbps         — source : datasheet PA-400 PAN-OS 12.1
+       PA-500 : TP 0.8–6.0 Gbps         — source : datasheet PA-500 PAN-OS 12.1
+       PA-1400 : TP 4.5–6.2 Gbps        — source : datasheet PA-1400 PAN-OS 12.1
+       PA-3400 : TP 7.5–20 Gbps         — source : datasheet PA-3400 PAN-OS 12.1
+       PA-5400 : TP 35–76 Gbps          — source : datasheet PA-5400 PAN-OS 12.1
+       PA-7500 : TP 1440 Gbps           — source : datasheet PA-7500 PAN-OS 11.1
+     Garde-fou : ne pas depasser 60-70% de la capacite datasheet
+  ══ */
+  /* ══ Base concurrents — mapping vers PA-Series ══
+     Sources : datasheets officielles Fortinet (Product Matrix 2026) et Check Point (Appliance Comparison 2026)
+     Throughput : IPS/Threat Prevention en conditions enterprise, pas les débits firewall bruts
+     Le mapping PA-Series est basé sur le débit TP comparable (fourchette)
+  ══ */
+  const COMPETITOR_MODELS = {
+    fortinet: [
+      { id:'FG-30G',   tp:0.5,  target:'Home office / TPE',              pa:'PA-410' },
+      { id:'FG-40F',   tp:0.6,  target:'SMB',                            pa:'PA-410' },
+      { id:'FG-50G',   tp:1.1,  target:'Petite agence',                  pa:'PA-440' },
+      { id:'FG-60F',   tp:0.7,  target:'Petite agence / retail',         pa:'PA-410' },
+      { id:'FG-70F',   tp:0.8,  target:'SMB',                            pa:'PA-440' },
+      { id:'FG-70G',   tp:1.3,  target:'SMB',                            pa:'PA-445' },
+      { id:'FG-80F',   tp:0.9,  target:'SMB desktop',                    pa:'PA-440' },
+      { id:'FG-90G',   tp:2.2,  target:'PME (50-250 users)',             pa:'PA-460' },
+      { id:'FG-120G',  tp:2.8,  target:'Campus PME',                     pa:'PA-540' },
+      { id:'FG-200F',  tp:3.5,  target:'Agence distribuée',              pa:'PA-550' },
+      { id:'FG-200G',  tp:6,    target:'Multi-sites (50-250 users)',     pa:'PA-560' },
+      { id:'FG-400F',  tp:9,    target:'Siège entreprise',               pa:'PA-1420' },
+      { id:'FG-600F',  tp:10,   target:'Campus enterprise',              pa:'PA-3410' },
+      { id:'FG-700G',  tp:26,   target:'Campus haute densité',           pa:'PA-3440' },
+      { id:'FG-900G',  tp:30,   target:'Périmètre enterprise',           pa:'PA-5410' },
+      { id:'FG-1000F', tp:13,   target:'Enterprise tier 1',              pa:'PA-3420' },
+      { id:'FG-1800F', tp:15,   target:'Service provider',               pa:'PA-3430' },
+      { id:'FG-2600F', tp:25,   target:'Datacenter',                     pa:'PA-5410' },
+      { id:'FG-3000F', tp:33,   target:'Hyperscale',                     pa:'PA-5410' },
+      { id:'FG-3200F', tp:45,   target:'Enterprise haut de gamme',       pa:'PA-5420' },
+      { id:'FG-3500F', tp:63,   target:'Datacenter',                     pa:'PA-5430' },
+      { id:'FG-3700F', tp:75,   target:'Hyperscale datacenter',          pa:'PA-5445' },
+      { id:'FG-4200F', tp:45,   target:'Enterprise',                     pa:'PA-5420' },
+      { id:'FG-4400F', tp:75,   target:'Datacenter haute capacité',      pa:'PA-5445' },
+    ],
+    checkpoint: [
+      { id:'1535',    tp:0.44, target:'PME',                             pa:'PA-410' },
+      { id:'1555',    tp:0.6,  target:'PME',                             pa:'PA-410' },
+      { id:'1575',    tp:0.65, target:'PME',                             pa:'PA-410' },
+      { id:'1595',    tp:0.9,  target:'PME',                             pa:'PA-440' },
+      { id:'1600',    tp:1.5,  target:'PME',                             pa:'PA-445' },
+      { id:'1800',    tp:2,    target:'PME',                             pa:'PA-460' },
+      { id:'2530',    tp:0.75, target:'Small office / retail',           pa:'PA-410' },
+      { id:'2550',    tp:1,    target:'Small office',                    pa:'PA-440' },
+      { id:'2560',    tp:1.5,  target:'Small office',                    pa:'PA-445' },
+      { id:'2570',    tp:2.6,  target:'Small office',                    pa:'PA-460' },
+      { id:'2580',    tp:3.25, target:'Small office',                    pa:'PA-540' },
+      { id:'3920',    tp:3.2,  target:'Campus corporate',               pa:'PA-540' },
+      { id:'3950',    tp:5.5,  target:'Campus corporate',               pa:'PA-1410' },
+      { id:'3970',    tp:4.25, target:'Campus corporate',               pa:'PA-1410' },
+      { id:'3980',    tp:7,    target:'Campus corporate',               pa:'PA-1420' },
+      { id:'9100',    tp:6.5,  target:'Périmètre enterprise',           pa:'PA-1420' },
+      { id:'9200',    tp:8,    target:'Périmètre enterprise',           pa:'PA-3410' },
+      { id:'9300',    tp:10.5, target:'Périmètre enterprise',           pa:'PA-3420' },
+      { id:'9400',    tp:14,   target:'Grande enterprise',              pa:'PA-3430' },
+      { id:'9700',    tp:20,   target:'Grande enterprise',              pa:'PA-3440' },
+      { id:'9800',    tp:25,   target:'Grande enterprise',              pa:'PA-5410' },
+      { id:'7000',    tp:9.5,  target:'Datacenter (legacy)',            pa:'PA-3410' },
+      { id:'16200',   tp:15,   target:'Datacenter (legacy)',            pa:'PA-3430' },
+      { id:'26000',   tp:24,   target:'Datacenter (legacy)',            pa:'PA-5410' },
+      { id:'28000',   tp:30,   target:'Datacenter (legacy)',            pa:'PA-5410' },
+      { id:'19100',   tp:35,   target:'Datacenter (Force)',             pa:'PA-5410' },
+      { id:'19200',   tp:44,   target:'Datacenter (Force)',             pa:'PA-5420' },
+      { id:'29100',   tp:60,   target:'Datacenter (Force)',             pa:'PA-5430' },
+      { id:'29200',   tp:75,   target:'Datacenter (Force)',             pa:'PA-5445' },
+    ],
+  };
+
+  function updateExistingModels() {
+    const brand = document.getElementById('wiz-existing').value;
+    const modelField = document.getElementById('wiz-model-field');
+    const modelSelect = document.getElementById('wiz-existing-model');
+    if (brand === 'fortinet' || brand === 'checkpoint') {
+      modelField.style.display = '';
+      const models = COMPETITOR_MODELS[brand];
+      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>' +
+        models.map(m => {
+          const prefix = brand === 'fortinet' ? '' : 'Quantum ';
+          return `<option value="${m.id}">${prefix}${m.id} (TP ${m.tp} Gbps, ${m.target})</option>`;
+        }).join('');
+    } else {
+      modelField.style.display = 'none';
+      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>';
+    }
+  }
+
+  const FAMILIES = [
+    { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   modeles:'PA-410 à PA-460',       form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
+    { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   modeles:'PA-505 à PA-560',       form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
+    { id:'PA-1400', tpMin:4.5, tpMax:6.2,  sessMax:1400000,  modeles:'PA-1410 et PA-1420',    form:'1U Rack',   pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
+    { id:'PA-3400', tpMin:7.5, tpMax:20,   sessMax:3000000,  modeles:'PA-3410 à PA-3440',     form:'1U Rack',   pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
+    { id:'PA-5400', tpMin:35,  tpMax:76,   sessMax:48000000, modeles:'PA-5410 à PA-5445',     form:'2U Rack',   pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
+    { id:'PA-7500', tpMin:1440,tpMax:1440, sessMax:440000000,modeles:'PA-7500 (chassis)',     form:'Chassis',   pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series' },
+  ];
+
+  const COMPETITOR_ARGS = {
+    fortinet: {
+      name: 'Fortinet (FortiGate)',
+      args: [
+        { title:'Sécurité sans compromis sur les performances', text:'Les débits Palo Alto sont mesurés en conditions réelles (appmix), pas en conditions de laboratoire. La comparaison sur les débits Threat Prevention en trafic réel est souvent favorable à Palo Alto.' },
+        { title:'App-ID vs port-based', text:'App-ID identifie les applications en continu dans le flux, là où Fortinet reste majoritairement basé sur les ports et signatures. La granularité de contrôle est nativement supérieure.' },
+      ]
+    },
+    cisco: {
+      name: 'Cisco (Firepower / ASA)',
+      args: [
+        { title:'Plateforme unifiée vs assemblage', text:'Palo Alto propose une architecture single-pass (App-ID + Content-ID + User-ID en un seul passage), là où Cisco empile des modules (AMP, Snort, AVC) avec un impact sur les performances.' },
+        { title:'Migration simplifiée', text:'Palo Alto fournit des outils de migration Expedition pour convertir les règles Cisco ASA/Firepower vers PAN-OS.' },
+      ]
+    },
+    checkpoint: {
+      name: 'Check Point',
+      args: [
+        { title:'Innovation continue vs héritage', text:'Palo Alto investit massivement dans l\'IA (Precision AI, Nebula) et le cloud-native, là où Check Point reste centré sur une architecture traditionnelle.' },
+        { title:'Gestion cloud-native', text:'Strata Cloud Manager (SCM) offre une gestion unifiée NGFW + SASE + SD-WAN, là où Check Point nécessite des consoles séparées.' },
+      ]
+    },
+    zscaler: {
+      name: 'Zscaler',
+      args: [
+        { title:'Approche complémentaire', text:'Zscaler est une solution proxy cloud (SWG/CASB). Palo Alto couvre le même périmètre avec Prisma Access, mais offre en plus le NGFW on-prem, le SD-WAN et Cortex XDR pour une plateforme unifiée.' },
+        { title:'Visibilité complète', text:'Palo Alto inspecte tout le trafic (pas seulement HTTP/HTTPS) et offre App-ID pour identifier les applications, y compris celles qui n\'utilisent pas le web.' },
+      ]
+    },
+    default: {
+      name: 'Concurrent générique',
+      args: [
+        { title:'Leader du Gartner Magic Quadrant', text:'Palo Alto Networks est leader du Magic Quadrant for Network Firewalls depuis plus de 10 années consécutives (Gartner).' },
+        { title:'Plateforme unifiée', text:'Seul acteur proposant NGFW + SASE + XDR + Cloud Security sur une plateforme intégrée (Strata + Prisma + Cortex), avec une IA transversale (Precision AI).' },
+        { title:'Zero Trust natif', text:'Architecture ZTNA 2.0 native avec App-ID, User-ID et Device-ID pour un contrôle granulaire en continu, pas seulement à la connexion.' },
+      ]
+    },
+  };
+
+  function runCommercialWizard() {
+    const _v = id => { const el = document.getElementById(id); return el ? (el.value === '' ? 'unknown' : el.value) : 'unknown'; };
+    const clientName = document.getElementById('wiz-client')?.value?.trim() || '';
+    const partnerName = document.getElementById('wiz-partner')?.value?.trim() || '';
+    const rawUsers  = _v('wiz-users');
+    const rawSites  = _v('wiz-sites');
+    const rawType   = _v('wiz-type');
+    const rawBw     = _v('wiz-bw');
+    const rawSsl    = _v('wiz-ssl');
+    const rawCloud  = _v('wiz-cloud');
+    const rawSector = _v('wiz-sector');
+    const rawExist  = _v('wiz-existing');
+    const rawExistModel = _v('wiz-existing-model');
+    const rawIot    = _v('wiz-iot');
+    const rawHa     = _v('wiz-ha');
+    const rawRemote = _v('wiz-remote');
+    const rawGrowth = _v('wiz-growth');
+
+    const validationWarning = validateInputs();
+    const assumptions = [];
+    const openQuestions = [];
+
+    const users = rawUsers === 'unknown' ? (assumptions.push('Nombre d\'utilisateurs : hypothèse 250 (PME moyenne)'), 250) : parseInt(rawUsers);
+    const sites = rawSites === 'unknown' ? (assumptions.push('Nombre de sites : hypothèse 1 site unique'), 1) : parseInt(rawSites);
+    const type = rawType === 'unknown' ? (assumptions.push('Type de site : hypothèse siège/campus'), openQuestions.push('Quel est le type de site principal (agence, siège, datacenter) ?'), 'campus') : rawType;
+    const bwMbps = rawBw === 'unknown' ? (assumptions.push('Débit Internet : hypothèse 200 Mbps (PME standard)'), openQuestions.push('Quel est le débit de la connexion Internet principale ?'), 200) : parseInt(rawBw);
+    const ssl = rawSsl === 'unknown' ? (assumptions.push('Déchiffrement SSL : hypothèse activé (recommandation sécuritaire)'), 'yes') : rawSsl;
+    const cloud = rawCloud === 'unknown' ? (assumptions.push('Profil de trafic : hypothèse usage mixte SaaS'), 'high') : rawCloud;
+    const growth = rawGrowth === 'unknown' ? (assumptions.push('Croissance : hypothèse +30% à 3 ans'), 'moderate') : rawGrowth;
+
+    if (rawUsers === 'unknown') openQuestions.push('Combien de collaborateurs utilisent le réseau ?');
+    if (rawSites === 'unknown') openQuestions.push('Combien de sites physiques à sécuriser ?');
+    if (rawBw === 'unknown') openQuestions.push('Quel débit Internet est souscrit (par site clé) ?');
+    if (rawSector === 'unknown') openQuestions.push('Quel est le secteur d\'activité du client ?');
+    if (rawIot === 'unknown') openQuestions.push('Y a-t-il des objets connectés / IoT sur le réseau ?');
+    if (rawHa === 'unknown') openQuestions.push('La haute disponibilité est-elle requise ?');
+    if (rawRemote === 'unknown') openQuestions.push('Quelle part des utilisateurs est en télétravail ?');
+
+    const growthFactor = growth === 'strong' ? 1.5 : growth === 'moderate' ? 1.3 : 1.0;
+    const bwGbps = (bwMbps / 1000) * growthFactor;
+    const sslFactor = ssl === 'yes' ? 1.5 : 1.0;
+    const needTp = bwGbps * sslFactor;
+
+    const sessPerUser = cloud === 'high' ? 35 : 10;
+    const iotSess = rawIot === 'heavy' ? 500 : rawIot === 'moderate' ? 100 : 0;
+    const needSess = Math.round((users * sessPerUser + iotSess) * growthFactor);
+
+    if (rawRemote === 'unknown') openQuestions.push('Combien d\'utilisateurs se connectent à distance (VPN, télétravail) ?');
+    if (rawExist === 'unknown') openQuestions.push('Quel firewall est actuellement en place (marque et modèle) ?');
+    if (rawGrowth === 'unknown') openQuestions.push('Quelle est la croissance prévue à 3 ans (effectif, débit) ?');
+    if (rawCloud === 'unknown') openQuestions.push('Le client utilise-t-il massivement du SaaS / cloud (Teams, M365, Salesforce) ?');
+    if (rawSsl === 'unknown') openQuestions.push('Le déchiffrement HTTPS est-il prévu ou souhaité ?');
+
+    const unknownCount = [rawUsers, rawSites, rawType, rawBw, rawSsl].filter(v => v === 'unknown').length;
+    let confidence, confClass, confLabel;
+    if (unknownCount === 0) {
+      confidence = 'green'; confClass = 'confidence-green'; confLabel = 'Qualification complète, ' + (5 - unknownCount) + '/5 critères renseignés';
+    } else if (unknownCount <= 2) {
+      confidence = 'orange'; confClass = 'confidence-orange'; confLabel = 'Qualification partielle, ' + assumptions.length + ' hypothèse(s) à confirmer';
+    } else {
+      confidence = 'red'; confClass = 'confidence-red'; confLabel = 'Qualification insuffisante, ' + unknownCount + ' critère(s) manquant(s) sur 5';
+    }
+
+    const reco = [];
+    const alsoConsider = [];
+    for (const fam of FAMILIES) {
+      const tpAt65 = fam.tpMax * 0.65;
+      const tpAt90 = fam.tpMax * 0.9;
+      if (needTp <= tpAt65) {
+        reco.push({ ...fam, utilPct: Math.round((needTp / fam.tpMax) * 100) });
+        if (reco.length >= 2) break;
+      } else if (needTp <= tpAt90 && reco.length === 0) {
+        reco.push({ ...fam, utilPct: Math.round((needTp / fam.tpMax) * 100), tight: true });
+      }
+    }
+    if (reco.length === 1 && reco[0].tight) {
+      const idx = FAMILIES.indexOf(FAMILIES.find(f => f.id === reco[0].id));
+      if (idx < FAMILIES.length - 1) alsoConsider.push(FAMILIES[idx + 1]);
+    }
+
+    const box = document.getElementById('wiz-results-commercial');
+    if (reco.length === 0) {
+      box.innerHTML = '<div class="wiz-disclaimer"><strong>Besoin hors gamme standard.</strong> Contactez directement votre ingénieur avant-vente Exclusive Networks pour un dimensionnement sur-mesure (PA-7500 ou architecture distribuée).</div>';
+      box.classList.add('visible');
+      return;
+    }
+
+    let html = '';
+
+    if (validationWarning) {
+      html += `<div class="wiz-assumption" style="margin-top:16px;background:var(--red-dim);border-color:rgba(239,68,68,0.2);color:var(--red)"><span class="wiz-assumption-icon">&#9888;</span> ${validationWarning}</div>`;
+    }
+
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px;margin-bottom:16px">
+      <h4 style="font-size:14px;color:var(--text-bright);margin:0">Recommandation</h4>
+      <span class="${confClass} confidence-badge"><span class="confidence-dot"></span> ${confLabel}</span>
+    </div>`;
+
+    if (assumptions.length > 0) {
+      html += '<div class="reco-section"><div class="reco-section-title">Hypothèses retenues (modifiables)</div>';
+      assumptions.forEach(a => {
+        html += `<div class="wiz-assumption"><span class="wiz-assumption-icon">&#9888;</span> ${a}</div>`;
+      });
+      html += '</div>';
+    }
+
+    if (rawExistModel !== 'unknown' && (rawExist === 'fortinet' || rawExist === 'checkpoint')) {
+      const compModels = COMPETITOR_MODELS[rawExist];
+      const match = compModels.find(m => m.id === rawExistModel);
+      if (match) {
+        const paModel = MODELS.find(m => m.id === match.pa);
+        const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
+        html += `<div class="reco-section"><div class="reco-section-title">Équivalence boîtier existant</div>`;
+        html += `<div class="reco-archi-card" style="border-left-color:var(--green)">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+            <span style="font-size:14px;font-weight:600;color:var(--text-muted);text-decoration:line-through">${brandName}${match.id}</span>
+            <span style="font-size:18px;color:var(--text-muted)">→</span>
+            <span style="font-size:16px;font-weight:700;color:var(--green)">${match.pa}</span>
+          </div>
+          <div style="font-size:13px;color:var(--text);line-height:1.6">
+            Le <strong>${brandName}${match.id}</strong> (${match.target}, TP ~${match.tp} Gbps) correspond au <strong>${match.pa}</strong>
+            ${paModel ? '(TP ' + paModel.tp + ' Gbps, ' + fmtN(paModel.sess) + ' sessions)' : ''} en termes de capacité Threat Prevention.
+            <br><span style="font-size:11px;color:var(--text-muted)">Comparaison indicative basée sur les débits Threat Prevention des datasheets respectives. Les méthodologies de mesure diffèrent entre constructeurs.</span>
+          </div>
+          ${paModel ? `<button class="wiz-link-tech" style="margin-top:8px" onclick="setMode('technique');document.getElementById('model-search').value='${match.pa}';filterSearch('${match.pa}')">Voir ${match.pa} dans le comparateur</button>` : ''}
+        </div></div>`;
+      }
+    }
+
+    html += '<div class="reco-section"><div class="reco-section-title">Architecture recommandée</div>';
+
+    let archiDesc = '';
+    if (sites >= 3 && type !== 'dc') {
+      archiDesc = `<strong>Architecture multi-sites</strong> : ${reco[0].id} Series en agences`;
+      if (type === 'campus' || sites >= 5) archiDesc += `, modèle supérieur de la gamme au siège`;
+      archiDesc += `, avec Panorama ou Strata Cloud Manager pour la gestion centralisée`;
+      const remoteCount = rawRemote !== 'unknown' ? parseInt(rawRemote) : 0;
+      if (remoteCount > 0) archiDesc += `, et Prisma Access ou GlobalProtect pour les ${remoteCount} utilisateur(s) nomade(s)`;
+      archiDesc += '.';
+    } else if (type === 'dc') {
+      archiDesc = `<strong>Architecture datacenter</strong> : ${reco[0].id} Series pour l'inspection périmétrique et la segmentation est-ouest`;
+      if (rawHa !== 'no') archiDesc += ', en paire HA active/passive';
+      archiDesc += '.';
+    } else {
+      archiDesc = `<strong>Site unique</strong> : ${reco[0].id} Series pour la protection périmétrique du site`;
+      if (rawHa === 'yes') archiDesc += ', en paire HA';
+      archiDesc += '.';
+    }
+
+    html += `<div class="reco-archi-card"><div class="reco-archi-desc">${archiDesc}</div></div>`;
+
+    reco.forEach((f, i) => {
+      const rangeNote = f.tight ? ' (dimensionnement serré, considérer le cran au-dessus)' : '';
+      const pctColor = f.utilPct > 65 ? 'var(--yellow)' : 'var(--green)';
+      html += `<div class="wiz-family-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div class="wiz-family-name">${f.id} Series</div>
+          <span style="font-family:var(--mono);font-size:11px;color:${pctColor}">${f.utilPct}% de charge estimée${rangeNote}</span>
+        </div>
+        <div class="wiz-family-positioning">${f.pos}</div>
+        <p style="font-size:12px;color:var(--text-muted);margin:8px 0">${f.desc}</p>
+        <p style="font-size:12px;color:var(--text);margin-bottom:8px"><strong>Modèles candidats :</strong> ${f.modeles}</p>`;
+
+      html += '<div class="reco-section-title" style="margin-top:12px">Chiffres clés traduits</div>';
+      html += `<div class="reco-metric">
+        <span class="reco-metric-label">Débit Threat Prevention disponible</span>
+        <span class="reco-metric-value">${f.tpMin} à ${f.tpMax} Gbps<span class="reco-metric-note">selon le modèle choisi dans la gamme</span></span>
+      </div>`;
+      html += `<div class="reco-metric">
+        <span class="reco-metric-label">Votre besoin estimé (avec marge et SSL)</span>
+        <span class="reco-metric-value">${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}</span>
+      </div>`;
+      html += `<div class="reco-metric">
+        <span class="reco-metric-label">Sessions concurrentes couvertes</span>
+        <span class="reco-metric-value">jusqu'à ${fmtN(f.sessMax)}<span class="reco-metric-note">votre besoin estimé : ~${fmtN(needSess)}</span></span>
+      </div>`;
+      html += `<div class="reco-metric">
+        <span class="reco-metric-label">Format</span>
+        <span class="reco-metric-value">${f.form}</span>
+      </div>`;
+
+      html += `<div style="margin-top:10px">
+        <button class="wiz-link-tech" onclick="setMode('technique');filterSeries(document.querySelector('[data-series=&quot;${f.id}&quot;]'))">Voir les modèles ${f.id} dans le comparateur technique</button>
+      </div></div>`;
+    });
+
+    if (alsoConsider.length > 0) {
+      html += `<p style="font-size:12px;color:var(--text-muted);margin:8px 0"><strong>À considérer également :</strong> ${alsoConsider[0].id} Series (${alsoConsider[0].pos}) si le débit réel confirmé dépasse l'estimation.</p>`;
+    }
+
+    html += '</div>';
+
+    const subs = [];
+    subs.push({ name:'Threat Prevention', included:true, reason:'Socle de sécurité : IPS, antivirus, antispyware' });
+    subs.push({ name:'URL Filtering', included:true, reason:'Filtrage web par catégorie, blocage des sites malveillants' });
+    subs.push({ name:'WildFire', included:true, reason:'Sandbox cloud pour l\'analyse des fichiers inconnus' });
+    subs.push({ name:'DNS Security', included:true, reason:'Protection contre les attaques via DNS (C2, DGA, tunneling)' });
+    if (rawIot === 'moderate' || rawIot === 'heavy' || rawSector === 'industry' || rawSector === 'health') {
+      subs.push({ name:'Device Security', included:false, reason:'Visibilité et contrôle des objets connectés (ex-IoT Security)' });
+    }
+    if (rawSector === 'finance' || rawSector === 'health' || rawSector === 'public') {
+      subs.push({ name:'Enterprise DLP', included:false, reason:'Prévention des fuites de données (conformité)' });
+    }
+    if (sites >= 3) {
+      subs.push({ name:'Panorama / SCM', included:false, reason:'Gestion centralisée multi-sites' });
+    }
+    if (rawRemote !== 'unknown' && parseInt(rawRemote) > 0) {
+      subs.push({ name:'GlobalProtect / Prisma Access', included:false, reason:'Accès distant sécurisé pour les nomades' });
+    }
+
+    html += '<div class="reco-section"><div class="reco-section-title">Subscriptions et services à associer</div>';
+    html += '<div class="reco-sub-list">';
+    subs.forEach(s => {
+      html += `<span class="reco-sub-tag ${s.included ? 'included' : ''}" title="${s.reason}">${s.name}${s.included ? ' (socle)' : ''}</span>`;
+    });
+    html += '</div></div>';
+
+    const existing = rawExist !== 'unknown' ? rawExist : 'default';
+    const compArgs = COMPETITOR_ARGS[existing] || COMPETITOR_ARGS.default;
+    html += '<div class="reco-section"><div class="reco-section-title">Arguments de vente' + (compArgs.name !== 'Concurrent générique' ? ' (face à ' + compArgs.name + ')' : '') + '</div>';
+    compArgs.args.forEach(a => {
+      html += `<div class="reco-arg-card"><div class="reco-arg-title">${a.title}</div><div class="reco-arg-text">${a.text}</div></div>`;
+    });
+    html += '</div>';
+
+    if (openQuestions.length > 0) {
+      html += '<div class="reco-section"><div class="reco-section-title">Questions à poser au client lors du prochain échange</div>';
+      openQuestions.forEach(q => {
+        html += `<div class="reco-open-q"><span class="reco-open-q-icon">?</span> ${q}</div>`;
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="reco-section"><div class="reco-section-title">Liens utiles</div><div class="reco-links">';
+    reco.forEach(f => {
+      html += `<a class="reco-link" href="${f.dsUrl}" target="_blank" rel="noopener">Datasheet ${f.id}</a>`;
+    });
+    html += '<a class="reco-link" href="https://www.paloaltonetworks.com/partners/nextwave" target="_blank" rel="noopener">Enregistrement de deal NextWave</a>';
+    html += '</div></div>';
+
+    const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siège' : 'Datacenter';
+    const sslLabel = ssl === 'yes' ? 'Oui' : ssl === 'no' ? 'Non' : 'À confirmer';
+    const cloudLabel = cloud === 'high' ? 'Intensif (SaaS)' : 'Standard';
+    const recoText = reco.map(f => f.id + ' Series (' + f.modeles + ')').join(' ou ');
+    const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (recommandé)')).join(', ');
+
+    const briefText = `QUALIFICATION FIREWALL PALO ALTO NETWORKS
+============================================
+${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Partenaire : ' + partnerName + '\n' : ''}Date : ${new Date().toLocaleDateString('fr-FR')}
+${confLabel}
+
+RÉPONSES CLIENT
+  Utilisateurs : ${rawUsers === 'unknown' ? 'Non connu (hypothèse 250)' : users}
+  Sites : ${rawSites === 'unknown' ? 'Non connu (hypothèse 1)' : sites}
+  Type de site : ${typeLabel}${rawType === 'unknown' ? ' (hypothèse)' : ''}
+  Débit Internet : ${rawBw === 'unknown' ? 'Non connu (hypothèse 200 Mbps)' : bwMbps + ' Mbps'}
+  Déchiffrement SSL : ${sslLabel}${rawSsl === 'unknown' ? ' (hypothèse : oui)' : ''}
+  Usage cloud : ${cloudLabel}
+  Secteur : ${rawSector === 'unknown' ? 'Non renseigné' : rawSector}
+  Existant : ${rawExist === 'unknown' ? 'Non renseigné' : rawExist}${rawExistModel !== 'unknown' ? ' (' + rawExistModel + ')' : ''}
+  IoT : ${rawIot === 'unknown' ? 'Non renseigné' : rawIot}
+  HA : ${rawHa === 'unknown' ? 'Non renseigné' : rawHa}
+  Nomades : ${rawRemote === 'unknown' ? 'Non renseigné' : rawRemote}
+  Croissance : ${rawGrowth === 'unknown' ? 'Non renseigné (hypothèse +30%)' : rawGrowth}
+
+RECOMMANDATION
+  Gamme(s) : ${recoText}
+  Débit TP estimé nécessaire : ${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}
+  Sessions estimées : ~${fmtN(needSess)}
+  Subscriptions : ${subsList}
+
+${assumptions.length > 0 ? 'HYPOTHÈSES RETENUES\n  ' + assumptions.join('\n  ') + '\n' : ''}
+${openQuestions.length > 0 ? 'QUESTIONS OUVERTES\n  ' + openQuestions.join('\n  ') + '\n' : ''}
+Estimation indicative de première qualification.
+Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`;
+
+    const shareUrl = encodeSession();
+    const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks' + (clientName ? ' — ' + clientName : ''));
+    const mailBody = encodeURIComponent('Bonjour,\n\nVoici une première qualification réalisée via l\'outil Sizing Guide PANW :\n\n' + briefText + '\n\nLien direct vers la qualification : ' + shareUrl + '\n\nCordialement');
+    const mailto = 'mailto:?subject=' + mailSubject + '&body=' + mailBody;
+
+    html += `<div class="brief-card">
+      <div class="brief-title">Brief transmissible à l'avant-vente</div>
+      ${clientName || partnerName ? `<div class="brief-section" style="display:flex;gap:24px;flex-wrap:wrap">
+        ${clientName ? `<div><div class="brief-section-label">Client</div><div class="brief-section-content" style="font-weight:600">${clientName}</div></div>` : ''}
+        ${partnerName ? `<div><div class="brief-section-label">Partenaire</div><div class="brief-section-content">${partnerName}</div></div>` : ''}
+      </div>` : ''}
+      <div class="brief-section">
+        <div class="brief-section-label">Résumé</div>
+        <div class="brief-section-content">${users} utilisateurs, ${sites} site(s) (${typeLabel}), ${bwMbps} Mbps, SSL ${sslLabel}. Reco : ${recoText}.</div>
+      </div>
+      ${assumptions.length > 0 ? `<div class="brief-section">
+        <div class="brief-section-label">Hypothèses</div>
+        <div class="brief-section-content">${assumptions.join(' · ')}</div>
+      </div>` : ''}
+      ${openQuestions.length > 0 ? `<div class="brief-section">
+        <div class="brief-section-label">Questions ouvertes</div>
+        <div class="brief-section-content">${openQuestions.join(' · ')}</div>
+      </div>` : ''}
+      <div class="brief-section">
+        <div class="brief-section-label">Niveau de confiance</div>
+        <div class="brief-section-content"><span class="${confClass} confidence-badge" style="font-size:10px"><span class="confidence-dot"></span> ${confidence === 'green' ? 'Complète' : confidence === 'orange' ? 'Partielle' : 'Insuffisante'}</span></div>
+      </div>
+      <div class="brief-actions">
+        <button class="wiz-action-btn primary" id="btn-pdf">Télécharger le PDF</button>
+        <a class="wiz-action-btn secondary" href="${mailto}">Envoyer par mail</a>
+        <button class="wiz-action-btn secondary" id="btn-copy-brief">Copier le texte</button>
+        <button class="wiz-action-btn secondary" id="btn-copy-link">Copier le lien</button>
+      </div>
+    </div>`;
+
+    html += `<div class="wiz-disclaimer" style="margin-top:16px">
+      <strong>Estimation indicative de première qualification.</strong> Le dimensionnement définitif doit être validé par un ingénieur avant-vente, idéalement à partir d'un SLR (Security Lifecycle Review) ou de données de trafic réelles.
+      <br><span style="font-size:10px;margin-top:4px;display:inline-block">Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · Juin 2026</span>
+    </div>`;
+
+    box.innerHTML = html;
+    box.classList.add('visible');
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    document.getElementById('btn-copy-brief')?.addEventListener('click', function() {
+      navigator.clipboard.writeText(briefText).then(() => { this.textContent = 'Copié !'; });
+    });
+    document.getElementById('btn-copy-link')?.addEventListener('click', function() {
+      navigator.clipboard.writeText(shareUrl).then(() => { this.textContent = 'Lien copié !'; });
+    });
+    document.getElementById('btn-pdf')?.addEventListener('click', function() {
+      generatePDF({
+        date: new Date().toLocaleDateString('fr-FR'),
+        confidence, confLabel,
+        users, sites, typeLabel, bwMbps, sslLabel, cloudLabel,
+        clientName, partnerName,
+        sector: rawSector, existing: rawExist, existingModel: rawExistModel,
+        iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
+        recoText, reco, needTp, needSess,
+        assumptions, openQuestions, subs,
+      });
+      const brand = rawExist;
+      if ((brand === 'fortinet' || brand === 'checkpoint') && rawExistModel !== 'unknown') {
+        const m = COMPETITOR_MODELS[brand]?.find(x => x.id === rawExistModel);
+        if (m) arguments.callee.existingMapping = m;
+      }
+    });
+  }
+
+  const LOGO_EXN = 'data:image/png;base64,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';
+  const LOGO_PAN = 'data:image/png;base64,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';
+
+  function generatePDF(d) {
+    const confColor = d.confidence === 'green' ? '#16a34a' : d.confidence === 'orange' ? '#d97706' : '#dc2626';
+    const confBg = d.confidence === 'green' ? '#f0fdf4' : d.confidence === 'orange' ? '#fffbeb' : '#fef2f2';
+
+    let existingLine = '';
+    if (d.existing !== 'unknown' && d.existing !== 'none') {
+      const brandLabel = d.existing === 'fortinet' ? 'Fortinet FortiGate' : d.existing === 'checkpoint' ? 'Check Point Quantum' : d.existing === 'cisco' ? 'Cisco' : d.existing;
+      existingLine = `<tr><td>Existant</td><td>${brandLabel}${d.existingModel !== 'unknown' ? ' ' + d.existingModel : ''}</td></tr>`;
+      if (d.existingModel !== 'unknown' && (d.existing === 'fortinet' || d.existing === 'checkpoint')) {
+        const m = COMPETITOR_MODELS[d.existing]?.find(x => x.id === d.existingModel);
+        if (m) existingLine += `<tr><td>Équivalent PA-Series</td><td style="color:#16a34a;font-weight:600">${m.pa} (TP ${MODELS.find(x=>x.id===m.pa)?.tp || '?'} Gbps)</td></tr>`;
+      }
+    }
+
+    const subsHtml = d.subs.map(s => `<span style="display:inline-block;padding:3px 10px;margin:2px;border-radius:12px;font-size:11px;${s.included ? 'background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0' : 'background:#f8fafc;color:#475569;border:1px solid #e2e8f0'}">${s.name}</span>`).join('');
+
+    const recoHtml = d.reco.map(f => `
+      <div style="padding:14px;border:1px solid #e2e8f0;border-left:3px solid #e84b1a;border-radius:8px;margin-bottom:8px">
+        <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:4px">${f.id} Series</div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:6px">${f.pos}</div>
+        <div style="font-size:12px;color:#334155">Modèles : ${f.modeles} · TP ${f.tpMin}-${f.tpMax} Gbps · ${fmtN(f.sessMax)} sessions max · Charge estimée : ${f.utilPct}%</div>
+      </div>
+    `).join('');
+
+    const pdfHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Poppins',system-ui,sans-serif; color:#1e293b; font-size:13px; line-height:1.6; padding:32px 40px; }
+.header { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:2px solid #e84b1a; margin-bottom:24px; }
+.header img { height:56px; } .header img:last-child { height:44px; }
+h1 { font-size:20px; font-weight:700; color:#0f172a; margin-bottom:4px; }
+h2 { font-size:14px; font-weight:600; color:#475569; margin-bottom:16px; }
+.meta { display:flex; gap:16px; font-size:11px; color:#64748b; margin-bottom:20px; }
+.section { margin-bottom:20px; }
+.section-title { font-size:12px; font-weight:600; color:#e84b1a; text-transform:uppercase; letter-spacing:0.5px; padding-bottom:4px; border-bottom:1px solid #f1f5f9; margin-bottom:10px; }
+table { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px; }
+table td { padding:6px 10px; border-bottom:1px solid #f1f5f9; }
+table td:first-child { font-weight:500; color:#64748b; width:40%; }
+table td:last-child { color:#1e293b; }
+.conf-badge { display:inline-block; padding:4px 12px; border-radius:12px; font-size:11px; font-weight:600; }
+.assumptions { padding:10px 14px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; font-size:11px; color:#92400e; margin-bottom:12px; }
+.questions { padding:10px 14px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; font-size:11px; color:#1e40af; margin-bottom:12px; }
+.footer { margin-top:24px; padding-top:12px; border-top:1px solid #e2e8f0; font-size:10px; color:#94a3b8; text-align:center; }
+@media print { body { padding:20px 24px; } }
+</style></head><body>
+<div class="header">
+  <img src="${LOGO_EXN}" alt="Exclusive Networks">
+  <img src="${LOGO_PAN}" alt="Palo Alto Networks">
+</div>
+<h1>Qualification Firewall Palo Alto Networks</h1>
+${d.clientName ? `<h2 style="font-size:16px;color:#0f172a;margin-bottom:2px">${d.clientName}</h2>` : ''}
+<div class="meta">
+  <span>Date : ${d.date}</span>
+  ${d.partnerName ? `<span>Partenaire : ${d.partnerName}</span>` : ''}
+  <span class="conf-badge" style="background:${confBg};color:${confColor};border:1px solid ${confColor}30">${d.confLabel}</span>
+</div>
+
+<div class="section">
+  <div class="section-title">Réponses client</div>
+  <table>
+    <tr><td>Utilisateurs</td><td>${d.users}</td></tr>
+    <tr><td>Sites</td><td>${d.sites}</td></tr>
+    <tr><td>Type de site</td><td>${d.typeLabel}</td></tr>
+    <tr><td>Débit Internet</td><td>${d.bwMbps} Mbps</td></tr>
+    <tr><td>Déchiffrement SSL</td><td>${d.sslLabel}</td></tr>
+    <tr><td>Usage cloud</td><td>${d.cloudLabel}</td></tr>
+    ${d.sector !== 'unknown' ? `<tr><td>Secteur</td><td>${d.sector}</td></tr>` : ''}
+    ${existingLine}
+    ${d.ha !== 'unknown' ? `<tr><td>Haute disponibilité</td><td>${d.ha}</td></tr>` : ''}
+    ${d.remote !== 'unknown' ? `<tr><td>Utilisateurs nomades</td><td>${d.remote}</td></tr>` : ''}
+    ${d.growth !== 'unknown' ? `<tr><td>Croissance à 3 ans</td><td>${d.growth}</td></tr>` : ''}
+  </table>
+</div>
+
+${d.assumptions.length > 0 ? `<div class="assumptions"><strong>Hypothèses retenues :</strong> ${d.assumptions.join(' · ')}</div>` : ''}
+
+<div class="section">
+  <div class="section-title">Recommandation</div>
+  ${recoHtml}
+  <table>
+    <tr><td>Débit TP nécessaire (estimé)</td><td>${d.needTp < 1 ? (d.needTp * 1000).toFixed(0) + ' Mbps' : d.needTp.toFixed(1) + ' Gbps'}</td></tr>
+    <tr><td>Sessions concurrentes (estimées)</td><td>~${fmtN(d.needSess)}</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Subscriptions recommandées</div>
+  <div>${subsHtml}</div>
+</div>
+
+${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à poser au client :</strong><br>${d.openQuestions.map(q => '· ' + q).join('<br>')}</div>` : ''}
+
+<div class="footer">
+  Estimation indicative de première qualification. Le dimensionnement définitif doit être validé par un ingénieur avant-vente.<br>
+  Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · ${d.date}<br>
+  Généré par Sizing Guide PANW · Exclusive Networks
+</div>
+</body></html>`;
+
+    const w = window.open('', '_blank', 'width=800,height=1100');
+    w.document.write(pdfHtml);
+    w.document.close();
+    setTimeout(() => w.print(), 500);
+  }
+
+  /* ══ Golden cases (scenarios de reference) ══
+     Profils types avec resultat attendu. A rejouer apres chaque mise a jour
+     des donnees pour detecter les regressions.
+     Usage : ouvrir la console navigateur et executer runGoldenCases()
+  ══ */
+  const GOLDEN_CASES = [
+    {
+      name: 'TPE mono-site',
+      desc: '20 utilisateurs, 1 site agence, 50 Mbps, pas de SSL',
+      inputs: { users:'30', sites:'1', type:'branch', bw:'50', ssl:'no', cloud:'low', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      expect: { families: ['PA-400'], confidenceMin: 'green' }
+    },
+    {
+      name: 'PME multi-sites avec déchiffrement',
+      desc: '200 utilisateurs, 5 sites, siège, 200 Mbps, SSL oui, SaaS intensif',
+      inputs: { users:'250', sites:'3', type:'campus', bw:'200', ssl:'yes', cloud:'high', sector:'services', existing:'fortinet', iot:'none', ha:'yes', remote:'medium', growth:'moderate' },
+      expect: { families: ['PA-400','PA-500','PA-1400'], confidenceMin: 'green' }
+    },
+    {
+      name: 'ETI avec datacenter',
+      desc: '2000 utilisateurs, 10 sites, datacenter, 5 Gbps, SSL oui, forte croissance',
+      inputs: { users:'2500', sites:'10', type:'dc', bw:'5000', ssl:'yes', cloud:'high', sector:'finance', existing:'cisco', iot:'moderate', ha:'yes', remote:'high', growth:'strong' },
+      expect: { families: ['PA-5400','PA-7500'], confidenceMin: 'green' }
+    },
+    {
+      name: 'Tout inconnu',
+      desc: 'Toutes les réponses à "je ne sais pas"',
+      inputs: { users:'unknown', sites:'unknown', type:'unknown', bw:'unknown', ssl:'unknown', cloud:'unknown', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      expect: { families: ['PA-400','PA-500'], confidenceMin: 'red' }
+    },
+  ];
+
+  function runGoldenCases() {
+    const results = [];
+    const fieldMap = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
+
+    for (const gc of GOLDEN_CASES) {
+      Object.entries(gc.inputs).forEach(([k, v]) => {
+        const el = document.getElementById(fieldMap[k]);
+        if (el) el.value = v;
+      });
+      setDepth('advanced');
+      runCommercialWizard();
+
+      const box = document.getElementById('wiz-results-commercial');
+      const confBadge = box.querySelector('.confidence-badge');
+      const familyCards = box.querySelectorAll('.wiz-family-name');
+      const foundFamilies = [...familyCards].map(el => el.textContent.replace(' Series',''));
+      const confLevel = confBadge?.classList.contains('confidence-green') ? 'green' : confBadge?.classList.contains('confidence-orange') ? 'orange' : 'red';
+
+      const confOrder = { green: 0, orange: 1, red: 2 };
+      const familyMatch = gc.expect.families.some(f => foundFamilies.includes(f));
+      const confMatch = confOrder[confLevel] <= confOrder[gc.expect.confidenceMin];
+      const pass = familyMatch && confMatch;
+
+      results.push({
+        name: gc.name,
+        pass,
+        found: foundFamilies.join(', '),
+        expected: gc.expect.families.join(', '),
+        confidence: confLevel,
+        expectedConf: gc.expect.confidenceMin
+      });
+    }
+
+    console.group('Golden Cases — résultats');
+    let allPass = true;
+    results.forEach(r => {
+      const icon = r.pass ? '✅' : '❌';
+      console.log(`${icon} ${r.name} | Familles: ${r.found} (attendu: ${r.expected}) | Confiance: ${r.confidence} (min attendu: ${r.expectedConf})`);
+      if (!r.pass) allPass = false;
+    });
+    console.log(allPass ? '\n✅ Tous les golden cases passent.' : '\n❌ Certains golden cases échouent.');
+    console.groupEnd();
+    return results;
+  }
+
+  /* ══ Input validation ══ */
+  function validateInputs() {
+    const users = document.getElementById('wiz-users').value;
+    const sites = document.getElementById('wiz-sites').value;
+    const bw = document.getElementById('wiz-bw').value;
+
+    if (users !== 'unknown' && sites !== 'unknown') {
+      const u = parseInt(users);
+      const s = parseInt(sites);
+      if (u < 30 && s > 10) {
+        return 'Incohérence : moins de 30 utilisateurs pour plus de 10 sites semble inhabituel. Vérifiez les réponses.';
+      }
+      if (u > 5000 && s === 1 && bw !== 'unknown' && parseInt(bw) < 200) {
+        return 'Incohérence : plus de 5000 utilisateurs sur un seul site avec moins de 200 Mbps semble sous-dimensionné côté débit.';
+      }
+    }
+    return null;
+  }
+
+  buildTable();
+  </script>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Dernière mise à jour : juin 2026</div>
+    <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
+  </footer>
+</body>
+</html>

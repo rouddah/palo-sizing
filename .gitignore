@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Wrangler / Cloudflare local cache
+.wrangler/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide — Prisma SASE</title>
+  <meta name="description" content="Prisma SASE — Prisma Access SSE, Prisma SD-WAN, Prisma Browser. Editions, CDSS Precision AI, appliances ION et sizing." />
+  <meta property="og:title" content="Sizing Guide — Prisma SASE" />
+  <meta property="og:description" content="Architecture SASE Prisma Access, editions, CDSS Precision AI, SD-WAN ION et Browser." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .val-opt { color: var(--text-muted); font-family: var(--mono); font-size: 12px; font-style: italic; }
+
+    /* ── Tab navigation ── */
+    .sase-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--border);
+    }
+    .sase-tab {
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .sase-tab:hover { color: var(--text); }
+    .sase-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .sase-panel { display: none; }
+    .sase-panel.active { display: block; }
+
+    /* ── Section title ── */
+    .section-title {
+      margin: 28px 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-bright);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: var(--mono);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+
+    /* ── Info notes ── */
+    .ztna-note {
+      margin-bottom: 24px;
+      padding: 13px 16px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+    .ztna-note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Add-on cards ── */
+    .addon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .addon-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+    }
+    .addon-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+    .addon-card-name { font-size: 12px; font-weight: 600; color: var(--text-bright); }
+    .addon-card-sku  { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 4px; }
+    .addon-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── Browser edition detail block ── */
+    .browser-pro-features {
+      margin-top: 20px;
+      padding: 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: var(--radius);
+    }
+    .browser-pro-features h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .browser-pro-features ul {
+      margin: 0;
+      padding: 0 0 0 16px;
+      list-style: disc;
+    }
+    .browser-pro-features li {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+    .browser-pro-features li strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <h1>Prisma SASE</h1>
+      <p>Prisma Access (SSE) · Prisma SD-WAN · Prisma Browser · pilot&eacute; par Strata Cloud Manager</p>
+    </div>
+
+    <!-- ── Tab navigation ── -->
+    <div class="sase-tabs" role="tablist">
+      <button class="sase-tab active" data-tab="sse" role="tab" aria-selected="true">Prisma Access (SSE)</button>
+      <button class="sase-tab" data-tab="sdwan" role="tab" aria-selected="false">Prisma SD-WAN</button>
+      <button class="sase-tab" data-tab="browser" role="tab" aria-selected="false">Prisma Browser</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PANEL 1 — Prisma Access (SSE)
+    ══════════════════════════════════════════ -->
+    <div class="sase-panel active" id="panel-sse" role="tabpanel">
+
+      <div class="info-note" style="border-left-color:var(--yellow)">
+        <strong>Transition GlobalProtect SKUs</strong> : depuis le 15 ao&ucirc;t 2025, les SKUs GlobalProtect sur form factor NGFW sont EoS. Les nouveaux d&eacute;ploiements utilisent les SKUs <strong>Prisma Access Agent</strong>. La fonction GlobalProtect reste op&eacute;rationnelle c&ocirc;t&eacute; Prisma Access.
+      </div>
+
+      <!-- Architecture overview -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:32px">
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#128279;</div>
+          <div class="card-title">Remote Users (Mobile Users)</div>
+          <div class="card-description">GlobalProtect avec ZTNA 2.0 natif &mdash; acc&egrave;s s&eacute;curis&eacute; pour les utilisateurs nomades. Vendu par utilisateur/an.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#127962;</div>
+          <div class="card-title">Remote Networks (Sites)</div>
+          <div class="card-description">Connexion des sites distants via IPsec - SD-WAN int&eacute;gr&eacute;, politique de s&eacute;curit&eacute; unifi&eacute;e. Vendu par Mbps/an.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#128274;</div>
+          <div class="card-title">Service Connections</div>
+          <div class="card-description">Connexion s&eacute;curis&eacute;e vers les datacenters et environnements cloud priv&eacute;s via IPsec depuis les PoP Prisma Access.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#9729;&#65039;</div>
+          <div class="card-title">100+ PoP mondiaux</div>
+          <div class="card-description">Infrastructure cloud-delivered distribu&eacute;e mondialement. SLA de disponibilit&eacute; 99.999&nbsp;%. Routage optimal automatique.</div>
+        </div>
+      </div>
+
+      <!-- Source : deck Prisma SASE fourni par l'utilisateur + docs.paloaltonetworks.com, juin 2026 -->
+      <!-- Source Precision AI Pro Bundle : datasheet officielle PAN janv. 2025, blog PAN "Precision AI Pro - Now with Integrated Device Security", EoS notice dec. 2025 -->
+
+      <!-- Precision AI Pro Bundle -->
+      <div class="section-title">Precision AI Pro Bundle &mdash; subscriptions NGFW</div>
+      <div class="info-note" style="border-left-color:var(--green)">
+        <strong>Precision AI Pro Bundle</strong> est le bundle de subscriptions recommand&eacute; pour tous les NGFW PA-Series. Il regroupe l'ensemble des Cloud-Delivered Security Services (CDSS) en une seule souscription, powered by Precision AI. Ce bundle remplace l'ancien &laquo;&nbsp;Precision AI Network Security Bundle&nbsp;&raquo; (End of Sale d&eacute;c. 2025, SKU PAN-PA-xxxx-BND-CORESEC). Le nouveau bundle Pro int&egrave;gre Device Security (ex-IoT/OT Security) en plus du socle CDSS existant.
+      </div>
+      <div class="table-wrapper" style="margin-bottom:20px">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:240px">Service inclus</th>
+              <th>Precision AI Pro Bundle</th>
+              <th>Fonction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Advanced Threat Prevention (ATP)</strong></td><td class="val-check">&#10003;</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">IPS en temps r&eacute;el, signatures et analyse comportementale Precision AI</td></tr>
+            <tr><td><strong>Advanced WildFire (AWF)</strong></td><td class="val-check">&#10003;</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Sandboxing cloud pour l'analyse des fichiers inconnus et malwares avanc&eacute;s</td></tr>
+            <tr><td><strong>Advanced URL Filtering (AURL)</strong></td><td class="val-check">&#10003;</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Cat&eacute;gorisation et filtrage des URLs via PAN-DB (85+ cat&eacute;gories, ML inline)</td></tr>
+            <tr><td><strong>Advanced DNS Security (ADNS)</strong></td><td class="val-check">&#10003;</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">Protection contre le DNS tunneling, DGA et domaines malveillants</td></tr>
+            <tr><td><strong>Advanced SD-WAN</strong></td><td class="val-check">&#10003;</td><td style="text-align:left;font-size:12px;color:var(--text-muted)">SD-WAN int&eacute;gr&eacute; au NGFW, routage intelligent et QoS applicatif</td></tr>
+            <tr><td><strong>Device Security (ex-IoT/OT Security)</strong></td><td class="val-check">&#10003; <span style="font-size:10px;color:var(--green)">Nouveau</span></td><td style="text-align:left;font-size:12px;color:var(--text-muted)">D&eacute;couverte, classification et segmentation automatique de tous les appareils connect&eacute;s (IT, IoT, OT, m&eacute;dical) via Device-ID (3 600+ attributs)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">
+        <div class="info-note" style="margin-bottom:0">
+          <strong>Pourquoi un bundle&nbsp;?</strong> Souscrire les services individuellement co&ucirc;te plus cher et laisse des angles morts. Le bundle Precision AI Pro garantit une couverture compl&egrave;te et une gestion simplifi&eacute;e via une seule licence par appliance.
+        </div>
+        <div class="info-note" style="margin-bottom:0;border-left-color:var(--yellow)">
+          <strong>Transition depuis l'ancien bundle.</strong> L'ancien &laquo;&nbsp;Precision AI Network Security Bundle&nbsp;&raquo; (sans Device Security) est en End of Sale depuis d&eacute;cembre 2025 (commercial) et mars 2026 (secteur public). Les clients existants conservent leur souscription jusqu'&agrave; expiration, puis migrent vers le Pro Bundle.
+        </div>
+      </div>
+
+      <!-- CDSS -->
+      <div class="section-title">Cloud-Delivered Security Services (CDSS), powered by Precision AI</div>
+      <div class="info-note">
+        <strong>Socle de s&eacute;curit&eacute; commun</strong> &agrave; toutes les &eacute;ditions Prisma Access et inclus dans le Precision AI Pro Bundle pour les NGFW. Ces services sont d&eacute;livr&eacute;s depuis le cloud et mis &agrave; jour en continu par Palo Alto Networks. Le p&eacute;rim&egrave;tre exact inclus par d&eacute;faut varie selon l'&eacute;dition (voir les tableaux ci-dessous).
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:28px">
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Advanced Threat Prevention (IPS)</div>
+          <div class="card-description" style="font-size:11px">Prevention des intrusions en temps r&eacute;el, signatures et analyse comportementale.</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Advanced WildFire</div>
+          <div class="card-description" style="font-size:11px">Sandboxing cloud pour l'analyse des fichiers inconnus et des malwares avanc&eacute;s.</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Advanced URL Filtering</div>
+          <div class="card-description" style="font-size:11px">Cat&eacute;gorisation et filtrage des URLs via PAN-DB (85+ cat&eacute;gories, ML inline).</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Advanced DNS Security</div>
+          <div class="card-description" style="font-size:11px">Protection contre le DNS tunneling, DGA, et les domaines malveillants en temps r&eacute;el.</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Device Security</div>
+          <div class="card-description" style="font-size:11px">D&eacute;tection et segmentation automatique des appareils IoT et OT sur le r&eacute;seau.</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">NG-CASB / SaaS Security</div>
+          <div class="card-description" style="font-size:11px">Visibilit&eacute; sur 66 000+ apps SaaS, 25+ int&eacute;grations API, contr&ocirc;le inline et hors-bande.</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">AI Access Security</div>
+          <div class="card-description" style="font-size:11px">Contr&ocirc;le de l'utilisation de 600+ applications GenAI (ChatGPT, Copilot, etc.).</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">Enterprise DLP</div>
+          <div class="card-description" style="font-size:11px">1 000+ classificateurs, OCR, EDM, IDM, 22 profils r&eacute;glementaires (HIPAA, PII, GDPR, PCI).</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">RBI (Remote Browser Isolation)</div>
+          <div class="card-description" style="font-size:11px">Isolation des sessions de navigation pour les sites &agrave; risque (add-on).</div>
+        </div>
+        <div class="tool-card" style="cursor:default;padding:14px">
+          <div class="card-title" style="font-size:12px">ADEM (Autonomous DEM)</div>
+          <div class="card-description" style="font-size:11px">Monitoring synth&eacute;tique et Real User Monitoring de l'exp&eacute;rience utilisateur.</div>
+        </div>
+      </div>
+
+      <div class="info-note" style="border-left-color:var(--green)">
+        <strong>Connectivit&eacute;&nbsp;:</strong> GlobalProtect (Mobile Users), Remote Networks (IPsec sites), Service Connections (datacenter), ZTNA Connector, Colo Connect.
+        <strong>SLA annonc&eacute;s&nbsp;:</strong> 99,999&nbsp;% uptime, 10&nbsp;ms de latence de traitement.
+        <strong>Infrastructure&nbsp;:</strong> 100+ Points of Presence mondiaux.
+      </div>
+
+      <div class="ztna-note">
+        <span class="ztna-note-icon">&#8505;</span>
+        <span><strong>3 &eacute;ditions Mobile Users, 2 &eacute;ditions Remote Networks.</strong> L'Enterprise Edition inclut la s&eacute;curit&eacute; internet sortant et l'acc&egrave;s aux apps priv&eacute;es. La SWG Edition couvre uniquement la s&eacute;curit&eacute; internet. La ZTNA Edition couvre uniquement l'acc&egrave;s aux apps priv&eacute;es. Les add-ons s'appliquent ind&eacute;pendamment de l'&eacute;dition.</span>
+      </div>
+
+      <!-- Editions Mobile Users -->
+      <div class="section-title">Editions Mobile Users &mdash; par utilisateur / an</div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:240px">Fonctionnalit&eacute;</th>
+              <th>SWG Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-BUSINESS-PRM</small></th>
+              <th>ZTNA Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-ZTNA-SIG</small></th>
+              <th>Enterprise Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-MU-ENTERPRISE</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="4">S&eacute;curit&eacute; internet sortant</td></tr>
+            <tr><td>App-ID / URL Filtering (PAN-DB)</td><td class="val-check">&#10003;</td><td class="val-na">&mdash;</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>Threat Prevention / WildFire</td><td class="val-check">&#10003;</td><td class="val-check">&#10003; (Adv.)</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>DNS Security / SSL Decryption</td><td class="val-check">&#10003;</td><td class="val-na">&mdash;</td><td class="val-check">&#10003;</td></tr>
+
+            <tr class="section-row"><td colspan="4">Acc&egrave;s apps priv&eacute;es (ZTNA 2.0)</td></tr>
+            <tr><td>Acc&egrave;s apps priv&eacute;es</td><td class="val-na">&mdash;<small style="color:var(--text-muted)"> (add-on)</small></td><td class="val-check">&#10003; (inclus)</td><td class="val-check">&#10003; (inclus)</td></tr>
+            <tr><td>Service Connections</td><td class="val-na">&mdash;<small style="color:var(--text-muted)"> (add-on)</small></td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>Continuous trust verification</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td></tr>
+
+            <tr class="section-row"><td colspan="4">Gestion (inclus dans toutes les &eacute;ditions)</td></tr>
+            <tr><td>Strata Cloud Manager Essentials</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>Strata Cloud Manager Pro</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+            <tr><td>GlobalProtect (100+ PoP, 99.999&nbsp;% SLA)</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>ADEM + AIOps</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+            <tr><td>Strata Logging Service</td><td class="val-na"><span style="color:var(--yellow)">requis</span> &middot; SKU s&eacute;par&eacute;e</td><td class="val-na"><span style="color:var(--yellow)">requis</span> &middot; SKU s&eacute;par&eacute;e</td><td class="val-na"><span style="color:var(--yellow)">requis</span> &middot; SKU s&eacute;par&eacute;e</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Editions Remote Networks -->
+      <div class="section-title">Editions Remote Networks / Sites &mdash; par Mbps / an</div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:240px">Fonctionnalit&eacute;</th>
+              <th>SWG Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-NET-BUSINESS-PRM</small></th>
+              <th>Enterprise Edition<br><small style="font-weight:400;font-size:10px">PAN-PRISMA-ACCESS-NET-ENTERPRISE</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>S&eacute;curit&eacute; internet sortant</td><td class="val-check">&#10003;</td><td class="val-check">&#10003;</td></tr>
+            <tr><td>Acc&egrave;s apps priv&eacute;es (ZTNA 2.0)</td><td class="val-na">&mdash;<small> (add-on)</small></td><td class="val-check">&#10003; (inclus)</td></tr>
+            <tr><td>ADEM + AIOps</td><td class="val-na">Add-on</td><td class="val-na">Add-on</td></tr>
+            <tr><td>Strata Logging Service</td><td class="val-na"><span style="color:var(--yellow)">requis</span> &middot; SKU s&eacute;par&eacute;e</td><td class="val-na"><span style="color:var(--yellow)">requis</span> &middot; SKU s&eacute;par&eacute;e</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add-ons MU -->
+      <div class="section-title">Add-ons Mobile Users (par user/an)</div>
+      <div class="addon-grid">
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">SaaS Inline Security</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SAAS-INLINE</div>
+          <div class="addon-card-desc">SaaS Inline Security uniquement - option &eacute;conomique sans DLP. &Agrave; distinguer du NG-CASB complet.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">DLP standalone</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-DLP</div>
+          <div class="addon-card-desc">Data Loss Prevention uniquement, sans les fonctions SaaS Security du NG-CASB.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Private App Access</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-PRIVAPP</div>
+          <div class="addon-card-desc">Ajoute acc&egrave;s aux apps priv&eacute;es et Service Connections pour les utilisateurs SWG Edition.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Private App Security</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-PVT-APPSEC</div>
+          <div class="addon-card-desc">Protection sp&eacute;cifique par application pour les apps priv&eacute;es (inspection approfondie).</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">NG-CASB (bundle complet)</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-CASB</div>
+          <div class="addon-card-desc">Bundle : SaaS Security Inline + DLP Inline + SaaS Security API + DLP API. Plus complet que SaaS Inline seul ou DLP seul.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">ADEM + AIOps (SCM Pro)</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SCM-PRO</div>
+          <div class="addon-card-desc">Autonomous Digital Experience Management + AIOps via Strata Cloud Manager.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">App Acceleration</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-APP-ACCL</div>
+          <div class="addon-card-desc">Acc&eacute;l&eacute;ration applicative pour les utilisateurs via Prisma Access.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Device Security</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-IOT</div>
+          <div class="addon-card-desc">S&eacute;curit&eacute; Device Security pour le r&eacute;seau - d&eacute;tection et segmentation des appareils IoT/OT.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Privileged Remote Access (PRA)</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-PRVLGED-RA</div>
+          <div class="addon-card-desc">Acc&egrave;s navigateur aux apps non-web (SSH, RDP, DB) sans agent sur les serveurs cibles.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">ZTNA Connector</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-ZTNACONN-PR</div>
+          <div class="addon-card-desc">Connecteur ZTNA pour un nombre illimit&eacute; d'applications priv&eacute;es.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Traffic Replication</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-TRAFFIC-REPLICA</div>
+          <div class="addon-card-desc">Copie du trafic traversant Prisma Access (mirroring pour analyse externe).</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Prisma Browser (add-on PA)</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-SEB-UPG</div>
+          <div class="addon-card-desc">Ajoute le Secure Enterprise Browser &agrave; une souscription Prisma Access existante.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Strata Logging Service</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-MU-SLS</div>
+          <div class="addon-card-desc">R&eacute;tention des logs cloud 1 an pour les utilisateurs mobiles.</div>
+        </div>
+      </div>
+
+      <!-- Add-ons Remote Networks -->
+      <div class="section-title">Add-ons Remote Networks (par Mbps/an sauf indication)</div>
+      <div class="addon-grid">
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">SaaS Inline Security</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-SAAS-INLINE</div>
+          <div class="addon-card-desc">SaaS Inline Security pour les sites Remote Networks.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Private App Access</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-PRIVAPP</div>
+          <div class="addon-card-desc">Ajoute acc&egrave;s apps priv&eacute;es et ZTNA pour les sites SWG Edition.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Private App Security</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-PVT-APPSEC</div>
+          <div class="addon-card-desc">Protection sp&eacute;cifique par application pour les apps priv&eacute;es sur les sites.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">App Acceleration</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-APP-ACCL</div>
+          <div class="addon-card-desc">Acc&eacute;l&eacute;ration applicative pour les sites Remote Networks.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Interconnect</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-INTERCONCT</div>
+          <div class="addon-card-desc">Connexion s&eacute;curis&eacute;e r&eacute;seau &agrave; r&eacute;seau entre sites Remote Networks.</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-card-header"><span class="addon-card-name">Strata Logging Service</span></div>
+          <div class="addon-card-sku">PAN-PRISMA-ACCESS-NET-SLS</div>
+          <div class="addon-card-desc">R&eacute;tention des logs cloud 1 an pour les sites Remote Networks.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
+        Le NG-CASB bundle SaaS Inline + DLP Inline + API, &agrave; distinguer du SaaS Inline seul ou du DLP standalone.
+        Pour un devis, contacter Exclusive Networks via
+        <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
+      </div>
+    </div><!-- /panel-sse -->
+
+
+    <!-- ══════════════════════════════════════════
+         PANEL 2 — Prisma SD-WAN
+    ══════════════════════════════════════════ -->
+    <!-- Source : deck Prisma SASE fourni par l'utilisateur, juin 2026 -->
+    <div class="sase-panel" id="panel-sdwan" role="tabpanel">
+
+      <div class="info-note">
+        <strong>Prisma SD-WAN</strong> est le composant r&eacute;seau de la plateforme Prisma SASE. Les appliances ION se d&eacute;ploient sur les sites distants et se connectent aux PoP Prisma Access. Controller disponible en mode cloud ou on-prem. Composant r&eacute;seau distinct du composant s&eacute;curit&eacute; Prisma Access.
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:28px">
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#127968;</div>
+          <div class="card-title">Branch SD-WAN</div>
+          <div class="card-description">Appliances ION physiques pour petits et moyens sites. Routage intelligent, QoS, LTE en option.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#127970;</div>
+          <div class="card-title">Campus / Datacenter</div>
+          <div class="card-description">Appliances ION multi-gig pour grands sites, campus et datacenters. Hautes performances.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#9881;&#65039;</div>
+          <div class="card-title">Industriel / OT</div>
+          <div class="card-description">ION 3200H version rugged pour environnements extr&ecirc;mes, industriels ou OT.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#128187;</div>
+          <div class="card-title">vION (Virtual)</div>
+          <div class="card-description">Appliances virtuelles pour ESXi, KVM et Hyper-V. De 0,7 Gbps &agrave; 10 Gbps selon le mod&egrave;le.</div>
+        </div>
+      </div>
+
+      <div class="section-title">Appliances ION physiques</div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:160px">Mod&egrave;le</th>
+              <th>Cible</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ION 1200</strong></td>
+              <td>Small branch</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">LTE optionnel (SKU ION-1200-C)</td>
+            </tr>
+            <tr>
+              <td><strong>ION 1200-S</strong></td>
+              <td>Small branch (rugged)</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">Version renforcée, LTE optionnel (SKU ION-1200-S-C)</td>
+            </tr>
+            <tr>
+              <td><strong>ION 3200</strong></td>
+              <td>Branch / campus</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">Branch standard et campus moyen</td>
+            </tr>
+            <tr>
+              <td><strong>ION 3200H</strong></td>
+              <td>Environnements extr&ecirc;mes</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">Version rugged pour OT / industriel</td>
+            </tr>
+            <tr>
+              <td><strong>ION 5200</strong></td>
+              <td>Large branch / campus</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">Multi-gig, sites &agrave; fort trafic</td>
+            </tr>
+            <tr>
+              <td><strong>ION 9200</strong></td>
+              <td>Campus / datacenter</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">Multi-gig haute capacit&eacute;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-title">Appliances virtuelles vION &mdash; ESXi / KVM / Hyper-V</div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:160px">Mod&egrave;le</th>
+              <th>Bande passante</th>
+              <th>Usage typique</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>vION 3102</strong></td>
+              <td>0,7 Gbps</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">VM small branch</td>
+            </tr>
+            <tr>
+              <td><strong>vION 3104</strong></td>
+              <td>1,1 Gbps</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">VM medium branch</td>
+            </tr>
+            <tr>
+              <td><strong>vION 3108</strong></td>
+              <td>1,8 Gbps</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">VM large branch</td>
+            </tr>
+            <tr>
+              <td><strong>vION 7108</strong></td>
+              <td>3 Gbps</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">VM enterprise</td>
+            </tr>
+            <tr>
+              <td><strong>vION 7116</strong></td>
+              <td>10 Gbps</td>
+              <td style="text-align:left;font-size:12px;color:var(--text-muted)">VM datacenter</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:20px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
+        Prisma SD-WAN s'int&egrave;gre nativement avec Prisma Access. Le controller peut &ecirc;tre d&eacute;ploy&eacute; en cloud (Strata Cloud Manager) ou on-prem.
+        Pour un sizing d&eacute;taill&eacute; des appliances ION, contacter Exclusive Networks via
+        <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--accent)">partner-connect.exclusive-labs.com</a>.
+      </div>
+    </div><!-- /panel-sdwan -->
+
+
+    <!-- ══════════════════════════════════════════
+         PANEL 3 — Prisma Browser
+    ══════════════════════════════════════════ -->
+    <!-- Source : deck de licensing Prisma Browser fourni par l'utilisateur, juin 2026 -->
+    <div class="sase-panel" id="panel-browser" role="tabpanel">
+
+      <div class="info-note">
+        <strong>Prisma Browser</strong> (Secure Enterprise Browser) est un navigateur d'entreprise s&eacute;curis&eacute;, cloud-delivered, ind&eacute;pendant de Prisma Access. Disponible en 3 &eacute;ditions factur&eacute;es par utilisateur et par an. Peut &ecirc;tre d&eacute;ploy&eacute; de mani&egrave;re autonome ou en compl&eacute;ment d'une souscription Prisma Access existante.
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:28px">
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#127891;</div>
+          <div class="card-title">Education</div>
+          <div class="card-description">Identique &agrave; CORE, destin&eacute; au secteur &eacute;ducation. Navigateur s&eacute;curis&eacute;, acc&egrave;s Internet et SaaS s&eacute;curis&eacute;.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#128421;&#65039;</div>
+          <div class="card-title">Core</div>
+          <div class="card-description">P&eacute;rim&egrave;tre commercial standard. SWG, Enterprise DLP, AI Access Security, Management Console inclus.</div>
+        </div>
+        <div class="tool-card" style="cursor:default">
+          <div class="card-icon">&#128274;</div>
+          <div class="card-title">Pro</div>
+          <div class="card-description">Core + acc&egrave;s apps priv&eacute;es ZTNA sans VPN, Advanced Web Protection, Advanced Data &amp; Identity Protection.</div>
+        </div>
+      </div>
+
+      <div class="section-title">Comparatif des &eacute;ditions Prisma Browser</div>
+      <div class="table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;min-width:260px">Capacit&eacute;</th>
+              <th>Education</th>
+              <th>Core</th>
+              <th>Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-row"><td colspan="4">S&eacute;curit&eacute; Web &amp; SaaS</td></tr>
+            <tr>
+              <td>Enterprise Browser (navigateur s&eacute;curis&eacute;)</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Acc&egrave;s Internet et SaaS s&eacute;curis&eacute; (SWG)</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Enterprise DLP</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>AI Access Security (600+ apps GenAI)</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Management Console (administration centralis&eacute;e)</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Standard Support Plan</td>
+              <td class="val-check">&#10003; (inclus)</td>
+              <td class="val-check">&#10003; (inclus)</td>
+              <td class="val-check">&#10003; (inclus)</td>
+            </tr>
+
+            <tr class="section-row"><td colspan="4">Acc&egrave;s apps priv&eacute;es (PRO uniquement)</td></tr>
+            <tr>
+              <td>Acc&egrave;s apps priv&eacute;es ZTNA (RDP, SSH, sans VPN ni agent)</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+
+            <tr class="section-row"><td colspan="4">Protection avanc&eacute;e (PRO uniquement)</td></tr>
+            <tr>
+              <td>Advanced Web Protection (AWP / AXS / ABP)</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Advanced Data Protection (Prisma Browser Beyond)</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Advanced Identity Protection (Account Protection / Web PAM)</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>ADEM RUM (Real User Monitoring)</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-na">&mdash;</td>
+              <td class="val-check">&#10003;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PRO features detail -->
+      <div class="browser-pro-features">
+        <h4>Ce que Pro ajoute &mdash; d&eacute;tail</h4>
+        <ul>
+          <li><strong>Acc&egrave;s apps priv&eacute;es ZTNA :</strong> RDP, SSH et apps web priv&eacute;es accessibles depuis le navigateur, sans VPN et sans agent install&eacute; sur les serveurs cibles.</li>
+          <li><strong>Advanced Web Protection (AWP / AXS / ABP) :</strong> inspection en temps r&eacute;el du contenu et des scripts pendant l'ex&eacute;cution de la page ; AXS surveille les extensions de navigateur ; ABP bloque les zero-days.</li>
+          <li><strong>Advanced Data Protection (Beyond) :</strong> &eacute;tend les contr&ocirc;les anti-fuite aux logiciels install&eacute;s sur le poste (Outlook, Slack, Excel, Teams), au-del&agrave; du navigateur.</li>
+          <li><strong>Advanced Identity Protection (Web PAM) :</strong> s&eacute;curise les apps hors SSO et les comptes partag&eacute;s - mots de passe g&eacute;r&eacute;s centralement, jamais visibles par l'utilisateur.</li>
+          <li><strong>ADEM RUM :</strong> mesure de l'exp&eacute;rience utilisateur r&eacute;elle depuis le navigateur.</li>
+        </ul>
+      </div>
+
+      <!-- Connectivite PRO -->
+      <div class="section-title">Connectivit&eacute; apps priv&eacute;es (Pro)</div>
+      <div class="info-note" style="border-left-color:var(--purple)">
+        <strong>Options de connectivit&eacute; Prisma Browser Pro</strong> pour les apps priv&eacute;es :
+        <ul style="margin:8px 0 0;padding-left:18px;font-size:12px;line-height:1.7">
+          <li><strong>Prisma Browser Connector :</strong> choisit automatiquement la r&eacute;gion cloud la plus proche.</li>
+          <li><strong>NGFW Connector :</strong> r&eacute;utilise un firewall existant en PAN-OS &ge; 12.1.5 via Panorama.</li>
+          <li>Options additionnelles : Service Connection, ZTNA Connector, Colo Connect.</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <a href="browser.html" class="tool-card" style="min-width:200px;max-width:280px;text-decoration:none">
+          <div class="card-icon">&#128214;</div>
+          <div class="card-title">Page d&eacute;di&eacute;e Prisma Browser<span class="card-arrow">&#8599;</span></div>
+          <div class="card-description">D&eacute;tails architecture, use cases et ressources Prisma Browser.</div>
+        </a>
+        <div style="font-size:12px;color:var(--text-muted);max-width:340px;line-height:1.6">
+          Prisma Browser peut &ecirc;tre souscrit de mani&egrave;re autonome ou ajout&eacute; &agrave; une souscription Prisma Access existante via le SKU <span style="font-family:var(--mono);font-size:11px">PAN-PRISMA-ACCESS-SEB-UPG</span>.
+        </div>
+      </div>
+    </div><!-- /panel-browser -->
+
+  </div><!-- /page-wrap main -->
+
+
+  <!-- ── Ressources (toujours visibles) ── -->
+  <div class="page-wrap" style="padding-top:0;padding-bottom:32px">
+    <div class="section-title">Ressources</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="tool-card" href="https://www.paloaltonetworks.com/sase/access" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">&#9729;&#65039;</div>
+        <div class="card-title">Page produit Prisma Access<span class="card-arrow">&#8599;</span></div>
+        <div class="card-description">Page produit officielle Palo Alto Networks</div>
+      </a>
+      <a class="tool-card" href="https://www.paloaltonetworks.com/resources/datasheets/prisma-access-licensing-guide" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">&#128196;</div>
+        <div class="card-title">Prisma Access Licensing Guide<span class="card-arrow">&#8599;</span></div>
+        <div class="card-description">Guide de licensing officiel (PDF)</div>
+      </a>
+      <a class="tool-card" href="https://docs.paloaltonetworks.com/prisma-access" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">&#128218;</div>
+        <div class="card-title">Documentation Prisma Access<span class="card-arrow">&#8599;</span></div>
+        <div class="card-description">TechDocs - administration et configuration</div>
+      </a>
+      <a class="tool-card" href="https://live.paloaltonetworks.com/t5/prisma-access-discussions/bd-p/Prisma-Access-Discussions" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+        <div class="card-icon">&#128172;</div>
+        <div class="card-title">LIVEcommunity Prisma Access<span class="card-arrow">&#8599;</span></div>
+        <div class="card-description">Forum technique Prisma Access</div>
+      </a>
+    </div>
+    <div style="margin-top:16px">
+      <a href="resources.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:2px">Toutes les ressources officielles Palo Alto Networks</a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Donn&eacute;es issues de la documentation officielle Palo Alto Networks &middot; Derni&egrave;re mise &agrave; jour : juin 2026</div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.sase-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var target = tab.dataset.tab;
+        document.querySelectorAll('.sase-tab').forEach(function(t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.sase-panel').forEach(function(p) {
+          p.classList.remove('active');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        document.getElementById('panel-' + target).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
