@@ -1171,7 +1171,7 @@
           </select>
         </div>
         <div class="wiz-field">
-          <label>Objets connectés / IoT <span class="wiz-help glossary-tip" data-tip="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription IoT Security.">?</span></label>
+          <label>Objets connectés / IoT <span class="wiz-help glossary-tip" data-tip="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription Device Security.">?</span></label>
           <select id="wiz-iot">
             <option value="unknown" selected>Je ne sais pas</option>
             <option value="none">Aucun ou négligeable</option>
@@ -1358,11 +1358,11 @@
           <div class="guide-q-grid">
             <div class="guide-q-block represents">
               <div class="guide-q-block-label">Ce que ça représente</div>
-              <div class="guide-q-block-text">Caméras, capteurs, automates industriels, équipements médicaux : chaque objet génère des flux supplémentaires et appelle une sécurité adaptée (IoT Security).</div>
+              <div class="guide-q-block-text">Caméras, capteurs, automates industriels, équipements médicaux : chaque objet génère des flux supplémentaires et appelle une sécurité adaptée (Device Security).</div>
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Les objets connectés multiplient les sessions concurrentes et nécessitent la subscription IoT Security pour la visibilité et le contrôle.</div>
+              <div class="guide-q-block-text">Les objets connectés multiplient les sessions concurrentes et nécessitent la subscription Device Security pour la visibilité et le contrôle.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
@@ -2387,7 +2387,7 @@
     subs.push({ name:'WildFire', included:true, reason:'Sandbox cloud pour l\'analyse des fichiers inconnus' });
     subs.push({ name:'DNS Security', included:true, reason:'Protection contre les attaques via DNS (C2, DGA, tunneling)' });
     if (rawIot === 'moderate' || rawIot === 'heavy' || rawSector === 'industry' || rawSector === 'health') {
-      subs.push({ name:'IoT Security', included:false, reason:'Visibilité et contrôle des objets connectés' });
+      subs.push({ name:'Device Security', included:false, reason:'Visibilité et contrôle des objets connectés (ex-IoT Security)' });
     }
     if (rawSector === 'finance' || rawSector === 'health' || rawSector === 'public') {
       subs.push({ name:'Enterprise DLP', included:false, reason:'Prévention des fuites de données (conformité)' });
@@ -2745,6 +2745,7 @@ ${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à pose
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
     <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Dernière mise à jour : juin 2026</div>
+    <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
   </footer>
 </body>
 </html>
