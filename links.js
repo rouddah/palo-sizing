@@ -60,7 +60,7 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"8\" y1=\"13\" x2=\"16\" y2=\"13\"/><line x1=\"8\" y1=\"17\" x2=\"12\" y2=\"17\"/></svg>",
           "title": "Subscriptions NGFW",
-          "description": "Threat Prevention, Advanced WildFire, DNS Security, Advanced URL Filtering, IoT Security, SD-WAN, AIOps for NGFW",
+          "description": "Threat Prevention, Advanced WildFire, DNS Security, Advanced URL Filtering, Device Security, SD-WAN, AIOps for NGFW",
           "href": "https://www.paloaltonetworks.com/network-security/security-subscriptions",
           "type": "external"
         },
@@ -214,8 +214,15 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>",
           "title": "Prisma Access — Localisation PoP",
-          "description": "Liste des 150+ Points of Presence Prisma Access mondiaux et leur disponibilité par région",
+          "description": "Liste des 100+ Points of Presence Prisma Access mondiaux et leur disponibilite par region",
           "href": "https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-overview/list-of-prisma-access-locations",
+          "type": "external"
+        },
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/></svg>",
+          "title": "AI Runtime Security (AIRS)",
+          "description": "Securite des workloads IA et conteneurs cloud — Prisma AIRS 2.0 disponible depuis oct. 2025 (remplace CN-Series).",
+          "href": "https://www.paloaltonetworks.com/prisma/prisma-ai-runtime-security",
           "type": "external"
         },
         {
@@ -235,8 +242,50 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>",
           "title": "Enterprise DLP",
-          "description": "Data Loss Prevention cloud-delivered — protection des données sensibles sur tous les canaux",
+          "description": "Data Loss Prevention cloud-delivered - protection des donnees sensibles sur tous les canaux",
           "href": "https://www.paloaltonetworks.com/sase/enterprise-data-loss-prevention",
+          "type": "external"
+        }
+      ]
+    },
+    {
+      "id": "identite",
+      "title": "Identite",
+      "items": [
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>",
+          "title": "Idira — Identity Security Platform",
+          "description": "Nouveau pilier identite Palo Alto (mai 2026) : PAM, IAM, EPM, Identity Governance, Agentic Identities, Secrets Management.",
+          "href": "idira.html",
+          "type": "internal",
+          "highlight": true
+        },
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>",
+          "title": "Privileged Access Management",
+          "description": "Gestion des acces privilegies : coffre-fort de mots de passe, session recording, just-in-time access.",
+          "href": "https://www.paloaltonetworks.com/idira/human/privileged-access-management",
+          "type": "external"
+        },
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg>",
+          "title": "Identity and Access Management",
+          "description": "Gouvernance des identites, cycle de vie des comptes, SSO et authentification adaptative.",
+          "href": "https://www.paloaltonetworks.com/idira/human/identity-and-access-management",
+          "type": "external"
+        },
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/><path d=\"M9 12l2 2 4-4\"/></svg>",
+          "title": "Endpoint Privilege Manager",
+          "description": "Controle des privileges sur les endpoints Windows et macOS - least privilege, application control.",
+          "href": "https://www.paloaltonetworks.com/idira/human/endpoint-privilege-manager",
+          "type": "external"
+        },
+        {
+          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83\"/></svg>",
+          "title": "Agentic Identities",
+          "description": "Securite et gouvernance des identites non-humaines (agents IA, service accounts, API keys, workloads).",
+          "href": "https://www.paloaltonetworks.com/idira/agentic",
           "type": "external"
         }
       ]
