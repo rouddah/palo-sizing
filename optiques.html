@@ -44,7 +44,7 @@
       color: var(--text-muted);
       background: transparent;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       padding: 5px 13px;
       cursor: pointer;
       transition: color .16s, border-color .16s, background .16s, transform .16s var(--ease-ui);
@@ -70,7 +70,7 @@
       color: var(--text-bright);
       background: var(--bg2);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       padding: 6px 12px;
       outline: none;
       transition: border-color .16s;
@@ -126,14 +126,14 @@
       align-items: center;
       gap: 1px;
       padding: 7px 20px 8px;
-      border-radius: 999px;
+      border-radius: var(--r-pill);
       background: var(--surface2);
       border: 1px solid var(--border2);
     }
     .mx thead th .sp {
       display: block;
       font-family: var(--font);
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-bright);
       letter-spacing: -0.3px;
@@ -172,7 +172,7 @@
     .mx td.rowhead .rn::before {
       content: '';
       width: 9px; height: 9px;
-      border-radius: 3px;
+      border-radius: var(--r-xs);
       background: var(--rc, var(--accent));
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--rc, var(--accent)) 18%, transparent);
     }
@@ -191,7 +191,7 @@
     .opt {
       position: relative;
       border: 1px solid var(--oc, var(--border));
-      border-radius: 8px;
+      border-radius: var(--r-md);
       background: color-mix(in srgb, var(--oc, var(--accent)) 7%, var(--surface));
       padding: 9px 11px 10px;
       text-align: center;
@@ -206,7 +206,7 @@
     }
     .opt .sku {
       font-family: var(--mono);
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--oc, var(--text-bright));
       letter-spacing: -0.2px;
@@ -220,7 +220,7 @@
     }
     .opt .rc {
       font-family: var(--font);
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text);
       margin-top: 3px;
@@ -234,11 +234,11 @@
     }
     .opt .tag {
       font-family: var(--mono);
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: .4px;
       padding: 1px 5px;
-      border-radius: 3px;
+      border-radius: var(--r-xs);
       border: 1px solid currentColor;
       opacity: .85;
     }
@@ -247,7 +247,7 @@
     .tag-rgd  { color: var(--c-strata); }
     .opt .conn {
       font-family: var(--mono);
-      font-size: 9.5px;
+      font-size: 10px;
       color: var(--text-muted);
       margin-top: 5px;
       opacity: .8;
@@ -330,7 +330,7 @@
 
   <div class="mx-note">
     <div class="info-note">
-      <strong>Lecture&nbsp;:</strong> une colonne = un d&eacute;bit et son form factor, une ligne = un type de support. La port&eacute;e affich&eacute;e est celle de la description officielle du SKU&nbsp;; sur multimode elle d&eacute;pend du type de fibre, indiqu&eacute; sous la port&eacute;e. Les modules <span class="tag tag-taa" style="border:1px solid currentColor;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:9px">TAA</span> sont les versions conformes Trade Agreements Act, <span class="tag tag-rgd" style="border:1px solid currentColor;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:9px">RGD</span> les versions durcies I-Temp pour les PA-400R. V&eacute;rifiez toujours la compatibilit&eacute; du module avec le mod&egrave;le vis&eacute; dans la matrice d'interop&eacute;rabilit&eacute; Palo Alto avant de commander.
+      <strong>Lecture&nbsp;:</strong> une colonne = un d&eacute;bit et son form factor, une ligne = un type de support. La port&eacute;e affich&eacute;e est celle de la description officielle du SKU&nbsp;; sur multimode elle d&eacute;pend du type de fibre, indiqu&eacute; sous la port&eacute;e. Les modules <span class="tag tag-taa" style="border:1px solid currentColor;padding:1px 5px;border-radius: var(--r-xs);font-family:var(--mono);font-size:10px">TAA</span> sont les versions conformes Trade Agreements Act, <span class="tag tag-rgd" style="border:1px solid currentColor;padding:1px 5px;border-radius: var(--r-xs);font-family:var(--mono);font-size:10px">RGD</span> les versions durcies I-Temp pour les PA-400R. V&eacute;rifiez toujours la compatibilit&eacute; du module avec le mod&egrave;le vis&eacute; dans la matrice d'interop&eacute;rabilit&eacute; Palo Alto avant de commander.
     </div>
   </div>
 

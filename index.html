@@ -35,7 +35,7 @@
     .lead-kick::before {
       content: '';
       width: 26px; height: 2px;
-      border-radius: 2px;
+      border-radius: var(--r-xs);
       background: var(--accent);
     }
 
@@ -96,7 +96,7 @@
 
     .stat .lb {
       margin-top: 9px;
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text);
       line-height: 1.35;
@@ -140,7 +140,7 @@
       text-decoration: none;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--r-lg);
       padding: 20px 20px 22px;
       overflow: hidden;
       transition: transform var(--dur) var(--ease),
@@ -177,7 +177,7 @@
     }
     .tcard .ic {
       width: 38px; height: 38px;
-      border-radius: 10px;
+      border-radius: var(--r-md);
       display: grid;
       place-items: center;
       background: color-mix(in srgb, var(--fx) 13%, transparent);
@@ -187,7 +187,7 @@
     }
     .tcard .ic svg { width: 18px; height: 18px; }
     .tcard h3 {
-      font-size: 15.5px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text-bright);
       letter-spacing: -0.3px;
@@ -202,7 +202,7 @@
       transition: opacity .25s, transform .25s var(--ease-ui);
     }
     .tcard:hover h3 .go { opacity: 1; transform: none; }
-    .tcard p { margin-top: 7px; font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+    .tcard p { margin-top: 7px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
     .tcard .tag {
       display: inline-block;
       margin-top: 13px;
@@ -214,7 +214,7 @@
       color: var(--fx);
       background: color-mix(in srgb, var(--fx) 11%, transparent);
       border: 1px solid color-mix(in srgb, var(--fx) 26%, transparent);
-      border-radius: 5px;
+      border-radius: var(--r-sm);
       padding: 3px 8px;
     }
 
@@ -224,7 +224,7 @@
       position: relative;
       display: block;
       text-decoration: none;
-      border-radius: 14px;
+      border-radius: var(--r-lg);
       padding: 22px 20px 24px;
       background: linear-gradient(155deg,
         color-mix(in srgb, var(--fx) 15%, var(--surface)), var(--surface) 62%);
@@ -253,7 +253,7 @@
       color: var(--text-bright);
       letter-spacing: -0.5px;
     }
-    .pcard2 p { margin-top: 8px; font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+    .pcard2 p { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
 
     @media (max-width: 760px) { .lead { padding-top: 54px; } }
   </style>

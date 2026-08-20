@@ -68,9 +68,20 @@
   --red:          var(--crit);
   --red-dim:      var(--crit-dim);
 
-  --radius-sm:    4px;
-  --radius:       6px;
-  --radius-lg:    10px;
+  /* ── Rayons ──────────────────────────────────────────────
+     Cinq pas, un role par pas. Le rayon dit a quel niveau appartient
+     une surface : douze valeurs posees au fil de l'eau, comme avant,
+     ne disaient plus rien. */
+  --r-xs:   3px;    /* pastilles, jauges, reperes */
+  --r-sm:   6px;    /* champs, boutons, filtres */
+  --r-md:  10px;    /* cartes */
+  --r-lg:  14px;    /* grandes cartes, fenetres modales */
+  --r-pill: 999px;  /* badges */
+
+  /* alias historiques, le temps que tout le depot migre */
+  --radius-sm: var(--r-xs);
+  --radius:    var(--r-sm);
+  --radius-lg: var(--r-md);
   --shadow:       0 6px 20px rgba(0,0,0,0.45);
   --shadow-accent:0 4px 14px rgba(250,88,45,0.18);
 
@@ -240,7 +251,7 @@ body {
   font-size: 10px;
   font-weight: 500;
   padding: 3px 8px;
-  border-radius: 20px;
+  border-radius: var(--r-pill);
   border: 1px solid var(--border);
   color: var(--text-muted);
   background: var(--surface);
@@ -290,7 +301,7 @@ body {
 .dropdown-menu > .dropdown-inner {
   background: var(--surface);
   border: 1px solid var(--border2);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   box-shadow: 0 22px 50px -20px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.25);
   padding: 7px;
 }
@@ -307,7 +318,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 9px 13px !important;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   text-decoration: none;
   color: inherit !important;
   transition: background .14s, color .14s;
@@ -319,7 +330,7 @@ body {
   transition: color .14s;
 }
 .dropdown-item .dropdown-item-name {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.1px;
@@ -402,7 +413,7 @@ body {
   font-size: 13px;
   font-weight: 500;
   padding: 7px 16px;
-  border-radius: 20px;
+  border-radius: var(--r-pill);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-muted);
@@ -475,7 +486,7 @@ body {
 .card-icon {
   width: 36px;
   height: 36px;
-  border-radius: 9px;
+  border-radius: var(--r-md);
   background: var(--surface2);
   border: 1px solid var(--border);
   display: flex;
@@ -592,7 +603,7 @@ body {
 .comparison-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 .comparison-table th,
@@ -838,7 +849,7 @@ body {
   padding: 36px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--r-pill);
   text-decoration: none;
   color: var(--text);
   transition: border-color 0.2s, transform 0.2s;
@@ -1000,7 +1011,7 @@ body {
 /* ── Bouton d'action (comparateur, wizards) ── */
 .wiz-action-btn {
   padding: 10px 20px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   font-family: var(--font);
   font-size: 12px;
   font-weight: 600;
@@ -1092,7 +1103,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   color: var(--text-dim);
   background: var(--pillar-bg);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: var(--r-pill);
   padding: 4px 12px;
   transition: border-color .2s, color .2s, transform .2s var(--ease-ui);
 }
@@ -1145,7 +1156,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 .nav-caret {
   display: inline-block;
   margin-left: 5px;
-  font-size: 9px;
+  font-size: 10px;
   opacity: .6;
   transition: transform .18s var(--ease-ui), opacity .18s;
 }
@@ -1185,7 +1196,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   background: var(--bg2);
   color: var(--pillar);
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.3px;
   text-transform: uppercase;
@@ -1310,7 +1321,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   background: var(--surface3);
   border: 1px solid var(--border2);
   border-left: 3px solid var(--green);
-  border-radius: 8px;
+  border-radius: var(--r-md);
   padding: 9px 16px;
   box-shadow: 0 18px 40px -18px rgba(0,0,0,.85);
   opacity: 0;
@@ -1345,7 +1356,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   color: var(--accent);
   border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
   background: var(--accent-dim);
-  border-radius: 5px;
+  border-radius: var(--r-sm);
   padding: 3px 9px;
   white-space: nowrap;
 }
@@ -1374,7 +1385,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   color: var(--text);
   background: var(--surface2);
   border: 1px solid var(--border2);
-  border-radius: 7px;
+  border-radius: var(--r-sm);
   padding: 7px 13px;
   cursor: pointer;
   white-space: nowrap;
@@ -1382,7 +1393,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 }
 .btn-tool:hover { color: var(--text-bright); border-color: var(--accent); }
 .btn-tool svg { width: 13px; height: 13px; opacity: .8; }
-.tool-src { font-family: var(--mono); font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+.tool-src { font-family: var(--mono); font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 .tool-src b { color: var(--accent); font-weight: 700; }
 
 /* ── Copie : la carte entiere bascule au vert ──────────────── */
@@ -1417,12 +1428,12 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   gap: 7px 20px;
   padding: 9px 24px;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--text-muted);
   border-top: 1px solid var(--border);
 }
 .mx-legend span { display: inline-flex; align-items: center; gap: 7px; }
-.mx-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.mx-legend i { width: 8px; height: 8px; border-radius: var(--r-xs); display: inline-block; }
 
 
 /* ============================================================
@@ -1488,7 +1499,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 3px;
+  border-radius: var(--r-xs);
 }
 /* le focus souris reste discret, le focus clavier reste franc */
 :focus:not(:focus-visible) { outline: none; }
@@ -1505,7 +1516,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   z-index: 800;
   max-width: 330px;
   padding: 12px 15px 13px;
-  border-radius: 11px;
+  border-radius: var(--r-lg);
   background: color-mix(in srgb, var(--surface3) 94%, transparent);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border2);
@@ -1521,12 +1532,12 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   position: absolute;
   left: 0; top: 12px; bottom: 12px;
   width: 2px;
-  border-radius: 2px;
+  border-radius: var(--r-xs);
   background: var(--tipc, var(--accent));
 }
 #tip .tt {
   font-family: var(--font);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--tipc, var(--accent));
   letter-spacing: -0.1px;
@@ -1675,12 +1686,12 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 /* l'unite fait partie du libelle, jamais du seul placeholder */
 .wb-unit {
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 3px;
+  border-radius: var(--r-xs);
   padding: 1px 5px;
   letter-spacing: .02em;
 }
@@ -1767,7 +1778,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   align-items: center;
   gap: 6px;
   padding: 4px 9px;
-  border-radius: 20px;
+  border-radius: var(--r-pill);
   font-size: var(--text-2xs);
   font-weight: 600;
   white-space: nowrap;
@@ -1800,7 +1811,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   vertical-align: baseline;
 }
 .wb-metrics thead th {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -1817,7 +1828,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   text-align: right;
   white-space: nowrap;
 }
-.wb-metrics td.num .u { font-size: 10.5px; font-weight: 500; color: var(--text-muted); margin-left: 3px; }
+.wb-metrics td.num .u { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-left: 3px; }
 .wb-metrics td.need .val { color: var(--accent-txt); }
 .wb-metrics tbody tr:hover { background: var(--surface); }
 
@@ -1836,11 +1847,11 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .wb-gauge-track {
   position: relative;
   height: 8px;
-  border-radius: 2px;
+  border-radius: var(--r-xs);
   background: var(--surface3);
   overflow: hidden;
 }
-.wb-gauge-fill { height: 100%; border-radius: 2px; transition: width .2s ease-out; }
+.wb-gauge-fill { height: 100%; border-radius: var(--r-xs); transition: width .2s ease-out; }
 .wb-gauge-fill.ok { background: var(--ok); }
 .wb-gauge-fill.warn { background: var(--warn); }
 .wb-gauge-fill.crit { background: var(--crit); }
@@ -1886,7 +1897,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   font-size: 10px;
   color: var(--text-muted);
   border: 1px solid var(--border2);
-  border-radius: 3px;
+  border-radius: var(--r-xs);
   padding: 1px 5px;
 }
 
@@ -1975,7 +1986,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   .wb-row { grid-template-columns: 1fr; }
   .wb-bar { flex-wrap: wrap; padding: 6px 12px; }
   .wb-bar .spacer { margin-left: 0; width: 100%; }
-  .wb-verdict-family { font-size: 21px; }
+  .wb-verdict-family { font-size: 20px; }
   /* cibles tactiles : 44px partout ou l'on appuie */
   .wb-tab,
 .wb-field input,
@@ -2325,3 +2336,78 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 @media (prefers-reduced-motion: reduce) {
   .tcard, .pcard2, .stats { transition: none; }
 }
+
+/* ============================================================
+   Qualite typographique
+   ------------------------------------------------------------
+   Rien ici ne change une taille ni une couleur. Ce sont les
+   reglages qui font la difference entre du texte pose et du texte
+   compose : cesure, veuves, alignement des chiffres, interlettrage
+   des capitales.
+   ============================================================ */
+
+/* ── Les chiffres s'alignent, partout ──────────────────────
+   Une colonne de chiffres qui ne s'aligne pas ne se compare pas.
+   La regle vaut pour tout ce qui est en monospace, sans avoir a y
+   penser cas par cas. */
+[style*="--mono"], .mono,
+code, kbd, samp,
+.stat-num, .wb-metrics td.num, .val-cell,
+.wb-verdict-family, .wb-gauge-pct, .wb-unit {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;   /* zero barre : 0 et O ne se confondent plus */
+}
+
+/* ── Titres : l'equilibre plutot que le hasard ─────────────
+   text-wrap: balance repartit les mots sur les lignes d'un titre au
+   lieu de laisser un seul mot sur la derniere. Ignore par les
+   navigateurs qui ne le connaissent pas, sans consequence. */
+h1, h2, h3, .wb-verdict-family, .band-head h2, .page-header h1 {
+  text-wrap: balance;
+}
+
+/* ── Paragraphes : pas de mot seul en fin de bloc ──────────
+   text-wrap: pretty evite la veuve, cette derniere ligne a un seul
+   mot qui casse le bas d'un paragraphe. */
+p, .wb-verdict-pos, .card-description, .intro, .lb, .wb-note div {
+  text-wrap: pretty;
+}
+
+/* ── Longueur de ligne ─────────────────────────────────────
+   Au-dela d'environ 75 caracteres, l'oeil perd la ligne suivante en
+   revenant a la marge. Les blocs de prose sont bornes ; les cellules
+   de tableau et les libelles, non : ils sont courts par nature. */
+.intro, .band-head span, .card-description,
+.wb-note div, .guide-q-block-text { max-width: 72ch; }
+
+/* ── Capitales : sans interlettrage, elles se collent ──────
+   Une suite de capitales composee a l'interlettrage du bas de casse
+   est illisible. Le reglage existait deja par endroits, il devient
+   la regle. */
+.wb-pane-title, .wb-group-title, .band-head h2, .lead-kick,
+.wb-metrics thead th, .wb-metrics caption, .lb-sub,
+.cat-inner-text, .tb-label {
+  letter-spacing: .08em;
+}
+/* ...mais jamais sur du monospace deja espace par construction */
+.wb-pane-sub, .stat .lb-sub { letter-spacing: .04em; }
+
+/* ── Interlignage : proportionnel a la taille ──────────────
+   Un petit texte a besoin d'un interlignage relatif plus grand, un
+   grand titre d'un plus petit. Trois paliers suffisent. */
+h1, .wb-verdict-family { line-height: 1.06; }
+h2, h3 { line-height: 1.22; }
+.wb-list li, .wb-note div, .card-description, p { line-height: 1.6; }
+
+/* ── Cesure des mots longs ─────────────────────────────────
+   Les noms de produit Palo Alto sont longs et ne se coupent pas
+   naturellement. Sur une colonne etroite, ils debordaient. */
+.wb-list li, .wb-metrics tbody th, .card-title, .tcard h3 {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* ── Le point final d'un titre ne doit pas passer seul ─────
+   Le titre de l'accueil se termine par un point pose apres un span
+   colore : sans cela il pouvait se retrouver seul sur sa ligne. */
+.lead h1 .accent { white-space: normal; }

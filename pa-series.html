@@ -63,7 +63,7 @@
       
       font-size: 11px;
       padding: 4px 12px;
-      border-radius: 4px;
+      border-radius: var(--r-xs);
       border: 1px solid var(--border);
       background: transparent;
       color: var(--text-muted);
@@ -96,7 +96,7 @@
     }
     .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
     .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
-    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 6px; min-height: 40px; }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: var(--r-sm); min-height: 40px; }
     .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     .table-outer::-webkit-scrollbar-corner { background: var(--bg2); }
     @supports (scrollbar-width: auto) {
@@ -176,7 +176,7 @@
       vertical-align: bottom;
     }
 
-    .model-card-clip { overflow: hidden; border-radius: 8px 8px 0 0; }
+    .model-card-clip { overflow: hidden; border-radius: var(--r-md) var(--r-md) 0 0; }
 
     .model-card-top {
       padding: 10px 12px 8px;
@@ -223,7 +223,7 @@
 
     .model-ds-link {
       
-      font-size: 9px;
+      font-size: 10px;
       text-transform: uppercase;
       color: rgba(255,255,255,0.55);
       text-decoration: none;
@@ -258,7 +258,7 @@
       border-left: 2px solid transparent;
       font-family: var(--mono);
       font-variant-numeric: tabular-nums;
-      font-size: 11.5px;
+      font-size: 12px;
       color: var(--text);
       transition: background var(--dur-fast) var(--ease);
       white-space: nowrap;
@@ -284,7 +284,7 @@
     }
     .val-max::after {
       content: ' ↑';
-      font-size: 9px;
+      font-size: 10px;
       opacity: 0.7;
     }
 
@@ -307,7 +307,7 @@
     .badge-yes {
       display: inline-block;
       padding: 1px 7px;
-      border-radius: 3px;
+      border-radius: var(--r-xs);
       font-size: 10px;
       background: rgba(34,197,94,0.12);
       border: 1px solid rgba(34,197,94,0.25);
@@ -318,7 +318,7 @@
     .badge-eos-pa {
       display: inline-block;
       padding: 1px 7px;
-      border-radius: 3px;
+      border-radius: var(--r-xs);
       font-size: 10px;
       background: rgba(234,179,8,0.12);
       border: 1px solid rgba(234,179,8,0.4);
@@ -331,18 +331,18 @@
       background: rgba(234,179,8,0.25);
       border: 1px solid rgba(234,179,8,0.6);
       color: #fbbf24;
-      font-size: 8px;
+      font-size: 10px;
       
       font-weight: 700;
       padding: 1px 5px;
-      border-radius: 3px;
+      border-radius: var(--r-xs);
       letter-spacing: 0.07em;
     }
 
     /* Measurement note in stats bar */
     .stats-note {
       margin-left: auto;
-      font-size: 9px;
+      font-size: 10px;
       color: var(--text-muted);
       font-style: italic;
     }
@@ -411,7 +411,7 @@
       font-style: normal;
       line-height: 1.5;
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       border: 1px solid var(--border2);
       white-space: normal;
       width: max-content;
@@ -436,7 +436,7 @@
       padding: 9px 18px;
       background: var(--accent);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--r-md);
       color: #fff;
       font-family: var(--font);
       font-size: 13px;
@@ -482,7 +482,7 @@
       position: absolute; top: 18px; right: 18px;
       width: 30px; height: 30px;
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 6px; cursor: pointer;
+      border-radius: var(--r-sm); cursor: pointer;
       color: var(--text-muted); font-size: 15px;
       display: flex; align-items: center; justify-content: center;
     }
@@ -535,12 +535,12 @@
       <div class="filter-group" id="series-filters">
         <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
         <button class="fb" id="PA-400" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
-        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:9px;color:#4ade80">New</span></button>
-        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
+        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:10px;color:#4ade80">New</span></button>
+        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:10px;color:var(--yellow)">EoS</span></button>
         <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
         <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
         <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
-        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)" title="End of Sale — décembre 2025">PA-7000 <span style="font-size:9px;color:var(--yellow)">EoS</span></button>
+        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)" title="End of Sale — décembre 2025">PA-7000 <span style="font-size:10px;color:var(--yellow)">EoS</span></button>
         <button class="fb" data-series="PA-7500" onclick="filterSeries(this)">PA-7500</button>
       </div>
       <div class="tb-sep"></div>
@@ -556,10 +556,10 @@
     <div class="toolbar">
       <span class="tb-label">Recherche</span>
       <div class="tb-sep"></div>
-      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
+      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
       <div class="tb-sep"></div>
       <span class="tb-label">Trier par</span>
-      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
+      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
         <option value="default">Ordre par défaut</option>
         <option value="tp">Débit Threat Prevention</option>
         <option value="fw">Débit App-ID</option>
@@ -700,7 +700,7 @@
     };
     hRow.innerHTML = `<th class="th-corner"></th>` +
       visible.map(m => {
-        const repl = m.eos && EOS_REPLACEMENTS[m.id] ? `<span style="display:block;font-size:8px;color:var(--yellow);margin-top:2px">→ ${EOS_REPLACEMENTS[m.id]}</span>` : '';
+        const repl = m.eos && EOS_REPLACEMENTS[m.id] ? `<span style="display:block;font-size:10px;color:var(--yellow);margin-top:2px">→ ${EOS_REPLACEMENTS[m.id]}</span>` : '';
         return `
         <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
           <div class="model-card-clip">
