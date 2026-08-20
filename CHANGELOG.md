@@ -1,5 +1,56 @@
 # Changelog
 
+## Session 10 - 20 aout 2026 : fond anime, profondeur
+
+### Fond anime : un maillage reseau, pas un degrade
+
+`bg.js` dessine une topologie sur un canvas place sous le contenu :
+des noeuds qui derivent lentement, des liens qui apparaissent quand
+deux noeuds se rapprochent, et des paquets qui parcourent ces liens.
+
+Le choix n'est pas gratuit. Un degrade decoratif avait ete retire en
+session 6 comme « AI slop », et le remettre aurait refait la meme
+erreur. Un maillage reseau **represente le sujet de l'outil** : sur un
+dimensionneur de firewall, c'est une illustration, pas un ornement.
+
+Quatre garde-fous, verifies et non supposes :
+
+| Situation | Comportement | Mesure |
+| --- | --- | --- |
+| `prefers-reduced-motion` | canvas jamais cree | verifie |
+| Ecran < 620px | canvas jamais cree | verifie |
+| Onglet en arriere-plan | rendu arrete | 0,0% processeur sur 2,5 s |
+| Marche normale | 30 images/s plafonnees | 3,2% d'un coeur |
+
+Le canvas est masque la ou le texte se lit : plein en haut a droite,
+absent derriere la colonne de contenu. Sur les pages denses
+(`data-bg="calme"` : comparateur, etabli, optiques, accessoires,
+recherche, wizard) il ne vit que dans la bande haute, avec moins de
+noeuds et une opacite reduite. La matrice de comparaison n'est pas
+touchee du tout : un fond ne doit jamais concurrencer une colonne de
+chiffres.
+
+Si le canvas echoue, il est retire et la page est simplement posee sur
+son fond : un decor ne doit avoir aucune consequence.
+
+### Profondeur
+
+Trois procedes, tous a 1px ou en ombre tres basse, aucun n'ajoute de
+couleur. Une interface dense se modernise par la lumiere, pas par la
+saturation.
+
+- **Filet superieur en degrade** sur les cartes et le bandeau de
+  chiffres : un pixel de blanc a 7% decolle une surface de son fond.
+  C'est ce qui separe une carte posee d'un rectangle.
+- **Ombre a deux etages** : une courte et serree pour le contact, une
+  longue et tres diffuse pour la masse. Une ombre unique et large fait
+  « autocollant ».
+- **Jauge avec matiere** : degrade vers le haut et lueur de la meme
+  teinte sous la barre. La valeur se lit toujours au chiffre.
+
+Les separateurs du bandeau de chiffres passent en degrade : ils
+separent sans decouper le bandeau en quatre.
+
 ## Session 9 - 20 aout 2026 : emojis caches, vignettes detourees, mouvement
 
 ### 80 emojis invisibles a trois passes de nettoyage
