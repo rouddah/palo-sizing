@@ -1,5 +1,64 @@
 # Changelog
 
+## Session 9 - 20 aout 2026 : emojis caches, vignettes detourees, mouvement
+
+### 80 emojis invisibles a trois passes de nettoyage
+
+Le site en contenait encore 80, sous forme d'**entites HTML numeriques**
+(`&#128274;` pour un cadenas). Le fichier ne contenait alors que des
+chiffres ASCII : aucune recherche de caractere ne pouvait les voir, et
+le navigateur affichait pourtant bien un emoji. Ils ont survecu a trois
+passes de nettoyage avant d'etre reperes a l'ecran, sur la page SASE.
+
+`_check.js` **decode desormais les entites avant de balayer**. Les 80
+sont remplaces par des SVG traces, cartes de `prisma.html` comprises
+(lien, agence, cadenas, cloud, siege, poste de travail, formation,
+documentation, echange).
+
+Restent 14 fleches typographiques signalees mais **volontairement
+conservees** : elles vivent dans du texte courant (`MTTR jours ->
+secondes`) ou dans des `<option>`, ou un SVG est techniquement
+impossible. Le controle les note sans bloquer.
+
+### Vignettes materiel : fond blanc retire
+
+Les 101 visuels etaient des PNG **sans canal alpha, sur fond blanc
+plein** : sur le theme sombre, chaque boitier apparaissait dans un
+rectangle blanc.
+
+`tools/detour.js` rend le fond transparent par **diffusion depuis les
+bords**, et non par simple seuil : un boitier PA-Series porte des
+serigraphies et des LED blanches qu'un seuil global aurait percees.
+Seul le blanc relie au bord est du fond. Les seuils ont ete resserres
+apres un premier essai : a 200 de luminance, les chassis gris argent
+etaient manges.
+
+`tools/recadre.js` recadre ensuite sur l'appareil. Les decoupages de la
+planche Visio avaient emporte la legende du boitier voisin : **234
+fragments de texte parasites** flottaient au-dessus des appareils une
+fois le fond transparent. La recherche de composantes connexes les
+distingue du chassis, en gardant les parties legitimement detachees
+(antennes d'un PA-415-5G, modules d'un PA-7000).
+
+**Cinq fichiers etaient irrecuperables** et ont ete supprimes :
+`pa-5410`, `pa-5420`, `pa-5430`, `pa-5440`, `pa-7080`. Ils ne
+contenaient pas d'appareil mais un fragment de legende **decale d'une
+position** : `pa-5410.png` montrait le texte « PA-3440 »,
+`pa-5420.png` « PA-5410 », `pa-5430.png` « PA-5420 ». Le decoupage de
+la planche a glisse d'un cran. Le comparateur affiche ces colonnes sans
+vignette, ce que `chassis()` prevoyait deja.
+
+### Mouvement, deuxieme passe
+
+Cartes outil et cartes pilier de l'accueil : levee de 4px, filet
+d'accent qui se trace, fleche qui part, pictogramme qui respire. Trois
+signaux pour un seul geste, sans qu'aucun texte ne bouge. Filtres du
+comparateur et colonnes de modele repondent au survol. L'entree en
+cascade est etendue a six pages produit.
+
+Toujours la meme courbe unique, toujours `transform` et `opacity`
+seuls, toujours neutralise sous `prefers-reduced-motion`.
+
 ## Session 8 - 20 aout 2026 : couche de mouvement, accueil, densite
 
 ### Trois erreurs corrigees, trouvees en relisant la copie

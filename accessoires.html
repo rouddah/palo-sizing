@@ -245,7 +245,7 @@
 
   function part(a) {
     return '<article class="part copy-card" data-copy="' + a.sku + '" data-tip="' + a.sku + '|' + esc(a.desc) + (a.platforms.length ? '<br>Plateformes : ' + a.platforms.join(', ') : '') + '<br><b>Cliquer pour copier la référence.</b>">'
-      + '<div class="copy-flag">&#10003; Copié !</div>'
+      + '<div class="copy-flag"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg> Copié !</div>'
       + (a.eol ? '<span class="eol" title="Fin de commercialisation">EoS ' + a.eol.slice(0, 7) + '</span>' : '')
       + '<div class="sku">' + a.sku + '</div>'
       + '<div class="fam">' + a.family + '</div>'

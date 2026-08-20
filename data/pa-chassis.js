@@ -1,5 +1,15 @@
 /* Visuels de boitiers, decoupes dans le stencil Visio officiel Palo Alto
-   (panw-visio-index-sheet.pdf). Fichiers dans img/hw/. */
+   (panw-visio-index-sheet.pdf). Fichiers dans img/hw/.
+
+   Fond blanc rendu transparent et recadrage sur l'appareil : voir
+   tools/detour.js et tools/recadre.js.
+
+   Cinq references ont ete retirees le 20 aout 2026 : leurs fichiers ne
+   contenaient pas d'appareil mais un fragment de legende decale d'une
+   position (pa-5410.png montrait le texte « PA-3440 », pa-5420.png
+   « PA-5410 », etc.). Le comparateur affiche ces colonnes sans
+   vignette, ce que chassis() prevoit. A regenerer depuis la planche
+   Visio si les visuels redeviennent disponibles. */
 
 const PA_CHASSIS = {
 "pa-410r": {
@@ -157,11 +167,6 @@ const PA_CHASSIS = {
 "img": "img/hw/pa-445.png",
 "page": 4
 },
-"pa-5440": {
-"label": "PA-5440",
-"img": "img/hw/pa-5440.png",
-"page": 4
-},
 "m-300": {
 "label": "M-300",
 "img": "img/hw/m-300.png",
@@ -190,21 +195,6 @@ const PA_CHASSIS = {
 "pa-3440": {
 "label": "PA-3440",
 "img": "img/hw/pa-3440.png",
-"page": 5
-},
-"pa-5410": {
-"label": "PA-5410",
-"img": "img/hw/pa-5410.png",
-"page": 5
-},
-"pa-5420": {
-"label": "PA-5420",
-"img": "img/hw/pa-5420.png",
-"page": 5
-},
-"pa-5430": {
-"label": "PA-5430",
-"img": "img/hw/pa-5430.png",
 "page": 5
 },
 "pa-5450-ac-ps": {
@@ -435,11 +425,6 @@ const PA_CHASSIS = {
 "pa-7050-smc": {
 "label": "PA-7050-SMC",
 "img": "img/hw/pa-7050-smc.png",
-"page": 10
-},
-"pa-7080": {
-"label": "PA-7080",
-"img": "img/hw/pa-7080.png",
 "page": 10
 },
 "pa-7080-smc": {

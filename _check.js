@@ -147,12 +147,33 @@ try {
   problems.push('controle des compteurs impossible : ' + e.message);
 }
 
-/* ── 6. Emojis residuels ───────────────────────────────────── */
-const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/u;
+/* ── 6. Emojis residuels ─────────────────────────
+   Le fichier est decode AVANT le balayage. 80 emojis se cachaient
+   dans le site sous forme d entites HTML numeriques : le fichier ne
+   contenait alors que des chiffres ASCII, aucune recherche de
+   caractere ne pouvait les voir, et le navigateur affichait pourtant
+   bien un emoji. Ils sont restes invisibles a trois passes de
+   nettoyage avant d etre reperes a l ecran.
+
+   Ce controle est indicatif (notes), pas bloquant : les fleches
+   typographiques d un texte courant ou d un <option>, ou le SVG est
+   impossible, sont legitimes. */
+const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{2190}-\u{21FF}\u{2460}-\u{24FF}]/u;
+function decodeEntities(t) {
+  return t.replace(/&#(\d+);/g, (_, d) => {
+    try { return String.fromCodePoint(+d); } catch (e) { return _; }
+  }).replace(/&#x([0-9a-fA-F]+);/g, (_, h) => {
+    try { return String.fromCodePoint(parseInt(h, 16)); } catch (e) { return _; }
+  });
+}
 htmlFiles.concat(jsFiles).forEach(f => {
   const txt = fs.readFileSync(path.join(ROOT, f), 'utf8');
   txt.split('\n').forEach((line, i) => {
-    if (EMOJI.test(line)) notes.push(f + ':' + (i + 1) + ' : emoji -> ' + line.trim().slice(0, 80));
+    const decoded = decodeEntities(line);
+    if (EMOJI.test(decoded)) {
+      const via = decoded !== line ? ' (entite HTML)' : '';
+      notes.push(f + ':' + (i + 1) + via + ' : ' + decoded.trim().slice(0, 70));
+    }
   });
 });
 

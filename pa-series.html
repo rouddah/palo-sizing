@@ -54,7 +54,12 @@
 
     .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
 
+    /* Le filtre glisse vers son etat actif au lieu d'y sauter. */
     .fb {
+      transition: background-color var(--dur-fast) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  color var(--dur-fast) var(--ease),
+                  transform var(--dur-fast) var(--ease);
       
       font-size: 11px;
       padding: 4px 12px;
@@ -490,6 +495,13 @@
     .cmp-table tr:hover td { background: var(--surface2) !important; }
     .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 13px; }
     .ct-val { font-family: var(--mono); font-size: 13px; color: var(--text); }
+
+    .fb:hover { transform: translate3d(0,-1px,0); }
+    .fb:active { transform: none; transition-duration: 60ms; }
+    /* La colonne de modele se souleve legerement au survol : elle
+       indique la cible du clic sans decaler le tableau. */
+    .model-col, .model-card { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+    .model-col:hover, .model-card:hover { transform: translate3d(0,-3px,0); }
   </style>
 </head>
 <body>

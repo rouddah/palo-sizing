@@ -143,8 +143,33 @@
       border-radius: 14px;
       padding: 20px 20px 22px;
       overflow: hidden;
-      transition: transform .3s var(--ease-ui), border-color .3s, box-shadow .3s;
+      transition: transform var(--dur) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  background-color var(--dur-fast) var(--ease);
     }
+    /* La carte se souleve, son filet d'accent se trace, sa fleche part.
+       Trois signaux pour un seul geste : le survol devient lisible sans
+       qu'aucun texte ne bouge. */
+    .tcard:hover, .tcard:focus-visible {
+      transform: translate3d(0, -4px, 0);
+      border-color: var(--fx, var(--border2));
+      background: var(--surface2);
+    }
+    .tcard::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 1px;
+      background: var(--fx, var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--dur) var(--ease);
+    }
+    .tcard:hover::after, .tcard:focus-visible::after { transform: scaleX(1); }
+    .tcard .go { transition: transform var(--dur-fast) var(--ease); display: inline-block; }
+    .tcard:hover .go { transform: translate3d(4px, 0, 0); }
+    .tcard .card-ico { transition: transform var(--dur) var(--ease); }
+    .tcard:hover .card-ico { transform: scale(1.06); }
     .tcard:hover {
       transform: translateY(-5px);
       border-color: color-mix(in srgb, var(--fx) 55%, var(--border));
@@ -207,7 +232,12 @@
       overflow: hidden;
       transition: transform .3s var(--ease-ui), border-color .3s;
     }
-    .pcard2:hover { transform: translateY(-4px); border-color: var(--fx); }
+    .pcard2 { transition: transform var(--dur) var(--ease), border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease); }
+    .pcard2:hover, .pcard2:focus-visible {
+      transform: translate3d(0, -4px, 0);
+      border-color: var(--fx);
+      background: var(--surface2);
+    }
     .pcard2 .k {
       font-family: var(--mono);
       font-size: 10px;
@@ -351,7 +381,7 @@
     const ext = item.type === 'external' ? 'target="_blank" rel="noopener noreferrer"' : '';
     return '<a class="tool-card' + (item.highlight ? ' card-partner' : '') + '" href="' + item.href + '" ' + ext + '>'
       + '<div class="card-icon">' + item.icon + '</div>'
-      + '<div class="card-title">' + item.title + '<span class="card-arrow">&#8599;</span></div>'
+      + '<div class="card-title">' + item.title + '<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg></span></div>'
       + '<div class="card-description">' + item.description + '</div></a>';
   }
 

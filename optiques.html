@@ -449,7 +449,7 @@
     const reach = o.reach ? o.reach + (o.fiber ? ' <span style="opacity:.65;font-weight:400">(' + o.fiber + ')</span>' : '') : '';
     return '<div class="opt copy-card" style="--oc:' + color + '" data-copy="' + o.sku + '"'
       + ' data-copy-label="' + o.sku + '" data-tip="' + o.sku + '|' + esc(o.desc) + '<br><b>Cliquer pour copier la référence.</b>">'
-      + '<div class="copy-flag">&#10003; Copié !</div>'
+      + '<div class="copy-flag"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg> Copié !</div>'
       + '<div class="sku">' + o.sku.replace(/^PAN-/, '') + '</div>'
       + (o.std ? '<div class="std">' + o.std + '</div>' : '')
       + (reach ? '<div class="rc">' + reach + '</div>' : '')
