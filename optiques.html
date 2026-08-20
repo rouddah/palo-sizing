@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="img/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Optiques NGFW &mdash; Sizing Guide</title>
+  <title>Optiques NGFW · Sizing Guide</title>
   <meta name="description" content="Matrice des modules optiques Palo Alto Networks : SFP, SFP+, SFP28, QSFP+, QSFP28, QSFP-DD. Debit, support, portee et references, sans prix." />
-  <meta property="og:title" content="Optiques NGFW — Sizing Guide" />
+  <meta property="og:title" content="Optiques NGFW · Sizing Guide" />
   <meta property="og:description" content="Matrice des modules optiques Palo Alto Networks par debit et par support." />
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
@@ -291,7 +291,7 @@
     <div class="tool-head">
       <span class="tk">Transceivers</span>
       <h1>Optiques PA-Series</h1>
-      <span class="sub">Une colonne par d&eacute;bit, une ligne par support &mdash; cliquez une r&eacute;f&eacute;rence pour la copier.</span>
+      <span class="sub">Une colonne par d&eacute;bit, une ligne par support · cliquez une r&eacute;f&eacute;rence pour la copier.</span>
       <span class="acts">
         <button class="btn-tool" id="copy-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copier les SKU affich&eacute;s</span></button>
         <span class="tool-src"><b id="hm-count">0</b> modules &middot; price list AUG&nbsp;2026 &middot; sans prix</span>
@@ -315,10 +315,10 @@
       <button class="flt-reset" onclick="resetAll()">Tout r&eacute;afficher</button>
     </div>
     <div class="mx-legend">
-      <span><i style="background:var(--c-prisma)"></i>Multimode &mdash; MMF, courte distance</span>
-      <span><i style="background:var(--c-cortex)"></i>Monomode &mdash; SMF, longue distance</span>
-      <span><i style="background:var(--c-strata)"></i>Cuivre &mdash; RJ-45</span>
-      <span><i style="background:var(--pai-2)"></i>DAC / AOC &mdash; c&acirc;bles attach&eacute;s</span>
+      <span><i style="background:var(--c-prisma)"></i>Multimode · MMF, courte distance</span>
+      <span><i style="background:var(--c-cortex)"></i>Monomode · SMF, longue distance</span>
+      <span><i style="background:var(--c-strata)"></i>Cuivre · RJ-45</span>
+      <span><i style="background:var(--pai-2)"></i>DAC / AOC · c&acirc;bles attach&eacute;s</span>
       <span style="margin-left:auto">BiDi&nbsp;: une seule fibre &middot; TAA&nbsp;: Trade Agreements Act &middot; RGD&nbsp;: durci I-Temp</span>
     </div>
   </div>
@@ -336,7 +336,7 @@
 
   <footer class="site-footer">
     <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">R&eacute;f&eacute;rences issues de la price list GLOBAL Palo Alto Networks d'ao&ucirc;t 2026 &mdash; aucun prix n'est publi&eacute; ici</div>
+    <div style="margin-top:4px;font-size:10px">R&eacute;f&eacute;rences issues de la price list GLOBAL Palo Alto Networks d'ao&ucirc;t 2026 · aucun prix n'est publi&eacute; ici</div>
   </footer>
 
   <script>
@@ -495,7 +495,7 @@
         const list = shown.filter(o => o.speed === s && o.media === m.k);
         body += '<td class="cell">'
           + (list.length ? list.map(o => card(o, m.color)).join('')
-                         : '<span class="cell-empty">&mdash;</span>')
+                         : '<span class="cell-empty">, </span>')
           + '</td>';
       });
       body += '</tr>';

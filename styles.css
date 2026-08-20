@@ -68,6 +68,23 @@
   --red:          var(--crit);
   --red-dim:      var(--crit-dim);
 
+  /* ── Espacement ───────────────────────────────────────────
+     Base de 4px. Trois calibres de carte, pas davantage : au-dela,
+     chaque composant reprend son padding au jugé et plus rien ne
+     s'aligne. */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+
+  /* calibres : vertical / horizontal */
+  --pad-compact: var(--sp-3) 14px;
+  --pad-card:    18px var(--sp-5);
+  --pad-large:   22px var(--sp-6);
+
   /* ── Rayons ──────────────────────────────────────────────
      Cinq pas, un role par pas. Le rayon dit a quel niveau appartient
      une surface : douze valeurs posees au fil de l'eau, comme avant,
@@ -1253,7 +1270,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 .info-note {
   position: relative;
   margin-bottom: 22px;
-  padding: 14px 18px 14px 46px;
+  padding: var(--sp-4) 18px var(--sp-4) 46px;
   background: linear-gradient(100deg,
       color-mix(in srgb, var(--pillar) 8%, var(--surface2)),
       var(--surface2) 55%);
@@ -1621,7 +1638,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   overscroll-behavior: contain;
   min-width: 0;   /* sinon le volet prend la largeur min-content du tableau */
 }
-.wb-pane-in { padding: 18px 20px 40px; }
+.wb-pane-in { padding: 18px var(--sp-5) var(--sp-8); }
 
 /* en-tete colle de volet : indique ou on est pendant le defilement */
 .wb-pane-head {
@@ -1753,8 +1770,8 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
   background: var(--surface);
-  padding: 16px 18px;
-  margin-bottom: 16px;
+  padding: var(--pad-card);
+  margin-bottom: var(--sp-4);
 }
 .wb-verdict-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .wb-verdict-family {
@@ -1906,7 +1923,7 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .wb-note {
   display: flex;
   gap: 9px;
-  padding: 10px 12px;
+  padding: var(--pad-compact);
   border: 1px solid var(--border);
   border-left: 2px solid var(--warn);
   border-radius: var(--radius-sm);
