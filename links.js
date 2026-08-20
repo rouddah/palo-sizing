@@ -38,13 +38,6 @@ const LINKS_DATA = {
                       "type": "internal"
                 },
                 {
-                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5\"/></svg>",
-                      "title": "Mode guide",
-                      "description": "Recommandation Palo Alto en 7 questions en langage business, sans jargon technique",
-                      "href": "wizard.html",
-                      "type": "internal"
-                },
-                {
                       "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.3-4.3\"/></svg>",
                       "title": "Recherche & sizing",
                       "description": "Retrouver un firewall a partir d'un debit, d'un nombre d'utilisateurs ou d'un critere technique",

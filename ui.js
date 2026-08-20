@@ -18,11 +18,13 @@
   ].join(',');
 
   function tagTargets() {
-    var els = document.querySelectorAll(REVEAL);
-    for (var i = 0; i < els.length; i++) {
-      if (!els[i].hasAttribute('data-reveal')) els[i].setAttribute('data-reveal', '');
+    var auto = document.querySelectorAll(REVEAL);
+    for (var i = 0; i < auto.length; i++) {
+      if (!auto[i].hasAttribute('data-reveal')) auto[i].setAttribute('data-reveal', '');
     }
-    return els;
+    // on observe TOUT ce qui porte data-reveal, y compris ce qui a ete
+    // marque a la main dans le HTML : sinon ces elements restent invisibles.
+    return document.querySelectorAll('[data-reveal]');
   }
 
   function observe(els) {
@@ -42,6 +44,16 @@
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     for (var j = 0; j < els.length; j++) io.observe(els[j]);
+
+    // Filet de securite : du contenu ne doit JAMAIS rester invisible parce que
+    // l'observateur n'a pas declenche. Tout ce qui est dans la fenetre au bout
+    // d'une seconde est revele d'office.
+    setTimeout(function () {
+      for (var k = 0; k < els.length; k++) {
+        var r = els[k].getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) els[k].classList.add('is-in');
+      }
+    }, 1000);
   }
 
   /* ── 2. Compteurs : les chiffres montent a l'arrivee ────── */
@@ -62,6 +74,9 @@
       else el.textContent = raw;
     }
     requestAnimationFrame(frame);
+    // filet de securite : si rAF est bride (onglet en arriere-plan, capture
+    // headless), la valeur finale est posee quoi qu'il arrive.
+    setTimeout(function () { el.textContent = raw; }, dur + 260);
   }
 
   function wireCounters() {
@@ -131,6 +146,23 @@
     });
   }
 
+  /* ── 3bis. Spot lumineux qui suit le pointeur ───────────── */
+  /* Une seule ecoute deleguee, deux variables CSS mises a jour :
+     pas de listener par carte, pas de layout thrash. */
+  var SPOT = '.tool-card, .metric-card, .addon-card, .policy-card, .product-card, .pillar-card, .part, .slr-panel, .fx-spot';
+
+  function wireSpot() {
+    if (reduce) return;
+    document.querySelectorAll(SPOT).forEach(function (el) { el.classList.add('fx-spot'); });
+    document.addEventListener('pointermove', function (e) {
+      var el = e.target.closest ? e.target.closest('.fx-spot') : null;
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }, { passive: true });
+  }
+
   /* ── 4. Jauge de lecture ────────────────────────────────── */
   function wireProgress() {
     if (document.querySelector('.table-outer')) return; // le comparateur scrolle en interne
@@ -150,6 +182,7 @@
     observe(tagTargets());
     wireCounters();
     wireCopy();
+    wireSpot();
     wireProgress();
   }
 
