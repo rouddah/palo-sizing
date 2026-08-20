@@ -72,7 +72,7 @@
       white-space: nowrap;
     }
     .fb:hover { border-color: var(--border2); color: var(--text-bright); }
-    .fb.on    { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .fb.on    { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
 
     .stats-bar {
       padding: 5px 20px;
@@ -84,7 +84,7 @@
       font-size: 10px;
       color: var(--text-muted);
     }
-    .stats-bar strong { color: var(--accent); }
+    .stats-bar strong { color: var(--accent-txt); }
 
     /* ── Table container ── */
     .table-outer {
@@ -202,13 +202,16 @@
       font-family: var(--mono);
       font-size: 13px;
       font-weight: 700;
-      color: #fff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      /* la couleur vient de .model-card-top, calculee d'apres le fond */
+      color: inherit;
     }
 
     .model-target {
       font-size: 10px;
-      color: rgba(255,255,255,0.75);
+      /* meme encre que le nom, simplement adoucie : un blanc fixe ne
+         tenait pas sur les couleurs claires de la gamme */
+      color: inherit;
+      opacity: .82;
       font-family: var(--mono);
       letter-spacing: 0.03em;
     }
@@ -309,7 +312,7 @@
       padding: 1px 7px;
       border-radius: var(--r-xs);
       font-size: 10px;
-      background: rgba(34,197,94,0.12);
+      background: var(--ok-dim);
       border: 1px solid rgba(34,197,94,0.25);
       color: var(--green);
     }
@@ -320,9 +323,10 @@
       padding: 1px 7px;
       border-radius: var(--r-xs);
       font-size: 10px;
-      background: rgba(234,179,8,0.12);
-      border: 1px solid rgba(234,179,8,0.4);
-      color: #ca8a04;
+      background: var(--warn-dim);
+      border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+      /* couleur figee avant : elle ne suivait pas le theme */
+      color: var(--warn);
     }
     .model-th.eos-model .model-card-top::after {
       content: 'EoS';
@@ -535,7 +539,7 @@
       <div class="filter-group" id="series-filters">
         <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
         <button class="fb" id="PA-400" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
-        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:10px;color:#4ade80">New</span></button>
+        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:10px;color:var(--ok);font-weight:700">New</span></button>
         <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale — août 2024">PA-800 <span style="font-size:10px;color:var(--yellow)">EoS</span></button>
         <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
         <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
@@ -666,6 +670,32 @@
   };
 
   /* ══ Build table ══ */
+
+  /* Encre lisible sur une couleur donnee.
+
+     Les couleurs de gamme vont du bleu nuit au jaune vif : une encre
+     unique ne peut pas tenir sur les deux. On mesure la luminance
+     relative du fond, formule WCAG, et on choisit le charbon ou le
+     blanc selon celui qui contraste le plus. Le seuil de 0,45 place
+     la bascule la ou les deux se valent. */
+  function inkOn(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return '#fff';
+    var v = [0, 2, 4].map(function (i) {
+      var c = parseInt(h.substr(i, 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    var lum = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    /* On ne devine pas avec un seuil : on calcule le contraste des deux
+       encres et on garde la meilleure. Un seuil fixe a 0,45 laissait
+       l'ambre #f59e0b en blanc, a 2,15:1, alors que le charbon y donne
+       8,6:1. Le seuil est le mauvais critere ; la comparaison est le
+       bon. */
+    var withWhite = 1.05 / (lum + 0.05);
+    var withInk   = (lum + 0.05) / 0.06665;   // #10151c, luminance 0.01665
+    return withInk > withWhite ? '#10151c' : '#ffffff';
+  }
   /* Vignette officielle du boitier, decoupee dans le stencil Visio Palo Alto.
      Absente pour quelques references : la colonne reste alors sans image. */
   function chassis(id) {
@@ -700,11 +730,16 @@
     };
     hRow.innerHTML = `<th class="th-corner"></th>` +
       visible.map(m => {
-        const repl = m.eos && EOS_REPLACEMENTS[m.id] ? `<span style="display:block;font-size:10px;color:var(--yellow);margin-top:2px">→ ${EOS_REPLACEMENTS[m.id]}</span>` : '';
+        const ink = inkOn(m.color);
+        // le rappel de remplacement vit sur la carte : il prend la meme
+        // encre, a opacite reduite, plutot qu'un jaune fixe illisible
+        const repl = m.eos && EOS_REPLACEMENTS[m.id]
+          ? `<span style="display:block;font-size:10px;margin-top:2px;color:${ink};opacity:.78">&rarr; ${EOS_REPLACEMENTS[m.id]}</span>`
+          : '';
         return `
         <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
           <div class="model-card-clip">
-            <div class="model-card-top" style="background:${m.color}">
+            <div class="model-card-top" style="background:${m.color};color:${ink}">
               <span class="model-name">${m.id}</span>
               <span class="model-target">${m.target}${repl}</span>
             </div>

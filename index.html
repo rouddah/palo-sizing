@@ -211,9 +211,11 @@
       font-weight: 700;
       letter-spacing: .9px;
       text-transform: uppercase;
-      color: var(--fx);
-      background: color-mix(in srgb, var(--fx) 11%, transparent);
-      border: 1px solid color-mix(in srgb, var(--fx) 26%, transparent);
+      /* la teinte de la carte habille le cadre, pas le texte : elle
+          est trop vive pour porter des caracteres de 10px sur clair */
+      color: var(--text);
+      background: color-mix(in srgb, var(--fx) 13%, transparent);
+      border: 1px solid color-mix(in srgb, var(--fx) 34%, transparent);
       border-radius: var(--r-sm);
       padding: 3px 8px;
     }
