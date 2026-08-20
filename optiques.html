@@ -54,7 +54,7 @@
     .chip.on {
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
+      color: var(--on-accent);
       box-shadow: 0 6px 16px -8px var(--accent-glow);
     }
     .chip.on.c-mm  { background: var(--c-prisma); border-color: var(--c-prisma); color: #04121c; }
@@ -208,7 +208,10 @@
       font-family: var(--mono);
       font-size: 12px;
       font-weight: 700;
-      color: var(--oc, var(--text-bright));
+      /* --oc est pose en ligne par le JS depuis la table des debits :
+         cette teinte ne suit pas le theme et devient illisible sur
+         fond clair. Elle habille le cadre de la carte, pas le texte. */
+      color: var(--text-bright);
       letter-spacing: -0.2px;
       word-break: break-word;
     }
@@ -239,12 +242,17 @@
       letter-spacing: .4px;
       padding: 1px 5px;
       border-radius: var(--r-xs);
-      border: 1px solid currentColor;
-      opacity: .85;
+      /* Le cadre porte la teinte produit, le texte prend l'encre
+         lisible. Avant, les deux etaient la meme couleur : une pastille
+         jaune posee sur une carte deja teintee de jaune tombait a
+         1,43:1. La distinction visuelle reste, portee par le cadre. */
+      border: 1px solid var(--tc, currentColor);
+      color: var(--text);
+      opacity: .95;
     }
-    .tag-bidi { color: var(--pai-2); }
-    .tag-taa  { color: var(--c-prisma); }
-    .tag-rgd  { color: var(--c-strata); }
+    .tag-bidi { --tc: var(--pai-2); }
+    .tag-taa  { --tc: var(--c-prisma); }
+    .tag-rgd  { --tc: var(--c-strata); }
     .opt .conn {
       font-family: var(--mono);
       font-size: 10px;

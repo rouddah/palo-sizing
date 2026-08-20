@@ -29,15 +29,43 @@ const CHROME = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
 ].find(p => fs.existsSync(p));
 
+/* Toutes les pages servies, pas un echantillon : les ecarts de
+   contraste se logent justement dans les pages qu'on regarde le
+   moins. Les trois premieres sont ouvertes avec des parametres pour
+   que leur contenu dynamique soit rendu. */
 const PAGES = [
   ['qualification.html?bw=800&users=600&type=campus&ssl=yes&sites=3', 'etabli'],
   ['index.html', 'accueil'],
-  ['pa-series.html', 'comparateur']
+  ['pa-series.html', 'comparateur'],
+  ['optiques.html', 'optiques'],
+  ['accessoires.html', 'accessoires'],
+  ['search.html', 'recherche'],
+  ['wizard.html', 'wizard'],
+  ['prisma.html', 'sase'],
+  ['cortex.html', 'cortex'],
+  ['browser.html', 'browser'],
+  ['panorama.html', 'panorama'],
+  ['idira.html', 'idira'],
+  ['resources.html', 'ressources']
 ];
 
 const probe = () => {
+  /* Deux syntaxes coexistent dans les valeurs calculees par le
+     navigateur : rgb()/rgba() en 0-255, et color(srgb ...) en
+     flottants 0-1, que Chrome renvoie pour tout color-mix(). Lire
+     les secondes comme les premieres transforme le blanc en noir :
+     c est ce qui a fait annoncer 24 echecs de contraste imaginaires
+     sur les pages outils, dont un titre a 1,09:1 parfaitement
+     lisible a l ecran. */
   function parse(c) {
-    const m = (c.match(/[\d.]+/g) || []).map(Number);
+    c = String(c || '');
+    const m = (c.match(/[\d.]+(?:e-?\d+)?/g) || []).map(Number);
+    if (!m.length) return { r: 0, g: 0, b: 0, a: 0 };
+    if (/^color\(/i.test(c)) {
+      // color(srgb r g b / a) : composantes en 0-1
+      return { r: (m[0] || 0) * 255, g: (m[1] || 0) * 255,
+               b: (m[2] || 0) * 255, a: m.length > 3 ? m[3] : 1 };
+    }
     return { r: m[0] || 0, g: m[1] || 0, b: m[2] || 0, a: m.length > 3 ? m[3] : 1 };
   }
   function lum(c) {

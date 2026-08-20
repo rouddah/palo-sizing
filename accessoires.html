@@ -36,7 +36,7 @@
     }
     .chip:hover { color: var(--text-bright); border-color: var(--border2); transform: translateY(-1px); }
     .chip.on {
-      background: var(--accent); border-color: var(--accent); color: #fff;
+      background: var(--accent); border-color: var(--accent); color: var(--on-accent);
       box-shadow: 0 6px 16px -8px var(--accent-glow);
     }
     .chip .n { opacity: .55; font-family: var(--mono); font-size: 10px; margin-left: 5px; }
@@ -97,7 +97,7 @@
     .part .fam {
       font-family: var(--mono); font-size: 10px; font-weight: 600;
       letter-spacing: .8px; text-transform: uppercase;
-      color: var(--bc, var(--accent)); margin-top: 3px;
+      color: var(--text-muted); margin-top: 3px;
     }
     .part .d {
       font-size: 12px; line-height: 1.5; color: var(--text-muted); margin-top: 7px;

@@ -132,8 +132,11 @@
   --sase-bg:     rgba(0,192,232,0.08);
   --cortex:      #00CC66;
   --cortex-bg:   rgba(0,204,102,0.08);
-  --identity:    #1D5FD1;
-  --identity-bg: rgba(29,95,209,0.10);
+  /* Bleu Identity : la version de marque est un bleu profond, lisible
+     sur fond clair mais trop sombre sur fond sombre (2,98:1). Le theme
+     sombre en prend une declinaison eclaircie. */
+  --identity:    #6f9ff0;
+  --identity-bg: rgba(111,159,240,0.10);
 }
 
 [data-theme="light"] {
@@ -155,6 +158,30 @@
   --crit:         #b32020;
   --accent-dim:   rgba(250,88,45,0.08);
   --shadow:       0 4px 16px rgba(11,15,20,0.10);
+
+  /* Couleurs de pilier, version claire.
+     Le jaune Strata, le cyan Prisma et le vert Cortex sont concus pour
+     un fond sombre : poses sur du blanc ils tombent a 1,5 / 2,2 / 2,1.
+     Ce sont des couleurs de marque, on ne les remplace pas ; on en
+     prend une declinaison assombrie qui tient le texte. Les aplats et
+     les filets continuent d'utiliser la teinte vive, qui n'a pas de
+     seuil a tenir. */
+  --net-sec:   #8a6a00;
+  --sase:      #00697f;
+  --cortex:    #00713a;
+  --identity:  #1846a8;
+
+  /* Couleurs produit, version claire.
+     Cyber Orange 500, Prisma Cloud Blue, Strata Yellow et Cortex Green
+     sont faits pour la projection et le fond sombre : sur du blanc ils
+     tombent entre 1,5 et 2,7. Les aplats et les filets gardent la
+     teinte vive, qui n'a pas de seuil a tenir ; seul le texte prend
+     ces declinaisons. */
+  --pai-2:     #b23808;
+  --c-prisma:  #00697f;
+  --c-strata:  #7a6000;
+  --c-cortex:  #00713a;
+  --c-unit42:  #a13418;
 }
 
 /* ── Reset ── */
@@ -764,7 +791,10 @@ body {
 
 /* Fallback si pas de pilier sur la page */
 :root {
-  --pillar:    var(--accent);
+  /* Repli quand la page ne declare pas de pilier. --pillar sert aussi
+     de couleur de texte (titres de section, en-tetes de tableau) : le
+     repli doit donc etre la variante lisible, pas l orange d aplat. */
+  --pillar:    var(--accent-txt);
   --pillar-bg: var(--accent-dim);
 }
 
@@ -969,7 +999,7 @@ body {
 .mode-btn.selected {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 /* product-card / product-grid */
@@ -1037,7 +1067,7 @@ body {
   border: 1px solid var(--border);
   transition: all .15s;
 }
-.wiz-action-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.wiz-action-btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .wiz-action-btn.primary:hover { background: var(--accent-hover); }
 .wiz-action-btn.secondary { background: transparent; color: var(--text-muted); }
 .wiz-action-btn.secondary:hover { color: var(--text-bright); border-color: var(--border2); }
@@ -1053,7 +1083,9 @@ body {
 :root { --ease-ui: cubic-bezier(.2,.8,.2,1); }
 
 /* Accent par pilier — pose sur <body data-pillar="..."> */
-body { --pillar: var(--accent); --pillar-bg: var(--accent-dim); }
+/* Repli des pages sans pilier. --pillar sert de couleur de texte :
+   il prend donc la variante lisible, pas l orange d aplat. */
+body { --pillar: var(--accent-txt); --pillar-bg: var(--accent-dim); }
 body[data-pillar="netsec"] { --pillar: var(--net-sec);  --pillar-bg: var(--net-sec-bg); }
 body[data-pillar="sase"] { --pillar: var(--sase);     --pillar-bg: var(--sase-bg); }
 body[data-pillar="cortex"] { --pillar: var(--cortex);   --pillar-bg: var(--cortex-bg); }
@@ -1299,7 +1331,9 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 .info-note strong { color: var(--text-bright); font-weight: 700; }
 .info-note.green { --pillar: var(--green); }
 .info-note.blue { --pillar: var(--net-sec); }
-.info-note.purple { --pillar: var(--purple); }
+/* --purple a ete retire du systeme en session 6 : la regle pointait
+   dans le vide. La teinte d information passe sur le bleu d etat. */
+.info-note.purple { --pillar: var(--wire); }
 
 /* ── Titre de section : plus present ───────────────────────── */
 .section-title {
