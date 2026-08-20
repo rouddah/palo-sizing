@@ -25,7 +25,7 @@ const OUT = path.join(ROOT, '.deploy');
 
 /* Fichiers racine publies : les pages, plus les scripts et la
    feuille de style qu'elles chargent. */
-const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js'];
+const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js', 'bg.js'];
 /* Dossiers publies en entier */
 const DIRS = ['data', 'img', 'fonts'];
 
@@ -63,6 +63,29 @@ for (const f of ROOT_FILES) {
 for (const d of DIRS) {
   if (!fs.existsSync(path.join(ROOT, d))) { console.error('MANQUANT : ' + d + '/'); process.exit(1); }
   count += copyDir(path.join(ROOT, d), path.join(OUT, d));
+}
+
+/* Garde-fou 1 : tout fichier local reference par une page doit avoir
+   ete copie. La liste blanche protege des fuites mais laisse tomber en
+   silence les fichiers nouvellement ajoutes. bg.js est parti en
+   production absent du bundle : la page appelait un 404 et aucun
+   controle ne s en plaignait. */
+const referenced = new Set();
+for (const f of fs.readdirSync(OUT)) {
+  if (!f.endsWith('.html')) continue;
+  const html = fs.readFileSync(path.join(OUT, f), 'utf8');
+  const RE = /(?:src|href)\s*=\s*["']([^"'#?:]+\.(?:js|css))["']/g;
+  let m;
+  while ((m = RE.exec(html))) {
+    if (/^(https?:)?\/\//.test(m[1])) continue;
+    referenced.add(m[1]);
+  }
+}
+const absent = [...referenced].filter(r => !fs.existsSync(path.join(OUT, r)));
+if (absent.length) {
+  console.error('ECHEC - fichiers appeles par les pages mais absents du bundle :');
+  absent.forEach(a => console.error('  x ' + a + '   (a ajouter a ROOT_FILES)'));
+  process.exit(1);
 }
 
 /* Garde-fou : rien d'interne ne doit s'etre glisse dans le lot. */
