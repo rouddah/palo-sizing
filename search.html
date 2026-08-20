@@ -450,14 +450,26 @@
     /* Empty / initial state */
     .results-empty {
       text-align: center;
-      padding: 64px 24px;
+      /* Cale en haut plutot que centre dans le vide : un ecran
+         d'attente ne doit pas donner l'impression d'une page cassee. */
+      padding: 48px 28px;
+      margin-top: 8px;
       color: var(--text-muted);
+      border: 1px dashed var(--border2);
+      border-radius: var(--r-md);
+      background: color-mix(in srgb, var(--surface) 55%, transparent);
     }
 
     .results-empty .empty-icon {
-      font-size: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px; height: 54px;
       margin-bottom: 16px;
-      opacity: 0.3;
+      border-radius: 50%;
+      color: var(--accent-txt);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-line);
     }
 
     .results-empty p { font-size: 14px; margin-bottom: 6px; color: var(--text-dim); }
@@ -530,7 +542,7 @@
   <script src="bg.js" defer></script>
 
   <div style="background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 24px;text-align:center;font-size:12px;color:var(--text-muted)">
-    Pas à l'aise avec les filtres techniques ? <a href="wizard.html" style="color: var(--accent-txt);font-weight:600">Essayez le mode guidé →</a>
+    Pas à l'aise avec les filtres techniques ? <a href="wizard.html" style="color: var(--accent-txt);font-weight:600">Essayez le mode guidé <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
   </div>
 
   <div style="position:relative;z-index:1;padding:32px 24px 0;max-width:1200px;margin:0 auto">
@@ -689,9 +701,9 @@
       </div>
       <div class="result-grid" id="result-grid">
         <div class="results-empty">
-          <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
-          <p>Renseignez vos critères et lancez la recherche</p>
-          <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
+          <div class="empty-icon"><svg class="ic" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a9 9 0 0118 0"/><path d="M12 17l4.5-5"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/></svg></div>
+          <p>Trois entrées suffisent pour une première recommandation</p>
+          <small>Débit à inspecter, nombre d'utilisateurs, mode de débit. Le reste affine.</small>
         </div>
       </div>
     </div>
@@ -890,7 +902,7 @@
     if (!models.length) {
       count.innerHTML = '';
       grid.innerHTML  = `<div class="results-empty">
-        <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+        <div class="empty-icon"><svg class="ic" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a9 9 0 0118 0"/><path d="M12 17l4.5-5"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/></svg></div>
         <p>Aucun boîtier ne correspond à ces critères</p>
         <small>Essayez d'assouplir les contraintes d'interfaces ou de format</small>
       </div>`;
@@ -1053,8 +1065,8 @@
     state = { mode:'tp', bw:1.5, ff:'all', series:'all', sortBy:'ratio' };
     selected.clear();
     document.getElementById('result-grid').innerHTML = `<div class="results-empty">
-      <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
-      <p>Renseignez vos critères et lancez la recherche</p>
+      <div class="empty-icon"><svg class="ic" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17a9 9 0 0118 0"/><path d="M12 17l4.5-5"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/></svg></div>
+      <p>Trois entrées suffisent pour une première recommandation</p>
       <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
     </div>`;
     document.getElementById('results-count').innerHTML = '';

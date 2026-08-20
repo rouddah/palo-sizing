@@ -146,6 +146,14 @@
       transition: filter .15s;
     }
     .wiz-btn-next:hover { filter: brightness(1.1); }
+    /* Les deux boutons portent un pictogramme a cote de leur libelle :
+       sans inline-flex, la fleche passe a la ligne. */
+    .wiz-btn-back, .wiz-btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
     .wiz-btn-back {
       padding: 12px 20px;
       background: var(--surface2);
@@ -462,9 +470,9 @@
       }
 
       h += '<div class="wiz-nav">';
-      if (step > 1) h += '<button type="button" class="wiz-btn-back" id="wiz-back">← Précédent</button>';
+      if (step > 1) h += '<button type="button" class="wiz-btn-back" id="wiz-back"><svg class=\"ic\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" style=\"vertical-align:-2px\"><path d=\"M20 12H5M11 18l-6-6 6-6\"/></svg> Précédent</button>';
       else h += '<span></span>';
-      h += '<button type="button" class="wiz-btn-next" id="wiz-next">' + (step < TOTAL ? 'Suivant →' : 'Voir ma recommandation') + '</button>';
+      h += '<button type="button" class="wiz-btn-next" id="wiz-next">' + (step < TOTAL ? 'Suivant <svg class=\"ic\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" style=\"vertical-align:-2px\"><path d=\"M4 12h15M13 6l6 6-6 6\"/></svg>' : 'Voir ma recommandation') + '</button>';
       h += '</div>';
       block.innerHTML = h;
 
