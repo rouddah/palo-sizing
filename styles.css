@@ -1994,3 +1994,16 @@ body::before { opacity: .05; background-size: 72px 72px; }
 @media (prefers-reduced-motion: reduce) {
   #tip { transition: none; }
 }
+
+/* ── Pictogrammes officiels Palo Alto ──────────────────────── */
+.ic-pan {
+  width: 1.25em;
+  height: 1.25em;
+  object-fit: contain;
+  vertical-align: -0.22em;
+  transition: transform .25s var(--ease-ui);
+}
+.card-icon .ic-pan { width: 19px; height: 19px; vertical-align: middle; }
+.use-case-icon .ic-pan { width: 17px; height: 17px; vertical-align: middle; }
+.product-card-icon .ic-pan, .xsiam-module-name .ic-pan { width: 17px; height: 17px; vertical-align: -0.24em; }
+.tool-card:hover .ic-pan, .use-case-card:hover .ic-pan { transform: scale(1.12) translateY(-1px); }

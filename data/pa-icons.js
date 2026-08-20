@@ -1,5 +1,5 @@
-/* Pictogrammes officiels Palo Alto, extraits du deck client Prisma Browser
-   (presentation officielle PANW). Fichiers dans img/ic/. */
+/* Pictogrammes officiels Palo Alto, extraits du deck client Prisma Browser.
+   Variante claire (_w) quand elle existe : le site est en theme sombre. */
 
 const PAN_ICONS = {
 "a-i": "img/ic/a-i.webp",
