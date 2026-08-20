@@ -332,6 +332,7 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
+  <script src="icons.js"></script>
 
   <div class="wiz-wrap">
     <div class="page-header" style="margin-bottom:28px">
@@ -598,8 +599,8 @@
         lines.push('Vous m’avez indiqué que votre supervision sécurité est confiée à un MSSP. Je n’irai donc pas vous proposer de plateforme SOC en direct.');
         lines.push('');
         lines.push('En revanche, sur l’infrastructure réseau :');
-        if (ngfw) lines.push('• ' + onsite + ' utilisateurs sur site - firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
-        if (hasSASE) lines.push('• Télétravail et sites distants - Prisma Access ' + ed.edition + ' (' + units.total + ' unités)');
+        if (ngfw) lines.push('- ' + onsite + ' utilisateurs sur site - firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+        if (hasSASE) lines.push('- Télétravail et sites distants - Prisma Access ' + ed.edition + ' (' + units.total + ' unités)');
         lines.push('');
         lines.push('Question utile : votre MSSP est-il déjà sur la plateforme Palo Alto (XSIAM, Cortex Cloud) ? Cela conditionne la cohérence end-to-end de votre stack.');
         lines.push('');
@@ -617,8 +618,8 @@
           lines.push('');
         }
         lines.push('Je vous propose une approche en deux temps :');
-        if (ngfw) lines.push('• NGFW de la famille ' + ngfw.family + ' sur vos sites avec le bundle Precision AI Pro (couvre URL filtering, threat prevention, DNS, SD-WAN et Device Security)');
-        lines.push('• Accès à distance via la fonction GlobalProtect native du firewall (sans surcoût SKU)');
+        if (ngfw) lines.push('- NGFW de la famille ' + ngfw.family + ' sur vos sites avec le bundle Precision AI Pro (couvre URL filtering, threat prevention, DNS, SD-WAN et Device Security)');
+        lines.push('- Accès à distance via la fonction GlobalProtect native du firewall (sans surcoût SKU)');
         lines.push('');
         lines.push('Si votre besoin évolue ou si la mobilité prend de l’ampleur, nous pourrons étudier le passage à Prisma Access en mutualisant via un MSSP partenaire.');
         lines.push('');
@@ -632,9 +633,9 @@
         lines.push('');
         lines.push('Suite à notre échange sur la construction de votre SOC, voici la qualification de premier niveau :');
         lines.push('');
-        if (ngfw) lines.push('• Infrastructure réseau : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
-        if (hasSASE) lines.push('• SASE : Prisma Access ' + ed.edition + ' pour ' + units.mu + ' télétravailleurs' + (nb > 0 ? ' et ' + units.mbps_rn + ' Mbps Remote Networks' : ''));
-        lines.push('• SOC : démarrage avec Cortex XDR Pro per Endpoint, montée en gamme Cortex XSIAM possible quand votre équipe sera dimensionnée');
+        if (ngfw) lines.push('- Infrastructure réseau : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+        if (hasSASE) lines.push('- SASE : Prisma Access ' + ed.edition + ' pour ' + units.mu + ' télétravailleurs' + (nb > 0 ? ' et ' + units.mbps_rn + ' Mbps Remote Networks' : ''));
+        lines.push('- SOC : démarrage avec Cortex XDR Pro per Endpoint, montée en gamme Cortex XSIAM possible quand votre équipe sera dimensionnée');
         lines.push('');
         lines.push('Je vous propose d’organiser un atelier de cadrage avec notre équipe d’avant-vente pour valider l’ambition.');
         lines.push('');
@@ -647,9 +648,9 @@
       lines.push('');
       lines.push('Suite à notre échange, voici une première qualification de votre architecture cible Palo Alto Networks :');
       lines.push('');
-      if (ngfw) lines.push('• Bureaux sur site : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
-      if (hasSASE) lines.push('• Télétravail et sites distants : Prisma Access ' + ed.edition + ', ' + units.mu + ' Mobile Users' + (nb > 0 ? ' + ' + units.mbps_rn + ' Mbps bande passante site-to-site' : ''));
-      if (soc.type === 'xsiam') lines.push('• SOC : Cortex XSIAM pour la supervision et la consolidation SIEM + SOAR + EDR');
+      if (ngfw) lines.push('- Bureaux sur site : firewalls de la famille ' + ngfw.family + ' avec le bundle Precision AI Pro');
+      if (hasSASE) lines.push('- Télétravail et sites distants : Prisma Access ' + ed.edition + ', ' + units.mu + ' Mobile Users' + (nb > 0 ? ' + ' + units.mbps_rn + ' Mbps bande passante site-to-site' : ''));
+      if (soc.type === 'xsiam') lines.push('- SOC : Cortex XSIAM pour la supervision et la consolidation SIEM + SOAR + EDR');
       lines.push('');
       lines.push('Cette qualification est indicative. Je reviens vers vous avec un sizing détaillé et une proposition chiffrée d’ici [délai].');
       lines.push('');
@@ -891,7 +892,7 @@
         var btn = document.getElementById('wiz-copy-pitch');
         if (navigator.clipboard) {
           navigator.clipboard.writeText(txt).then(function() {
-            btn.textContent = '✓ Copié';
+            btn.textContent = 'Copie';
             setTimeout(function() { btn.textContent = 'Copier'; }, 1500);
           }).catch(function() { fallbackCopy(txt, btn); });
         } else {
@@ -906,7 +907,7 @@
         ta.style.opacity = '0';
         document.body.appendChild(ta);
         ta.select();
-        try { document.execCommand('copy'); btn.textContent = '✓ Copié'; setTimeout(function() { btn.textContent = 'Copier'; }, 1500); } catch(e) {}
+        try { document.execCommand('copy'); btn.textContent = 'Copie'; setTimeout(function() { btn.textContent = 'Copier'; }, 1500); } catch(e) {}
         document.body.removeChild(ta);
       }
 

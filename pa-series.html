@@ -477,6 +477,7 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
+  <script src="icons.js"></script>
   <script src="data/pa-models.js"></script>
   <script src="data/pa-chassis.js"></script>
 
@@ -566,7 +567,7 @@
   <div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompare()">
     <div class="cmp-modal">
       <div class="cmp-title">Comparaison</div>
-      <button class="cmp-close" onclick="closeCompare()">✕</button>
+      <button class="cmp-close" onclick="closeCompare()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
       <div id="cmp-actions"></div>
     </div>
@@ -599,13 +600,13 @@
     { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
     { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
     { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
-    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes">✓</span>' : '—', num: null },
-    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes">✓</span>',  num: null },
-    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes">✓</span>' : '—', num: null },
+    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
     { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
     { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
   ];
@@ -677,7 +678,7 @@
             </div>
             ${chassis(m.id)}
             <div class="model-card-bot" style="background:${m.color}22">
-              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
+              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> Datasheet</a>
               <div class="sel-dot"></div>
             </div>
           </div>

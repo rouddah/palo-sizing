@@ -25,3 +25,19 @@ Selon le prompt, ajouter :
 - Une carte sur index.html dans une catégorie "Identité"
 - Une page `idira.html` listant les composants (PAM, IAM, EPM, Identity Governance, Workforce Password Management, Agentic Identities, Secrets Management)
 - À arbitrer avec l'équipe commerciale avant d'ajouter : cela représente un nouveau pilier produit hors NGFW/SASE/SecOps
+
+## Jeu de pictogrammes officiel Palo Alto (session 6, 20 aout 2026)
+
+Le fichier `~/Downloads/General Iconography (vector format).pptx` n'est pas
+exploitable : ce n'est pas une archive Office mais un conteneur chiffre
+AES/CBC de la protection des droits Microsoft (en-tete `MSMAMARPCRYPT`).
+La version PDF a par ailleurs ete bloquee au telechargement par la DLP
+(`Blocked_2026-08-20_10-57-01_shjJiyTOnz3H.txt`).
+
+En attendant, `icons.js` fournit 31 pictogrammes traces dans le meme style
+(grille 24, trait 1.75, extremites arrondies). **L'API ne changera pas** :
+pour passer au jeu officiel, il suffit de remplacer les traces de l'objet
+`PATHS` dans `icons.js`, sans toucher aux pages.
+
+Action : reexporter le pptx sans protection (PowerPoint authentifie, puis
+« Enregistrer une copie »), ou exporter les icones en SVG.

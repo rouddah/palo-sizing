@@ -13,3 +13,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Profils Chrome des controles headless
+.chrome-profile*/

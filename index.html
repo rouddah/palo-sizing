@@ -19,7 +19,6 @@
       padding: 84px 24px 54px;
       overflow: hidden;
     }
-    .lead .fx-slashes { color: var(--pai-3); opacity: .1; }
 
     .lead-kick {
       display: inline-flex;
@@ -37,7 +36,7 @@
       content: '';
       width: 26px; height: 2px;
       border-radius: 2px;
-      background: var(--pai);
+      background: var(--accent);
     }
 
     .lead h1 {
@@ -67,7 +66,18 @@
       border-top: 1px solid var(--border);
       max-width: 900px;
     }
-    .stat .fx-stat { font-size: clamp(32px, 4vw, 46px); }
+    /* Le chiffre est une donnee, pas une decoration : monospace,
+       chiffres tabulaires, aucune animation de comptage. */
+    .stat .stat-num {
+      font-family: var(--mono);
+      font-size: clamp(30px, 3.6vw, 42px);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      color: var(--text-bright);
+      line-height: 1;
+    }
+    .lead h1 .accent { color: var(--accent-txt); }
     .stat .lb {
       margin-top: 7px;
       font-family: var(--mono);
@@ -174,7 +184,6 @@
       transition: transform .3s var(--ease-ui), border-color .3s;
     }
     .pcard2:hover { transform: translateY(-4px); border-color: var(--fx); }
-    .pcard2 .fx-slashes { color: var(--fx); opacity: .11; }
     .pcard2 .k {
       font-family: var(--mono);
       font-size: 10px;
@@ -199,12 +208,12 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
+  <script src="icons.js"></script>
 
   <!-- ── Ouverture ── -->
   <section class="lead">
-    <div class="fx-slashes"></div>
     <div class="lead-kick">Sizing Guide &middot; Palo Alto Networks</div>
-    <h1>Dimensionner Palo&nbsp;Alto <span class="fx-grad">sans ouvrir un PDF</span>.</h1>
+    <h1>Dimensionner Palo&nbsp;Alto <span class="accent">sans ouvrir un PDF</span>.</h1>
     <p class="intro">Comparateur PA-Series, qualification client, transceivers et accessoires &mdash; construits sur les datasheets officielles et la price list du mois. Aucun prix publi&eacute;, aucune r&eacute;f&eacute;rence invent&eacute;e.</p>
     <div class="lead-actions">
       <a class="fx-btn" href="pa-series.html">Comparer les PA-Series
@@ -213,10 +222,10 @@
     </div>
 
     <div class="stats">
-      <div class="stat" data-reveal><div class="fx-stat" data-count>39</div><div class="lb">Mod&egrave;les PA-Series<br>de la PA-410 &agrave; la PA-7500</div></div>
-      <div class="stat" data-reveal><div class="fx-stat" data-count>45</div><div class="lb">Modules optiques<br>SFP &agrave; QSFP-DD</div></div>
-      <div class="stat" data-reveal><div class="fx-stat" data-count>207</div><div class="lb">Accessoires<br>alimentation, rack, disques</div></div>
-      <div class="stat" data-reveal><div class="fx-stat" data-count>4</div><div class="lb">Piliers couverts<br>NGFW, SASE, Cortex, Idira</div></div>
+      <div class="stat" data-reveal><div class="stat-num">39</div><div class="lb">Mod&egrave;les PA-Series<br>de la PA-410 &agrave; la PA-7500</div></div>
+      <div class="stat" data-reveal><div class="stat-num">45</div><div class="lb">Modules optiques<br>SFP &agrave; QSFP-DD</div></div>
+      <div class="stat" data-reveal><div class="stat-num">207</div><div class="lb">Accessoires<br>alimentation, rack, disques</div></div>
+      <div class="stat" data-reveal><div class="stat-num">4</div><div class="lb">Piliers couverts<br>NGFW, SASE, Cortex, Idira</div></div>
     </div>
   </section>
 
@@ -264,7 +273,7 @@
   ];
 
   document.getElementById('tools').innerHTML = TOOLS.map(function (t) {
-    return '<a class="tcard fx-edge" style="--fx:' + t[5] + '" href="' + t[0] + '" data-reveal>'
+    return '<a class="tcard" style="--fx:' + t[5] + '" href="' + t[0] + '" data-reveal>'
       + '<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + I[t[1]] + '</svg></div>'
       + '<h3>' + t[2] + '<span class="go">&rarr;</span></h3>'
       + '<p>' + t[3] + '</p>'
@@ -281,7 +290,6 @@
 
   document.getElementById('pillars').innerHTML = PILLARS.map(function (p) {
     return '<a class="pcard2" style="--fx:' + p[4] + '" href="' + p[0] + '" data-reveal>'
-      + '<div class="fx-slashes"></div>'
       + '<div class="k">' + p[1] + '</div><h3>' + p[2] + '</h3><p>' + p[3] + '</p></a>';
   }).join('');
 

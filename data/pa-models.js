@@ -57,8 +57,18 @@ const MODELS = [
 ];
 
   /* ══ Utils ══ */
+/* Abrege un entier en K / M. La decimale n'est posee que si l'arrondi
+   ferait perdre de l'information : 64000 -> 64K, mais 2500 -> 2,5K et non
+   3K. Sur un outil de dimensionnement, un arrondi qui remonte est un
+   chiffre faux, pas un chiffre lisible. */
 function fmtN(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(n%1000000===0?0:1) + 'M';
-  if (n >= 1000)    return (n/1000).toFixed(0) + 'K';
+  if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'K';
   return String(n);
+}
+
+/* Entier avec separateur de milliers insecable, pour les valeurs qui
+   doivent rester exactes a l'unite (debit du lien, nombre d'utilisateurs). */
+function fmtExact(n) {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
 }

@@ -1,5 +1,92 @@
 # Changelog
 
+## Session 6 - 20 aout 2026 : refonte enterprise
+
+Refonte du systeme de design et de l'outil de dimensionnement. Aucune donnee
+de datasheet n'a ete modifiee : les valeurs de `data/pa-models.js` et les
+seuils de `FAMILIES` sont ceux des sessions precedentes.
+
+### Systeme de design
+
+- **Typographie** : la pile `system-ui` remplace Poppins pour l'interface,
+  Geist Mono reste pour les metriques (chiffres tabulaires). Suppression de
+  6 fichiers de police - Poppins x4, Geist Sans, JetBrains Mono : **-130 Ko**
+  de telechargement sur chaque premiere visite.
+- **Palette** : neutres charbon/ardoise, Cyber Orange conserve mais ramene a
+  un role fonctionnel (selection, focus, repere « votre besoin »). Nouveau
+  jeton `--accent-txt` : `#FA582D` ne tenait pas 4.5:1 sur `--surface3`.
+  Nouveau jeton `--on-accent` : le blanc sur orange ne tenait que 3.23:1.
+  `--purple` retire.
+- **Suppression du bloc « FX v5 »** : aurore de fond animee, texte en degrade
+  anime, obliques derivantes, spot lumineux qui suivait le curseur,
+  revelation avec flou, levitation des cartes au survol, jauge de lecture,
+  compteurs animes. 22 degrades ramenes a 4 (teintes fonctionnelles).
+- **Focus** : une regle `:focus-visible` globale, cibles tactiles 44px.
+
+### Iconographie
+
+- `icons.js` : 31 pictogrammes SVG traces (grille 24, trait 1.75), avec
+  hydratation de `[data-ic]` et nom accessible optionnel.
+- Tous les emoji et caracteres decoratifs remplaces sur les 14 pages.
+  Un emoji change de dessin selon l'OS, ne prend pas la couleur du texte et
+  n'a pas de nom accessible.
+- Le jeu vectoriel officiel Palo Alto (« General Iconography ») n'a pas pu
+  etre integre : le fichier telecharge est chiffre par la protection des
+  droits Microsoft. Voir `_to_verify.md`.
+
+### qualification.html : etabli a deux volets
+
+- Le formulaire centre a 700px devient un **etabli plein ecran** : contraintes
+  a gauche, recommandation a droite, chaque volet defile pour lui-meme. La
+  page ne defile plus sur poste fixe (verifie a 1366, 1440 et 1920).
+- **Recalcul continu** : plus de bouton « calculer ». Chaque saisie met a jour
+  le volet droit (amorti a 180 ms au clavier, immediat sur les listes).
+- Ajout d'une **jauge de charge** avec le repere des 65% (la marge de
+  dimensionnement retenue par le projet) et d'un **tableau besoin/capacite**
+  avec les unites explicites (Mbps, Gbps, sessions).
+- Les champs que l'outil comble par hypothese portent un filet orange.
+- Modes « express » et « approfondi » fusionnes : toutes les contraintes sont
+  visibles, la densite du volet gauche les rend lisibles d'un coup d'oeil.
+- Sous 1080px les volets s'empilent, **resultat en premier**.
+
+### Corrections
+
+- `fmtN(2500)` renvoyait `3K`. Un arrondi qui remonte est un chiffre faux :
+  la decimale n'est desormais posee que si l'arrondi perd de l'information
+  (`2,5K`). Ajout de `fmtExact` pour les valeurs saisies (debit du lien).
+- Le nom du client etait reinjecte dans le HTML sans echappement.
+- Le modele PDF importait Poppins depuis `fonts.googleapis.com`, contraire a
+  la regle RGPD du projet et inutile dans une fenetre hors ligne.
+- La barre de navigation debordait de la fenetre sous 400px sur toutes les
+  pages ; le defaut etait masque par un `overflow` ailleurs. L'en-tete passe
+  desormais sur deux lignes sous 768px.
+- Les bulles d'aide etaient des `<span>` : elles sont maintenant des
+  `<button>` atteignables au clavier, et `ui.js` ouvre la bulle au focus.
+- Fins de ligne normalisees en LF (`.gitattributes`), le mixte CRLF/LF
+  faisait echouer silencieusement les remplacements de chaines.
+
+### Nettoyage
+
+- 82 regles CSS orphelines retirees de `styles.css` (-10 Ko), 81 de la
+  feuille inline de `qualification.html` (-12,8 Ko).
+- `ui.js` : -30% (spot lumineux, compteurs animes, jauge de lecture).
+
+### Verification
+
+Le projet n'a toujours pas d'etape de build, et ne doit pas en avoir.
+`npm run build` fait ce qu'un build ferait d'utile ici : verifier.
+
+| commande | role |
+| --- | --- |
+| `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, emojis |
+| `npm test` | `_smoke.js` : charge la page dans jsdom, joue 5 cas de dimensionnement, controle l'etiquetage des champs et l'echappement |
+| `npm run responsive` | `_responsive.js` : ouvre 8 pages a 6 largeurs dans Chrome et refuse tout debordement horizontal |
+| `npm run build` | les trois a la suite |
+
+Contrastes mesures dans le navigateur : tous les elements de l'etabli
+passent AA, le plus faible a 6.03:1.
+
+
 ## [Session 5] - 20 aout 2026
 
 ### Nouveaux outils NGFW (inspires du sizing guide Fortinet de Loic)

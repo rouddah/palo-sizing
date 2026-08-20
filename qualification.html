@@ -11,129 +11,6 @@
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ── Mode toggle bar ── */
-    .mode-bar {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      padding: 10px 20px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-    }
-    .mode-btn {
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 24px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .mode-btn:hover { border-color: var(--border2); color: var(--text-bright); }
-    .mode-btn.mode-link {
-      display: inline-flex;
-      align-items: center;
-      text-decoration: none;
-      margin-left: 12px;
-    }
-    .mode-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-    .wiz-help {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: var(--surface3);
-      border: 1px solid var(--border2);
-      color: var(--text-muted);
-      font-size: 10px;
-      font-weight: 700;
-      cursor: help;
-      vertical-align: middle;
-      margin-left: 4px;
-    }
-    .wiz-disclaimer {
-      margin-top: 16px;
-      padding: 12px 16px;
-      background: rgba(245,158,11,0.08);
-      border: 1px solid rgba(245,158,11,0.25);
-      border-radius: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .wiz-disclaimer strong { color: var(--yellow); }
-    .wiz-family-card {
-      padding: 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .wiz-family-name {
-      font-family: var(--mono);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 4px;
-    }
-    .wiz-family-why {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-    .wiz-family-positioning {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 500;
-      margin-bottom: 6px;
-    }
-    .wiz-link-tech {
-      
-      font-size: 11px;
-      color: var(--accent);
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      text-decoration: underline;
-    }
-    .wiz-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-    .wiz-action-btn {
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      transition: all .15s;
-    }
-    .wiz-action-btn.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-    .wiz-action-btn.primary:hover { background: var(--accent-hover); }
-    .wiz-action-btn.secondary {
-      background: transparent;
-      color: var(--text-muted);
-    }
-    .wiz-action-btn.secondary:hover { color: var(--text-bright); border-color: var(--border2); }
 
     /* ── Glossary tooltips ── */
     .glossary-tip {
@@ -166,121 +43,6 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.4);
     }
     .glossary-tip:hover::after { opacity: 1; }
-
-    /* ── Sizing wizard ── */
-    .wizard-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-bottom: 2px solid var(--accent);
-      padding: 0;
-      overflow: hidden;
-    }
-    .wizard-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 12px 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-bright);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .wizard-toggle:hover { background: var(--surface2); }
-    .wizard-toggle .chevron {
-      transition: transform .2s;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .wizard-panel.open .wizard-toggle .chevron { transform: rotate(180deg); }
-    .wizard-body {
-      display: none;
-      padding: 0 20px 20px;
-    }
-    .wizard-panel.open .wizard-body { display: block; }
-    .wizard-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .wiz-field label {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .wiz-field select, .wiz-field input {
-      width: 100%;
-      padding: 8px 12px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-bright);
-      font-family: var(--font);
-      font-size: 13px;
-      outline: none;
-    }
-    .wiz-field select:focus, .wiz-field input:focus {
-      border-color: var(--accent);
-    }
-    .wiz-btn {
-      padding: 10px 24px;
-      background: var(--accent);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .wiz-btn:hover { background: var(--accent-hover); }
-    .wiz-results {
-      display: none;
-      margin-top: 16px;
-      padding: 14px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-    .wiz-results.visible { display: block; }
-    .wiz-results h4 {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-bright);
-      margin-bottom: 10px;
-    }
-    .wiz-match {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-    .wiz-match-name {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-bright);
-      min-width: 100px;
-    }
-    .wiz-match-reason {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
 
     /* ── Guide de qualification ── */
     .guide-view { position: relative; z-index: 1; }
@@ -379,7 +141,6 @@
     .guide-q-block.represents { border-left-color: var(--blue-bright); background: rgba(26,95,212,0.04); }
     .guide-q-block.matters { border-left-color: var(--green); background: rgba(34,197,94,0.04); }
     .guide-q-block.fallback { border-left-color: var(--yellow); background: rgba(245,158,11,0.04); }
-    .guide-q-block.question-label { border-left-color: var(--accent); }
     .guide-q-block-label {
       font-family: var(--font);
       font-size: 11px;
@@ -397,7 +158,7 @@
       line-height: 1.65;
     }
     @media print {
-      body::before, body::after, .site-header, .mode-bar, .site-footer { display: none !important; }
+      .site-header, .wb-bar, .commercial-view { display: none !important; }
       .guide-view { display: block !important; }
       .guide-question { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
       .guide-q-block { background: #f5f5f5; }
@@ -405,406 +166,229 @@
       .guide-q-main { color: #000; }
       .guide-q-block-text { color: #333; }
     }
-
-    /* ── Confidence badge ── */
-    .confidence-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .confidence-green {
-      background: var(--green-dim);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: var(--green);
-    }
-    .confidence-orange {
-      background: var(--yellow-dim);
-      border: 1px solid rgba(245,158,11,0.3);
-      color: var(--yellow);
-    }
-    .confidence-red {
-      background: var(--red-dim);
-      border: 1px solid rgba(239,68,68,0.3);
-      color: var(--red);
-    }
-    .confidence-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-    }
-    .confidence-green .confidence-dot { background: var(--green); }
-    .confidence-orange .confidence-dot { background: var(--yellow); }
-    .confidence-red .confidence-dot { background: var(--red); }
-
-    /* ── Wizard express/advanced toggle ── */
-    .wiz-depth-toggle {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      margin-bottom: 20px;
-    }
-    .wiz-depth-btn {
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .wiz-depth-btn:hover { border-color: var(--border2); color: var(--text-bright); }
-    .wiz-depth-btn.active {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .wiz-advanced-fields { display: none; }
-    .wiz-advanced-fields.visible { display: contents; }
-    .wiz-assumption {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      background: var(--yellow-dim);
-      border: 1px solid rgba(245,158,11,0.2);
-      border-radius: 6px;
-      font-size: 11px;
-      color: var(--yellow);
-      margin-top: 4px;
-    }
-    .wiz-assumption-icon { font-size: 12px; }
-
-    /* ── Rich recommendation ── */
-    .reco-section { margin-top: 24px; }
-    .reco-section-title {
-      
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--border);
-    }
-    .reco-archi-card {
-      padding: 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .reco-archi-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 6px;
-    }
-    .reco-archi-desc {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .reco-metric {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-    .reco-metric-label {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .reco-metric-value {
-      
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-bright);
-    }
-    .reco-metric-note {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-left: 8px;
-    }
-    .reco-sub-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    .reco-sub-tag {
-      padding: 4px 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 11px;
-      color: var(--text);
-    }
-    .reco-sub-tag.included {
-      background: var(--green-dim);
-      border-color: rgba(34,197,94,0.2);
-      color: var(--green);
-    }
-    .reco-arg-card {
-      padding: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 8px;
-    }
-    .reco-arg-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-bright);
-      margin-bottom: 4px;
-    }
-    .reco-arg-text {
-      font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    .reco-open-q {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--yellow-dim);
-      border: 1px solid rgba(245,158,11,0.2);
-      border-radius: 6px;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: var(--text);
-    }
-    .reco-open-q-icon { color: var(--yellow); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-    .reco-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .reco-link {
-      padding: 6px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 11px;
-      color: var(--accent);
-      text-decoration: none;
-      transition: all .15s;
-    }
-    .reco-link:hover { border-color: var(--accent); background: var(--accent-dim); }
-
-    /* ── Brief avant-vente ── */
-    .brief-card {
-      background: var(--surface);
-      border: 2px solid var(--accent);
-      border-radius: 12px;
-      padding: 24px;
-      margin-top: 24px;
-    }
-    .brief-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .brief-section {
-      margin-bottom: 14px;
-    }
-    .brief-section-label {
-      
-      font-size: 9px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .brief-section-content {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .brief-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
   </style>
 </head>
-<body>
+<body class="wb-page">
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
+  <script src="icons.js"></script>
   <script src="data/pa-models.js"></script>
 
-  <!-- ── Bascule des vues ── -->
-  <div class="mode-bar">
-    <button class="mode-btn active" id="mode-commercial" onclick="setMode('commercial')">Qualification rapide</button>
-    <button class="mode-btn" id="mode-guide" onclick="setMode('guide')">Guide de qualification</button>
-    <a class="mode-btn mode-link" href="pa-series.html">Comparateur technique &rarr;</a>
+  <!-- ── Barre de mode ── -->
+  <div class="wb-bar" role="tablist" aria-label="Modes de l'outil de dimensionnement">
+    <button class="wb-tab" id="mode-commercial" role="tab" aria-selected="true" aria-controls="view-commercial" onclick="setMode('commercial')">
+      <span data-ic="target" data-ic-size="14"></span>Dimensionnement
+    </button>
+    <button class="wb-tab" id="mode-guide" role="tab" aria-selected="false" aria-controls="view-guide" onclick="setMode('guide')">
+      <span data-ic="info" data-ic-size="14"></span>Questionnaire client
+    </button>
+    <span class="spacer"></span>
+    <span class="wb-credit">Sizing Guide PANW &middot; <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></span>
+    <a class="wb-tab" href="pa-series.html">
+      <span data-ic="table" data-ic-size="14"></span>Comparateur PA-Series
+    </a>
   </div>
 
-  <!-- ── Qualification rapide (commercial) ── -->
+  <!-- ══ Etabli : entrees a gauche, recommandation a droite ══ -->
   <div class="commercial-view" id="view-commercial">
-    <div class="page-wrap" style="padding-top:24px;padding-bottom:24px">
-      <div style="text-align:center;margin-bottom:28px">
-        <h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Quel firewall pour votre client ?</h2>
-        <p style="font-size:13px;color:var(--text-muted)">Répondez à quelques questions pour identifier la gamme adaptée. "Je ne sais pas" est toujours une réponse valide.</p>
-      </div>
+    <div class="wb">
 
-      <div class="wiz-depth-toggle">
-        <button class="wiz-depth-btn active" id="depth-express" onclick="setDepth('express')">Mode express (5 questions)</button>
-        <button class="wiz-depth-btn" id="depth-advanced" onclick="setDepth('advanced')">Mode approfondi</button>
-      </div>
+      <!-- ── Volet 1 : contraintes ── -->
+      <section class="wb-pane in" aria-label="Contraintes de dimensionnement">
+        <div class="wb-pane-head">
+          <h2 class="wb-pane-title">Contraintes</h2>
+          <span class="wb-pane-sub" id="wb-filled">0/5 renseignés</span>
+        </div>
+        <div class="wb-pane-in">
+          <form id="wb-form" novalidate>
 
-      <div style="max-width:700px;margin:0 auto 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div class="wiz-field">
-          <label>Nom du client</label>
-          <input type="text" id="wiz-client" placeholder="Ex: Société Dupont SAS" value="">
-        </div>
-        <div class="wiz-field">
-          <label>Partenaire / commercial</label>
-          <input type="text" id="wiz-partner" placeholder="Ex: Jean Martin, Exclusive Networks" value="">
-        </div>
-      </div>
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="13"></span>Charge réseau</h3>
 
-      <div class="wizard-form" style="max-width:700px;margin:0 auto" id="wiz-form">
-        <div class="wiz-field">
-          <label>Nombre de collaborateurs <span class="wiz-help glossary-tip" data-tip="Nombre total de personnes utilisant le réseau (postes fixes, portables, mobiles). Entrez un nombre précis ou laissez vide si inconnu.">?</span></label>
-          <input type="number" id="wiz-users" placeholder="Ex: 250" min="1" max="500000" value="">
-        </div>
-        <div class="wiz-field">
-          <label>Combien de sites à sécuriser ? <span class="wiz-help glossary-tip" data-tip="Un site = un lieu physique avec sa propre connexion internet (siège, agence, entrepôt, usine).">?</span></label>
-          <select id="wiz-sites">
-            <option value="1" selected>1 site (siège unique)</option>
-            <option value="3">2 à 5 sites</option>
-            <option value="10">5 à 15 sites</option>
-            <option value="30">15 à 50 sites</option>
-            <option value="100">Plus de 50 sites</option>
-            <option value="unknown">Je ne sais pas</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Type de site principal <span class="wiz-help glossary-tip" data-tip="Agence = bureau distant, petite équipe. Siège = bureau principal ou campus. Datacenter = salle serveurs hébergeant des applications.">?</span></label>
-          <select id="wiz-type">
-            <option value="branch" selected>Agence / bureau distant</option>
-            <option value="campus">Siège / campus</option>
-            <option value="dc">Datacenter / centre de données</option>
-            <option value="unknown">Je ne sais pas</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Débit Internet (Mbps) <span class="wiz-help glossary-tip" data-tip="Le débit de votre lien Internet (fibre, MPLS) en Mbps. Ex: 100, 500, 1000. Laissez vide si inconnu.">?</span></label>
-          <input type="number" id="wiz-bw" placeholder="Ex: 200" min="1" max="1000000" value="">
-        </div>
-        <div class="wiz-field">
-          <label>Inspection du trafic chiffré (HTTPS) ? <span class="wiz-help glossary-tip" data-tip="Le déchiffrement SSL permet d'inspecter le contenu du trafic HTTPS (80% du trafic web). Fortement recommandé pour la sécurité, mais nécessite plus de puissance.">?</span></label>
-          <select id="wiz-ssl">
-            <option value="no">Non, pas nécessaire</option>
-            <option value="yes" selected>Oui, souhaité</option>
-            <option value="unknown">Je ne sais pas</option>
-          </select>
-        </div>
-        <!-- ── Advanced fields ── -->
-        <div class="wiz-advanced-fields" id="wiz-advanced">
-        <div class="wiz-field">
-          <label>Usage cloud / visio <span class="wiz-help glossary-tip" data-tip="Si les équipes utilisent massivement Microsoft 365, Teams, Zoom, Salesforce ou d'autres services cloud, le firewall doit supporter plus de sessions simultanées.">?</span></label>
-          <select id="wiz-cloud">
-            <option value="low">Usage classique (mail, web)</option>
-            <option value="high">Intensif (M365, Teams, SaaS)</option>
-            <option value="unknown" selected>Je ne sais pas</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Secteur d'activité <span class="wiz-help glossary-tip" data-tip="Le secteur oriente les exigences de conformité et les arguments de vente.">?</span></label>
-          <select id="wiz-sector">
-            <option value="unknown" selected>Je ne sais pas</option>
-            <option value="finance">Finance / Banque / Assurance</option>
-            <option value="health">Santé / Pharma</option>
-            <option value="industry">Industrie / OT</option>
-            <option value="retail">Commerce / Distribution</option>
-            <option value="education">Éducation / Recherche</option>
-            <option value="public">Secteur public</option>
-            <option value="services">Services / Conseil</option>
-            <option value="tech">Tech / SaaS</option>
-            <option value="other">Autre</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Marque du firewall actuel <span class="wiz-help glossary-tip" data-tip="La marque actuelle du firewall permet d'orienter les arguments concurrentiels et de proposer un équivalent PA-Series.">?</span></label>
-          <select id="wiz-existing" onchange="updateExistingModels()">
-            <option value="unknown" selected>Je ne sais pas</option>
-            <option value="fortinet">Fortinet (FortiGate)</option>
-            <option value="checkpoint">Check Point (Quantum)</option>
-            <option value="cisco">Cisco (Firepower / ASA)</option>
-            <option value="sophos">Sophos</option>
-            <option value="none">Pas d'existant (nouveau projet)</option>
-            <option value="other">Autre</option>
-          </select>
-        </div>
-        <div class="wiz-field" id="wiz-model-field" style="display:none">
-          <label>Modèle exact <span class="wiz-help glossary-tip" data-tip="Si vous connaissez le modèle exact du firewall en place, l'outil proposera directement l'équivalent PA-Series.">?</span></label>
-          <select id="wiz-existing-model">
-            <option value="unknown" selected>Je ne sais pas</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Objets connectés / IoT <span class="wiz-help glossary-tip" data-tip="Caméras, capteurs, automates, équipements médicaux : chaque objet génère des flux et nécessite la subscription Device Security.">?</span></label>
-          <select id="wiz-iot">
-            <option value="unknown" selected>Je ne sais pas</option>
-            <option value="none">Aucun ou négligeable</option>
-            <option value="moderate">Quelques dizaines</option>
-            <option value="heavy">Centaines ou plus</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Haute disponibilité <span class="wiz-help glossary-tip" data-tip="HA = paire de firewalls pour zéro coupure. Double le nombre d'appliances.">?</span></label>
-          <select id="wiz-ha">
-            <option value="unknown" selected>Je ne sais pas</option>
-            <option value="yes">Oui, indispensable</option>
-            <option value="no">Non, pas nécessaire</option>
-          </select>
-        </div>
-        <div class="wiz-field">
-          <label>Utilisateurs nomades <span class="wiz-help glossary-tip" data-tip="Nombre de personnes se connectant à distance via VPN ou ZTNA. Entrez un nombre précis ou laissez vide.">?</span></label>
-          <input type="number" id="wiz-remote" placeholder="Ex: 50" min="0" max="500000" value="">
-        </div>
-        <div class="wiz-field">
-          <label>Croissance à 3 ans <span class="wiz-help glossary-tip" data-tip="Prévision de croissance du nombre d'utilisateurs ou de débit pour dimensionner avec marge.">?</span></label>
-          <select id="wiz-growth">
-            <option value="unknown" selected>Je ne sais pas</option>
-            <option value="stable">Stable</option>
-            <option value="moderate">Croissance modérée (+20 à 50%)</option>
-            <option value="strong">Forte croissance (+50% et plus)</option>
-          </select>
-        </div>
-        </div>
-      </div>
+              <div class="wb-field">
+                <label for="wiz-bw">Débit du lien Internet <span class="wb-unit">Mbps</span>
+                  <button type="button" class="wb-help" data-tip="Débit du lien Internet|Débit souscrit sur le site principal, en Mbps. 1 Gbps = 1000 Mbps. C'est la base du calcul de débit Threat Prevention.">?</button>
+                </label>
+                <input type="number" id="wiz-bw" inputmode="numeric" placeholder="200" min="1" max="1000000" step="1" value="">
+              </div>
 
-      <div style="text-align:center;margin-top:20px">
-        <button class="wiz-btn" onclick="runCommercialWizard()" style="padding:12px 32px;font-size:14px">Identifier la gamme adaptée</button>
-      </div>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-users">Utilisateurs
+                    <button type="button" class="wb-help" data-tip="Utilisateurs|Postes et terminaux actifs sur le réseau. Sert à estimer le nombre de sessions concurrentes, pas le débit.">?</button>
+                  </label>
+                  <input type="number" id="wiz-users" inputmode="numeric" placeholder="250" min="1" max="500000" step="1" value="">
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-remote">Accès distant
+                    <button type="button" class="wb-help" data-tip="Accès distant|Utilisateurs connectés via GlobalProtect ou Prisma Access. Consomme des tunnels et du débit VPN.">?</button>
+                  </label>
+                  <input type="number" id="wiz-remote" inputmode="numeric" placeholder="50" min="0" max="500000" step="1" value="">
+                </div>
+              </div>
 
-      <div class="wiz-results" id="wiz-results-commercial"></div>
+              <div class="wb-field">
+                <label for="wiz-cloud">Profil de trafic</label>
+                <select id="wiz-cloud">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="low">Web et messagerie (~10 sessions/utilisateur)</option>
+                  <option value="high">SaaS intensif M365, Teams (~35 sessions/utilisateur)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="13"></span>Fonctions de sécurité</h3>
+
+              <div class="wb-field">
+                <label for="wiz-ssl">Déchiffrement SSL entrant/sortant
+                  <button type="button" class="wb-help" data-tip="Déchiffrement SSL|Inspecter le trafic HTTPS demande davantage de ressources. Le calcul applique un facteur 1,5 sur le débit Threat Prevention requis.">?</button>
+                </label>
+                <select id="wiz-ssl">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="yes">Active</option>
+                  <option value="no">Non prevu</option>
+                </select>
+              </div>
+
+              <div class="wb-field">
+                <label for="wiz-iot">Équipements non gérés (OT, médical, caméra)</label>
+                <select id="wiz-iot">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="none">Aucun</option>
+                  <option value="moderate">Quelques dizaines (+100 sessions)</option>
+                  <option value="heavy">Centaines ou plus (+500 sessions)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="site" data-ic-size="13"></span>Topologie</h3>
+
+              <div class="wb-field">
+                <label for="wiz-type">Rôle du site dimensionné</label>
+                <select id="wiz-type">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="branch">Agence</option>
+                  <option value="campus">Siège ou campus</option>
+                  <option value="dc">Datacenter</option>
+                </select>
+              </div>
+
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-sites">Nombre de sites</label>
+                  <select id="wiz-sites">
+                    <option value="unknown" selected>Non renseigné</option>
+                    <option value="1">1</option>
+                    <option value="3">2 à 5</option>
+                    <option value="10">6 à 15</option>
+                    <option value="30">16 à 50</option>
+                    <option value="100">Plus de 50</option>
+                  </select>
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-ha">Haute disponibilité
+                    <button type="button" class="wb-help" data-tip="Haute disponibilité|Une paire HA double le nombre d'appliances mais ne change pas le modèle retenu : chaque membre doit tenir la charge totale.">?</button>
+                  </label>
+                  <select id="wiz-ha">
+                    <option value="unknown" selected>Non renseigné</option>
+                    <option value="yes">Paire HA</option>
+                    <option value="no">Appliance seule</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="wb-field">
+                <label for="wiz-growth">Marge de croissance à 3 ans
+                  <button type="button" class="wb-help" data-tip="Marge de croissance|Facteur appliqué au débit et aux sessions : stable x1, modérée x1,3, forte x1,5.">?</button>
+                </label>
+                <select id="wiz-growth">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="stable">Stable (x1)</option>
+                  <option value="moderate">Modérée, +20 à 50% (x1,3)</option>
+                  <option value="strong">Forte, +50% et plus (x1,5)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="13"></span>Parc en place</h3>
+
+              <div class="wb-field">
+                <label for="wiz-existing">Constructeur à remplacer</label>
+                <select id="wiz-existing" onchange="updateExistingModels()">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="none">Aucun, nouveau site</option>
+                  <option value="fortinet">Fortinet FortiGate</option>
+                  <option value="checkpoint">Check Point Quantum</option>
+                  <option value="cisco">Cisco Firepower / ASA</option>
+                  <option value="sophos">Sophos</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+
+              <div class="wb-field" id="wiz-model-field" hidden>
+                <label for="wiz-existing-model">Modèle en place</label>
+                <select id="wiz-existing-model">
+                  <option value="unknown" selected>Non renseigné</option>
+                </select>
+              </div>
+
+              <div class="wb-field">
+                <label for="wiz-sector">Secteur
+                  <button type="button" class="wb-help" data-tip="Secteur|Oriente les subscriptions proposées : DLP pour finance et santé, Device Security pour l'industrie et le médical.">?</button>
+                </label>
+                <select id="wiz-sector">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="finance">Finance, banque, assurance</option>
+                  <option value="health">Santé, pharma</option>
+                  <option value="industry">Industrie, OT</option>
+                  <option value="retail">Commerce, distribution</option>
+                  <option value="education">Éducation, recherche</option>
+                  <option value="public">Secteur public</option>
+                  <option value="services">Services, conseil</option>
+                  <option value="tech">Tech, SaaS</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="copy" data-ic-size="13"></span>Identification du dossier</h3>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-client">Client</label>
+                  <input type="text" id="wiz-client" placeholder="Raison sociale" autocomplete="organization" value="">
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-partner">Rédacteur</label>
+                  <input type="text" id="wiz-partner" placeholder="Nom, societe" autocomplete="name" value="">
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="fx-btn ghost" onclick="resetWorkbench()">
+              <span data-ic="close" data-ic-size="14"></span>Réinitialiser
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ── Volet 2 : recommandation, recalculee a chaque saisie ── -->
+      <section class="wb-pane out" aria-label="Recommandation">
+        <div class="wb-pane-head">
+          <h2 class="wb-pane-title">Recommandation</h2>
+          <span class="wb-pane-sub">Datasheets PAN-OS 12.1</span>
+        </div>
+        <div class="wb-pane-in">
+          <!-- Region live : tout changement de contrainte est annonce
+               aux lecteurs d'ecran sans deplacer le focus. -->
+          <div id="wb-out" aria-live="polite" aria-atomic="false"></div>
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -1165,51 +749,82 @@
 
   <script>
   /* ══ Bascule des deux vues ══ */
+  const VIEWS = { commercial: 'view-commercial', guide: 'view-guide' };
   function setMode(mode) {
-    document.getElementById('mode-commercial').classList.toggle('active', mode === 'commercial');
-    document.getElementById('mode-guide').classList.toggle('active', mode === 'guide');
-    document.getElementById('view-commercial').style.display = mode === 'commercial' ? 'block' : 'none';
-    document.getElementById('view-guide').style.display = mode === 'guide' ? 'block' : 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    for (const [key, id] of Object.entries(VIEWS)) {
+      const on = key === mode;
+      document.getElementById(id).hidden = !on;
+      const tab = document.getElementById('mode-' + key);
+      if (tab) tab.setAttribute('aria-selected', String(on));
+    }
   }
+
+  /* ══ Recalcul continu ══
+     Il n'y a plus de bouton "calculer" : chaque contrainte saisie met a
+     jour le volet de droite. La saisie au clavier est amortie de 180 ms
+     pour ne pas recalculer a chaque frappe, les listes deroulantes
+     repondent immediatement. */
+  let recomputeT = null;
+  function scheduleRecompute(delay) {
+    clearTimeout(recomputeT);
+    recomputeT = setTimeout(runCommercialWizard, delay);
+  }
+
+  function wireWorkbench() {
+    const form = document.getElementById('wb-form');
+    form.addEventListener('input', e => {
+      scheduleRecompute(e.target.tagName === 'SELECT' ? 0 : 180);
+    });
+    form.addEventListener('change', () => scheduleRecompute(0));
+    // Entree ne doit pas recharger la page : le calcul est deja continu.
+    form.addEventListener('submit', e => e.preventDefault());
+  }
+
+  function resetWorkbench() {
+    const form = document.getElementById('wb-form');
+    form.querySelectorAll('input').forEach(el => { el.value = ''; });
+    form.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+    updateExistingModels();
+    history.replaceState(null, '', window.location.pathname);
+    runCommercialWizard();
+    document.getElementById('wiz-bw').focus();
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     setMode('commercial');
+    wireWorkbench();
     loadFromURL();
+    runCommercialWizard();   // le volet droit n'est jamais vide au chargement
   });
 
-  /* ══ Wizard depth toggle ══ */
-  let wizDepth = 'express';
-  function setDepth(d) {
-    wizDepth = d;
-    document.getElementById('depth-express').classList.toggle('active', d === 'express');
-    document.getElementById('depth-advanced').classList.toggle('active', d === 'advanced');
-    document.getElementById('wiz-advanced').classList.toggle('visible', d === 'advanced');
-  }
+  /* ══ Partage par URL ══ */
+  const URL_FIELDS = ['client','partner','users','sites','type','bw','ssl','cloud','sector','existing','existing-model','iot','ha','remote','growth'];
 
-  /* ══ URL encode/decode for shareable sessions ══ */
   function encodeSession() {
-    const fields = ['wiz-client','wiz-partner','wiz-users','wiz-sites','wiz-type','wiz-bw','wiz-ssl','wiz-cloud','wiz-sector','wiz-existing','wiz-iot','wiz-ha','wiz-remote','wiz-growth'];
     const params = new URLSearchParams();
-    params.set('d', wizDepth);
-    fields.forEach(f => {
-      const el = document.getElementById(f);
-      if (el && el.value) params.set(f.replace('wiz-',''), el.value);
+    URL_FIELDS.forEach(f => {
+      const el = document.getElementById('wiz-' + f);
+      if (el && el.value && el.value !== 'unknown') params.set(f, el.value);
     });
     return window.location.origin + window.location.pathname + '?' + params.toString();
   }
 
   function loadFromURL() {
     const params = new URLSearchParams(window.location.search);
-    if (params.size === 0) return;
-    const map = { client:'wiz-client', partner:'wiz-partner', users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
-    Object.entries(map).forEach(([k, id]) => {
-      const v = params.get(k);
-      const el = document.getElementById(id);
-      if (v && el) el.value = v;
+    if (![...params.keys()].length) return;
+    URL_FIELDS.forEach(f => {
+      const v = params.get(f);
+      const el = document.getElementById('wiz-' + f);
+      if (!v || !el) return;
+      // le modele concurrent depend de la marque : la liste doit exister avant
+      if (f === 'existing-model') return;
+      el.value = v;
     });
-    if (params.get('d') === 'advanced') setDepth('advanced');
-    runCommercialWizard();
+    updateExistingModels();
+    const em = params.get('existing-model');
+    if (em) document.getElementById('wiz-existing-model').value = em;
   }
+
 
   /* ══ Commercial wizard — recommendation engine ══
      Seuils issus des bornes reelles des datasheets officielles :
@@ -1291,16 +906,16 @@
     const modelField = document.getElementById('wiz-model-field');
     const modelSelect = document.getElementById('wiz-existing-model');
     if (brand === 'fortinet' || brand === 'checkpoint') {
-      modelField.style.display = '';
+      modelField.hidden = false;
       const models = COMPETITOR_MODELS[brand];
-      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>' +
+      modelSelect.innerHTML = '<option value="unknown">Non renseigné</option>' +
         models.map(m => {
           const prefix = brand === 'fortinet' ? '' : 'Quantum ';
           return `<option value="${m.id}">${prefix}${m.id} (TP ${m.tp} Gbps, ${m.target})</option>`;
         }).join('');
     } else {
-      modelField.style.display = 'none';
-      modelSelect.innerHTML = '<option value="unknown">Je ne sais pas</option>';
+      modelField.hidden = true;
+      modelSelect.innerHTML = '<option value="unknown">Non renseigné</option>';
     }
   }
 
@@ -1432,253 +1047,304 @@
       if (idx < FAMILIES.length - 1) alsoConsider.push(FAMILIES[idx + 1]);
     }
 
-    const box = document.getElementById('wiz-results-commercial');
+    /* ══ Rendu du volet droit ══
+       Une seule ecriture dans le DOM par recalcul : la chaine est
+       assemblee entierement avant d'etre posee. */
+    const box = document.getElementById('wb-out');
+
+    /* Les noms saisis par l'utilisateur sont reinjectes dans du HTML :
+       ils passent par un echappement, sans exception. */
+    const esc = v => String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+    /* Un debit s'affiche en Mbps sous le Gbps, jamais en "0.2 Gbps". */
+    const fmtRate = g => g < 1
+      ? { val: (g * 1000).toFixed(0), unit: 'Mbps' }
+      : { val: g.toFixed(g < 10 ? 1 : 0), unit: 'Gbps' };
+
+    const num = (v, u) => '<td class="num"><span class="val">' + v + '</span>'
+      + (u ? '<span class="u">' + u + '</span>' : '') + '</td>';
+
+    /* compteur de contraintes renseignees, affiche dans l'en-tete gauche */
+    const CORE = [rawBw, rawUsers, rawType, rawSsl, rawSites];
+    const filled = CORE.filter(v => v !== 'unknown').length;
+    document.getElementById('wb-filled').textContent = filled + '/5 renseignés';
+
+    /* Les champs que l'outil a du combler tout seul portent un filet
+       orange a gauche : l'operateur voit d'un coup d'oeil sur quoi
+       repose la recommandation. */
+    const ASSUMED = { 'wiz-bw': rawBw, 'wiz-users': rawUsers, 'wiz-sites': rawSites,
+                      'wiz-type': rawType, 'wiz-ssl': rawSsl, 'wiz-cloud': rawCloud,
+                      'wiz-growth': rawGrowth };
+    Object.entries(ASSUMED).forEach(([id, val]) => {
+      const field = document.getElementById(id).closest('.wb-field');
+      if (field) field.classList.toggle('assumed', val === 'unknown');
+    });
+
     if (reco.length === 0) {
-      box.innerHTML = '<div class="wiz-disclaimer"><strong>Besoin hors gamme standard.</strong> Contactez directement votre ingénieur avant-vente Exclusive Networks pour un dimensionnement sur-mesure (PA-7500 ou architecture distribuée).</div>';
-      box.classList.add('visible');
+      box.innerHTML = '<div class="wb-note" style="border-left-color:var(--crit)">'
+        + ic('alert', 15)
+        + '<div><b>Besoin hors des gammes couvertes par cet outil.</b><br>'
+        + 'Le débit Threat Prevention estimé dépasse la PA-7500. '
+        + 'Passez la main à un ingénieur avant-vente pour une architecture distribuée.</div></div>';
       return;
     }
 
+    const primary = reco[0];
+    const needRate = fmtRate(needTp);
+    const utilClass = primary.utilPct > 90 ? 'crit' : primary.utilPct > 65 ? 'warn' : 'ok';
+    const confClassWb = confidence === 'green' ? 'ok' : confidence === 'orange' ? 'warn' : 'crit';
+    const confIcon = confidence === 'green' ? 'check' : 'alert';
+
     let html = '';
 
-    if (validationWarning) {
-      html += `<div class="wiz-assumption" style="margin-top:16px;background:var(--red-dim);border-color:rgba(239,68,68,0.2);color:var(--red)"><span class="wiz-assumption-icon">&#9888;</span> ${validationWarning}</div>`;
+    /* ── 1. Le verdict, en haut, toujours visible ── */
+    html += '<div class="wb-verdict">'
+      + '<div class="wb-verdict-top">'
+      +   '<div>'
+      +     '<div class="wb-verdict-family">' + primary.id + ' Series</div>'
+      +     '<div class="wb-verdict-pos">' + primary.pos + ' &middot; ' + primary.form + '</div>'
+      +   '</div>'
+      +   '<span class="wb-conf ' + confClassWb + '">' + ic(confIcon, 12) + confLabel + '</span>'
+      + '</div>'
+      + '<div class="wb-verdict-models">Modèles candidats : ' + primary.modeles + '</div>'
+      + '</div>';
+
+    /* ── 2. Jauge de charge ──
+       Le repere a 65% materialise la marge de dimensionnement du projet :
+       au-dela, on passe au cran superieur. */
+    html += '<div class="wb-gauge">'
+      + '<div class="wb-gauge-head">'
+      +   '<span>Charge estimée sur le haut de gamme ' + primary.id + ' (' + primary.tpMax + ' Gbps TP)</span>'
+      +   '<span class="wb-gauge-pct" style="color:var(--' + utilClass + ')">' + primary.utilPct + '%</span>'
+      + '</div>'
+      + '<div class="wb-gauge-track" role="img" aria-label="Charge estimée ' + primary.utilPct + ' pour cent de la capacité Threat Prevention">'
+      +   '<div class="wb-gauge-fill ' + utilClass + '" style="width:' + Math.min(primary.utilPct, 100) + '%"></div>'
+      +   '<div class="wb-gauge-mark"></div>'
+      + '</div>'
+      + '<div class="wb-gauge-scale"><span>0%</span><span>65% marge cible</span><span>100%</span></div>'
+      + '</div>';
+
+    if (primary.tight) {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>Dimensionnement serré.</b> Le besoin estimé dépasse la marge de 65%. '
+        + 'Retenir le haut de gamme ' + primary.id
+        + (alsoConsider.length ? ', ou passer en ' + alsoConsider[0].id + ' Series' : '')
+        + ' si le débit réel se confirme.</div></div>';
     }
 
-    html += `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px;margin-bottom:16px">
-      <h4 style="font-size:14px;color:var(--text-bright);margin:0">Recommandation</h4>
-      <span class="${confClass} confidence-badge"><span class="confidence-dot"></span> ${confLabel}</span>
-    </div>`;
+    /* ── 3. Besoin contre capacite, en chiffres ── */
+    const sessPct = Math.round((needSess / primary.sessMax) * 100);
+    html += '<div class="wb-metrics-wrap"><table class="wb-metrics">'
+      + '<caption>Besoin estimé contre capacité datasheet</caption>'
+      + '<thead><tr><th scope="col">Métrique</th><th scope="col" style="text-align:right">Besoin</th>'
+      + '<th scope="col" style="text-align:right">' + primary.id + '</th></tr></thead><tbody>'
 
-    if (assumptions.length > 0) {
-      html += '<div class="reco-section"><div class="reco-section-title">Hypothèses retenues (modifiables)</div>';
+      + '<tr><th scope="row">Débit Threat Prevention</th>'
+      +   '<td class="num need"><span class="val">' + needRate.val + '</span><span class="u">' + needRate.unit + '</span></td>'
+      +   num(primary.tpMin + '&ndash;' + primary.tpMax, 'Gbps') + '</tr>'
+
+      + '<tr><th scope="row">Sessions concurrentes</th>'
+      +   '<td class="num need"><span class="val">' + fmtN(needSess) + '</span></td>'
+      +   num(fmtN(primary.sessMax)) + '</tr>'
+
+      + '<tr><th scope="row">Débit du lien</th>'
+      +   '<td class="num need"><span class="val">' + fmtExact(bwMbps) + '</span><span class="u">Mbps</span></td>'
+      +   '<td class="num"><span class="u">reference</span></td></tr>'
+
+      + '<tr><th scope="row">Facteur SSL appliqué</th>'
+      +   '<td class="num need"><span class="val">x' + sslFactor.toFixed(1).replace('.', ',') + '</span></td>'
+      +   '<td class="num"><span class="u">' + (ssl === 'yes' ? 'déchiffrement actif' : 'sans déchiffrement') + '</span></td></tr>'
+
+      + '<tr><th scope="row">Marge de croissance</th>'
+      +   '<td class="num need"><span class="val">x' + growthFactor.toFixed(1).replace('.', ',') + '</span></td>'
+      +   '<td class="num"><span class="u">à 3 ans</span></td></tr>'
+
+      + '</tbody></table></div>';
+
+    if (sessPct > 65) {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>Sessions : ' + sessPct + '% de la capacité.</b> Le nombre de sessions concurrentes, '
+        + 'et non le débit, devient le facteur limitant. Vérifier le profil de trafic avec le client.</div></div>';
+    }
+
+    /* ── 4. Hypotheses : ce que l'outil a comble tout seul ── */
+    if (assumptions.length) {
+      html += '<h3 class="wb-group-title">' + ic('info', 13) + 'Hypothèses appliquées</h3><ul class="wb-list">';
       assumptions.forEach(a => {
-        html += `<div class="wiz-assumption"><span class="wiz-assumption-icon">&#9888;</span> ${a}</div>`;
+        html += '<li>' + ic('alert', 14).replace('class="ic"', 'class="ic ic-warn"') + '<span>' + a + '</span></li>';
       });
-      html += '</div>';
+      html += '</ul>';
     }
 
+    /* ── 5. Equivalence avec le boitier en place ── */
     if (rawExistModel !== 'unknown' && (rawExist === 'fortinet' || rawExist === 'checkpoint')) {
-      const compModels = COMPETITOR_MODELS[rawExist];
-      const match = compModels.find(m => m.id === rawExistModel);
+      const match = COMPETITOR_MODELS[rawExist].find(m => m.id === rawExistModel);
       if (match) {
         const paModel = MODELS.find(m => m.id === match.pa);
         const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
-        html += `<div class="reco-section"><div class="reco-section-title">Équivalence boîtier existant</div>`;
-        html += `<div class="reco-archi-card" style="border-left-color:var(--green)">
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-            <span style="font-size:14px;font-weight:600;color:var(--text-muted);text-decoration:line-through">${brandName}${match.id}</span>
-            <span style="font-size:18px;color:var(--text-muted)">→</span>
-            <span style="font-size:16px;font-weight:700;color:var(--green)">${match.pa}</span>
-          </div>
-          <div style="font-size:13px;color:var(--text);line-height:1.6">
-            Le <strong>${brandName}${match.id}</strong> (${match.target}, TP ~${match.tp} Gbps) correspond au <strong>${match.pa}</strong>
-            ${paModel ? '(TP ' + paModel.tp + ' Gbps, ' + fmtN(paModel.sess) + ' sessions)' : ''} en termes de capacité Threat Prevention.
-            <br><span style="font-size:11px;color:var(--text-muted)">Comparaison indicative basée sur les débits Threat Prevention des datasheets respectives. Les méthodologies de mesure diffèrent entre constructeurs.</span>
-          </div>
-          ${paModel ? `<button class="wiz-link-tech" style="margin-top:8px" onclick="setMode('technique');document.getElementById('model-search').value='${match.pa}';filterSearch('${match.pa}')">Voir ${match.pa} dans le comparateur</button>` : ''}
-        </div></div>`;
+        html += '<h3 class="wb-group-title">' + ic('ha', 13) + 'Équivalence du boîtier en place</h3>'
+          + '<div class="wb-verdict" style="border-left-color:var(--ok);margin-bottom:10px">'
+          + '<div class="wb-verdict-top" style="align-items:center">'
+          +   '<span style="font-family:var(--mono);font-size:14px;color:var(--text-muted)">' + brandName + match.id + '</span>'
+          +   ic('arrow', 16)
+          +   '<span style="font-family:var(--mono);font-size:17px;font-weight:700;color:var(--ok)">' + match.pa + '</span>'
+          + '</div>'
+          + '<p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:8px;line-height:1.55">'
+          +   'TP ~' + match.tp + ' Gbps côté ' + (rawExist === 'fortinet' ? 'Fortinet' : 'Check Point')
+          +   (paModel ? ', TP ' + paModel.tp + ' Gbps et ' + fmtN(paModel.sess) + ' sessions côté ' + match.pa : '')
+          +   '. Rapprochement indicatif : les méthodes de mesure diffèrent d\'un constructeur à l\'autre.'
+          + '</p></div>';
       }
     }
 
-    html += '<div class="reco-section"><div class="reco-section-title">Architecture recommandée</div>';
-
-    let archiDesc = '';
+    /* ── 6. Architecture ── */
+    let archiDesc;
     if (sites >= 3 && type !== 'dc') {
-      archiDesc = `<strong>Architecture multi-sites</strong> : ${reco[0].id} Series en agences`;
-      if (type === 'campus' || sites >= 5) archiDesc += `, modèle supérieur de la gamme au siège`;
-      archiDesc += `, avec Panorama ou Strata Cloud Manager pour la gestion centralisée`;
+      archiDesc = 'Multi-sites : ' + primary.id + ' Series en agence'
+        + ((type === 'campus' || sites >= 5) ? ', modèle supérieur de la gamme au siège' : '')
+        + ', gestion centralisée par Panorama ou Strata Cloud Manager';
       const remoteCount = rawRemote !== 'unknown' ? parseInt(rawRemote) : 0;
-      if (remoteCount > 0) archiDesc += `, et Prisma Access ou GlobalProtect pour les ${remoteCount} utilisateur(s) nomade(s)`;
+      if (remoteCount > 0) archiDesc += ', accès distant par GlobalProtect ou Prisma Access pour ' + fmtExact(remoteCount) + ' utilisateurs';
       archiDesc += '.';
     } else if (type === 'dc') {
-      archiDesc = `<strong>Architecture datacenter</strong> : ${reco[0].id} Series pour l'inspection périmétrique et la segmentation est-ouest`;
-      if (rawHa !== 'no') archiDesc += ', en paire HA active/passive';
-      archiDesc += '.';
+      archiDesc = 'Datacenter : ' + primary.id + ' Series en inspection périmétrique et segmentation est-ouest'
+        + (rawHa !== 'no' ? ', en paire HA active/passive' : '') + '.';
     } else {
-      archiDesc = `<strong>Site unique</strong> : ${reco[0].id} Series pour la protection périmétrique du site`;
-      if (rawHa === 'yes') archiDesc += ', en paire HA';
-      archiDesc += '.';
+      archiDesc = 'Site unique : ' + primary.id + ' Series en protection périmétrique'
+        + (rawHa === 'yes' ? ', en paire HA' : '') + '.';
+    }
+    html += '<h3 class="wb-group-title">' + ic('site', 13) + 'Architecture</h3>'
+      + '<p style="font-size:var(--text-xs);line-height:1.6;color:var(--text);margin-bottom:16px">' + archiDesc + '</p>';
+
+    if (alsoConsider.length) {
+      html += '<p style="font-size:var(--text-2xs);color:var(--text-muted);margin:-8px 0 16px">'
+        + 'À considérer aussi : <b style="color:var(--text)">' + alsoConsider[0].id + ' Series</b> ('
+        + alsoConsider[0].pos + ') si le débit mesuré dépasse l\'estimation.</p>';
     }
 
-    html += `<div class="reco-archi-card"><div class="reco-archi-desc">${archiDesc}</div></div>`;
-
-    reco.forEach((f, i) => {
-      const rangeNote = f.tight ? ' (dimensionnement serré, considérer le cran au-dessus)' : '';
-      const pctColor = f.utilPct > 65 ? 'var(--yellow)' : 'var(--green)';
-      html += `<div class="wiz-family-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div class="wiz-family-name">${f.id} Series</div>
-          <span style="font-family:var(--mono);font-size:11px;color:${pctColor}">${f.utilPct}% de charge estimée${rangeNote}</span>
-        </div>
-        <div class="wiz-family-positioning">${f.pos}</div>
-        <p style="font-size:12px;color:var(--text-muted);margin:8px 0">${f.desc}</p>
-        <p style="font-size:12px;color:var(--text);margin-bottom:8px"><strong>Modèles candidats :</strong> ${f.modeles}</p>`;
-
-      html += '<div class="reco-section-title" style="margin-top:12px">Chiffres clés traduits</div>';
-      html += `<div class="reco-metric">
-        <span class="reco-metric-label">Débit Threat Prevention disponible</span>
-        <span class="reco-metric-value">${f.tpMin} à ${f.tpMax} Gbps<span class="reco-metric-note">selon le modèle choisi dans la gamme</span></span>
-      </div>`;
-      html += `<div class="reco-metric">
-        <span class="reco-metric-label">Votre besoin estimé (avec marge et SSL)</span>
-        <span class="reco-metric-value">${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}</span>
-      </div>`;
-      html += `<div class="reco-metric">
-        <span class="reco-metric-label">Sessions concurrentes couvertes</span>
-        <span class="reco-metric-value">jusqu'à ${fmtN(f.sessMax)}<span class="reco-metric-note">votre besoin estimé : ~${fmtN(needSess)}</span></span>
-      </div>`;
-      html += `<div class="reco-metric">
-        <span class="reco-metric-label">Format</span>
-        <span class="reco-metric-value">${f.form}</span>
-      </div>`;
-
-      html += `<div style="margin-top:10px">
-        <button class="wiz-link-tech" onclick="setMode('technique');filterSeries(document.querySelector('[data-series=&quot;${f.id}&quot;]'))">Voir les modèles ${f.id} dans le comparateur technique</button>
-      </div></div>`;
-    });
-
-    if (alsoConsider.length > 0) {
-      html += `<p style="font-size:12px;color:var(--text-muted);margin:8px 0"><strong>À considérer également :</strong> ${alsoConsider[0].id} Series (${alsoConsider[0].pos}) si le débit réel confirmé dépasse l'estimation.</p>`;
-    }
-
-    html += '</div>';
-
-    const subs = [];
-    subs.push({ name:'Threat Prevention', included:true, reason:'Socle de sécurité : IPS, antivirus, antispyware' });
-    subs.push({ name:'URL Filtering', included:true, reason:'Filtrage web par catégorie, blocage des sites malveillants' });
-    subs.push({ name:'WildFire', included:true, reason:'Sandbox cloud pour l\'analyse des fichiers inconnus' });
-    subs.push({ name:'DNS Security', included:true, reason:'Protection contre les attaques via DNS (C2, DGA, tunneling)' });
+    /* ── 7. Subscriptions ── */
+    const subs = [
+      { name: 'Threat Prevention', included: true, reason: 'IPS, antivirus, anti-spyware' },
+      { name: 'Advanced URL Filtering', included: true, reason: 'Filtrage web par catégorie' },
+      { name: 'WildFire', included: true, reason: 'Analyse des fichiers inconnus' },
+      { name: 'DNS Security', included: true, reason: 'C2, DGA, tunneling DNS' }
+    ];
     if (rawIot === 'moderate' || rawIot === 'heavy' || rawSector === 'industry' || rawSector === 'health') {
-      subs.push({ name:'Device Security', included:false, reason:'Visibilité et contrôle des objets connectés (ex-IoT Security)' });
+      subs.push({ name: 'Device Security', included: false, reason: 'Visibilité des équipements non gérés' });
     }
     if (rawSector === 'finance' || rawSector === 'health' || rawSector === 'public') {
-      subs.push({ name:'Enterprise DLP', included:false, reason:'Prévention des fuites de données (conformité)' });
+      subs.push({ name: 'Enterprise DLP', included: false, reason: 'Prévention des fuites de données' });
     }
     if (sites >= 3) {
-      subs.push({ name:'Panorama / SCM', included:false, reason:'Gestion centralisée multi-sites' });
+      subs.push({ name: 'Panorama ou Strata Cloud Manager', included: false, reason: 'Gestion centralisée multi-sites' });
     }
     if (rawRemote !== 'unknown' && parseInt(rawRemote) > 0) {
-      subs.push({ name:'GlobalProtect / Prisma Access', included:false, reason:'Accès distant sécurisé pour les nomades' });
+      subs.push({ name: 'GlobalProtect ou Prisma Access', included: false, reason: 'Accès distant' });
     }
 
-    html += '<div class="reco-section"><div class="reco-section-title">Subscriptions et services à associer</div>';
-    html += '<div class="reco-sub-list">';
+    html += '<h3 class="wb-group-title">' + ic('threat', 13) + 'Subscriptions</h3><ul class="wb-list">';
     subs.forEach(s => {
-      html += `<span class="reco-sub-tag ${s.included ? 'included' : ''}" title="${s.reason}">${s.name}${s.included ? ' (socle)' : ''}</span>`;
+      html += '<li>'
+        + ic(s.included ? 'check' : 'chevron', 14).replace('class="ic"', 'class="ic ' + (s.included ? 'ic-ok' : 'ic-add') + '"')
+        + '<span><b>' + s.name + '</b> &middot; ' + s.reason + '</span>'
+        + '<span class="tag">' + (s.included ? 'socle' : 'selon contexte') + '</span></li>';
     });
-    html += '</div></div>';
+    html += '</ul>';
 
-    const existing = rawExist !== 'unknown' ? rawExist : 'default';
-    const compArgs = COMPETITOR_ARGS[existing] || COMPETITOR_ARGS.default;
-    html += '<div class="reco-section"><div class="reco-section-title">Arguments de vente' + (compArgs.name !== 'Concurrent générique' ? ' (face à ' + compArgs.name + ')' : '') + '</div>';
-    compArgs.args.forEach(a => {
-      html += `<div class="reco-arg-card"><div class="reco-arg-title">${a.title}</div><div class="reco-arg-text">${a.text}</div></div>`;
-    });
-    html += '</div>';
-
-    if (openQuestions.length > 0) {
-      html += '<div class="reco-section"><div class="reco-section-title">Questions à poser au client lors du prochain échange</div>';
+    /* ── 8. Ce qui reste a demander au client ── */
+    if (openQuestions.length) {
+      html += '<h3 class="wb-group-title">' + ic('info', 13) + 'À confirmer auprès du client ('
+        + openQuestions.length + ')</h3><ul class="wb-list">';
       openQuestions.forEach(q => {
-        html += `<div class="reco-open-q"><span class="reco-open-q-icon">?</span> ${q}</div>`;
+        html += '<li>' + ic('chevron', 14).replace('class="ic"', 'class="ic ic-add"') + '<span>' + q + '</span></li>';
       });
-      html += '</div>';
+      html += '</ul>';
     }
 
-    html += '<div class="reco-section"><div class="reco-section-title">Liens utiles</div><div class="reco-links">';
-    reco.forEach(f => {
-      html += `<a class="reco-link" href="${f.dsUrl}" target="_blank" rel="noopener">Datasheet ${f.id}</a>`;
-    });
-    html += '<a class="reco-link" href="https://www.paloaltonetworks.com/partners/nextwave" target="_blank" rel="noopener">Enregistrement de deal NextWave</a>';
-    html += '</div></div>';
-
-    const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siège' : 'Datacenter';
-    const sslLabel = ssl === 'yes' ? 'Oui' : ssl === 'no' ? 'Non' : 'À confirmer';
-    const cloudLabel = cloud === 'high' ? 'Intensif (SaaS)' : 'Standard';
+    /* ── 9. Brief transmissible ── */
+    const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siège ou campus' : 'Datacenter';
+    const sslLabel = ssl === 'yes' ? 'Active' : ssl === 'no' ? 'Non prévu' : 'À confirmer';
+    const cloudLabel = cloud === 'high' ? 'SaaS intensif' : 'Web et messagerie';
     const recoText = reco.map(f => f.id + ' Series (' + f.modeles + ')').join(' ou ');
-    const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (recommandé)')).join(', ');
+    const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (selon contexte)')).join(', ');
 
     const briefText = `QUALIFICATION FIREWALL PALO ALTO NETWORKS
 ============================================
-${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Partenaire : ' + partnerName + '\n' : ''}Date : ${new Date().toLocaleDateString('fr-FR')}
+${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Rédacteur : ' + partnerName + '\n' : ''}Date : ${new Date().toLocaleDateString('fr-FR')}
 ${confLabel}
 
-RÉPONSES CLIENT
-  Utilisateurs : ${rawUsers === 'unknown' ? 'Non connu (hypothèse 250)' : users}
-  Sites : ${rawSites === 'unknown' ? 'Non connu (hypothèse 1)' : sites}
-  Type de site : ${typeLabel}${rawType === 'unknown' ? ' (hypothèse)' : ''}
-  Débit Internet : ${rawBw === 'unknown' ? 'Non connu (hypothèse 200 Mbps)' : bwMbps + ' Mbps'}
-  Déchiffrement SSL : ${sslLabel}${rawSsl === 'unknown' ? ' (hypothèse : oui)' : ''}
-  Usage cloud : ${cloudLabel}
-  Secteur : ${rawSector === 'unknown' ? 'Non renseigné' : rawSector}
-  Existant : ${rawExist === 'unknown' ? 'Non renseigné' : rawExist}${rawExistModel !== 'unknown' ? ' (' + rawExistModel + ')' : ''}
-  IoT : ${rawIot === 'unknown' ? 'Non renseigné' : rawIot}
-  HA : ${rawHa === 'unknown' ? 'Non renseigné' : rawHa}
-  Nomades : ${rawRemote === 'unknown' ? 'Non renseigné' : rawRemote}
-  Croissance : ${rawGrowth === 'unknown' ? 'Non renseigné (hypothèse +30%)' : rawGrowth}
+CONTRAINTES
+  Debit du lien       : ${rawBw === 'unknown' ? 'non renseigne (hypothese 200 Mbps)' : bwMbps + ' Mbps'}
+  Utilisateurs        : ${rawUsers === 'unknown' ? 'non renseigne (hypothese 250)' : users}
+  Accès distant       : ${rawRemote === 'unknown' ? 'non renseigne' : rawRemote}
+  Profil de trafic    : ${cloudLabel}
+  Dechiffrement SSL   : ${sslLabel}
+  Equipements non ger.: ${rawIot === 'unknown' ? 'non renseigne' : rawIot}
+  Role du site        : ${typeLabel}${rawType === 'unknown' ? ' (hypothese)' : ''}
+  Nombre de sites     : ${rawSites === 'unknown' ? 'non renseigne (hypothese 1)' : sites}
+  Haute disponibilité : ${rawHa === 'unknown' ? 'non renseigne' : rawHa === 'yes' ? 'paire HA' : 'appliance seule'}
+  Croissance 3 ans    : ${rawGrowth === 'unknown' ? 'non renseigne (hypothese x1,3)' : growth}
+  Secteur             : ${rawSector === 'unknown' ? 'non renseigne' : rawSector}
+  Parc en place       : ${rawExist === 'unknown' ? 'non renseigne' : rawExist}${rawExistModel !== 'unknown' ? ' ' + rawExistModel : ''}
 
 RECOMMANDATION
-  Gamme(s) : ${recoText}
-  Débit TP estimé nécessaire : ${needTp < 1 ? (needTp * 1000).toFixed(0) + ' Mbps' : needTp.toFixed(1) + ' Gbps'}
-  Sessions estimées : ~${fmtN(needSess)}
-  Subscriptions : ${subsList}
+  Gamme               : ${recoText}
+  Debit TP requis     : ${needRate.val} ${needRate.unit}
+  Sessions requises   : ${fmtN(needSess)}
+  Charge estimee      : ${primary.utilPct}% de ${primary.tpMax} Gbps TP
+  Subscriptions       : ${subsList}
+${assumptions.length ? '\nHYPOTHESES\n  ' + assumptions.join('\n  ') : ''}
+${openQuestions.length ? '\nA CONFIRMER\n  ' + openQuestions.join('\n  ') : ''}
 
-${assumptions.length > 0 ? 'HYPOTHÈSES RETENUES\n  ' + assumptions.join('\n  ') + '\n' : ''}
-${openQuestions.length > 0 ? 'QUESTIONS OUVERTES\n  ' + openQuestions.join('\n  ') + '\n' : ''}
-Estimation indicative de première qualification.
-Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`;
+Estimation de première qualification. Le dimensionnement définitif doit être
+validé par un ingénieur avant-vente, sur SLR ou données de trafic réelles.
+Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
 
     const shareUrl = encodeSession();
-    const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks' + (clientName ? ' — ' + clientName : ''));
-    const mailBody = encodeURIComponent('Bonjour,\n\nVoici une première qualification réalisée via l\'outil Sizing Guide PANW :\n\n' + briefText + '\n\nLien direct vers la qualification : ' + shareUrl + '\n\nCordialement');
+    const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks' + (clientName ? ' - ' + clientName : ''));
+    const mailBody = encodeURIComponent('Bonjour,\n\n' + briefText + '\n\nQualification en ligne : ' + shareUrl + '\n\nCordialement');
     const mailto = 'mailto:?subject=' + mailSubject + '&body=' + mailBody;
 
-    html += `<div class="brief-card">
-      <div class="brief-title">Brief transmissible à l'avant-vente</div>
-      ${clientName || partnerName ? `<div class="brief-section" style="display:flex;gap:24px;flex-wrap:wrap">
-        ${clientName ? `<div><div class="brief-section-label">Client</div><div class="brief-section-content" style="font-weight:600">${clientName}</div></div>` : ''}
-        ${partnerName ? `<div><div class="brief-section-label">Partenaire</div><div class="brief-section-content">${partnerName}</div></div>` : ''}
-      </div>` : ''}
-      <div class="brief-section">
-        <div class="brief-section-label">Résumé</div>
-        <div class="brief-section-content">${users} utilisateurs, ${sites} site(s) (${typeLabel}), ${bwMbps} Mbps, SSL ${sslLabel}. Reco : ${recoText}.</div>
-      </div>
-      ${assumptions.length > 0 ? `<div class="brief-section">
-        <div class="brief-section-label">Hypothèses</div>
-        <div class="brief-section-content">${assumptions.join(' · ')}</div>
-      </div>` : ''}
-      ${openQuestions.length > 0 ? `<div class="brief-section">
-        <div class="brief-section-label">Questions ouvertes</div>
-        <div class="brief-section-content">${openQuestions.join(' · ')}</div>
-      </div>` : ''}
-      <div class="brief-section">
-        <div class="brief-section-label">Niveau de confiance</div>
-        <div class="brief-section-content"><span class="${confClass} confidence-badge" style="font-size:10px"><span class="confidence-dot"></span> ${confidence === 'green' ? 'Complète' : confidence === 'orange' ? 'Partielle' : 'Insuffisante'}</span></div>
-      </div>
-      <div class="brief-actions">
-        <button class="wiz-action-btn primary" id="btn-pdf">Télécharger le PDF</button>
-        <a class="wiz-action-btn secondary" href="${mailto}">Envoyer par mail</a>
-        <button class="wiz-action-btn secondary" id="btn-copy-brief">Copier le texte</button>
-        <button class="wiz-action-btn secondary" id="btn-copy-link">Copier le lien</button>
-      </div>
-    </div>`;
+    html += '<h3 class="wb-group-title">' + ic('copy', 13) + 'Transmettre</h3>'
+      + '<div class="wb-actions">'
+      +   '<button type="button" class="fx-btn primary" id="btn-pdf">' + ic('download', 14) + 'PDF</button>'
+      +   '<a class="fx-btn" href="' + mailto + '">' + ic('arrow', 14) + 'Mail</a>'
+      +   '<button type="button" class="fx-btn" id="btn-copy-brief">' + ic('copy', 14) + 'Copier le brief</button>'
+      +   '<button type="button" class="fx-btn" id="btn-copy-link">' + ic('link', 14) + 'Copier le lien</button>'
+      +   '<a class="fx-btn ghost" href="' + primary.dsUrl + '" target="_blank" rel="noopener">'
+      +     ic('external', 14) + 'Datasheet ' + primary.id + '</a>'
+      + '</div>';
 
-    html += `<div class="wiz-disclaimer" style="margin-top:16px">
-      <strong>Estimation indicative de première qualification.</strong> Le dimensionnement définitif doit être validé par un ingénieur avant-vente, idéalement à partir d'un SLR (Security Lifecycle Review) ou de données de trafic réelles.
-      <br><span style="font-size:10px;margin-top:4px;display:inline-block">Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · Juin 2026</span>
-    </div>`;
+    if (clientName || partnerName) {
+      html += '<p style="font-size:var(--text-2xs);color:var(--text-muted);margin-top:10px">Dossier : '
+        + esc(clientName || '(client non nommé)')
+        + (partnerName ? ' &middot; ' + esc(partnerName) : '') + '</p>';
+    }
+
+    /* ── 10. Precaution, en pied de volet ── */
+    html += '<div class="wb-note" style="margin-top:16px">' + ic('alert', 15)
+      + '<div><b>Estimation de première qualification.</b> Le dimensionnement définitif '
+      + 'doit être validé par un ingénieur avant-vente, à partir d\'un SLR ou de données de '
+      + 'trafic réelles. Débits appmix des datasheets Palo Alto Networks, PAN-OS 12.1.</div></div>';
 
     box.innerHTML = html;
-    box.classList.add('visible');
-    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.icons) window.icons.hydrate(box);
 
-    document.getElementById('btn-copy-brief')?.addEventListener('click', function() {
-      navigator.clipboard.writeText(briefText).then(() => { this.textContent = 'Copié !'; });
+    /* ── Actions du volet ── */
+    const flash = (btn, msg) => {
+      const old = btn.innerHTML;
+      btn.innerHTML = ic('check', 14) + msg;
+      setTimeout(() => { btn.innerHTML = old; }, 1600);
+    };
+    document.getElementById('btn-copy-brief').addEventListener('click', function () {
+      navigator.clipboard.writeText(briefText).then(() => flash(this, 'Copié'));
     });
-    document.getElementById('btn-copy-link')?.addEventListener('click', function() {
-      navigator.clipboard.writeText(shareUrl).then(() => { this.textContent = 'Lien copié !'; });
+    document.getElementById('btn-copy-link').addEventListener('click', function () {
+      navigator.clipboard.writeText(shareUrl).then(() => flash(this, 'Copié'));
     });
-    document.getElementById('btn-pdf')?.addEventListener('click', function() {
+    document.getElementById('btn-pdf').addEventListener('click', function () {
       generatePDF({
         date: new Date().toLocaleDateString('fr-FR'),
         confidence, confLabel,
@@ -1687,15 +1353,11 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
         sector: rawSector, existing: rawExist, existingModel: rawExistModel,
         iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
         recoText, reco, needTp, needSess,
-        assumptions, openQuestions, subs,
+        assumptions, openQuestions, subs
       });
-      const brand = rawExist;
-      if ((brand === 'fortinet' || brand === 'checkpoint') && rawExistModel !== 'unknown') {
-        const m = COMPETITOR_MODELS[brand]?.find(x => x.id === rawExistModel);
-        if (m) arguments.callee.existingMapping = m;
-      }
     });
   }
+
 
   const LOGO_EXN = 'data:image/png;base64,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';
   const LOGO_PAN = 'data:image/png;base64,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';
@@ -1726,9 +1388,9 @@ Le dimensionnement définitif doit être validé par un ingénieur avant-vente.`
 
     const pdfHtml = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* pile systeme : le PDF ne telecharge aucune police */
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Poppins',system-ui,sans-serif; color:#1e293b; font-size:13px; line-height:1.6; padding:32px 40px; }
+body { font-family:system-ui,-apple-system,'Segoe UI','Helvetica Neue',sans-serif; color:#1e293b; font-size:13px; line-height:1.6; padding:32px 40px; }
 .header { display:flex; justify-content:space-between; align-items:center; padding-bottom:16px; border-bottom:2px solid #e84b1a; margin-bottom:24px; }
 .header img { height:56px; } .header img:last-child { height:44px; }
 h1 { font-size:20px; font-weight:700; color:#0f172a; margin-bottom:4px; }
@@ -1842,46 +1504,73 @@ ${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à pose
     const results = [];
     const fieldMap = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
 
+    // On sauvegarde l'etat du formulaire : la campagne de test ne doit pas
+    // laisser l'outil rempli avec le dernier cas joue.
+    const saved = {};
+    Object.values(fieldMap).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) saved[id] = el.value;
+    });
+
     for (const gc of GOLDEN_CASES) {
+      Object.values(fieldMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = el.tagName === 'SELECT' ? 'unknown' : '';
+      });
       Object.entries(gc.inputs).forEach(([k, v]) => {
         const el = document.getElementById(fieldMap[k]);
         if (el) el.value = v;
       });
-      setDepth('advanced');
       runCommercialWizard();
 
-      const box = document.getElementById('wiz-results-commercial');
-      const confBadge = box.querySelector('.confidence-badge');
-      const familyCards = box.querySelectorAll('.wiz-family-name');
-      const foundFamilies = [...familyCards].map(el => el.textContent.replace(' Series',''));
-      const confLevel = confBadge?.classList.contains('confidence-green') ? 'green' : confBadge?.classList.contains('confidence-orange') ? 'orange' : 'red';
+      const box = document.getElementById('wb-out');
+      const conf = box.querySelector('.wb-conf');
+      const family = box.querySelector('.wb-verdict-family');
+      const foundFamilies = family ? [family.textContent.replace(' Series', '').trim()] : [];
+      const confLevel = !conf ? 'red'
+        : conf.classList.contains('ok') ? 'green'
+        : conf.classList.contains('warn') ? 'orange' : 'red';
 
       const confOrder = { green: 0, orange: 1, red: 2 };
       const familyMatch = gc.expect.families.some(f => foundFamilies.includes(f));
       const confMatch = confOrder[confLevel] <= confOrder[gc.expect.confidenceMin];
-      const pass = familyMatch && confMatch;
 
       results.push({
         name: gc.name,
-        pass,
-        found: foundFamilies.join(', '),
+        pass: familyMatch && confMatch,
+        found: foundFamilies.join(', ') || '(aucune)',
         expected: gc.expect.families.join(', '),
         confidence: confLevel,
         expectedConf: gc.expect.confidenceMin
       });
     }
 
-    console.group('Golden Cases — résultats');
+    // restauration
+    Object.entries(saved).forEach(([id, v]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = v;
+    });
+    updateExistingModels();
+    runCommercialWizard();
+
+    console.group('Golden cases');
     let allPass = true;
     results.forEach(r => {
-      const icon = r.pass ? '✅' : '❌';
-      console.log(`${icon} ${r.name} | Familles: ${r.found} (attendu: ${r.expected}) | Confiance: ${r.confidence} (min attendu: ${r.expectedConf})`);
+      // sortie console : du texte, pas d'emoji (illisible selon le terminal)
+      console.log(
+        (r.pass ? '[OK]  ' : '[KO]  ') + r.name
+        + ' | gamme: ' + r.found + ' (attendu ' + r.expected + ')'
+        + ' | confiance: ' + r.confidence + ' (min ' + r.expectedConf + ')'
+      );
       if (!r.pass) allPass = false;
     });
-    console.log(allPass ? '\n✅ Tous les golden cases passent.' : '\n❌ Certains golden cases échouent.');
+    console.log(allPass
+      ? 'Tous les golden cases passent (' + results.length + '/' + results.length + ').'
+      : 'Echec : ' + results.filter(r => !r.pass).length + ' cas sur ' + results.length + '.');
     console.groupEnd();
     return results;
   }
+
 
   /* ══ Input validation ══ */
   function validateInputs() {
@@ -1903,9 +1592,5 @@ ${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à pose
   }
   </script>
 
-  <footer class="site-footer">
-    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Recommandation indicative &mdash; ne remplace pas un sizing officiel Palo Alto Networks</div>
-  </footer>
 </body>
 </html>

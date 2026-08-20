@@ -1,7 +1,11 @@
 /* ============================================================
-   Palo Alto Networks — Sizing Guide, couche d'interactions  v4
+   Palo Alto Networks - Sizing Guide, couche d interactions  v5
    Chargee apres header.js sur toutes les pages.
    Aucune dependance, aucun build : du DOM et un IntersectionObserver.
+   v5 : retrait du spot lumineux qui suivait le curseur, des compteurs
+   animes (un chiffre de datasheet doit s'afficher juste, tout de suite)
+   et de la jauge de lecture. Reste ce qui sert : revelation, copie,
+   bulles d'aide - desormais atteignables au clavier.
    ============================================================ */
 (function () {
   'use strict';
@@ -56,42 +60,6 @@
     }, 1000);
   }
 
-  /* ── 2. Compteurs : les chiffres montent a l'arrivee ────── */
-  function countUp(el) {
-    var raw = el.textContent.trim();
-    var m = raw.match(/^([^\d-]*)(-?[\d   ,.]+)(.*)$/);
-    if (!m) return;
-    var num = parseFloat(m[2].replace(/[   ]/g, '').replace(',', '.'));
-    if (!isFinite(num) || num === 0) return;
-    var dec = (m[2].split(/[.,]/)[1] || '').length;
-    var pre = m[1], post = m[3], t0 = null, dur = 900;
-    function frame(t) {
-      if (t0 === null) t0 = t;
-      var k = Math.min((t - t0) / dur, 1);
-      var v = num * (1 - Math.pow(1 - k, 3));
-      el.textContent = pre + v.toFixed(dec) + post;
-      if (k < 1) requestAnimationFrame(frame);
-      else el.textContent = raw;
-    }
-    requestAnimationFrame(frame);
-    // filet de securite : si rAF est bride (onglet en arriere-plan, capture
-    // headless), la valeur finale est posee quoi qu'il arrive.
-    setTimeout(function () { el.textContent = raw; }, dur + 260);
-  }
-
-  function wireCounters() {
-    var nums = document.querySelectorAll('.metric-val, .bento-stat-number, [data-count]');
-    if (!nums.length || reduce || !('IntersectionObserver' in window)) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        countUp(e.target);
-        io.unobserve(e.target);
-      });
-    }, { threshold: 0.5 });
-    for (var i = 0; i < nums.length; i++) io.observe(nums[i]);
-  }
-
   /* ── 3. Copie au clic ───────────────────────────────────── */
   /* Tout element portant data-copy copie sa valeur. Delegue sur le document
      pour fonctionner aussi sur du contenu injecte apres coup. */
@@ -144,23 +112,6 @@
         toast('Copie impossible dans ce contexte', false);
       });
     });
-  }
-
-  /* ── 3bis. Spot lumineux qui suit le pointeur ───────────── */
-  /* Une seule ecoute deleguee, deux variables CSS mises a jour :
-     pas de listener par carte, pas de layout thrash. */
-  var SPOT = '.tool-card, .metric-card, .addon-card, .policy-card, .product-card, .pillar-card, .part, .slr-panel, .fx-spot';
-
-  function wireSpot() {
-    if (reduce) return;
-    document.querySelectorAll(SPOT).forEach(function (el) { el.classList.add('fx-spot'); });
-    document.addEventListener('pointermove', function (e) {
-      var el = e.target.closest ? e.target.closest('.fx-spot') : null;
-      if (!el) return;
-      var r = el.getBoundingClientRect();
-      el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    }, { passive: true });
   }
 
   /* ── 5. Bulles de survol riches ─────────────────────────── */
@@ -224,32 +175,24 @@
       var el = e.target.closest ? e.target.closest('[data-tip]') : null;
       if (el) hideTip();
     });
+    // Clavier : la bulle doit s'ouvrir au focus, sinon l'aide est
+    // inaccessible a qui n'utilise pas de souris (WCAG 1.4.13).
+    document.addEventListener('focusin', function (e) {
+      var el = e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      showTip(el, r.left, r.bottom);
+    });
+    document.addEventListener('focusout', hideTip);
+    // Echap ferme la bulle
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') hideTip();
+    });
     window.addEventListener('scroll', hideTip, { passive: true });
   }
 
-  /* ── 6. Jauge de lecture ────────────────────────────────── */
-  function wireProgress() {
-    if (document.querySelector('.table-outer')) return; // le comparateur scrolle en interne
-    var bar = document.createElement('div');
-    bar.id = 'read-progress';
-    document.body.appendChild(bar);
-    function upd() {
-      var h = document.documentElement.scrollHeight - window.innerHeight;
-      bar.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0';
-    }
-    window.addEventListener('scroll', upd, { passive: true });
-    window.addEventListener('resize', upd);
-    upd();
-  }
-
   function init() {
-    observe(tagTargets());
-    wireCounters();
-    wireCopy();
-    wireSpot();
-    wireTips();
-    wireProgress();
-  }
+    observe(tagTargets());    wireCopy();    wireTips();  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

@@ -526,6 +526,7 @@
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
+  <script src="icons.js"></script>
 
   <div style="background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 24px;text-align:center;font-size:12px;color:var(--text-muted)">
     Pas à l'aise avec les filtres techniques ? <a href="wizard.html" style="color:var(--accent);font-weight:600">Essayez le mode guidé →</a>
@@ -687,7 +688,7 @@
       </div>
       <div class="result-grid" id="result-grid">
         <div class="results-empty">
-          <div class="empty-icon">⬡</div>
+          <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
           <p>Renseignez vos critères et lancez la recherche</p>
           <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
         </div>
@@ -699,7 +700,7 @@
   <div class="modal-overlay" id="modal">
     <div class="modal">
       <div class="modal-title">Comparaison</div>
-      <button class="modal-close" onclick="closeCompare()">✕</button>
+      <button class="modal-close" onclick="closeCompare()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div id="modal-content"></div>
     </div>
   </div>
@@ -888,7 +889,7 @@
     if (!models.length) {
       count.innerHTML = '';
       grid.innerHTML  = `<div class="results-empty">
-        <div class="empty-icon">⬡</div>
+        <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
         <p>Aucun boîtier ne correspond à ces critères</p>
         <small>Essayez d'assouplir les contraintes d'interfaces ou de format</small>
       </div>`;
@@ -916,7 +917,7 @@
 
       return `
       <div class="result-card ${isRec ? 'recommended' : ''} ${m.eos ? 'card-eos' : ''}" id="card-${m.id}" onclick="toggleSelect('${m.id}')">
-        <div class="card-check" id="chk-${m.id}">✓</div>
+        <div class="card-check" id="chk-${m.id}"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
         <div class="card-main">
           <div class="card-top">
             <span class="card-model">${m.id}</span>
@@ -924,7 +925,7 @@
             ${m.eos ? '<span class="badge-eos">End of Sale</span>' : ''}
             <span class="card-form">${m.form}</span>
             ${m.poe ? '<span class="card-form">PoE</span>' : ''}
-            <a href="${DS_URLS[m.series] || '#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--text-muted);text-decoration:none;padding:2px 7px;border:1px solid var(--border);border-radius:5px;transition:color .15s,border-color .15s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">↗ Datasheet</a>
+            <a href="${DS_URLS[m.series] || '#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--text-muted);text-decoration:none;padding:2px 7px;border:1px solid var(--border);border-radius:5px;transition:color .15s,border-color .15s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> Datasheet</a>
           </div>
           <div class="card-stats">
             <div class="stat">
@@ -1051,7 +1052,7 @@
     state = { mode:'tp', bw:1.5, ff:'all', series:'all', sortBy:'ratio' };
     selected.clear();
     document.getElementById('result-grid').innerHTML = `<div class="results-empty">
-      <div class="empty-icon">⬡</div>
+      <div class="empty-icon"><svg class="ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="aucun resultat"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
       <p>Renseignez vos critères et lancez la recherche</p>
       <small>Nombre d'utilisateurs, débit requis, interfaces…</small>
     </div>`;

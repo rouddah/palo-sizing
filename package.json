@@ -1,5 +1,17 @@
 {
   "devDependencies": {
+    "jsdom": "^30.0.1",
+    "puppeteer-core": "^25.8.0",
     "sharp": "^0.34.5"
+  },
+  "name": "palo-sizing",
+  "private": true,
+  "description": "Sizing Guide PANW - site statique, aucune etape de build",
+  "scripts": {
+    "build": "node _check.js && node _smoke.js && node _responsive.js",
+    "check": "node _check.js",
+    "test": "node _smoke.js",
+    "deploy": "wrangler pages deploy . --project-name palo-sizing --branch main",
+    "responsive": "node _responsive.js"
   }
 }
