@@ -115,6 +115,38 @@ htmlFiles.forEach(f => {
   missing.forEach(id => problems.push(f + " : getElementById('" + id + "') sans element correspondant"));
 });
 
+/* ── 5ter. Les compteurs de l accueil correspondent aux donnees ──
+   L accueil annoncait 39 modeles PA-Series alors que data/pa-models.js
+   en contient 33. Sur un outil dont toute la valeur est l exactitude
+   des chiffres, un compteur decoratif qui derive est un bug de
+   credibilite. Il est desormais adosse a la donnee. */
+try {
+  const home = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const counts = {};
+  let cm;
+  const CNT = /data-count="(\d+)"/g;
+  const found = [];
+  while ((cm = CNT.exec(home))) found.push(+cm[1]);
+
+  const sizeOf = (file, name) => {
+    const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    return new Function(src + '; return ' + name + ';')().length;
+  };
+  counts.models = sizeOf('data/pa-models.js', 'MODELS');
+  counts.optics = sizeOf('data/pa-optics.js', 'OPTICS');
+  counts.accessories = sizeOf('data/pa-accessories.js', 'ACCESSORIES');
+
+  const expected = [counts.models, counts.optics, counts.accessories];
+  expected.forEach((want, i) => {
+    if (found[i] !== want) {
+      problems.push('index.html : compteur ' + (i + 1) + ' affiche ' + found[i]
+        + ' alors que la donnee en contient ' + want);
+    }
+  });
+} catch (e) {
+  problems.push('controle des compteurs impossible : ' + e.message);
+}
+
 /* ── 6. Emojis residuels ───────────────────────────────────── */
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/u;
 htmlFiles.concat(jsFiles).forEach(f => {

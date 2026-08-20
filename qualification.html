@@ -207,8 +207,8 @@
               <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="20"></span>Charge réseau</h3>
 
               <div class="wb-field">
-                <label for="wiz-bw">Débit du lien Internet <span class="wb-unit">Mbps</span>
-                  <button type="button" class="wb-help" data-tip="Débit du lien Internet|Débit souscrit sur le site principal, en Mbps. 1 Gbps = 1000 Mbps. C'est la base du calcul de débit Threat Prevention.">?</button>
+                <label for="wiz-bw">Débit à inspecter <span class="wb-unit">Mbps</span>
+                  <button type="button" class="wb-help" data-tip="Débit à inspecter|Lien Internet ou lien inter-zones du site principal, en Mbps. 1 Gbps = 1000 Mbps. Base du calcul du débit Threat Prevention requis.">?</button>
                 </label>
                 <input type="number" id="wiz-bw" inputmode="numeric" placeholder="200" min="1" max="1000000" step="1" value="">
               </div>
@@ -216,24 +216,24 @@
               <div class="wb-row">
                 <div class="wb-field">
                   <label for="wiz-users">Utilisateurs
-                    <button type="button" class="wb-help" data-tip="Utilisateurs|Postes et terminaux actifs sur le réseau. Sert à estimer le nombre de sessions concurrentes, pas le débit.">?</button>
+                    <button type="button" class="wb-help" data-tip="Utilisateurs|Postes et terminaux actifs simultanément. Croisé avec le profil de trafic pour estimer les sessions concurrentes, pas le débit.">?</button>
                   </label>
                   <input type="number" id="wiz-users" inputmode="numeric" placeholder="250" min="1" max="500000" step="1" value="">
                 </div>
                 <div class="wb-field">
-                  <label for="wiz-remote">Accès distant
-                    <button type="button" class="wb-help" data-tip="Accès distant|Utilisateurs connectés via GlobalProtect ou Prisma Access. Consomme des tunnels et du débit VPN.">?</button>
+                  <label for="wiz-remote">Utilisateurs distants
+                    <button type="button" class="wb-help" data-tip="Utilisateurs distants|Connectés via GlobalProtect ou Prisma Access. Comptent en sessions et en tunnels, et s'ajoutent au débit à inspecter.">?</button>
                   </label>
                   <input type="number" id="wiz-remote" inputmode="numeric" placeholder="50" min="0" max="500000" step="1" value="">
                 </div>
               </div>
 
               <div class="wb-field">
-                <label for="wiz-cloud">Profil de trafic</label>
+                <label for="wiz-cloud">Profil de trafic <button type="button" class="wb-help" data-tip="Profil de trafic|Ratio sessions par utilisateur. Le SaaS et la visioconférence multiplient les sessions concurrentes bien plus vite que le débit.">?</button></label>
                 <select id="wiz-cloud">
                   <option value="unknown" selected>Non renseigné</option>
-                  <option value="low">Web et messagerie (~10 sessions/utilisateur)</option>
-                  <option value="high">SaaS intensif M365, Teams (~35 sessions/utilisateur)</option>
+                  <option value="low">Web et messagerie, ~10 sessions/utilisateur</option>
+                  <option value="high">SaaS intensif M365, Teams, ~35 sessions/utilisateur</option>
                 </select>
               </div>
             </div>
@@ -242,23 +242,23 @@
               <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="20"></span>Fonctions de sécurité</h3>
 
               <div class="wb-field">
-                <label for="wiz-ssl">Déchiffrement SSL entrant/sortant
-                  <button type="button" class="wb-help" data-tip="Déchiffrement SSL|Inspecter le trafic HTTPS demande davantage de ressources. Le calcul applique un facteur 1,5 sur le débit Threat Prevention requis.">?</button>
+                <label for="wiz-ssl">Déchiffrement SSL
+                  <button type="button" class="wb-help" data-tip="Déchiffrement SSL|Entrant et sortant. Le calcul majore le débit Threat Prevention requis d'un facteur 1,5. Vérifier la part de trafic HTTPS réellement déchiffrée.">?</button>
                 </label>
                 <select id="wiz-ssl">
                   <option value="unknown" selected>Non renseigné</option>
-                  <option value="yes">Active</option>
-                  <option value="no">Non prevu</option>
+                  <option value="yes">Activé</option>
+                  <option value="no">Non prévu</option>
                 </select>
               </div>
 
               <div class="wb-field">
-                <label for="wiz-iot">Équipements non gérés (OT, médical, caméra)</label>
+                <label for="wiz-iot">Équipements non gérés <button type="button" class="wb-help" data-tip="Équipements non gérés|OT, médical, caméras, badgeuses : pas d'agent, donc visibilité par Device Security. Pèsent sur les sessions, peu sur le débit.">?</button></label>
                 <select id="wiz-iot">
                   <option value="unknown" selected>Non renseigné</option>
                   <option value="none">Aucun</option>
-                  <option value="moderate">Quelques dizaines (+100 sessions)</option>
-                  <option value="heavy">Centaines ou plus (+500 sessions)</option>
+                  <option value="moderate">Quelques dizaines, +100 sessions</option>
+                  <option value="heavy">Centaines ou plus, +500 sessions</option>
                 </select>
               </div>
             </div>
@@ -267,7 +267,7 @@
               <h3 class="wb-group-title"><span data-ic="site" data-ic-size="20"></span>Topologie</h3>
 
               <div class="wb-field">
-                <label for="wiz-type">Rôle du site dimensionné</label>
+                <label for="wiz-type">Rôle du site <button type="button" class="wb-help" data-tip="Rôle du site|Agence, siège ou datacenter. Oriente le ratio débit/sessions, le format du châssis et, en datacenter, la segmentation est-ouest.">?</button></label>
                 <select id="wiz-type">
                   <option value="unknown" selected>Non renseigné</option>
                   <option value="branch">Agence</option>
@@ -278,7 +278,7 @@
 
               <div class="wb-row">
                 <div class="wb-field">
-                  <label for="wiz-sites">Nombre de sites</label>
+                  <label for="wiz-sites">Nombre de sites <button type="button" class="wb-help" data-tip="Nombre de sites|Au-delà de 3 sites, la recommandation ajoute la gestion centralisée par Panorama ou Strata Cloud Manager et un modèle supérieur au siège.">?</button></label>
                   <select id="wiz-sites">
                     <option value="unknown" selected>Non renseigné</option>
                     <option value="1">1</option>
@@ -290,7 +290,7 @@
                 </div>
                 <div class="wb-field">
                   <label for="wiz-ha">Haute disponibilité
-                    <button type="button" class="wb-help" data-tip="Haute disponibilité|Une paire HA double le nombre d'appliances mais ne change pas le modèle retenu : chaque membre doit tenir la charge totale.">?</button>
+                    <button type="button" class="wb-help" data-tip="Haute disponibilité|Une paire HA double le nombre d'appliances, pas le modèle : chaque membre doit tenir 100% de la charge.">?</button>
                   </label>
                   <select id="wiz-ha">
                     <option value="unknown" selected>Non renseigné</option>
@@ -301,8 +301,8 @@
               </div>
 
               <div class="wb-field">
-                <label for="wiz-growth">Marge de croissance à 3 ans
-                  <button type="button" class="wb-help" data-tip="Marge de croissance|Facteur appliqué au débit et aux sessions : stable x1, modérée x1,3, forte x1,5.">?</button>
+                <label for="wiz-growth">Croissance à 3 ans
+                  <button type="button" class="wb-help" data-tip="Croissance à 3 ans|Facteur appliqué au débit et aux sessions avant le choix du modèle : stable x1, modérée x1,3, forte x1,5.">?</button>
                 </label>
                 <select id="wiz-growth">
                   <option value="unknown" selected>Non renseigné</option>
@@ -317,7 +317,7 @@
               <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="20"></span>Parc en place</h3>
 
               <div class="wb-field">
-                <label for="wiz-existing">Constructeur à remplacer</label>
+                <label for="wiz-existing">Constructeur en place <button type="button" class="wb-help" data-tip="Constructeur en place|Sert à convertir les débits annoncés du boîtier existant en équivalent PA-Series. Les méthodes de mesure diffèrent d'un constructeur à l'autre.">?</button></label>
                 <select id="wiz-existing" onchange="updateExistingModels()">
                   <option value="unknown" selected>Non renseigné</option>
                   <option value="none">Aucun, nouveau site</option>
@@ -338,7 +338,7 @@
 
               <div class="wb-field">
                 <label for="wiz-sector">Secteur
-                  <button type="button" class="wb-help" data-tip="Secteur|Oriente les subscriptions proposées : DLP pour finance et santé, Device Security pour l'industrie et le médical.">?</button>
+                  <button type="button" class="wb-help" data-tip="Secteur|Oriente les subscriptions proposées : Enterprise DLP pour finance, santé et public, Device Security pour l'industrie et le médical.">?</button>
                 </label>
                 <select id="wiz-sector">
                   <option value="unknown" selected>Non renseigné</option>
@@ -359,11 +359,11 @@
               <h3 class="wb-group-title"><span data-ic="doc" data-ic-size="20"></span>Identification du dossier</h3>
               <div class="wb-row">
                 <div class="wb-field">
-                  <label for="wiz-client">Client</label>
+                  <label for="wiz-client">Client <button type="button" class="wb-help" data-tip="Client|Repris dans le PDF, le brief et le mail. Le lien de partage encode toutes les saisies, nom du client compris.">?</button></label>
                   <input type="text" id="wiz-client" placeholder="Raison sociale" autocomplete="organization" value="">
                 </div>
                 <div class="wb-field">
-                  <label for="wiz-partner">Rédacteur</label>
+                  <label for="wiz-partner">Rédacteur <button type="button" class="wb-help" data-tip="Rédacteur|Votre nom, en en-tête du PDF et du brief. Rien n'est enregistré côté serveur : tout l'état tient dans l'URL.">?</button></label>
                   <input type="text" id="wiz-partner" placeholder="Nom, societe" autocomplete="name" value="">
                 </div>
               </div>
@@ -1092,6 +1092,14 @@
     }
 
     const primary = reco[0];
+
+    /* Modele le plus capable de la serie retenue : c'est LUI que la jauge
+       mesure, pas la serie. Sans cette precision, un lecteur peut croire
+       que le premier modele de la gamme tient le debit affiche. */
+    const topModel = MODELS
+      .filter(m => m.s === primary.id && !m.eos)
+      .sort((a, b) => b.tp - a.tp)[0];
+    const topLabel = topModel ? topModel.id : primary.id;
     const needRate = fmtRate(needTp);
     const utilClass = primary.utilPct > 90 ? 'crit' : primary.utilPct > 65 ? 'warn' : 'ok';
     const confClassWb = confidence === 'green' ? 'ok' : confidence === 'orange' ? 'warn' : 'crit';
@@ -1100,7 +1108,7 @@
     let html = '';
 
     /* ── 1. Le verdict, en haut, toujours visible ── */
-    html += '<div class="wb-verdict">'
+    html += '<div class="wb-verdict amb" style="--amb-color:' + (utilClass === 'ok' ? 'var(--live-dim)' : utilClass === 'warn' ? 'var(--warn-dim)' : 'var(--crit-dim)') + '">'
       + '<div class="wb-verdict-top">'
       +   '<div>'
       +     '<div class="wb-verdict-family">' + primary.id + ' Series</div>'
@@ -1116,20 +1124,20 @@
        au-dela, on passe au cran superieur. */
     html += '<div class="wb-gauge">'
       + '<div class="wb-gauge-head">'
-      +   '<span>Charge estimée sur le haut de gamme ' + primary.id + ' (' + primary.tpMax + ' Gbps TP)</span>'
+      +   '<span>Charge sur ' + topLabel + ', ' + primary.tpMax + ' Gbps TP ' + '<button type="button" class="wb-help" data-tip="Charge estimée|Calculée sur le modèle le plus capable de la série. Un modèle inférieur peut suffire si le débit réel est confirmé.">?</button></span>'
       +   '<span class="wb-gauge-pct" style="color:var(--' + utilClass + ')">' + primary.utilPct + '%</span>'
       + '</div>'
       + '<div class="wb-gauge-track" role="img" aria-label="Charge estimée ' + primary.utilPct + ' pour cent de la capacité Threat Prevention">'
       +   '<div class="wb-gauge-fill ' + utilClass + '" style="width:' + Math.min(primary.utilPct, 100) + '%"></div>'
       +   '<div class="wb-gauge-mark"></div>'
       + '</div>'
-      + '<div class="wb-gauge-scale"><span>0%</span><span>65% marge cible</span><span>100%</span></div>'
+      + '<div class="wb-gauge-scale"><span>0%</span><span>65% charge max</span><span>100%</span></div>'
       + '</div>';
 
     if (primary.tight) {
       html += '<div class="wb-note">' + ic('alert', 15)
         + '<div><b>Dimensionnement serré.</b> Le besoin estimé dépasse la marge de 65%. '
-        + 'Retenir le haut de gamme ' + primary.id
+        + 'Retenir le ' + topLabel
         + (alsoConsider.length ? ', ou passer en ' + alsoConsider[0].id + ' Series' : '')
         + ' si le débit réel se confirme.</div></div>';
     }
@@ -1137,7 +1145,7 @@
     /* ── 3. Besoin contre capacite, en chiffres ── */
     const sessPct = Math.round((needSess / primary.sessMax) * 100);
     html += '<div class="wb-metrics-wrap"><table class="wb-metrics">'
-      + '<caption>Besoin estimé contre capacité datasheet</caption>'
+      + '<caption>Besoin estimé / capacité datasheet</caption>'
       + '<thead><tr><th scope="col">Métrique</th><th scope="col" style="text-align:right">Besoin</th>'
       + '<th scope="col" style="text-align:right">' + primary.id + '</th></tr></thead><tbody>'
 
@@ -1171,7 +1179,7 @@
 
     /* ── 4. Hypotheses : ce que l'outil a comble tout seul ── */
     if (assumptions.length) {
-      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'Hypothèses appliquées</h3><ul class="wb-list">';
+      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'Hypothèses retenues</h3><ul class="wb-list">';
       assumptions.forEach(a => {
         html += '<li>' + ic('alert', 14).replace('class="ic"', 'class="ic ic-warn"') + '<span>' + a + '</span></li>';
       });
@@ -1184,7 +1192,7 @@
       if (match) {
         const paModel = MODELS.find(m => m.id === match.pa);
         const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
-        html += '<h3 class="wb-group-title">' + ic('ha', 20) + 'Équivalence du boîtier en place</h3>'
+        html += '<h3 class="wb-group-title">' + ic('ha', 20) + 'Équivalence PA-Series</h3>'
           + '<div class="wb-verdict" style="border-left-color:var(--ok);margin-bottom:10px">'
           + '<div class="wb-verdict-top" style="align-items:center">'
           +   '<span style="font-family:var(--mono);font-size:14px;color:var(--text-muted)">' + brandName + match.id + '</span>'
@@ -1255,7 +1263,7 @@
 
     /* ── 8. Ce qui reste a demander au client ── */
     if (openQuestions.length) {
-      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'À confirmer auprès du client ('
+      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'Points à confirmer ('
         + openQuestions.length + ')</h3><ul class="wb-list">';
       openQuestions.forEach(q => {
         html += '<li>' + ic('chevron', 14).replace('class="ic"', 'class="ic ic-add"') + '<span>' + q + '</span></li>';
@@ -1298,8 +1306,8 @@ RECOMMANDATION
 ${assumptions.length ? '\nHYPOTHESES\n  ' + assumptions.join('\n  ') : ''}
 ${openQuestions.length ? '\nA CONFIRMER\n  ' + openQuestions.join('\n  ') : ''}
 
-Estimation de première qualification. Le dimensionnement définitif doit être
-validé par un ingénieur avant-vente, sur SLR ou données de trafic réelles.
+Estimation de première qualification. Dimensionnement définitif à valider par
+un ingénieur avant-vente, sur SLR ou trafic réel.
 Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
 
     const shareUrl = encodeSession();
@@ -1325,12 +1333,30 @@ Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
 
     /* ── 10. Precaution, en pied de volet ── */
     html += '<div class="wb-note" style="margin-top:16px">' + ic('alert', 15)
-      + '<div><b>Estimation de première qualification.</b> Le dimensionnement définitif '
-      + 'doit être validé par un ingénieur avant-vente, à partir d\'un SLR ou de données de '
-      + 'trafic réelles. Débits appmix des datasheets Palo Alto Networks, PAN-OS 12.1.</div></div>';
+      + '<div><b>Estimation de première qualification.</b> Dimensionnement définitif '
+      + 'à valider par un ingénieur avant-vente, sur SLR ou trafic réel. '
+      + 'Débits appmix des datasheets Palo Alto Networks, PAN-OS 12.1.</div></div>';
 
+    var changed = box.getAttribute('data-family') !== primary.id;
     box.innerHTML = html;
+    box.setAttribute('data-family', primary.id);
     if (window.icons) window.icons.hydrate(box);
+
+    // fondu court sur l'ensemble du volet a chaque recalcul
+    box.classList.remove('swap');
+    void box.offsetWidth;              // force la reprise de l'animation
+    box.classList.add('swap');
+
+    // liseré sur le verdict, uniquement quand la gamme retenue change
+    if (changed) {
+      var card = box.querySelector('.wb-verdict');
+      if (card) {
+        card.classList.add('sweep');
+        void card.offsetWidth;
+        card.classList.add('on');
+        setTimeout(function () { card.classList.remove('on'); }, 950);
+      }
+    }
 
     /* ── Actions du volet ── */
     const flash = (btn, msg) => {

@@ -85,10 +85,17 @@ function log(ok, msg) {
   const win = dom.window;
   const doc = win.document;
 
-  // Les <script src> locaux ne sont pas charges par jsdom sans serveur :
-  // on les injecte a la main, dans l'ordre du document.
+  // Les <script src> locaux ne sont pas charges par jsdom sans serveur.
+  // On les injecte comme de vraies balises <script> et non via win.eval :
+  // un `const` de premier niveau evalue produit une liaison locale a
+  // l'eval, alors qu'une balise <script> cree une liaison de script
+  // visible par les autres scripts, exactement comme dans un navigateur.
+  // La nuance compte : elle a masque un appel a MODELS qui fonctionnait
+  // en production mais echouait ici.
   for (const src of ['header.js', 'ui.js', 'icons.js', 'data/pa-models.js']) {
-    win.eval(fs.readFileSync(path.join(ROOT, src), 'utf8'));
+    const el = doc.createElement('script');
+    el.textContent = fs.readFileSync(path.join(ROOT, src), 'utf8');
+    doc.head.appendChild(el);
   }
 
   await new Promise(r => {

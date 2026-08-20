@@ -1,5 +1,95 @@
 # Changelog
 
+## Session 8 - 20 aout 2026 : couche de mouvement, accueil, densite
+
+### Trois erreurs corrigees, trouvees en relisant la copie
+
+1. **L'accueil annoncait 39 modeles PA-Series. `data/pa-models.js` en
+   contient 33**, dont 4 en End of Sale. Sur un outil dont toute la
+   valeur est l'exactitude des chiffres, un compteur decoratif qui
+   derive est un bug de credibilite. Corrige, et `_check.js` compare
+   desormais les trois compteurs de l'accueil au contenu reel des
+   fichiers de donnees : le build echoue s'ils divergent.
+2. **La jauge affichait « Charge estimee sur le haut de gamme PA-3400
+   (20 Gbps TP) »** alors que le calcul se fait contre le membre le plus
+   capable de la serie. Un lecteur pouvait comprendre que la PA-3410
+   tient 20 Gbps. La jauge nomme maintenant le modele reel : « Charge
+   sur PA-3440, 20 Gbps TP ».
+3. **Le repere de la jauge disait « 65% marge cible »**, ce qui se lit
+   « 65% de marge » alors que 65% est le plafond de charge vise, soit
+   35% de reserve. Inversion de sens sur le repere le plus regarde de
+   l'ecran. Devenu « 65% charge max ».
+
+Deux fautes de forme au passage : l'option « Non prevu » s'affichait
+sans accents alors que le brief exporte ecrit « Non prevu » accentue, et
+le brief texte etait entierement desaccentue alors que l'ecran ne l'est
+pas, pour un document destine au client.
+
+### Couche de mouvement
+
+Une seule courbe pour tout le site, `cubic-bezier(.25, 1, .5, 1)`, et
+trois regles : le mouvement accompagne un changement d'etat, jamais une
+boucle decorative ; il ne touche que `transform` et `opacity` ; il
+disparait entierement sous `prefers-reduced-motion`.
+
+- entree de l'accueil en cascade courte, cartes d'action qui montent de
+  4px au survol avec un filet d'accent, boutons a `scale(1.02)` dont la
+  fleche part en avant, anneaux de focus animes ;
+- volet de recommandation en fondu a chaque recalcul, et liseré sur la
+  carte de verdict **uniquement quand la gamme change** : rejouer a
+  chaque frappe aurait donne un clignotement permanent ;
+- nappe lumineuse discrete derriere le verdict, teintee par l'etat de
+  charge (vert, ambre, rouge).
+
+**Piege evite** : la premiere version posait `opacity: 0` dans la regle
+de base avec `animation-fill-mode: forwards`. Rendu headless, tout
+l'accueil etait invisible. Le contenu ne doit jamais dependre d'une
+animation pour exister : la regle de base ne porte plus d'opacite et
+l'animation est en `backwards`.
+
+Les compteurs de l'accueil montent au defilement (`data-count`). La
+valeur de reference vit dans l'attribut, jamais dans le texte qui
+defile, et elle est posee d'office au bout de la duree meme si `rAF`
+est bride. Les metriques de dimensionnement, elles, restent posees
+d'emblee : tant qu'un chiffre defile, il est faux.
+
+### Accueil
+
+Le paragraphe defensif (« Aucun prix publie, aucune reference
+inventee ») disparait au profit d'une ligne qui enonce le contrat de
+l'outil : « Contraintes de trafic en entree, modele PA-Series et
+subscriptions en sortie. » Les quatre chiffres deviennent un bandeau
+continu separe par des filets de 1px, avec infobulle au survol et
+au focus clavier.
+
+### Matrice de comparaison
+
+Rythme vertical resserre (5px au lieu de 8), chiffres alignes a droite
+en monospace tabulaire pour que les ordres de grandeur se comparent a
+la position, debits et sessions en gras, specifications secondaires et
+valeurs absentes en retrait.
+
+### Microcopie
+
+Libelles et infobulles revus sur l'ensemble de l'outil. Changements de
+fond : « Debit du lien Internet » devient « Debit a inspecter » (en
+datacenter, le lien Internet n'est pas la bonne assiette de calcul) et
+« Acces distant » devient « Utilisateurs distants » (le champ attend un
+nombre). Les infobulles ajoutent une information que le libelle ne
+porte pas deja, sinon elles ne servent a rien.
+
+### Harnais de test
+
+`_smoke.js` injectait les scripts via `win.eval`, ou un `const` de
+premier niveau produit une liaison locale a l'eval. Une balise
+`<script>` cree une liaison de script visible par les autres scripts,
+comme dans un navigateur. La nuance a masque un appel a `MODELS` qui
+marchait en production mais echouait au test.
+
+Note d'outillage : `chrome --screenshot --virtual-time-budget` ne fait
+pas avancer les animations CSS et rend les pages animees vides. Les
+captures passent par Puppeteer.
+
 ## Session 7 - 20 aout 2026 : pictogrammes officiels Palo Alto
 
 Le deck « General Iconography » a ete reexporte sans protection, donc

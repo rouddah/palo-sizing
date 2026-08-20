@@ -1981,3 +1981,201 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .wb-field input,
 .wb-field select { min-height: var(--tap); }
 }
+
+/* ============================================================
+   Couche de mouvement
+   ------------------------------------------------------------
+   Le mouvement sert l'etat, jamais la decoration. Trois regles :
+
+   1. Une transition accompagne un changement d'etat (survol, focus,
+      recalcul). Elle ne se declenche jamais toute seule, en boucle.
+   2. Une seule courbe pour tout le site. Elle demarre vite et
+      s'arrete doucement : l'interface repond au doigt, puis se pose.
+   3. Uniquement transform et opacity, les deux proprietes que le
+      compositeur traite sans repasser par la mise en page.
+
+   `prefers-reduced-motion` neutralise l'ensemble en fin de fichier.
+   ============================================================ */
+:root {
+  --ease:      cubic-bezier(.25, 1, .5, 1);   /* sortie douce */
+  --ease-in:   cubic-bezier(.4, 0, .6, 1);
+  --dur-fast:  150ms;
+  --dur:       300ms;
+  --dur-slow:  480ms;
+
+  /* Accents d'etat. L'orange reste la couleur de marque et sert aux
+     reperes « votre besoin » ; ces deux-la ne servent qu'a signaler
+     un etat calcule : correspondance trouvee, capacite confortable. */
+  --live:      #2dd4a7;   /* vert cyber, correspondance active */
+  --live-dim:  rgba(45, 212, 167, .12);
+  --wire:      #4d9fff;   /* bleu electrique, zone active */
+  --wire-dim:  rgba(77, 159, 255, .12);
+}
+
+/* ── Arrivee de page ───────────────────────────────────────
+   Un seul mouvement au chargement, sur le bloc d'ouverture. Les
+   enfants montent en cascade courte : l'oeil suit une lecture, il
+   ne regarde pas une animation. */
+@keyframes rise {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+/* Fill mode "backwards", et surtout AUCUN opacity:0 dans la regle de
+   base : l element prend l etat de depart pendant son delai, puis
+   retrouve son etat naturel. Si l animation ne se declenche pas
+   (moteur bride, onglet en arriere-plan, capture headless), le
+   contenu reste visible. Un contenu ne doit jamais dependre d une
+   animation pour exister. */
+[data-rise] > * {
+  animation: rise var(--dur-slow) var(--ease) backwards;
+}
+[data-rise] > *:nth-child(1) { animation-delay:  40ms; }
+[data-rise] > *:nth-child(2) { animation-delay:  90ms; }
+[data-rise] > *:nth-child(3) { animation-delay: 140ms; }
+[data-rise] > *:nth-child(4) { animation-delay: 190ms; }
+[data-rise] > *:nth-child(5) { animation-delay: 240ms; }
+[data-rise] > *:nth-child(6) { animation-delay: 290ms; }
+
+/* ── Lumiere d'ambiance ────────────────────────────────────
+   Une nappe tres basse posee derriere une zone active, pour lui
+   donner un fond plutot qu'un contour. Rien ne bouge, rien ne
+   clignote : c'est de la profondeur, pas un effet. */
+.amb { position: relative; isolation: isolate; }
+.amb::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -40% -10% auto -10%;
+  height: 220px;
+  pointer-events: none;
+  background: radial-gradient(60% 100% at 50% 0%,
+              var(--amb-color, var(--wire-dim)), transparent 72%);
+  opacity: .85;
+}
+[data-theme="light"] .amb::before { opacity: .5; }
+
+/* ── Reponse au survol et au focus ─────────────────────────
+   Une cible interactive se souleve de 4px au plus et s'eclaire sur
+   son contour. Pas d'ombre portee massive, pas de mise a l'echelle
+   du texte : ce qui bouge, c'est la carte, pas son contenu. */
+.lift {
+  transition: transform var(--dur) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+  will-change: transform;
+}
+.lift:hover { transform: translate3d(0, -4px, 0); border-color: var(--border2); }
+.lift:active { transform: translate3d(0, -1px, 0); transition-duration: 80ms; }
+
+/* Le filet d'accent qui s'allume en haut d'une carte au survol. */
+.lift-edge { position: relative; overflow: hidden; }
+.lift-edge::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: var(--edge, var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.lift-edge:hover::after, .lift-edge:focus-visible::after { transform: scaleX(1); }
+
+/* ── Bouton d'action ───────────────────────────────────────
+   Mise a l'echelle de 2% : assez pour se sentir sous le doigt, pas
+   assez pour deranger la grille. La fleche part en avant. */
+.act {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: var(--tap);
+  padding: 11px 19px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text-bright);
+  font: 600 13px/1 var(--font);
+  text-decoration: none;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+.act:hover {
+  transform: scale(1.02);
+  background: var(--surface3);
+  border-color: var(--text-muted);
+  box-shadow: 0 6px 22px -12px var(--glow, rgba(250, 88, 45, .55));
+}
+.act:active { transform: scale(.995); transition-duration: 70ms; }
+.act .ic { transition: transform var(--dur-fast) var(--ease); }
+.act:hover .ic { transform: translate3d(3px, 0, 0); }
+/* une fleche qui descend part vers le bas, pas vers la droite */
+.act.down:hover .ic { transform: translate3d(0, 2px, 0); }
+
+.act.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.act.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.act.ghost { background: transparent; }
+
+/* ── Anneau de focus ───────────────────────────────────────
+   Il se pose au lieu d'apparaitre d'un coup, et reste franc. */
+@keyframes ring {
+  from { box-shadow: 0 0 0 5px transparent; }
+  to   { box-shadow: 0 0 0 3px var(--ring, var(--accent-line)); }
+}
+.act:focus-visible,
+.lift:focus-visible,
+.wb-field input:focus-visible,
+.wb-field select:focus-visible {
+  animation: ring var(--dur-fast) var(--ease) forwards;
+}
+
+/* ── Mise a jour d'un resultat ─────────────────────────────
+   Quand le calcul change, le volet ne doit pas sauter : il fond.
+   Le liseré parcourt une fois le bord du verdict pour signaler
+   « ceci vient de changer », puis se tait. */
+@keyframes fadeSwap {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+.swap { animation: fadeSwap var(--dur) var(--ease); }
+
+@keyframes sweep {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  12%  { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+.sweep { position: relative; overflow: hidden; }
+.sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%,
+              color-mix(in srgb, var(--live) 22%, transparent) 50%, transparent 80%);
+  transform: translateX(-100%);
+}
+.sweep.on::after { animation: sweep 900ms var(--ease); }
+
+/* ── Chiffres qui montent ──────────────────────────────────
+   Le compteur ne doit jamais faire varier la largeur de sa boite :
+   chiffres tabulaires obligatoires, sinon la grille tremble. */
+[data-count] { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-rise] > *,
+  .swap, .sweep.on::after { animation: none; opacity: 1; transform: none; }
+  .lift, .act, .lift-edge::after { transition: none; }
+  .lift:hover, .act:hover, .act:active { transform: none; }
+  .act:focus-visible, .lift:focus-visible,
+  .wb-field input:focus-visible, .wb-field select:focus-visible {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--ring, var(--accent-line));
+  }
+}

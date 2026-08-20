@@ -1,11 +1,14 @@
 /* ============================================================
-   Palo Alto Networks - Sizing Guide, couche d interactions  v5
+   Palo Alto Networks - Sizing Guide, couche d interactions  v6
    Chargee apres header.js sur toutes les pages.
    Aucune dependance, aucun build : du DOM et un IntersectionObserver.
    v5 : retrait du spot lumineux qui suivait le curseur, des compteurs
    animes (un chiffre de datasheet doit s'afficher juste, tout de suite)
    et de la jauge de lecture. Reste ce qui sert : revelation, copie,
    bulles d'aide - desormais atteignables au clavier.
+   v6 : les chiffres d'inventaire de l'accueil montent au defilement
+   (data-count). Les metriques de dimensionnement, elles, restent
+   posees d'emblee : tant qu'un chiffre defile, il est faux.
    ============================================================ */
 (function () {
   'use strict';
@@ -58,6 +61,59 @@
         if (r.top < window.innerHeight && r.bottom > 0) els[k].classList.add('is-in');
       }
     }, 1000);
+  }
+
+  /* ── Chiffres qui montent ────────────────────────────────
+     Sur un outil de dimensionnement, un chiffre anime est un risque :
+     tant qu'il defile, il est faux. Trois garde-fous :
+
+     - la valeur finale est ecrite dans data-count, jamais deduite de
+       ce qui defile ;
+     - elle est posee d'office au bout de la duree, meme si rAF est
+       bride (onglet en arriere-plan, capture headless, batterie
+       faible) ;
+     - `prefers-reduced-motion` la pose immediatement.
+
+     Le comptage ne sert qu'aux chiffres d'inventaire de l'accueil.
+     Les metriques de dimensionnement, elles, s'affichent d'emblee. */
+  function countUp(el) {
+    var target = parseFloat(el.getAttribute('data-count'));
+    if (!isFinite(target)) return;
+    var dur = 1100, t0 = null;
+
+    function settle() { el.textContent = String(target); }
+    if (reduce) return settle();
+
+    function frame(t) {
+      if (t0 === null) t0 = t;
+      var k = Math.min((t - t0) / dur, 1);
+      // sortie douce : rapide au debut, pose a la fin
+      var eased = 1 - Math.pow(1 - k, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (k < 1) requestAnimationFrame(frame);
+      else settle();
+    }
+    requestAnimationFrame(frame);
+    setTimeout(settle, dur + 220);
+  }
+
+  function wireCounters() {
+    var nums = document.querySelectorAll('[data-count]');
+    if (!nums.length) return;
+    if (reduce || !('IntersectionObserver' in window)) {
+      for (var i = 0; i < nums.length; i++) {
+        nums[i].textContent = nums[i].getAttribute('data-count');
+      }
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        countUp(e.target);
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.4 });
+    for (var j = 0; j < nums.length; j++) io.observe(nums[j]);
   }
 
   /* ── 3. Copie au clic ───────────────────────────────────── */
@@ -192,7 +248,11 @@
   }
 
   function init() {
-    observe(tagTargets());    wireCopy();    wireTips();  }
+    observe(tagTargets());
+    wireCounters();
+    wireCopy();
+    wireTips();
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
