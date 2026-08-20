@@ -2189,19 +2189,19 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  /* Les courbes occupent toute la largeur : le masque les efface
-     vers le haut, ou vit le titre, et les laisse pleines en bas. Un
-     fond ne se defend pas par sa transparence seule, il se retire. */
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 38%, #000 100%);
-          mask-image: linear-gradient(180deg, transparent 0%, #000 38%, #000 100%);
+  /* Les obliques traversent tout l'ecran. Le masque les efface
+     derriere la colonne de texte et les laisse pleines a droite et en
+     bas : un fond ne se defend pas par sa transparence, il se retire. */
+  -webkit-mask-image: radial-gradient(115% 105% at 88% 62%, #000 0%, #000 26%, transparent 76%);
+          mask-image: radial-gradient(115% 105% at 88% 62%, #000 0%, #000 26%, transparent 76%);
   /* il s'installe au lieu d'apparaitre */
   opacity: 0;
   animation: bgIn 1.2s var(--ease) .15s forwards;
 }
 /* Sur les pages denses, le maillage ne vit que dans les marges. */
 [data-bg="calme"] #bg-mesh {
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 58%, #000 100%);
-          mask-image: linear-gradient(180deg, transparent 0%, transparent 58%, #000 100%);
+  -webkit-mask-image: radial-gradient(80% 120% at 100% 50%, #000 0%, transparent 70%);
+          mask-image: radial-gradient(80% 120% at 100% 50%, #000 0%, transparent 70%);
 }
 @keyframes bgIn { to { opacity: 1; } }
 [data-theme=light] #bg-mesh { opacity: 0; animation-name: bgInLight; }

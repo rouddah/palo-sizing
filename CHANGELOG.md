@@ -1,5 +1,38 @@
 # Changelog
 
+## Session 12 - 20 aout 2026 : fond « obliques de la marque »
+
+Troisieme et derniere piste de fond. Les deux precedentes ont ete
+ecartees pour des raisons opposees : le maillage de particules parce
+que c'est le fond « tech » le plus vu du web et qu'il ne dit rien du
+produit, la telemetrie parce qu'elle etait trop sage.
+
+**Obliques de la marque** : le motif du logo Palo Alto, trois barres
+paralleles inclinees, porte a l'echelle de l'ecran. La barre mediane
+monte plus haut et descend plus bas, ce qui fait lire le motif comme
+le logo et non comme de simples rayures.
+
+Deux plans a des vitesses differentes donnent la profondeur. Une bande
+de lumiere balaie l'ecran : au repos les obliques sont presque
+eteintes, elles n'apparaissent qu'au passage de la lumiere, comme une
+surface metallique balayee. La barre mediane prend l'orange de la
+marque une fois eclairee, les deux autres restent neutres : un seul
+accent, jamais deux.
+
+Ce fond ne represente rien, et c'est voulu. Il porte la marque, ce qui
+suffit.
+
+Cout : 4,4% d'un coeur, contre 5,3% pour la telemetrie et 3,2% pour le
+maillage. Rien n'est peint sous le seuil de visibilite (alpha < 0,005),
+et le rendu plafonne a 24 images par seconde.
+
+Garde-fous inchanges et reverifies : pas de canvas sous
+prefers-reduced-motion, pas de canvas sous 620px, 0,0% de processeur
+onglet cache, retrait silencieux en cas d'echec.
+
+La version telemetrie est conservee hors depot en cas de retour en
+arriere.
+
 ## Session 11 - 20 aout 2026 : fond telemetrie, logos vectoriels
 
 ### Le fond change de piste

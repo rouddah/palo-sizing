@@ -1,29 +1,29 @@
 /* ============================================================
-   Fond anime : telemetrie
+   Fond anime : obliques de la marque
    ------------------------------------------------------------
-   Des courbes de charge empilees qui defilent lentement, avec leur
-   aire remplie et une graduation temporelle qui glisse vers la
-   gauche. La reference est un mur de supervision : l'outil parle de
-   debit et de sessions, le fond montre du debit.
+   Le motif du logo Palo Alto, trois barres paralleles inclinees,
+   porte a l'echelle de l'ecran. Deux plans a des vitesses
+   differentes donnent la profondeur, et une bande de lumiere les
+   traverse lentement : les obliques ne sont visibles que lorsque la
+   lumiere passe dessus, comme une surface metallique balayee.
 
-   Ce n'est pas un decor pris au hasard. Un maillage de particules
-   avait ete essaye avant : c'est le fond « tech » le plus vu du web
-   depuis dix ans, et il ne dit rien du produit. Une courbe de charge,
-   sur un dimensionneur de pare-feu, est dans le sujet.
+   Pourquoi celui-la. Deux fonds ont ete essayes avant : un maillage
+   de particules, qui est le fond « tech » le plus vu du web et ne
+   dit rien du produit, puis une telemetrie, jugee trop sage. Celui-ci
+   ne represente rien : il porte la marque, et c'est tout ce qu'un
+   fond a besoin de faire.
 
    Contraintes tenues, dans cet ordre de priorite :
 
-   1. Ne jamais gener la lecture. Le fond vit sous le contenu, en
-      opacite basse, masque la ou le texte se lit, et se calme encore
-      sur les pages denses via data-bg="calme".
-   2. Ne rien couter pour rien. Rendu arrete quand l'onglet passe en
-      arriere-plan, 20 images par seconde au plafond.
-   3. Disparaitre sous prefers-reduced-motion : le canvas n'est meme
-      pas cree.
-   4. Ne rien casser en cas d'echec : c'est un fond, son absence n'a
-      aucune consequence.
+   1. Ne jamais gener la lecture. Le fond vit sous le contenu, masque
+      la ou le texte se lit, et se calme sur les pages denses via
+      data-bg="calme".
+   2. Ne rien couter pour rien. Rendu arrete onglet cache, 24 images
+      par seconde au plafond, rien peint sous le seuil de visibilite.
+   3. Disparaitre sous prefers-reduced-motion : pas de canvas du tout.
+   4. Ne rien casser en cas d'echec : c'est un fond.
 
-   Aucune dependance. Charge en differe sur toutes les pages.
+   Aucune dependance.
    ============================================================ */
 (function () {
   'use strict';
@@ -34,70 +34,53 @@
   var canvas, ctx, W, H, dpr, raf = null, last = 0, t = 0, running = false;
   var calm = document.body.getAttribute('data-bg') === 'calme';
 
-  /* 20 images par seconde suffisent : les courbes derivent lentement,
-     l oeil ne distingue pas 30 de 20 sur ce mouvement, et le fond
-     coute un tiers de moins. */
-  var FPS = 20;
-  /* Sur les pages denses : une bande de moins, tout plus discret. */
-  var BANDS = calm ? 2 : 3;
-  var A_LINE = calm ? 0.13 : 0.22;
-  var A_FILL = calm ? 0.035 : 0.06;
-  var A_GRID = calm ? 0.028 : 0.05;
+  var FPS = 24;
 
-  var series = [], col = {};
+  /* Geometrie du motif Palo Alto : trois barres, la mediane plus
+     haute, inclinees vers la droite. */
+  var SLANT = 0.30;                       // decalage horizontal par unite de hauteur
+  var GROUP = calm ? 300 : 224;           // espace entre deux groupes de trois
+  var BAR   = calm ? 16  : 21;            // epaisseur d'une barre
+  var GAP   = calm ? 12  : 15;            // vide entre deux barres d'un groupe
+
+  /* Le fond est presque eteint au repos : tout se joue au passage de
+     la lumiere. */
+  var A_REST  = calm ? 0.022 : 0.042;
+  var A_LIT   = calm ? 0.085 : 0.34;
+  var SWEEP_W = 330;   // plus etroit : la lumiere est plus franche
+
+  var layers = [], col = {};
 
   function palette() {
     var cs = getComputedStyle(document.documentElement);
     col = {
       accent: (cs.getPropertyValue('--accent') || '#FA582D').trim(),
-      wire:   (cs.getPropertyValue('--wire')   || '#4d9fff').trim()
+      light:  document.documentElement.getAttribute('data-theme') === 'light'
     };
   }
 
   function rgba(hex, a) {
     hex = (hex || '').trim();
-    if (hex.charAt(0) !== '#') return 'rgba(120,150,190,' + a + ')';
+    if (hex.charAt(0) !== '#') return 'rgba(140,160,190,' + a + ')';
     if (hex.length === 4) hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
     return 'rgba(' + parseInt(hex.substr(1, 2), 16) + ','
                    + parseInt(hex.substr(3, 2), 16) + ','
                    + parseInt(hex.substr(5, 2), 16) + ',' + a + ')';
   }
 
-  var STEP = 10;   // pas d'echantillonnage horizontal, en pixels
-
+  /* Deux plans : le lointain plus fin, plus lent, moins contraste ;
+     le proche plus large et plus rapide. L'ecart de vitesse cree la
+     profondeur sans qu'aucun element ne bouge vraiment vite. */
   function build() {
-    series = [];
-    var count = Math.ceil(W / STEP) + 2;
-    for (var i = 0; i < BANDS; i++) {
-      var base = H * (0.46 + i * 0.17);
-      var amp  = H * (0.045 + i * 0.022);
-      var color = (i === 1 ? col.accent : col.wire);
-
-      /* Degrade fabrique une seule fois : il ne depend que de la
-         geometrie, qui ne change qu'au redimensionnement. */
-      /* Profondeur de remplissage bornee : au-dela, le degrade est
-         deja transparent et l on peindrait des pixels invisibles.
-         C'est ce qui coutait le plus cher dans le fond. */
-      var depth = Math.min(H - base + amp * 1.6, 300);
-      var g = ctx.createLinearGradient(0, base - amp * 1.6, 0, base + depth);
-      g.addColorStop(0, rgba(color, A_FILL));
-      g.addColorStop(1, rgba(color, 0));
-
-      series.push({
-        /* Chaque courbe a sa phase, son amplitude et sa vitesse : elles
-           ne se superposent jamais deux fois de la meme facon. */
-        phase: Math.random() * 100,
-        amp: amp,
-        base: base,
-        speed: 0.00075 + i * 0.00035,
-        /* La bande du milieu porte l'orange de la marque, les autres
-           restent sur le bleu d'etat : un seul accent, jamais deux. */
-        color: color,
-        grad: g,
-        depth: depth,
-        stroke: rgba(color, A_LINE - i * 0.035),
-        pts: new Float32Array(count)
-      });
+    layers = [
+      { scale: 0.60, speed: 0.040, alpha: 0.55, xs: [] },
+      { scale: 1.00, speed: 0.080, alpha: 1.00, xs: [] }
+    ];
+    var span = H * SLANT;
+    for (var li = 0; li < layers.length; li++) {
+      var L = layers[li];
+      var g = GROUP * L.scale;
+      for (var x = -span - g * 2; x < W + g; x += g) L.xs.push(x);
     }
   }
 
@@ -113,11 +96,17 @@
     build();
   }
 
-  /* Somme de deux sinusoides de periodes non multiples : le trace ne
-     se repete pas de facon perceptible, sans cout de bruit reel. */
-  function value(s, px) {
-    return Math.sin(px * 0.0042 + s.phase + t * s.speed) * 0.62
-         + Math.sin(px * 0.0113 + s.phase * 1.7 + t * s.speed * 1.55) * 0.38;
+  /* Une barre : un parallelogramme incline, dessine d'un trait. */
+  function bar(x, w, h0, h1) {
+    var top = H * h0, bot = H * h1;
+    var dx = (bot - top) * SLANT;
+    ctx.beginPath();
+    ctx.moveTo(x, bot);
+    ctx.lineTo(x + dx, top);
+    ctx.lineTo(x + dx + w, top);
+    ctx.lineTo(x + w, bot);
+    ctx.closePath();
+    ctx.fill();
   }
 
   function frame(now) {
@@ -129,58 +118,48 @@
 
     ctx.clearRect(0, 0, W, H);
 
-    /* Graduation temporelle : elle glisse vers la gauche, comme l'axe
-       d'un graphe qui avance. C'est ce glissement, plus que les
-       courbes, qui donne l'impression d'une mesure en cours. */
-    var step = 104;
-    var off = (t * 0.22) % step;
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = rgba(col.wire, A_GRID);
-    ctx.beginPath();
-    for (var gx = -off; gx < W; gx += step) {
-      // un seul chemin pour toute la graduation : quatorze couples
-      // beginPath/stroke par image se payaient pour rien
-      ctx.moveTo(Math.round(gx) + 0.5, 0);
-      ctx.lineTo(Math.round(gx) + 0.5, H);
-    }
-    ctx.stroke();
+    var neutral = col.light ? '#2b3646' : '#93a9c6';
 
-    /* Les courbes sont dessinees de la plus basse a la plus haute :
-       les aires se recouvrent dans le bon ordre.
+    for (var li = 0; li < layers.length; li++) {
+      var L = layers[li];
+      var barW = BAR * L.scale, gapW = GAP * L.scale;
+      var groupW = L.xs.length > 1 ? (L.xs[1] - L.xs[0]) : GROUP;
+      var drift = (t * L.speed) % groupW;
 
-       Le trace est calcule UNE fois par courbe et reutilise pour
-       l'aire et pour le trait. Le calculer deux fois doublait le cout
-       du fond, mesure a 7,8% d'un coeur contre 3,9% ici. Les degrades
-       sont fabriques au redimensionnement, pas a chaque image : un
-       createLinearGradient par courbe et par frame, a 30 images par
-       seconde, se paie. */
-    for (var i = series.length - 1; i >= 0; i--) {
-      var s = series[i];
-      var pts = s.pts;
+      /* La lumiere balaie l'ecran de gauche a droite en boucle. Les
+         deux plans avancent a des vitesses legerement differentes :
+         le balayage ne se superpose jamais deux fois pareil. */
+      var period = 2400;
+      var phase = ((t * (0.55 + li * 0.14)) % period) / period;
+      var sweep = -SWEEP_W + phase * (W + SWEEP_W * 2);
 
-      // remplissage du tampon de points
-      for (var k = 0, px = 0; k < pts.length; k++, px += STEP) {
-        pts[k] = s.base + value(s, px) * s.amp;
+      for (var i = 0; i < L.xs.length; i++) {
+        var gx = L.xs[i] + drift;
+
+        for (var k = 0; k < 3; k++) {
+          var x = gx + k * (barW + gapW);
+          /* La barre mediane monte plus haut et descend plus bas :
+             c'est ce decalage qui fait lire le motif comme le logo et
+             non comme de simples rayures. */
+          var h0 = (k === 1) ? 0.00 : 0.13;
+          var h1 = (k === 1) ? 1.00 : 0.87;
+
+          var d = Math.abs((x + H * SLANT * 0.5) - sweep);
+          var lit = Math.max(0, 1 - d / SWEEP_W);
+          lit = lit * lit * lit;                 // la lumiere se concentre nettement
+
+          var a = (A_REST + lit * A_LIT) * L.alpha;
+          if (a < 0.005) continue;               // invisible : on ne peint pas
+
+          /* La barre mediane prend l'orange de la marque une fois
+             eclairee ; les deux autres restent neutres. Un seul
+             accent, jamais deux. */
+          ctx.fillStyle = (k === 1 && lit > 0.10)
+            ? rgba(col.accent, a * 1.55)
+            : rgba(neutral, a);
+          bar(x, barW, h0, h1);
+        }
       }
-
-      // aire sous la courbe
-      ctx.beginPath();
-      ctx.moveTo(0, pts[0]);
-      for (k = 1, px = STEP; k < pts.length; k++, px += STEP) ctx.lineTo(px, pts[k]);
-      var floor = s.base + s.depth;
-      ctx.lineTo(W + STEP, floor);
-      ctx.lineTo(0, floor);
-      ctx.closePath();
-      ctx.fillStyle = s.grad;
-      ctx.fill();
-
-      // le trait par-dessus
-      ctx.beginPath();
-      ctx.moveTo(0, pts[0]);
-      for (k = 1, px = STEP; k < pts.length; k++, px += STEP) ctx.lineTo(px, pts[k]);
-      ctx.strokeStyle = s.stroke;
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
     }
   }
 
@@ -211,8 +190,7 @@
         if (document.hidden) stop(); else start();
       });
 
-      /* La bascule de theme change la palette. */
-      new MutationObserver(function () { palette(); build(); })
+      new MutationObserver(function () { palette(); })
         .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     } catch (e) {
       /* Un fond qui echoue ne doit jamais empecher la page de servir. */
