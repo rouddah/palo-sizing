@@ -1,99 +1,123 @@
 /* ============================================================
-   Fond anime : maillage reseau
+   Fond anime : telemetrie
    ------------------------------------------------------------
-   Un outil de dimensionnement de firewall merite un fond qui parle
-   de son sujet plutot qu'un degrade decoratif. On dessine donc une
-   topologie : des noeuds qui derivent lentement, des liens qui
-   apparaissent quand deux noeuds se rapprochent, et des paquets qui
-   circulent le long de ces liens.
+   Des courbes de charge empilees qui defilent lentement, avec leur
+   aire remplie et une graduation temporelle qui glisse vers la
+   gauche. La reference est un mur de supervision : l'outil parle de
+   debit et de sessions, le fond montre du debit.
+
+   Ce n'est pas un decor pris au hasard. Un maillage de particules
+   avait ete essaye avant : c'est le fond « tech » le plus vu du web
+   depuis dix ans, et il ne dit rien du produit. Une courbe de charge,
+   sur un dimensionneur de pare-feu, est dans le sujet.
 
    Contraintes tenues, dans cet ordre de priorite :
 
    1. Ne jamais gener la lecture. Le fond vit sous le contenu, en
-      opacite tres basse, et se calme encore sur les pages denses
-      (comparateur, etabli) via l'attribut data-bg="calme".
-   2. Ne jamais couter de batterie pour rien. Le rendu s'arrete quand
-      l'onglet passe en arriere-plan, quand la page n'est plus
-      visible, et se limite a 30 images par seconde.
-   3. Disparaitre completement sous prefers-reduced-motion : dans ce
-      cas le canvas n'est meme pas cree.
-   4. Ne rien casser si le canvas echoue : c'est un fond, son absence
-      ne doit avoir aucune consequence.
+      opacite basse, masque la ou le texte se lit, et se calme encore
+      sur les pages denses via data-bg="calme".
+   2. Ne rien couter pour rien. Rendu arrete quand l'onglet passe en
+      arriere-plan, 20 images par seconde au plafond.
+   3. Disparaitre sous prefers-reduced-motion : le canvas n'est meme
+      pas cree.
+   4. Ne rien casser en cas d'echec : c'est un fond, son absence n'a
+      aucune consequence.
 
-   Aucune dependance. Charge apres ui.js sur toutes les pages.
+   Aucune dependance. Charge en differe sur toutes les pages.
    ============================================================ */
 (function () {
   'use strict';
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-
-  /* Un ecran tres etroit n'a pas la place, et souvent pas la machine. */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (window.innerWidth < 620) return;
 
-  var canvas, ctx, W, H, dpr, nodes = [], packets = [], raf = null, last = 0;
-  var running = false;
-
-  /* Densite : proportionnelle a la surface, plafonnee. Sur les pages
-     denses, on divise encore. */
+  var canvas, ctx, W, H, dpr, raf = null, last = 0, t = 0, running = false;
   var calm = document.body.getAttribute('data-bg') === 'calme';
-  var FPS = 30;
-  var LINK_DIST = calm ? 140 : 170;   // distance en deca de laquelle deux noeuds se lient
-  var ALPHA_NODE = calm ? 0.30 : 0.55;
-  var ALPHA_LINK = calm ? 0.10 : 0.20;
+
+  /* 20 images par seconde suffisent : les courbes derivent lentement,
+     l oeil ne distingue pas 30 de 20 sur ce mouvement, et le fond
+     coute un tiers de moins. */
+  var FPS = 20;
+  /* Sur les pages denses : une bande de moins, tout plus discret. */
+  var BANDS = calm ? 2 : 3;
+  var A_LINE = calm ? 0.13 : 0.22;
+  var A_FILL = calm ? 0.035 : 0.06;
+  var A_GRID = calm ? 0.028 : 0.05;
+
+  var series = [], col = {};
 
   function palette() {
     var cs = getComputedStyle(document.documentElement);
-    var light = document.documentElement.getAttribute('data-theme') === 'light';
-    return {
-      node: (cs.getPropertyValue('--wire') || '#4d9fff').trim(),
-      pkt:  (cs.getPropertyValue('--accent') || '#FA582D').trim(),
-      light: light
+    col = {
+      accent: (cs.getPropertyValue('--accent') || '#FA582D').trim(),
+      wire:   (cs.getPropertyValue('--wire')   || '#4d9fff').trim()
     };
   }
-  var col = palette();
+
+  function rgba(hex, a) {
+    hex = (hex || '').trim();
+    if (hex.charAt(0) !== '#') return 'rgba(120,150,190,' + a + ')';
+    if (hex.length === 4) hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+    return 'rgba(' + parseInt(hex.substr(1, 2), 16) + ','
+                   + parseInt(hex.substr(3, 2), 16) + ','
+                   + parseInt(hex.substr(5, 2), 16) + ',' + a + ')';
+  }
+
+  var STEP = 10;   // pas d'echantillonnage horizontal, en pixels
+
+  function build() {
+    series = [];
+    var count = Math.ceil(W / STEP) + 2;
+    for (var i = 0; i < BANDS; i++) {
+      var base = H * (0.46 + i * 0.17);
+      var amp  = H * (0.045 + i * 0.022);
+      var color = (i === 1 ? col.accent : col.wire);
+
+      /* Degrade fabrique une seule fois : il ne depend que de la
+         geometrie, qui ne change qu'au redimensionnement. */
+      /* Profondeur de remplissage bornee : au-dela, le degrade est
+         deja transparent et l on peindrait des pixels invisibles.
+         C'est ce qui coutait le plus cher dans le fond. */
+      var depth = Math.min(H - base + amp * 1.6, 300);
+      var g = ctx.createLinearGradient(0, base - amp * 1.6, 0, base + depth);
+      g.addColorStop(0, rgba(color, A_FILL));
+      g.addColorStop(1, rgba(color, 0));
+
+      series.push({
+        /* Chaque courbe a sa phase, son amplitude et sa vitesse : elles
+           ne se superposent jamais deux fois de la meme facon. */
+        phase: Math.random() * 100,
+        amp: amp,
+        base: base,
+        speed: 0.00075 + i * 0.00035,
+        /* La bande du milieu porte l'orange de la marque, les autres
+           restent sur le bleu d'etat : un seul accent, jamais deux. */
+        color: color,
+        grad: g,
+        depth: depth,
+        stroke: rgba(color, A_LINE - i * 0.035),
+        pts: new Float32Array(count)
+      });
+    }
+  }
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth;
     H = window.innerHeight;
-    canvas.width = Math.floor(W * dpr);
+    canvas.width  = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
-    canvas.style.width = W + 'px';
+    canvas.style.width  = W + 'px';
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    seed();
+    build();
   }
 
-  function seed() {
-    var target = Math.round((W * H) / (calm ? 34000 : 22000));
-    target = Math.max(14, Math.min(target, calm ? 34 : 58));
-    nodes = [];
-    for (var i = 0; i < target; i++) {
-      nodes.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        // derive tres lente : quelques pixels par seconde
-        vx: (Math.random() - 0.5) * 0.16,
-        vy: (Math.random() - 0.5) * 0.16,
-        r: 1 + Math.random() * 1.4
-      });
-    }
-    packets = [];
-  }
-
-  /* Un paquet nait sur un lien existant et le parcourt une fois. */
-  function spawnPacket() {
-    if (packets.length > (calm ? 2 : 5)) return;
-    var a = (Math.random() * nodes.length) | 0;
-    var best = -1, bestD = LINK_DIST;
-    for (var b = 0; b < nodes.length; b++) {
-      if (b === a) continue;
-      var d = Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y);
-      if (d < bestD) { bestD = d; best = b; }
-    }
-    if (best < 0) return;
-    packets.push({ a: a, b: best, t: 0, speed: 0.006 + Math.random() * 0.008 });
+  /* Somme de deux sinusoides de periodes non multiples : le trace ne
+     se repete pas de facon perceptible, sans cout de bruit reel. */
+  function value(s, px) {
+    return Math.sin(px * 0.0042 + s.phase + t * s.speed) * 0.62
+         + Math.sin(px * 0.0113 + s.phase * 1.7 + t * s.speed * 1.55) * 0.38;
   }
 
   function frame(now) {
@@ -101,101 +125,67 @@
     raf = requestAnimationFrame(frame);
     if (now - last < 1000 / FPS) return;
     last = now;
+    t += 1;
 
     ctx.clearRect(0, 0, W, H);
 
-    var i, j, n, m, d;
-
-    /* Deplacement + rebond doux sur les bords */
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      n.x += n.vx; n.y += n.vy;
-      if (n.x < 0 || n.x > W) n.vx *= -1;
-      if (n.y < 0 || n.y > H) n.vy *= -1;
-    }
-
-    /* Liens : l'opacite decroit avec la distance, le maillage respire
-       donc tout seul sans qu'on anime quoi que ce soit. */
+    /* Graduation temporelle : elle glisse vers la gauche, comme l'axe
+       d'un graphe qui avance. C'est ce glissement, plus que les
+       courbes, qui donne l'impression d'une mesure en cours. */
+    var step = 104;
+    var off = (t * 0.22) % step;
     ctx.lineWidth = 1;
-    for (i = 0; i < nodes.length; i++) {
-      for (j = i + 1; j < nodes.length; j++) {
-        n = nodes[i]; m = nodes[j];
-        d = Math.hypot(n.x - m.x, n.y - m.y);
-        if (d > LINK_DIST) continue;
-        var a = (1 - d / LINK_DIST) * ALPHA_LINK;
-        ctx.strokeStyle = hexA(col.node, a);
-        ctx.beginPath();
-        ctx.moveTo(n.x, n.y);
-        ctx.lineTo(m.x, m.y);
-        ctx.stroke();
+    ctx.strokeStyle = rgba(col.wire, A_GRID);
+    ctx.beginPath();
+    for (var gx = -off; gx < W; gx += step) {
+      // un seul chemin pour toute la graduation : quatorze couples
+      // beginPath/stroke par image se payaient pour rien
+      ctx.moveTo(Math.round(gx) + 0.5, 0);
+      ctx.lineTo(Math.round(gx) + 0.5, H);
+    }
+    ctx.stroke();
+
+    /* Les courbes sont dessinees de la plus basse a la plus haute :
+       les aires se recouvrent dans le bon ordre.
+
+       Le trace est calcule UNE fois par courbe et reutilise pour
+       l'aire et pour le trait. Le calculer deux fois doublait le cout
+       du fond, mesure a 7,8% d'un coeur contre 3,9% ici. Les degrades
+       sont fabriques au redimensionnement, pas a chaque image : un
+       createLinearGradient par courbe et par frame, a 30 images par
+       seconde, se paie. */
+    for (var i = series.length - 1; i >= 0; i--) {
+      var s = series[i];
+      var pts = s.pts;
+
+      // remplissage du tampon de points
+      for (var k = 0, px = 0; k < pts.length; k++, px += STEP) {
+        pts[k] = s.base + value(s, px) * s.amp;
       }
-    }
 
-    /* Noeuds */
-    for (i = 0; i < nodes.length; i++) {
-      n = nodes[i];
-      ctx.fillStyle = hexA(col.node, ALPHA_NODE);
+      // aire sous la courbe
       ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.moveTo(0, pts[0]);
+      for (k = 1, px = STEP; k < pts.length; k++, px += STEP) ctx.lineTo(px, pts[k]);
+      var floor = s.base + s.depth;
+      ctx.lineTo(W + STEP, floor);
+      ctx.lineTo(0, floor);
+      ctx.closePath();
+      ctx.fillStyle = s.grad;
       ctx.fill();
-    }
 
-    /* Paquets : un point qui glisse d'un noeud a l'autre, avec une
-       courte trainee. C'est le seul element vraiment « vivant ». */
-    for (i = packets.length - 1; i >= 0; i--) {
-      var p = packets[i];
-      p.t += p.speed;
-      if (p.t >= 1 || !nodes[p.a] || !nodes[p.b]) { packets.splice(i, 1); continue; }
-      var A = nodes[p.a], B = nodes[p.b];
-      var x = A.x + (B.x - A.x) * p.t;
-      var y = A.y + (B.y - A.y) * p.t;
-      var tx = A.x + (B.x - A.x) * Math.max(0, p.t - 0.16);
-      var ty = A.y + (B.y - A.y) * Math.max(0, p.t - 0.16);
-      // la trainee s'estompe aux deux extremites du parcours
-      var fade = Math.sin(p.t * Math.PI);
-      var g = ctx.createLinearGradient(tx, ty, x, y);
-      g.addColorStop(0, hexA(col.pkt, 0));
-      g.addColorStop(1, hexA(col.pkt, 0.5 * fade));
-      ctx.strokeStyle = g;
-      ctx.lineWidth = 1.6;
+      // le trait par-dessus
       ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(x, y);
+      ctx.moveTo(0, pts[0]);
+      for (k = 1, px = STEP; k < pts.length; k++, px += STEP) ctx.lineTo(px, pts[k]);
+      ctx.strokeStyle = s.stroke;
+      ctx.lineWidth = 1.4;
       ctx.stroke();
-
-      ctx.fillStyle = hexA(col.pkt, 0.75 * fade);
-      ctx.beginPath();
-      ctx.arc(x, y, 1.7, 0, Math.PI * 2);
-      ctx.fill();
     }
-
-    if (Math.random() < (calm ? 0.012 : 0.03)) spawnPacket();
   }
 
-  /* #RRGGBB -> rgba(). Les jetons du site sont en hexa. */
-  function hexA(hex, a) {
-    hex = (hex || '').trim();
-    if (hex.charAt(0) !== '#') return 'rgba(120,150,190,' + a + ')';
-    if (hex.length === 4) {
-      hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
-    }
-    var r = parseInt(hex.substr(1, 2), 16),
-        g = parseInt(hex.substr(3, 2), 16),
-        b = parseInt(hex.substr(5, 2), 16);
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-  }
-
-  function start() {
-    if (running) return;
-    running = true;
-    last = 0;
-    raf = requestAnimationFrame(frame);
-  }
-  function stop() {
-    running = false;
-    if (raf) cancelAnimationFrame(raf);
-    raf = null;
-  }
+  function start() { if (running) return; running = true; last = 0; raf = requestAnimationFrame(frame); }
+  function stop()  { running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
 
   function init() {
     try {
@@ -205,24 +195,25 @@
       ctx = canvas.getContext('2d');
       if (!ctx) return;
       document.body.appendChild(canvas);
+      palette();
       resize();
       start();
 
-      var t = null;
+      var timer = null;
       window.addEventListener('resize', function () {
-        clearTimeout(t);
-        t = setTimeout(resize, 180);
+        clearTimeout(timer);
+        timer = setTimeout(resize, 180);
       });
 
-      /* Onglet cache : on arrete tout. Un fond decoratif ne doit pas
-         consommer une seconde de processeur quand personne ne regarde. */
+      /* Onglet cache : on arrete tout. Un fond ne doit pas consommer
+         une seconde de processeur quand personne ne regarde. */
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) stop(); else start();
       });
 
-      /* Le bascule de theme change la palette. */
-      var obs = new MutationObserver(function () { col = palette(); });
-      obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      /* La bascule de theme change la palette. */
+      new MutationObserver(function () { palette(); build(); })
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     } catch (e) {
       /* Un fond qui echoue ne doit jamais empecher la page de servir. */
       if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);

@@ -37,8 +37,12 @@
   const headerHTML = `
 <header class="site-header">
   <a class="header-logo" href="index.html" title="Accueil">
-    <img class="logo-dark"  src="img/PANW_BIG.D.png" alt="Palo Alto Networks" />
-    <img class="logo-light" src="img/PANW.png"        alt="Palo Alto Networks" />
+    <!-- Logos officiels au format vectoriel. Les deux PNG precedents
+         pesaient 54 Ko a eux deux, se chargeaient sur chaque page alors
+         qu'un seul est visible, et n'etaient meme pas le meme lockup :
+         le theme clair affichait une version carree ecrasee. -->
+    <img class="logo-dark"  src="img/logo-panw-dark.svg"  alt="Palo Alto Networks" width="150" height="42" />
+    <img class="logo-light" src="img/logo-panw-light.svg" alt="Palo Alto Networks" width="150" height="42" />
   </a>
 
   <div class="logo-sep"></div>

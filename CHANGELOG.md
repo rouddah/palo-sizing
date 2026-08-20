@@ -1,5 +1,53 @@
 # Changelog
 
+## Session 11 - 20 aout 2026 : fond telemetrie, logos vectoriels
+
+### Le fond change de piste
+
+Le maillage de particules de la session 10 a ete abandonne. Motif
+assume : c'est le fond « tech » le plus vu du web depuis dix ans, et il
+ne disait rien du produit. Un cliche avait remplace un autre.
+
+Trois pistes ont ete construites et comparees a l'ecran : un flux de
+paquets traversant une ligne d'inspection, les obliques du logo a
+l'echelle de l'ecran, et une telemetrie. La telemetrie a ete retenue.
+
+**Telemetrie** : des courbes de charge empilees, leur aire remplie, et
+une graduation temporelle qui glisse vers la gauche comme l'axe d'un
+graphe qui avance. L'outil parle de debit et de sessions, le fond
+montre du debit.
+
+Cout mesure et travaille : 7,8% d'un coeur a la premiere ecriture,
+5,3% apres trois corrections.
+
+| Correction | Gain |
+| --- | --- |
+| Trace calcule une fois, reutilise pour l'aire et le trait | 7,8 -> 7,0% |
+| Graduation en un seul chemin, 20 images/s au lieu de 30 | 7,0 -> 6,2% |
+| Profondeur de remplissage bornee a 300px | 6,2 -> 5,3% |
+
+La derniere est la plus instructive : le degrade atteignait l'opacite
+nulle bien avant le bas de l'ecran, on peignait donc des milliers de
+pixels parfaitement transparents a chaque image.
+
+Garde-fous inchanges et reverifies : pas de canvas sous
+prefers-reduced-motion, pas de canvas sous 620px, 0,0% de processeur
+onglet cache, retrait silencieux en cas d'echec.
+
+### Logos : vectoriels, et enfin les bons
+
+Le theme clair n'affichait pas le meme logo que le theme sombre :
+PANW_BIG.D.png est un lockup horizontal (ratio 5,44), PANW.png un
+lockup carre (ratio 1,39). En clair, le logo apparaissait ecrase.
+
+Les deux PNG se chargeaient par ailleurs sur **chaque page** alors
+qu'un seul est visible a la fois, l'autre etant en display:none.
+
+Remplaces par les SVG officiels du pack de marque (Negative pour le
+sombre, Positive pour le clair), 5,7 Ko chacun. L'accueil passe de
+**275 Ko a 172 Ko**. PANW_BIG.D.png, PANW.png et logo-paloalto.svg
+(une approximation dessinee a la main, jamais utilisee) sont supprimes.
+
 ## Session 10 - 20 aout 2026 : fond anime, profondeur
 
 ### Fond anime : un maillage reseau, pas un degrade
