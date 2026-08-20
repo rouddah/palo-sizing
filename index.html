@@ -19,7 +19,7 @@
       padding: 84px 24px 54px;
       overflow: hidden;
     }
-    .lead .fx-slashes { color: var(--pai-1); opacity: .08; }
+    .lead .fx-slashes { color: var(--pai-3); opacity: .1; }
 
     .lead-kick {
       display: inline-flex;
@@ -256,11 +256,11 @@
   };
 
   const TOOLS = [
-    ['pa-series.html', 'table', 'Comparateur PA-Series', 'Les 39 modeles cote a cote : debits appmix, sessions, interfaces, capacites et fin de commercialisation. Selectionnez jusqu\'a quatre modeles pour un tableau comparatif.', '39 modÃ¨les', 'var(--pai-1)'],
-    ['qualification.html', 'target', 'Qualification NGFW', 'Cinq questions pour identifier la gamme adaptee, et un guide d\'entretien a derouler avec le client avant de recommander quoi que ce soit.', 'Avant-vente', 'var(--pai-2)'],
-    ['optiques.html', 'optic', 'Transceivers', 'La matrice des optiques par debit et par support. Cliquez une reference pour la copier, ou exportez d\'un coup tous les SKU filtres.', '45 modules', 'var(--pai-4)'],
-    ['accessoires.html', 'box', 'Alimentations & accessoires', 'Ce qu\'on oublie dans une commande : alimentation de rechange, kit rack, tiroir de ventilation, disque de logs. Filtrable par plateforme.', '207 rÃ©fÃ©rences', 'var(--identity)'],
-    ['search.html', 'search', 'Recherche & sizing', 'Retrouver un firewall a partir d\'un debit cible, d\'un nombre d\'utilisateurs ou d\'un critere d\'interface.', 'Par critÃ¨re', 'var(--cortex)']
+    ['pa-series.html', 'table', 'Comparateur PA-Series', 'Les 39 modèles côte à côte : débits appmix, sessions, interfaces, capacités et fin de commercialisation. Sélectionnez jusqu\'a quatre modèles pour un tableau comparatif.', '39 modèles', 'var(--c-cortex)'],
+    ['qualification.html', 'target', 'Qualification NGFW', 'Cinq questions pour identifier la gamme adaptée, et un guide d\'entretien a derouler avec le client avant de recommander quoi que ce soit.', 'Avant-vente', 'var(--c-unit42)'],
+    ['optiques.html', 'optic', 'Transceivers', 'La matrice des optiques par débit et par support. Cliquez une référence pour la copier, ou exportez d\'un coup tous les SKU filtrés.', '45 modules', 'var(--c-prisma)'],
+    ['accessoires.html', 'box', 'Alimentations & accessoires', 'Ce qu\'on oublie dans une commande : alimentation de rechange, kit rack, tiroir de ventilation, disque de logs. Filtrable par plateforme.', '207 références', 'var(--c-strata)'],
+    ['search.html', 'search', 'Recherche & sizing', 'Retrouver un firewall a partir d\'un debit cible, d\'un nombre d\'utilisateurs ou d\'un critère d\'interface.', 'Par critère', 'var(--c-cortex)']
   ];
 
   document.getElementById('tools').innerHTML = TOOLS.map(function (t) {
@@ -273,10 +273,10 @@
 
   /* ══ Piliers ══ */
   const PILLARS = [
-    ['pa-series.html', 'Network Security', 'NGFW', 'PA-Series, Panorama et les abonnements Precision AI. Le socle matÃ©riel et sa gestion centralisÃ©e.', 'var(--pai-1)'],
-    ['prisma.html', 'SASE', 'Prisma', 'Prisma Access, Prisma SD-WAN et Prisma Browser, pilotÃ©s depuis Strata Cloud Manager.', 'var(--sase)'],
-    ['cortex.html', 'SecOps', 'Cortex', 'XDR, XSIAM, XSOAR, AgentiX, Xpanse et Cortex Cloud : la plateforme d\'operations de securite.', 'var(--cortex)'],
-    ['idira.html', 'Identity', 'Idira', 'Le quatriÃ¨me pilier, lancÃ© en mai 2026 : identitÃ©s humaines, agentiques et machine.', 'var(--identity)']
+    ['pa-series.html', 'Network Security', 'NGFW', 'PA-Series, Panorama et les abonnements Precision AI. Le socle matériel et sa gestion centralisée.', 'var(--c-cortex)'],
+    ['prisma.html', 'SASE', 'Prisma', 'Prisma Access, Prisma SD-WAN et Prisma Browser, pilotés depuis Strata Cloud Manager.', 'var(--c-prisma)'],
+    ['cortex.html', 'SecOps', 'Cortex', 'XDR, XSIAM, XSOAR, AgentiX, Xpanse et Cortex Cloud : la plateforme d\'operations de securite.', 'var(--c-cortex)'],
+    ['idira.html', 'Identity', 'Idira', 'Le quatrième pilier, lancé en mai 2026 : identités humaines, agentiques et machine.', 'var(--c-strata)']
   ];
 
   document.getElementById('pillars').innerHTML = PILLARS.map(function (p) {

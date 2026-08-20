@@ -34,10 +34,10 @@
   --surface3:     #263248;
   --border:       #253040;
   --border2:      #354565;
-  --accent:       #e84b1a;
-  --accent-hover: #ff5c24;
-  --accent-dim:   rgba(232,75,26,0.12);
-  --accent-glow:  rgba(232,75,26,0.25);
+  --accent:       #FA582D;
+  --accent-hover: #FF724D;
+  --accent-dim:   rgba(250,88,45,0.12);
+  --accent-glow:  rgba(250,88,45,0.25);
   --blue:         #003087;
   --blue-bright:  #1a5fd4;
   --text:         #c8d4ea;
@@ -55,7 +55,7 @@
   --radius:       10px;
   --radius-lg:    16px;
   --shadow:       0 8px 32px rgba(0,0,0,0.5);
-  --shadow-accent:0 8px 24px rgba(232,75,26,0.2);
+  --shadow-accent:0 8px 24px rgba(250,88,45,0.2);
   --font:         'Geist Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono:         'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
   --header-h:     60px;
@@ -74,14 +74,14 @@
   --text-stat: 60px;
 
   /* ── Couleurs par pilier ── */
-  --net-sec:     #00a3e0;
-  --net-sec-bg:  rgba(0,163,224,0.08);
-  --sase:        #8b5cf6;
-  --sase-bg:     rgba(139,92,246,0.08);
-  --cortex:      #00c896;
-  --cortex-bg:   rgba(0,200,150,0.08);
-  --identity:    #f59e0b;
-  --identity-bg: rgba(245,158,11,0.08);
+  --net-sec:     #FFCB06;
+  --net-sec-bg:  rgba(255,203,6,0.08);
+  --sase:        #00C0E8;
+  --sase-bg:     rgba(0,192,232,0.08);
+  --cortex:      #00CC66;
+  --cortex-bg:   rgba(0,204,102,0.08);
+  --identity:    #C84727;
+  --identity-bg: rgba(200,71,39,0.08);
 }
 
 [data-theme="light"] {
@@ -96,7 +96,7 @@
   --text-bright:  #0a1225;
   --text-muted:   #5a6a8a;
   --text-dim:     #3a4a6a;
-  --accent-dim:   rgba(232,75,26,0.08);
+  --accent-dim:   rgba(250,88,45,0.08);
   --shadow:       0 4px 20px rgba(0,48,135,0.1);
 }
 
@@ -1770,11 +1770,20 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
    ============================================================ */
 
 :root {
-  --pai-1: #FA582D;   /* orange Palo */
-  --pai-2: #E5127D;   /* magenta */
-  --pai-3: #2A3EFF;   /* bleu */
-  --pai-4: #38BDF8;   /* cyan */
-  --pai: linear-gradient(96deg, var(--pai-1), var(--pai-2) 42%, var(--pai-3) 78%, var(--pai-4));
+  /* Palette officielle - brand guidelines v22, pages 49 a 53.
+     Le guide interdit de melanger l'orange a une autre couleur dans un
+     degrade : celui-ci reste donc entierement dans le Cyber Orange. */
+  --pai-1: #FFBF9C;   /* Cyber Orange 250  */
+  --pai-2: #FF724D;   /* Cyber Orange 500  */
+  --pai-3: #FA582D;   /* Cyber Orange, couleur principale - PMS 7417C */
+  --pai-4: #B23808;   /* Cyber Orange 750  */
+  --pai-5: #190000;   /* Cyber Orange 1000 */
+  --pai: linear-gradient(96deg, var(--pai-2), var(--pai-3) 46%, var(--pai-4));
+  /* couleurs produit, jamais melangees entre elles */
+  --c-prisma: #00C0E8;   /* Prisma Cloud Blue        - PMS 637C  */
+  --c-cortex: #00CC66;   /* Cortex Intelligence Green - PMS 7479C */
+  --c-unit42: #C84727;   /* Unit 42 Fire Red          - PMS 7598C */
+  --c-strata: #FFCB06;   /* Strata Security Yellow */
 }
 
 /* ── Aurore de fond ────────────────────────────────────────── */
@@ -1788,9 +1797,9 @@ body::after {
   pointer-events: none;
   opacity: .5;
   background:
-    radial-gradient(38vmax 32vmax at 12% 8%,  color-mix(in srgb, var(--pai-1) 34%, transparent), transparent 62%),
-    radial-gradient(34vmax 30vmax at 88% 14%, color-mix(in srgb, var(--pai-3) 40%, transparent), transparent 60%),
-    radial-gradient(42vmax 34vmax at 62% 92%, color-mix(in srgb, var(--pai-2) 24%, transparent), transparent 64%);
+    radial-gradient(38vmax 32vmax at 12% 8%,  color-mix(in srgb, var(--pai-3) 30%, transparent), transparent 62%),
+    radial-gradient(34vmax 30vmax at 88% 14%, color-mix(in srgb, var(--pai-4) 34%, transparent), transparent 60%),
+    radial-gradient(42vmax 34vmax at 62% 92%, color-mix(in srgb, var(--pai-2) 20%, transparent), transparent 64%);
   filter: blur(28px);
   animation: aurora 34s ease-in-out infinite alternate;
 }
@@ -1840,8 +1849,8 @@ body::before { opacity: .05; background-size: 72px 72px; }
 [data-reveal] {
   opacity: 0;
   transform: translateY(16px);
-  filter: blur(7px);
-  transition: opacity .6s var(--ease-ui), transform .6s var(--ease-ui), filter .6s var(--ease-ui);
+  filter: blur(4px);
+  transition: opacity .5s var(--ease-ui), transform .5s var(--ease-ui), filter .4s var(--ease-ui);
 }
 [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
 
@@ -1916,7 +1925,7 @@ body::before { opacity: .05; background-size: 72px 72px; }
   transform: translateY(-2px);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--pai-1) 70%, transparent);
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--pai-3) 70%, transparent);
 }
 .fx-btn:hover::before { opacity: 1; }
 .fx-btn.ghost { background: transparent; }
