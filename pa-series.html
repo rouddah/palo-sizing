@@ -144,6 +144,24 @@
       background: var(--bg);
     }
 
+    .model-hw {
+      background: linear-gradient(180deg, #f7f8fa, #e9ecf1);
+      padding: 7px 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+    .model-hw img {
+      max-width: 100%;
+      max-height: 26px;
+      width: auto;
+      object-fit: contain;
+      transition: transform .3s var(--ease-ui);
+    }
+    .model-th:hover .model-hw img { transform: scale(1.09); }
+
     /* ── Model header card ── */
     .model-th {
       width: var(--col-w);
@@ -460,6 +478,7 @@
   <script src="header.js"></script>
   <script src="ui.js"></script>
   <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
 
   <!-- ── Toolbars ── -->
   <div class="tb-wrap">
@@ -614,6 +633,15 @@
   };
 
   /* ══ Build table ══ */
+  /* Vignette officielle du boitier, decoupee dans le stencil Visio Palo Alto.
+     Absente pour quelques references : la colonne reste alors sans image. */
+  function chassis(id) {
+    var k = id.toLowerCase();
+    var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[k];
+    if (!e) return '';
+    return '<div class="model-hw"><img src="' + e.img + '" alt="' + e.label + '" loading="lazy"></div>';
+  }
+
   function buildTable() {
     let visible = MODELS.filter(m =>
       (activeSeries === 'all' || m.s === activeSeries) &&
@@ -647,6 +675,7 @@
               <span class="model-name">${m.id}</span>
               <span class="model-target">${m.target}${repl}</span>
             </div>
+            ${chassis(m.id)}
             <div class="model-card-bot" style="background:${m.color}22">
               <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener">↗ Datasheet</a>
               <div class="sel-dot"></div>
