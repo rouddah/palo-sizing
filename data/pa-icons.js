@@ -1,0 +1,37 @@
+/* Pictogrammes officiels Palo Alto, extraits du deck client Prisma Browser
+   (presentation officielle PANW). Fichiers dans img/ic/. */
+
+const PAN_ICONS = {
+"a-i": "img/ic/a-i.webp",
+"alert": "img/ic/alert.webp",
+"block": "img/ic/block.webp",
+"byod": "img/ic/byod.webp",
+"check": "img/ic/check.webp",
+"cloud-id": "img/ic/cloud-id.webp",
+"cloud-lock": "img/ic/cloud-lock.webp",
+"cloud-search": "img/ic/cloud-search.webp",
+"cloud-send": "img/ic/cloud-send.webp",
+"cred": "img/ic/cred.webp",
+"discover": "img/ic/discover.webp",
+"doc": "img/ic/doc.webp",
+"geo": "img/ic/geo.webp",
+"globe": "img/ic/globe.webp",
+"insider": "img/ic/insider.webp",
+"laptop": "img/ic/laptop.webp",
+"mesh": "img/ic/mesh.webp",
+"mobile": "img/ic/mobile.webp",
+"nodes": "img/ic/nodes.webp",
+"print": "img/ic/print.webp",
+"remote": "img/ic/remote.webp",
+"saa-s": "img/ic/saa-s.webp",
+"servers": "img/ic/servers.webp",
+"signal": "img/ic/signal.webp",
+"tco": "img/ic/tco.webp",
+"tools": "img/ic/tools.webp",
+"unmanaged": "img/ic/unmanaged.webp",
+"upload": "img/ic/upload.webp",
+"usb": "img/ic/usb.webp",
+"user": "img/ic/user.webp",
+"users": "img/ic/users.webp",
+"window": "img/ic/window.webp"
+};

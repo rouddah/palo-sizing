@@ -57,10 +57,10 @@
       color: #fff;
       box-shadow: 0 6px 16px -8px var(--accent-glow);
     }
-    .chip.on.c-mm  { background: var(--net-sec);  border-color: var(--net-sec);  color: #04121c; }
-    .chip.on.c-sm  { background: var(--green);    border-color: var(--green);    color: #05210f; }
-    .chip.on.c-cu  { background: var(--yellow);   border-color: var(--yellow);   color: #241703; }
-    .chip.on.c-dac { background: var(--purple);   border-color: var(--purple);   color: #150a2b; }
+    .chip.on.c-mm  { background: var(--c-prisma); border-color: var(--c-prisma); color: #04121c; }
+    .chip.on.c-sm  { background: var(--c-cortex); border-color: var(--c-cortex); color: #05210f; }
+    .chip.on.c-cu  { background: var(--c-strata); border-color: var(--c-strata); color: #241703; }
+    .chip.on.c-dac { background: var(--pai-2);    border-color: var(--pai-2);    color: #2b0d02; }
     .flt-search {
       flex: 1;
       min-width: 190px;
@@ -242,9 +242,9 @@
       border: 1px solid currentColor;
       opacity: .85;
     }
-    .tag-bidi { color: var(--purple); }
-    .tag-taa  { color: var(--net-sec); }
-    .tag-rgd  { color: var(--yellow); }
+    .tag-bidi { color: var(--pai-2); }
+    .tag-taa  { color: var(--c-prisma); }
+    .tag-rgd  { color: var(--c-strata); }
     .opt .conn {
       font-family: var(--mono);
       font-size: 9.5px;
@@ -313,10 +313,10 @@
       <button class="flt-reset" onclick="resetAll()">Tout r&eacute;afficher</button>
     </div>
     <div class="mx-legend">
-      <span><i style="background:var(--net-sec)"></i>Multimode &mdash; MMF, courte distance</span>
-      <span><i style="background:var(--green)"></i>Monomode &mdash; SMF, longue distance</span>
-      <span><i style="background:var(--yellow)"></i>Cuivre &mdash; RJ-45</span>
-      <span><i style="background:var(--purple)"></i>DAC / AOC &mdash; c&acirc;bles attach&eacute;s</span>
+      <span><i style="background:var(--c-prisma)"></i>Multimode &mdash; MMF, courte distance</span>
+      <span><i style="background:var(--c-cortex)"></i>Monomode &mdash; SMF, longue distance</span>
+      <span><i style="background:var(--c-strata)"></i>Cuivre &mdash; RJ-45</span>
+      <span><i style="background:var(--pai-2)"></i>DAC / AOC &mdash; c&acirc;bles attach&eacute;s</span>
       <span style="margin-left:auto">BiDi&nbsp;: une seule fibre &middot; TAA&nbsp;: Trade Agreements Act &middot; RGD&nbsp;: durci I-Temp</span>
     </div>
   </div>
@@ -345,10 +345,10 @@
     '40G': 'QSFP+', '100G': 'QSFP28', '400G': 'QSFP-DD'
   };
   const MEDIA = [
-    { k: 'Multimode', sub: 'MMF &middot; fibre multimode', color: 'var(--net-sec)', cls: 'c-mm' },
-    { k: 'Monomode',  sub: 'SMF &middot; fibre monomode',  color: 'var(--green)',   cls: 'c-sm' },
-    { k: 'Cuivre',    sub: 'RJ-45 &middot; paire torsad&eacute;e', color: 'var(--yellow)', cls: 'c-cu' },
-    { k: 'DAC / AOC', sub: 'C&acirc;bles attach&eacute;s',  color: 'var(--purple)',  cls: 'c-dac' }
+    { k: 'Multimode', sub: 'MMF &middot; fibre multimode', color: 'var(--c-prisma)', cls: 'c-mm' },
+    { k: 'Monomode',  sub: 'SMF &middot; fibre monomode',  color: 'var(--c-cortex)', cls: 'c-sm' },
+    { k: 'Cuivre',    sub: 'RJ-45 &middot; paire torsad&eacute;e', color: 'var(--c-strata)', cls: 'c-cu' },
+    { k: 'DAC / AOC', sub: 'C&acirc;bles attach&eacute;s',  color: 'var(--pai-2)',  cls: 'c-dac' }
   ];
   const REACH = [
     { k: 'court', lab: 'Courte (&lt; 1 km)', test: o => km(o) !== null && km(o) < 1 },
@@ -447,7 +447,7 @@
     if (o.rugged) tags.push('<span class="tag tag-rgd">RGD</span>');
     const reach = o.reach ? o.reach + (o.fiber ? ' <span style="opacity:.65;font-weight:400">(' + o.fiber + ')</span>' : '') : '';
     return '<div class="opt copy-card" style="--oc:' + color + '" data-copy="' + o.sku + '"'
-      + ' data-copy-label="' + o.sku + '" title="' + esc(o.desc) + ' — cliquer pour copier">'
+      + ' data-copy-label="' + o.sku + '" data-tip="' + o.sku + '|' + esc(o.desc) + '<br><b>Cliquer pour copier la référence.</b>">'
       + '<div class="copy-flag">&#10003; Copié !</div>'
       + '<div class="sku">' + o.sku.replace(/^PAN-/, '') + '</div>'
       + (o.std ? '<div class="std">' + o.std + '</div>' : '')

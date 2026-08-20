@@ -25,6 +25,13 @@
   src: url('fonts/jetbrainsmono-latin.woff2') format('woff2');
 }
 
+
+/* ── Poppins, auto-hebergee ── */
+@font-face { font-family:'Poppins'; src:url('fonts/poppins-400.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('fonts/poppins-500.woff2') format('woff2'); font-weight:500; font-style:normal; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('fonts/poppins-600.woff2') format('woff2'); font-weight:600; font-style:normal; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('fonts/poppins-700.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+
 /* ── Custom properties (dark) ── */
 :root {
   --bg:           #0f1419;
@@ -56,7 +63,7 @@
   --radius-lg:    16px;
   --shadow:       0 8px 32px rgba(0,0,0,0.5);
   --shadow-accent:0 8px 24px rgba(250,88,45,0.2);
-  --font:         'Geist Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font:         'Poppins', 'Geist Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono:         'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
   --header-h:     60px;
 
@@ -80,8 +87,8 @@
   --sase-bg:     rgba(0,192,232,0.08);
   --cortex:      #00CC66;
   --cortex-bg:   rgba(0,204,102,0.08);
-  --identity:    #C84727;
-  --identity-bg: rgba(200,71,39,0.08);
+  --identity:    #1D5FD1;
+  --identity-bg: rgba(29,95,209,0.10);
 }
 
 [data-theme="light"] {
@@ -1393,7 +1400,11 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 }
 .page-header h1 em {
   font-style: normal;
-  background: linear-gradient(96deg, var(--pillar), var(--accent) 75%);
+  /* la teinte du pilier, du debut a la fin : plus de derive vers l'orange */
+  background: linear-gradient(96deg,
+    color-mix(in srgb, var(--pillar) 78%, #fff),
+    var(--pillar) 58%,
+    color-mix(in srgb, var(--pillar) 76%, #000));
   -webkit-background-clip: text; background-clip: text;
   color: transparent;
 }
@@ -1934,4 +1945,52 @@ body::before { opacity: .05; background-size: 72px 72px; }
   body::after, .fx-slashes, .fx-grad { animation: none; }
   [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
   .fx-spot::before { display: none; }
+}
+
+
+/* ── Bulles de survol ──────────────────────────────────────── */
+#tip {
+  position: fixed;
+  z-index: 800;
+  max-width: 330px;
+  padding: 12px 15px 13px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--surface3) 94%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border2);
+  box-shadow: 0 26px 54px -22px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.3);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(7px) scale(.97);
+  transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui);
+}
+#tip.on { opacity: 1; transform: none; }
+#tip::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 12px; bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--tipc, var(--accent));
+}
+#tip .tt {
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--tipc, var(--accent));
+  letter-spacing: -0.1px;
+  margin-bottom: 5px;
+}
+#tip .tb {
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.58;
+  color: var(--text);
+}
+#tip .tb b { color: var(--text-bright); font-weight: 600; }
+[data-tip] { cursor: help; }
+[data-tip].copy-card, [data-tip].cp { cursor: copy; }
+
+@media (prefers-reduced-motion: reduce) {
+  #tip { transition: none; }
 }

@@ -163,7 +163,71 @@
     }, { passive: true });
   }
 
-  /* ── 4. Jauge de lecture ────────────────────────────────── */
+  /* ── 5. Bulles de survol riches ─────────────────────────── */
+  /* data-tip="Titre|Corps" : une carte flottante remplace l'infobulle
+     systeme. Elle suit le curseur et se recadre pour rester a l'ecran. */
+  var tipEl = null, tipT = null;
+
+  function tipNode() {
+    if (!tipEl) {
+      tipEl = document.createElement('div');
+      tipEl.id = 'tip';
+      tipEl.innerHTML = '<div class="tt"></div><div class="tb"></div>';
+      document.body.appendChild(tipEl);
+    }
+    return tipEl;
+  }
+
+  function placeTip(x, y) {
+    var t = tipNode(), r = t.getBoundingClientRect();
+    var nx = x + 18, ny = y + 18;
+    if (nx + r.width > window.innerWidth - 12) nx = x - r.width - 14;
+    if (ny + r.height > window.innerHeight - 12) ny = y - r.height - 14;
+    t.style.left = Math.max(10, nx) + 'px';
+    t.style.top = Math.max(10, ny) + 'px';
+  }
+
+  function showTip(el, x, y) {
+    var raw = el.getAttribute('data-tip');
+    if (!raw) return;
+    var parts = raw.split('|');
+    var t = tipNode();
+    t.querySelector('.tt').innerHTML = parts.length > 1 ? parts[0] : '';
+    t.querySelector('.tb').innerHTML = parts.length > 1 ? parts.slice(1).join('|') : parts[0];
+    t.querySelector('.tt').style.display = parts.length > 1 ? '' : 'none';
+    // la bulle emprunte la couleur d'accent de l'element survole
+    var c = getComputedStyle(el).getPropertyValue('--fx')
+         || getComputedStyle(el).getPropertyValue('--oc')
+         || getComputedStyle(el).getPropertyValue('--bc');
+    t.style.setProperty('--tipc', (c && c.trim()) || 'var(--accent)');
+    placeTip(x, y);
+    t.classList.add('on');
+  }
+
+  function hideTip() {
+    clearTimeout(tipT);
+    if (tipEl) tipEl.classList.remove('on');
+  }
+
+  function wireTips() {
+    document.addEventListener('pointerover', function (e) {
+      var el = e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (!el) return;
+      clearTimeout(tipT);
+      var x = e.clientX, y = e.clientY;
+      tipT = setTimeout(function () { showTip(el, x, y); }, 190);
+    });
+    document.addEventListener('pointermove', function (e) {
+      if (tipEl && tipEl.classList.contains('on')) placeTip(e.clientX, e.clientY);
+    }, { passive: true });
+    document.addEventListener('pointerout', function (e) {
+      var el = e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (el) hideTip();
+    });
+    window.addEventListener('scroll', hideTip, { passive: true });
+  }
+
+  /* ── 6. Jauge de lecture ────────────────────────────────── */
   function wireProgress() {
     if (document.querySelector('.table-outer')) return; // le comparateur scrolle en interne
     var bar = document.createElement('div');
@@ -183,6 +247,7 @@
     wireCounters();
     wireCopy();
     wireSpot();
+    wireTips();
     wireProgress();
   }
 

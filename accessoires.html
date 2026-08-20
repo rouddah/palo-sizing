@@ -166,10 +166,10 @@
 
   <script>
   const BUCKETS = [
-    { k: 'Alimentation',   color: 'var(--yellow)' },
-    { k: 'Rack & montage', color: 'var(--net-sec)' },
+    { k: 'Alimentation',   color: 'var(--c-strata)' },
+    { k: 'Rack & montage', color: 'var(--c-prisma)' },
     { k: 'Ventilation',    color: 'var(--cortex)' },
-    { k: 'Stockage',       color: 'var(--purple)' },
+    { k: 'Stockage',       color: 'var(--pai-2)' },
     { k: 'Divers',         color: 'var(--text-dim)' }
   ];
   const PLATS = [...new Set(ACCESSORIES.flatMap(a => a.platforms))].sort();
@@ -243,7 +243,7 @@
   }
 
   function part(a) {
-    return '<article class="part copy-card" data-copy="' + a.sku + '" title="Cliquer pour copier">'
+    return '<article class="part copy-card" data-copy="' + a.sku + '" data-tip="' + a.sku + '|' + esc(a.desc) + (a.platforms.length ? '<br>Plateformes : ' + a.platforms.join(', ') : '') + '<br><b>Cliquer pour copier la référence.</b>">'
       + '<div class="copy-flag">&#10003; Copié !</div>'
       + (a.eol ? '<span class="eol" title="Fin de commercialisation">EoS ' + a.eol.slice(0, 7) + '</span>' : '')
       + '<div class="sku">' + a.sku + '</div>'
