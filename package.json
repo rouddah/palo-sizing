@@ -11,7 +11,8 @@
     "build": "node _check.js && node _smoke.js && node _responsive.js",
     "check": "node _check.js",
     "test": "node _smoke.js",
-    "deploy": "wrangler pages deploy . --project-name palo-sizing --branch main",
-    "responsive": "node _responsive.js"
+    "deploy": "node _check.js && node _smoke.js && node _stage.js && wrangler pages deploy .deploy --project-name palo-sizing --branch main",
+    "responsive": "node _responsive.js",
+    "stage": "node _stage.js"
   }
 }

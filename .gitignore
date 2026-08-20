@@ -16,3 +16,6 @@ Thumbs.db
 
 # Profils Chrome des controles headless
 .chrome-profile*/
+
+# Dossier de deploiement genere par _stage.js
+.deploy/
