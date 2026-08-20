@@ -1,5 +1,123 @@
 # Changelog
 
+## Session 13 - 21 aout 2026 : systeme de design, accessibilite, garde-fous
+
+Session menee en autonomie, consigne : « ameliore l'UI et self improve ».
+
+### Un systeme la ou il n'y en avait pas
+
+Le depot posait ses valeurs au fil de l'eau. Mesure avant travaux :
+**36 tailles de texte** distinctes dont des demi-pixels, **12 rayons**
+de bordure, un padding different par composant (20/20/22, 22/20/24,
+16/18, 10/12, 12/16, 18/18/16).
+
+Aucune de ces valeurs n'est fausse prise seule. Ensemble, elles font
+que rien ne repond a rien : un rayon dit a quel niveau appartient une
+surface, douze valeurs ne disent plus rien.
+
+- **Rayons** : cinq pas (`--r-xs` a `--r-pill`), 92 valeurs converties
+  en jetons.
+- **Tailles** : 43 valeurs ramenees sur l'echelle, 36 valeurs
+  distinctes reduites a 14.
+- **Espacement** : base de 4px, trois calibres de carte (compact,
+  normal, large).
+
+### Qualite typographique
+
+Sans changer une taille ni une couleur : chiffres tabulaires et zero
+barre sur tout le monospace, `text-wrap: balance` sur les titres et
+`pretty` sur les paragraphes, longueur de ligne bornee a 72
+caracteres, interlettrage systematique des capitales, trois paliers
+d'interlignage, cesure des noms de produit longs.
+
+### Contraste : 48 ecarts, deux tiers reels
+
+Le controle ne couvrait que trois pages. Etendu a treize, il a remonte
+48 ecarts. **Deux tiers etaient de vrais defauts, un tiers venait de
+la sonde elle-meme.**
+
+Defauts reels, tous du meme genre : des couleurs de marque employees
+comme couleur de TEXTE.
+
+| Cause | Detail |
+| --- | --- |
+| Couleurs de pilier | jaune Strata, cyan Prisma, vert Cortex : faits pour le fond sombre, ils tombent entre 1,5 et 2,2 sur blanc |
+| Couleurs produit | meme traitement, declinaisons assombries pour le clair |
+| `--identity` | a l'inverse trop sombre POUR le theme sombre (2,98) |
+| Blanc sur orange | 3,23:1, dans neuf boutons |
+| Deux replis de `--pillar` | celui sur `body` ecrasait celui sur `:root` |
+| Cartes modele | dix sur trente-trois en texte blanc sur couleur trop claire, le PA-5445 a **1,44:1** |
+| Pastille jaune sur carte jaune | 1,43:1 |
+| `.info-note.purple` | pointait sur `--purple`, jeton retire en session 6 |
+
+Pour les cartes modele, l'encre est desormais **calculee a partir du
+fond**, en comparant le contraste des deux options plutot qu'en
+devinant avec un seuil. Un seuil fixe a 0,45 laissait encore l'ambre
+en blanc a 2,15 alors que le charbon y donne 8,6. Les 33 cartes
+passent, la plus faible a 4,89. Retoucher dix couleurs a la main
+aurait regle le symptome du jour ; calculer regle aussi celles qu'on
+ajoutera.
+
+### La sonde etait le maillon faible
+
+Deux fois, l'outil de mesure a envoye corriger ce qui allait bien :
+
+1. il ne composait pas les fonds translucides : un badge annonce a
+   3,18 etait en fait a 5,50 ;
+2. il lisait `color(srgb 1 1 1 / .9)`, syntaxe que Chrome renvoie pour
+   tout `color-mix()`, comme du rgb 0-255. **Le blanc devenait noir**,
+   d'ou 24 echecs imaginaires dont un titre a 1,09:1 parfaitement
+   lisible a l'ecran.
+
+Les deux sont corriges, et la sonde ecarte desormais les fonds en
+degrade, dont la couleur n'est pas determinable.
+
+### Parcours clavier
+
+`_keyboard.js`, 371 cibles interactives sur huit pages, 13 defauts
+invisibles a la souris :
+
+- cinq champs sans nom accessible : les `<label>` existaient mais sans
+  `for=`, ils n'etaient rattaches a rien ;
+- huit champs annulaient le focus par `outline: none` sans rien mettre
+  a la place, parfois en style en ligne que la feuille ne peut pas
+  surcharger. L'anneau passe par `box-shadow`, qui y survit.
+
+Le controle **met reellement le focus** et compare le rendu avant et
+apres : lire la feuille de style ne suffirait pas, une regle peut etre
+annulee plus loin.
+
+### Etat vide
+
+L'ecran d'attente de la recherche affichait une croix au milieu d'un
+grand rien. La croix signifie annuler : sur un ecran qui attend une
+saisie, elle se lisait comme une erreur alors que rien n'allait mal.
+Refait en encart cadre, cale en haut, avec une jauge et une copie qui
+dit quoi saisir.
+
+### Regle em-dash
+
+242 en avaient repris place, dont les titres de toutes les pages. 140
+corriges dans le texte visible ; le marqueur d'absence dans un tableau
+et les commentaires restent autorises. **La regle est desormais
+verifiee au build**, parce qu'elle s'etait deja reperdue une fois.
+
+### Le build compte cinq controles
+
+| commande | role |
+| --- | --- |
+| `_check.js` | syntaxe, assets, CDN, identifiants, compteurs, emojis, em-dash |
+| `_smoke.js` | dimensionnement dans jsdom, cinq cas |
+| `_responsive.js` | 8 pages x 6 largeurs, debordement horizontal |
+| `_contrast.js` | 13 pages x 2 themes, AA |
+| `_keyboard.js` | 371 cibles, noms et focus |
+
+### Signalement retire
+
+Un point de ma liste d'ameliorations etait faux : `links.js` n'est
+charge que par `index.html`, il n'y avait pas 27 Ko gaspilles sur
+douze pages. Verifie avant d'agir.
+
 ## Session 12 - 20 aout 2026 : fond « obliques de la marque »
 
 Troisieme et derniere piste de fond. Les deux precedentes ont ete

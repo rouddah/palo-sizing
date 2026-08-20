@@ -21,10 +21,29 @@ npm run deploy       # check + smoke + stage + wrangler
 
 | commande | role |
 | --- | --- |
-| `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, emojis |
+| `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, compteurs de l'accueil adosses aux donnees, emojis (entites HTML comprises), em-dash dans le contenu |
 | `npm test` | `_smoke.js` : charge `qualification.html` dans jsdom, joue 5 cas de dimensionnement, controle l'etiquetage des champs et l'echappement |
-| `npm run responsive` | `_responsive.js` : ouvre 8 pages a 6 largeurs dans le Chrome local et refuse tout debordement horizontal |
-| `npm run stage` | `_stage.js` : construit `.deploy/` a partir d'une liste blanche |
+| `npm run responsive` | `_responsive.js` : 8 pages a 6 largeurs, refuse tout debordement horizontal |
+| `npm run contrast` | `_contrast.js` : 13 pages x 2 themes, contraste AA, en composant les fonds translucides |
+| `npm run keyboard` | `_keyboard.js` : 371 cibles interactives, noms accessibles et marque de focus reellement testee |
+| `npm run stage` | `_stage.js` : construit `.deploy/` a partir d'une liste blanche, et echoue si un fichier appele par une page manque au bundle |
+
+## Systeme de design, a respecter
+
+**Jetons** : rayons `--r-xs` a `--r-pill`, espacement en base 4px avec trois
+calibres de carte (`--pad-compact`, `--pad-card`, `--pad-large`), tailles de
+texte sur 14 pas. Ne pas reintroduire de valeur en dur : aucun controle ne
+l'attrape, et le systeme se defait vite. Il a fallu convertir 92 rayons et 43
+tailles pour le remettre d'aplomb.
+
+**Couleur de texte** : toujours `--accent-txt`, jamais `--accent`, qui ne tient
+pas 4.5:1. Sur un aplat orange, `--on-accent` (le blanc y plafonne a 3,23).
+Les couleurs de pilier et de produit ont des declinaisons assombries en theme
+clair : elles sont faites pour la projection sur fond sombre.
+
+**Une couleur de marque n'est pas une encre.** C'est la cause de presque tous
+les ecarts de contraste trouves : elle habille un cadre ou un aplat, elle ne
+porte pas de caracteres de 10px.
 
 Le deploiement passe par `.deploy/`, **jamais par la racine** : Pages n'honore
 ni `.gitignore` ni `.assetsignore`, et deployer `.` publiait le CHANGELOG, les
