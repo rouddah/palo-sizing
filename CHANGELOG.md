@@ -1,5 +1,23 @@
 # Changelog
 
+## [Session 5] - 20 aout 2026
+
+### Nouveaux outils NGFW (inspires du sizing guide Fortinet de Loic)
+- feat(optiques): nouvelle page optiques.html - matrice des transceivers par debit (100M a 400G) et par support (multimode, monomode, cuivre, DAC/AOC). Filtres debit / support / portee / BiDi / TAA / durci + recherche. 45 modules.
+- feat(accessoires): nouvelle page accessoires.html - 207 references d'alimentations, kits rack, ventilation, disques et divers, filtrables par rayon et par plateforme.
+- feat(data): pa-optics.js et pa-accessories.js generes depuis la price list GLOBAL AUG 2026 par _extract_hw.py. AUCUN PRIX n'est repris, conformement a la regle du projet : SKU, description et attributs techniques uniquement.
+- fix(data): PAN-SFP-100BASE-FX etait classe en 1G, sa description officielle se contredit ("100BASE-FX 100Mbps" puis "1000BASE-LX compliant"). Le motif 100 Mb est desormais teste en premier.
+
+### Navigation
+- feat(header): "Network Security" devient "NGFW" et porte un menu deroulant : Comparateur PA-Series, Qualification, Optiques, Accessoires, Panorama.
+- feat(header): l'entree "Comparateur" qui pointait sur search.html devient "Recherche", son vrai role.
+- feat(index): nouveau rayon "Outils du guide" en tete de l'accueil, avec les six outils du site.
+
+### UI v4.1
+- feat(styles): tableaux de reference repris - plus de grille verticale, lignes plus aerees, chiffres en chasse fixe, colonne de gauche collante sans trait dur, bande de section en degrade, repere d'accent sur la ligne survolee.
+- feat(styles): encarts d'information avec pastille, degrade et variantes de couleur par pilier.
+- fix(pages): suppression des regles .info-note et .section-title redefinies a l'identique dans les <style> de prisma, cortex, browser et panorama - elles ecrasaient la feuille commune par simple ordre de cascade.
+
 ## [Session 4] - 20 aout 2026
 
 ### Separation comparateur / qualification

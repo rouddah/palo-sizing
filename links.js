@@ -5,6 +5,55 @@
 const LINKS_DATA = {
   "categories": [
     {
+          "id": "outils",
+          "title": "Outils du guide",
+          "items": [
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M9 3v18\"/></svg>",
+                      "title": "Comparateur PA-Series",
+                      "description": "39 modeles de la PA-410 a la PA-7500 : debits appmix, sessions, interfaces, capacites et fin de commercialisation",
+                      "href": "pa-series.html",
+                      "type": "internal",
+                      "highlight": true
+                },
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"12\" cy=\"12\" r=\"1\"/></svg>",
+                      "title": "Qualification NGFW",
+                      "description": "Identifier la gamme adaptee a partir des reponses du client, et le guide de questions a poser en rendez-vous",
+                      "href": "qualification.html",
+                      "type": "internal"
+                },
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M2 12h7M15 12h7M12 2v7M12 15v7\"/></svg>",
+                      "title": "Modules optiques",
+                      "description": "Matrice des transceivers par debit et par support : SFP, SFP+, SFP28, QSFP+, QSFP28, QSFP-DD",
+                      "href": "optiques.html",
+                      "type": "internal"
+                },
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/><path d=\"M3.3 7L12 12l8.7-5M12 22V12\"/></svg>",
+                      "title": "Alimentations & accessoires",
+                      "description": "Alimentations de rechange, kits rack, tiroirs de ventilation et disques de logs, filtrables par plateforme",
+                      "href": "accessoires.html",
+                      "type": "internal"
+                },
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5\"/></svg>",
+                      "title": "Mode guide",
+                      "description": "Recommandation Palo Alto en 7 questions en langage business, sans jargon technique",
+                      "href": "wizard.html",
+                      "type": "internal"
+                },
+                {
+                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.3-4.3\"/></svg>",
+                      "title": "Recherche & sizing",
+                      "description": "Retrouver un firewall a partir d'un debit, d'un nombre d'utilisateurs ou d'un critere technique",
+                      "href": "search.html",
+                      "type": "internal"
+                }
+          ]
+    },
+    {
       "id": "partenariats",
       "title": "Partenariats",
       "items": [

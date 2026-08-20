@@ -1,15 +1,28 @@
 /* ============================================================
-   Palo Alto Networks — Shared Header  v3
-   Nav plate, couleurs par pilier, sans dropdown
+   Palo Alto Networks — Shared Header  v4
+   Nav plate, couleurs par pilier, menu NGFW deroulant
    ============================================================ */
 (function () {
   const page = location.pathname.split('/').pop() || 'index.html';
+
+  // Les pages regroupees sous l'entree NGFW
+  const NGFW_PAGES = ['pa-series.html', 'qualification.html', 'optiques.html',
+                      'accessoires.html', 'panorama.html'];
 
   function cls(href, pillarClass) {
     var base = 'nav-link';
     if (pillarClass) base += ' ' + pillarClass;
     if (page === href) base += ' active';
     return base;
+  }
+
+  const ngfwActive = NGFW_PAGES.indexOf(page) !== -1 ? ' active' : '';
+
+  function item(href, name, sub) {
+    var on = page === href ? ' style="color:var(--accent)"' : '';
+    return '<a class="dropdown-item" href="' + href + '">'
+      + '<span class="dropdown-item-name"' + on + '>' + name + '</span>'
+      + '<span class="dropdown-item-sub">' + sub + '</span></a>';
   }
 
   const headerHTML = `
@@ -25,16 +38,26 @@
   <div class="header-spacer"></div>
 
   <nav class="header-nav">
-    <a class="${cls('pa-series.html','nav-link-netsec')}" href="pa-series.html">Network Security</a>
-    <a class="${cls('prisma.html','nav-link-sase')}"      href="prisma.html">SASE</a>
-    <a class="${cls('cortex.html','nav-link-cortex')}"    href="cortex.html">Cortex</a>
-    <a class="${cls('idira.html','nav-link-identity')}"   href="idira.html">Idira</a>
+    <div class="dropdown">
+      <a class="nav-link nav-link-netsec${ngfwActive}" href="pa-series.html">NGFW<span class="nav-caret">&#9662;</span></a>
+      <div class="dropdown-menu">
+        ${item('pa-series.html', 'Comparateur PA-Series', '39 modeles, debits, interfaces et capacites')}
+        ${item('qualification.html', 'Qualification', 'Trouver la gamme a partir du besoin client')}
+        ${item('optiques.html', 'Optiques', 'Transceivers par debit et par support')}
+        ${item('accessoires.html', 'Accessoires', 'Alimentations, rack, ventilation, disques')}
+        <div class="dropdown-divider"></div>
+        ${item('panorama.html', 'Panorama', 'Gestion centralisee : M-Series, VM, SCM')}
+      </div>
+    </div>
+
+    <a class="${cls('prisma.html', 'nav-link-sase')}"    href="prisma.html">SASE</a>
+    <a class="${cls('cortex.html', 'nav-link-cortex')}"  href="cortex.html">Cortex</a>
+    <a class="${cls('idira.html', 'nav-link-identity')}" href="idira.html">Idira</a>
 
     <div class="nav-divider"></div>
 
-    <a class="${cls('wizard.html')}"        href="wizard.html">Wizard</a>
-    <a class="${cls('qualification.html')}" href="qualification.html">Qualification</a>
-    <a class="${cls('search.html')}"    href="search.html">Comparateur</a>
+    <a class="${cls('wizard.html')}"    href="wizard.html">Wizard</a>
+    <a class="${cls('search.html')}"    href="search.html">Recherche</a>
     <a class="${cls('resources.html')}" href="resources.html">Ressources</a>
 
     <div class="nav-divider"></div>

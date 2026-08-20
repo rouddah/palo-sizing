@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optiques NGFW &mdash; Sizing Guide</title>
+  <meta name="description" content="Matrice des modules optiques Palo Alto Networks : SFP, SFP+, SFP28, QSFP+, QSFP28, QSFP-DD. Debit, support, portee et references, sans prix." />
+  <meta property="og:title" content="Optiques NGFW — Sizing Guide" />
+  <meta property="og:description" content="Matrice des modules optiques Palo Alto Networks par debit et par support." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Barre de filtres ── */
+    .flt-wrap {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 20;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .flt-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 24px;
+      flex-wrap: wrap;
+    }
+    .flt-row + .flt-row { border-top: 1px solid var(--border); }
+    .flt-lab {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      min-width: 92px;
+    }
+    .chip {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 13px;
+      cursor: pointer;
+      transition: color .16s, border-color .16s, background .16s, transform .16s var(--ease-ui);
+      white-space: nowrap;
+    }
+    .chip:hover { color: var(--text-bright); border-color: var(--border2); transform: translateY(-1px); }
+    .chip.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 16px -8px var(--accent-glow);
+    }
+    .chip.on.c-mm  { background: var(--net-sec);  border-color: var(--net-sec);  color: #04121c; }
+    .chip.on.c-sm  { background: var(--green);    border-color: var(--green);    color: #05210f; }
+    .chip.on.c-cu  { background: var(--yellow);   border-color: var(--yellow);   color: #241703; }
+    .chip.on.c-dac { background: var(--purple);   border-color: var(--purple);   color: #150a2b; }
+    .flt-search {
+      flex: 1;
+      min-width: 190px;
+      max-width: 340px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-bright);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      outline: none;
+      transition: border-color .16s;
+    }
+    .flt-search:focus { border-color: var(--accent); }
+    .flt-search::placeholder { color: var(--text-muted); }
+    .flt-count {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .flt-count b { color: var(--accent); font-weight: 700; }
+    .flt-reset {
+      font-family: var(--font);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0 4px;
+    }
+    .flt-reset:hover { color: var(--text-bright); }
+
+    /* ── Matrice ── */
+    .mx-outer { overflow-x: auto; padding: 0 0 60px; }
+    .mx {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: max-content;
+      min-width: 100%;
+    }
+    .mx th, .mx td {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    /* Le conteneur .mx-outer defile en X : c'est lui le referentiel du sticky.
+       top:0 garde l'en-tete en haut du tableau sans le decaler vers le bas. */
+    .mx thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg2);
+      padding: 14px 10px 12px;
+      text-align: center;
+      min-width: 214px;
+    }
+    .mx thead th .sp {
+      display: block;
+      font-family: var(--font);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.3px;
+    }
+    .mx thead th .ff {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+    .mx thead th.corner { min-width: 190px; background: var(--bg); }
+
+    .mx td.rowhead, .mx thead th.corner {
+      position: sticky;
+      left: 0;
+      z-index: 9;
+      background: var(--bg2);
+      border-right: 2px solid var(--border2);
+    }
+    .mx thead th.corner { z-index: 11; }
+    .mx td.rowhead {
+      padding: 16px 16px 16px 18px;
+      min-width: 190px;
+    }
+    .mx td.rowhead .rn {
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .mx td.rowhead .rn::before {
+      content: '';
+      width: 9px; height: 9px;
+      border-radius: 3px;
+      background: var(--rc, var(--accent));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--rc, var(--accent)) 18%, transparent);
+    }
+    .mx td.rowhead .rs {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      padding-left: 18px;
+      line-height: 1.5;
+    }
+    .mx td.cell { padding: 9px; background: var(--bg); }
+    .mx tr:hover td.cell { background: var(--surface); }
+
+    /* ── Carte module ── */
+    .opt {
+      position: relative;
+      border: 1px solid var(--oc, var(--border));
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--oc, var(--accent)) 7%, var(--surface));
+      padding: 9px 11px 10px;
+      text-align: center;
+      transition: transform .2s var(--ease-ui), box-shadow .2s, border-color .2s;
+      cursor: default;
+    }
+    .opt + .opt { margin-top: 7px; }
+    .opt:hover {
+      transform: translateY(-2px);
+      border-color: var(--oc, var(--accent));
+      box-shadow: 0 10px 22px -12px var(--oc, var(--accent));
+    }
+    .opt .sku {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--oc, var(--text-bright));
+      letter-spacing: -0.2px;
+      word-break: break-word;
+    }
+    .opt .std {
+      font-family: var(--font);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    .opt .rc {
+      font-family: var(--font);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 3px;
+    }
+    .opt .tags {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .opt .tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid currentColor;
+      opacity: .85;
+    }
+    .tag-bidi { color: var(--purple); }
+    .tag-taa  { color: var(--net-sec); }
+    .tag-rgd  { color: var(--yellow); }
+    .opt .conn {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      opacity: .8;
+    }
+    .cell-empty {
+      display: block;
+      text-align: center;
+      color: var(--text-muted);
+      opacity: .3;
+      font-size: 15px;
+      padding: 14px 0;
+    }
+
+    /* ── Reste ── */
+    .mx-note {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 18px 24px 0;
+    }
+    .mx-empty {
+      text-align: center;
+      padding: 70px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    @media (max-width: 900px) {
+      .flt-lab { min-width: 100%; }
+      .mx thead th { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="data/pa-optics.js"></script>
+
+  <div class="page-wrap" style="padding-bottom:16px">
+    <div class="page-header">
+      <div class="hero-kicker">NGFW &middot; Connectique</div>
+      <h1>Modules <em>optiques</em></h1>
+      <p>Les transceivers r&eacute;f&eacute;renc&eacute;s par Palo Alto Networks, class&eacute;s par d&eacute;bit et par support. Chaque case donne la r&eacute;f&eacute;rence &agrave; commander, la norme et la port&eacute;e.</p>
+      <div class="hero-meta">
+        <span id="hm-count">&mdash; modules</span>
+        <span>SFP &rarr; QSFP-DD</span>
+        <span>Source&nbsp;: price list GLOBAL AUG&nbsp;2026</span>
+        <span>Sans prix</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Filtres ── -->
+  <div class="flt-wrap">
+    <div class="flt-row">
+      <span class="flt-lab">D&eacute;bit</span>
+      <div id="f-speed"></div>
+      <span class="flt-count"><b id="cnt">0</b> modules affich&eacute;s</span>
+    </div>
+    <div class="flt-row">
+      <span class="flt-lab">Support</span>
+      <div id="f-media"></div>
+      <span class="flt-lab" style="min-width:auto;margin-left:14px">Port&eacute;e</span>
+      <div id="f-reach"></div>
+    </div>
+    <div class="flt-row">
+      <span class="flt-lab">Options</span>
+      <div id="f-opt"></div>
+      <input class="flt-search" id="q" type="search" placeholder="SKU ou description&hellip;" autocomplete="off" />
+      <button class="flt-reset" onclick="resetAll()">Tout r&eacute;afficher</button>
+    </div>
+  </div>
+
+  <div class="mx-outer">
+    <table class="mx" id="mx"></table>
+    <div class="mx-empty" id="empty" style="display:none">Aucun module ne correspond &agrave; ces crit&egrave;res.</div>
+  </div>
+
+  <div class="mx-note">
+    <div class="info-note">
+      <strong>Lecture&nbsp;:</strong> une colonne = un d&eacute;bit et son form factor, une ligne = un type de support. La port&eacute;e affich&eacute;e est celle de la description officielle du SKU&nbsp;; sur multimode elle d&eacute;pend du type de fibre, indiqu&eacute; sous la port&eacute;e. Les modules <span class="tag tag-taa" style="border:1px solid currentColor;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:9px">TAA</span> sont les versions conformes Trade Agreements Act, <span class="tag tag-rgd" style="border:1px solid currentColor;padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:9px">RGD</span> les versions durcies I-Temp pour les PA-400R. V&eacute;rifiez toujours la compatibilit&eacute; du module avec le mod&egrave;le vis&eacute; dans la matrice d'interop&eacute;rabilit&eacute; Palo Alto avant de commander.
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">R&eacute;f&eacute;rences issues de la price list GLOBAL Palo Alto Networks d'ao&ucirc;t 2026 &mdash; aucun prix n'est publi&eacute; ici</div>
+  </footer>
+
+  <script>
+  /* ══ Ordres et libelles ══ */
+  const SPEEDS = ['100M', '1G', '10G', '25G', '40G', '100G', '400G'];
+  const FORMOF = {
+    '100M': 'SFP', '1G': 'SFP', '10G': 'SFP+', '25G': 'SFP28',
+    '40G': 'QSFP+', '100G': 'QSFP28', '400G': 'QSFP-DD'
+  };
+  const MEDIA = [
+    { k: 'Multimode', sub: 'MMF &middot; fibre multimode', color: 'var(--net-sec)', cls: 'c-mm' },
+    { k: 'Monomode',  sub: 'SMF &middot; fibre monomode',  color: 'var(--green)',   cls: 'c-sm' },
+    { k: 'Cuivre',    sub: 'RJ-45 &middot; paire torsad&eacute;e', color: 'var(--yellow)', cls: 'c-cu' },
+    { k: 'DAC / AOC', sub: 'C&acirc;bles attach&eacute;s',  color: 'var(--purple)',  cls: 'c-dac' }
+  ];
+  const REACH = [
+    { k: 'court', lab: 'Courte (&lt; 1 km)', test: o => km(o) !== null && km(o) < 1 },
+    { k: 'moyen', lab: '10 km',              test: o => km(o) !== null && km(o) >= 1 && km(o) <= 10 },
+    { k: 'long',  lab: 'Longue (&gt; 10 km)', test: o => km(o) !== null && km(o) > 10 }
+  ];
+  const OPTS = [
+    { k: 'bidi', lab: 'BiDi',   test: o => o.bidi },
+    { k: 'taa',  lab: 'TAA',    test: o => o.taa },
+    { k: 'rgd',  lab: 'Durci',  test: o => o.rugged }
+  ];
+
+  function km(o) {
+    if (!o.reach) return null;
+    const m = o.reach.match(/^([\d.]+)\s*(km|m)$/);
+    if (!m) return null;
+    return m[2] === 'km' ? parseFloat(m[1]) : parseFloat(m[1]) / 1000;
+  }
+
+  /* ══ Etat ══ */
+  const state = { speed: new Set(), media: new Set(), reach: new Set(), opt: new Set(), q: '' };
+
+  /* ══ Filtres ══ */
+  function chip(lab, on, cls) {
+    return '<button class="chip' + (on ? ' on' : '') + (cls ? ' ' + cls : '') + '">' + lab + '</button>';
+  }
+
+  function buildFilters() {
+    const present = SPEEDS.filter(s => OPTICS.some(o => o.speed === s));
+    document.getElementById('f-speed').innerHTML =
+      chip('Tous', state.speed.size === 0) +
+      present.map(s => chip(s, state.speed.has(s))).join('');
+    document.getElementById('f-media').innerHTML =
+      chip('Tous', state.media.size === 0) +
+      MEDIA.map(m => chip(m.k, state.media.has(m.k), m.cls)).join('');
+    document.getElementById('f-reach').innerHTML =
+      chip('Toutes', state.reach.size === 0) +
+      REACH.map(r => chip(r.lab, state.reach.has(r.k))).join('');
+    document.getElementById('f-opt').innerHTML =
+      chip('Aucun filtre', state.opt.size === 0) +
+      OPTS.map(o => chip(o.lab, state.opt.has(o.k))).join('');
+
+    wire('f-speed', present, state.speed);
+    wire('f-media', MEDIA.map(m => m.k), state.media);
+    wire('f-reach', REACH.map(r => r.k), state.reach);
+    wire('f-opt', OPTS.map(o => o.k), state.opt);
+  }
+
+  function wire(id, keys, set) {
+    const btns = document.getElementById(id).querySelectorAll('.chip');
+    btns.forEach((b, i) => {
+      b.addEventListener('click', () => {
+        if (i === 0) set.clear();
+        else {
+          const k = keys[i - 1];
+          set.has(k) ? set.delete(k) : set.add(k);
+        }
+        buildFilters();
+        render();
+      });
+    });
+  }
+
+  function resetAll() {
+    state.speed.clear(); state.media.clear(); state.reach.clear(); state.opt.clear();
+    state.q = '';
+    document.getElementById('q').value = '';
+    buildFilters();
+    render();
+  }
+
+  /* ══ Selection ══ */
+  function keep(o) {
+    if (state.speed.size && !state.speed.has(o.speed)) return false;
+    if (state.media.size && !state.media.has(o.media)) return false;
+    if (state.reach.size) {
+      const ok = REACH.some(r => state.reach.has(r.k) && r.test(o));
+      if (!ok) return false;
+    }
+    if (state.opt.size) {
+      const ok = OPTS.some(x => state.opt.has(x.k) && x.test(o));
+      if (!ok) return false;
+    }
+    if (state.q) {
+      const hay = (o.sku + ' ' + o.desc + ' ' + o.std).toLowerCase();
+      if (!hay.includes(state.q)) return false;
+    }
+    return true;
+  }
+
+  /* ══ Rendu ══ */
+  function card(o, color) {
+    const tags = [];
+    if (o.bidi) tags.push('<span class="tag tag-bidi">BiDi</span>');
+    if (o.taa) tags.push('<span class="tag tag-taa">TAA</span>');
+    if (o.rugged) tags.push('<span class="tag tag-rgd">RGD</span>');
+    const reach = o.reach ? o.reach + (o.fiber ? ' <span style="opacity:.65;font-weight:400">(' + o.fiber + ')</span>' : '') : '';
+    return '<div class="opt" style="--oc:' + color + '" title="' + esc(o.desc) + '">'
+      + '<div class="sku">' + o.sku.replace(/^PAN-/, '') + '</div>'
+      + (o.std ? '<div class="std">' + o.std + '</div>' : '')
+      + (reach ? '<div class="rc">' + reach + '</div>' : '')
+      + (tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '')
+      + (o.conn ? '<div class="conn">' + o.conn + '</div>' : '')
+      + '</div>';
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  function render() {
+    const shown = OPTICS.filter(keep);
+    document.getElementById('cnt').textContent = shown.length;
+
+    const speeds = SPEEDS.filter(s => shown.some(o => o.speed === s));
+    const medias = MEDIA.filter(m => shown.some(o => o.media === m.k));
+    const tbl = document.getElementById('mx');
+    const empty = document.getElementById('empty');
+
+    if (!shown.length || !speeds.length) {
+      tbl.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    let head = '<thead><tr><th class="corner"></th>';
+    speeds.forEach(s => {
+      head += '<th><span class="sp">' + s.replace('G', ' GE').replace('100M', '100 MB')
+        + '</span><span class="ff">' + FORMOF[s] + '</span></th>';
+    });
+    head += '</tr></thead>';
+
+    let body = '<tbody>';
+    medias.forEach(m => {
+      body += '<tr><td class="rowhead" style="--rc:' + m.color + '">'
+        + '<div class="rn">' + m.k + '</div><div class="rs">' + m.sub + '</div></td>';
+      speeds.forEach(s => {
+        const list = shown.filter(o => o.speed === s && o.media === m.k);
+        body += '<td class="cell">'
+          + (list.length ? list.map(o => card(o, m.color)).join('')
+                         : '<span class="cell-empty">&mdash;</span>')
+          + '</td>';
+      });
+      body += '</tr>';
+    });
+    body += '</tbody>';
+
+    tbl.innerHTML = head + body;
+  }
+
+  /* ══ Init ══ */
+  document.getElementById('q').addEventListener('input', e => {
+    state.q = e.target.value.trim().toLowerCase();
+    render();
+  });
+  document.getElementById('hm-count').textContent = OPTICS.length + ' modules référencés';
+  buildFilters();
+  render();
+  </script>
+</body>
+</html>
