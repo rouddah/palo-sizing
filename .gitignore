@@ -19,3 +19,9 @@ Thumbs.db
 
 # Dossier de deploiement genere par _stage.js
 .deploy/
+
+# Catalogue regenere depuis le pptx officiel (3,7 Mo)
+tools/icons/catalogue.json
+tools/icons/pptx/
+tools/icons/*.html
+tools/icons/icons.generated.js

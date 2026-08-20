@@ -1,5 +1,40 @@
 # Changelog
 
+## Session 7 - 20 aout 2026 : pictogrammes officiels Palo Alto
+
+Le deck « General Iconography » a ete reexporte sans protection, donc
+exploitable. Les pictogrammes n'y sont pas des images mais des formes
+vectorielles DrawingML : un convertisseur les transforme en SVG.
+
+- `tools/icons/` : extraction du pptx vers un catalogue de **458
+  pictogrammes** repartis en 21 categories, planche de contact pour
+  choisir a l'oeil, generation de `icons.js`. Conversion exacte : le jeu
+  n'emploie que moveTo / lnTo / cubicBezTo / close, aucun arc a
+  approximer.
+- `icons.js` porte desormais **neuf pictogrammes officiels** pour les
+  concepts metier (charge reseau, fonctions de securite, topologie, parc
+  en place, comparateur, dimensionnement, hypotheses, equivalence
+  boitier, dossier) et conserve douze affordances d'interface au trait.
+
+**Ce qui a decide la repartition** : rendus a 13px, les pictogrammes
+officiels deviennent illisibles. Ils sont dessines pour la projection, et
+leurs traits les plus fins disparaissent. Verifie sur planche a 13, 14,
+16, 18, 20, 22 et 24px : le seuil est **20px**. Les titres de groupe et
+de section passent donc a 20px, et les coches, croix, chevrons et fleches
+des listes et des boutons restent une geometrie simple, dessinee pour
+12-15px. Melanger les deux familles dans une meme rangee aurait donne une
+bouillie ; elles vivent dans des contextes distincts.
+
+**Poids** : `optimize.js` ramene la precision a la decimale, regroupe les
+commandes consecutives et redresse les cubiques quasi rectilignes, soit
+-34% sur le catalogue entier. Les neuf traces retenus pesent 21 Ko, pour
+un `icons.js` de 25 Ko. Certains pictogrammes du deck depassant 14 Ko a
+eux seuls, la selection s'est faite, a lisibilite egale, sur le plus
+leger.
+
+`catalogue.json` (3,7 Mo) n'est pas versionne : il se regenere depuis le
+pptx en quelques secondes. Voir `tools/icons/README.md`.
+
 ## Session 6 - 20 aout 2026 : refonte enterprise
 
 Refonte du systeme de design et de l'outil de dimensionnement. Aucune donnee

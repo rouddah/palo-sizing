@@ -178,15 +178,15 @@
   <!-- ── Barre de mode ── -->
   <div class="wb-bar" role="tablist" aria-label="Modes de l'outil de dimensionnement">
     <button class="wb-tab" id="mode-commercial" role="tab" aria-selected="true" aria-controls="view-commercial" onclick="setMode('commercial')">
-      <span data-ic="target" data-ic-size="14"></span>Dimensionnement
+      <span data-ic="target" data-ic-size="16"></span>Dimensionnement
     </button>
     <button class="wb-tab" id="mode-guide" role="tab" aria-selected="false" aria-controls="view-guide" onclick="setMode('guide')">
-      <span data-ic="info" data-ic-size="14"></span>Questionnaire client
+      <span data-ic="info" data-ic-size="16"></span>Questionnaire client
     </button>
     <span class="spacer"></span>
     <span class="wb-credit">Sizing Guide PANW &middot; <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></span>
     <a class="wb-tab" href="pa-series.html">
-      <span data-ic="table" data-ic-size="14"></span>Comparateur PA-Series
+      <span data-ic="table" data-ic-size="16"></span>Comparateur PA-Series
     </a>
   </div>
 
@@ -204,7 +204,7 @@
           <form id="wb-form" novalidate>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="13"></span>Charge réseau</h3>
+              <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="20"></span>Charge réseau</h3>
 
               <div class="wb-field">
                 <label for="wiz-bw">Débit du lien Internet <span class="wb-unit">Mbps</span>
@@ -239,7 +239,7 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="13"></span>Fonctions de sécurité</h3>
+              <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="20"></span>Fonctions de sécurité</h3>
 
               <div class="wb-field">
                 <label for="wiz-ssl">Déchiffrement SSL entrant/sortant
@@ -264,7 +264,7 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="site" data-ic-size="13"></span>Topologie</h3>
+              <h3 class="wb-group-title"><span data-ic="site" data-ic-size="20"></span>Topologie</h3>
 
               <div class="wb-field">
                 <label for="wiz-type">Rôle du site dimensionné</label>
@@ -314,7 +314,7 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="13"></span>Parc en place</h3>
+              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="20"></span>Parc en place</h3>
 
               <div class="wb-field">
                 <label for="wiz-existing">Constructeur à remplacer</label>
@@ -356,7 +356,7 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="copy" data-ic-size="13"></span>Identification du dossier</h3>
+              <h3 class="wb-group-title"><span data-ic="doc" data-ic-size="20"></span>Identification du dossier</h3>
               <div class="wb-row">
                 <div class="wb-field">
                   <label for="wiz-client">Client</label>
@@ -1171,7 +1171,7 @@
 
     /* ── 4. Hypotheses : ce que l'outil a comble tout seul ── */
     if (assumptions.length) {
-      html += '<h3 class="wb-group-title">' + ic('info', 13) + 'Hypothèses appliquées</h3><ul class="wb-list">';
+      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'Hypothèses appliquées</h3><ul class="wb-list">';
       assumptions.forEach(a => {
         html += '<li>' + ic('alert', 14).replace('class="ic"', 'class="ic ic-warn"') + '<span>' + a + '</span></li>';
       });
@@ -1184,7 +1184,7 @@
       if (match) {
         const paModel = MODELS.find(m => m.id === match.pa);
         const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
-        html += '<h3 class="wb-group-title">' + ic('ha', 13) + 'Équivalence du boîtier en place</h3>'
+        html += '<h3 class="wb-group-title">' + ic('ha', 20) + 'Équivalence du boîtier en place</h3>'
           + '<div class="wb-verdict" style="border-left-color:var(--ok);margin-bottom:10px">'
           + '<div class="wb-verdict-top" style="align-items:center">'
           +   '<span style="font-family:var(--mono);font-size:14px;color:var(--text-muted)">' + brandName + match.id + '</span>'
@@ -1215,7 +1215,7 @@
       archiDesc = 'Site unique : ' + primary.id + ' Series en protection périmétrique'
         + (rawHa === 'yes' ? ', en paire HA' : '') + '.';
     }
-    html += '<h3 class="wb-group-title">' + ic('site', 13) + 'Architecture</h3>'
+    html += '<h3 class="wb-group-title">' + ic('site', 20) + 'Architecture</h3>'
       + '<p style="font-size:var(--text-xs);line-height:1.6;color:var(--text);margin-bottom:16px">' + archiDesc + '</p>';
 
     if (alsoConsider.length) {
@@ -1244,7 +1244,7 @@
       subs.push({ name: 'GlobalProtect ou Prisma Access', included: false, reason: 'Accès distant' });
     }
 
-    html += '<h3 class="wb-group-title">' + ic('threat', 13) + 'Subscriptions</h3><ul class="wb-list">';
+    html += '<h3 class="wb-group-title">' + ic('threat', 20) + 'Subscriptions</h3><ul class="wb-list">';
     subs.forEach(s => {
       html += '<li>'
         + ic(s.included ? 'check' : 'chevron', 14).replace('class="ic"', 'class="ic ' + (s.included ? 'ic-ok' : 'ic-add') + '"')
@@ -1255,7 +1255,7 @@
 
     /* ── 8. Ce qui reste a demander au client ── */
     if (openQuestions.length) {
-      html += '<h3 class="wb-group-title">' + ic('info', 13) + 'À confirmer auprès du client ('
+      html += '<h3 class="wb-group-title">' + ic('info', 20) + 'À confirmer auprès du client ('
         + openQuestions.length + ')</h3><ul class="wb-list">';
       openQuestions.forEach(q => {
         html += '<li>' + ic('chevron', 14).replace('class="ic"', 'class="ic ic-add"') + '<span>' + q + '</span></li>';
@@ -1307,7 +1307,7 @@ Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
     const mailBody = encodeURIComponent('Bonjour,\n\n' + briefText + '\n\nQualification en ligne : ' + shareUrl + '\n\nCordialement');
     const mailto = 'mailto:?subject=' + mailSubject + '&body=' + mailBody;
 
-    html += '<h3 class="wb-group-title">' + ic('copy', 13) + 'Transmettre</h3>'
+    html += '<h3 class="wb-group-title">' + ic('doc', 20) + 'Transmettre</h3>'
       + '<div class="wb-actions">'
       +   '<button type="button" class="fx-btn primary" id="btn-pdf">' + ic('download', 14) + 'PDF</button>'
       +   '<a class="fx-btn" href="' + mailto + '">' + ic('arrow', 14) + 'Mail</a>'
