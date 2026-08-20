@@ -124,21 +124,16 @@
   <script src="ui.js"></script>
   <script src="data/pa-accessories.js"></script>
 
-  <div class="page-wrap" style="padding-bottom:16px">
-    <div class="page-header">
-      <div class="hero-kicker">NGFW &middot; Mat&eacute;riel</div>
-      <h1>Alimentations, <em>rack et accessoires</em></h1>
-      <p>Les r&eacute;f&eacute;rences &agrave; ne pas oublier dans une commande&nbsp;: alimentation de rechange, kit de montage, tiroir de ventilation, disque de logs. Filtrez par plateforme pour ne voir que ce qui concerne le mod&egrave;le vis&eacute;.</p>
-      <div class="hero-meta">
-        <span id="hm-count">&mdash; r&eacute;f&eacute;rences</span>
-        <span>5 rayons</span>
-        <span>Source&nbsp;: price list GLOBAL AUG&nbsp;2026</span>
-        <span>Sans prix</span>
-      </div>
+  <div class="tool-bar">
+    <div class="tool-head">
+      <span class="tk">Accessoires</span>
+      <h1>Alimentations, rack &amp; pi&egrave;ces</h1>
+      <span class="sub">Ce qu'on oublie dans une commande &mdash; cliquez une r&eacute;f&eacute;rence pour la copier.</span>
+      <span class="acts">
+        <button class="btn-tool" id="copy-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copier les SKU affich&eacute;s</span></button>
+        <span class="tool-src"><b id="hm-count">0</b> r&eacute;f&eacute;rences &middot; price list AUG&nbsp;2026 &middot; sans prix</span>
+      </span>
     </div>
-  </div>
-
-  <div class="flt-wrap">
     <div class="flt-row">
       <span class="flt-lab">Rayon</span>
       <div id="f-bucket"></div>
@@ -248,7 +243,8 @@
   }
 
   function part(a) {
-    return '<article class="part">'
+    return '<article class="part copy-card" data-copy="' + a.sku + '" title="Cliquer pour copier">'
+      + '<div class="copy-flag">&#10003; Copié !</div>'
       + (a.eol ? '<span class="eol" title="Fin de commercialisation">EoS ' + a.eol.slice(0, 7) + '</span>' : '')
       + '<div class="sku">' + a.sku + '</div>'
       + '<div class="fam">' + a.family + '</div>'
@@ -261,7 +257,22 @@
     state.q = e.target.value.trim().toLowerCase();
     render();
   });
-  document.getElementById('hm-count').textContent = ACCESSORIES.length + ' références';
+  document.getElementById('copy-all').addEventListener('click', function () {
+    var list = ACCESSORIES.filter(keep).map(function (x) { return x.sku; });
+    if (!list.length) return;
+    var txt = list.join('\n');
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt);
+    document.body.removeChild(ta);
+    var lab = this.querySelector('span');
+    lab.textContent = list.length + ' SKU copiés';
+    setTimeout(function () { lab.textContent = 'Copier les SKU affichés'; }, 1800);
+  });
+  document.getElementById('hm-count').textContent = ACCESSORIES.length;
   buildFilters();
   render();
   </script>

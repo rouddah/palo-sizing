@@ -77,6 +77,60 @@
     for (var i = 0; i < nums.length; i++) io.observe(nums[i]);
   }
 
+  /* ── 3. Copie au clic ───────────────────────────────────── */
+  /* Tout element portant data-copy copie sa valeur. Delegue sur le document
+     pour fonctionner aussi sur du contenu injecte apres coup. */
+  var toastEl = null, toastT = null;
+
+  function toast(msg, ok) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.id = 'copy-toast';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.toggle('err', ok === false);
+    toastEl.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toastEl.classList.remove('on'); }, 1900);
+  }
+
+  function write(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // repli pour les contextes non securises (ouverture en file://)
+    return new Promise(function (res, rej) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? res() : rej();
+    });
+  }
+
+  function wireCopy() {
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest ? e.target.closest('[data-copy]') : null;
+      if (!el) return;
+      e.preventDefault();
+      var val = el.getAttribute('data-copy');
+      var label = el.getAttribute('data-copy-label') || val;
+      write(val).then(function () {
+        el.classList.add('copied');
+        setTimeout(function () { el.classList.remove('copied'); }, 900);
+        toast(label.length > 46 ? 'Copié' : label + ' copié');
+      }, function () {
+        toast('Copie impossible dans ce contexte', false);
+      });
+    });
+  }
+
   /* ── 4. Jauge de lecture ────────────────────────────────── */
   function wireProgress() {
     if (document.querySelector('.table-outer')) return; // le comparateur scrolle en interne
@@ -95,6 +149,7 @@
   function init() {
     observe(tagTargets());
     wireCounters();
+    wireCopy();
     wireProgress();
   }
 

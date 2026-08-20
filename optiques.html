@@ -120,6 +120,16 @@
       text-align: center;
       min-width: 214px;
     }
+    .mx thead th .pill {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      padding: 7px 20px 8px;
+      border-radius: 999px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+    }
     .mx thead th .sp {
       display: block;
       font-family: var(--font);
@@ -275,22 +285,16 @@
   <script src="ui.js"></script>
   <script src="data/pa-optics.js"></script>
 
-  <div class="page-wrap" style="padding-bottom:16px">
-    <div class="page-header">
-      <div class="hero-kicker">NGFW &middot; Connectique</div>
-      <h1>Modules <em>optiques</em></h1>
-      <p>Les transceivers r&eacute;f&eacute;renc&eacute;s par Palo Alto Networks, class&eacute;s par d&eacute;bit et par support. Chaque case donne la r&eacute;f&eacute;rence &agrave; commander, la norme et la port&eacute;e.</p>
-      <div class="hero-meta">
-        <span id="hm-count">&mdash; modules</span>
-        <span>SFP &rarr; QSFP-DD</span>
-        <span>Source&nbsp;: price list GLOBAL AUG&nbsp;2026</span>
-        <span>Sans prix</span>
-      </div>
+  <div class="tool-bar">
+    <div class="tool-head">
+      <span class="tk">Transceivers</span>
+      <h1>Optiques PA-Series</h1>
+      <span class="sub">Une colonne par d&eacute;bit, une ligne par support &mdash; cliquez une r&eacute;f&eacute;rence pour la copier.</span>
+      <span class="acts">
+        <button class="btn-tool" id="copy-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copier les SKU affich&eacute;s</span></button>
+        <span class="tool-src"><b id="hm-count">0</b> modules &middot; price list AUG&nbsp;2026 &middot; sans prix</span>
+      </span>
     </div>
-  </div>
-
-  <!-- ── Filtres ── -->
-  <div class="flt-wrap">
     <div class="flt-row">
       <span class="flt-lab">D&eacute;bit</span>
       <div id="f-speed"></div>
@@ -307,6 +311,13 @@
       <div id="f-opt"></div>
       <input class="flt-search" id="q" type="search" placeholder="SKU ou description&hellip;" autocomplete="off" />
       <button class="flt-reset" onclick="resetAll()">Tout r&eacute;afficher</button>
+    </div>
+    <div class="mx-legend">
+      <span><i style="background:var(--net-sec)"></i>Multimode &mdash; MMF, courte distance</span>
+      <span><i style="background:var(--green)"></i>Monomode &mdash; SMF, longue distance</span>
+      <span><i style="background:var(--yellow)"></i>Cuivre &mdash; RJ-45</span>
+      <span><i style="background:var(--purple)"></i>DAC / AOC &mdash; c&acirc;bles attach&eacute;s</span>
+      <span style="margin-left:auto">BiDi&nbsp;: une seule fibre &middot; TAA&nbsp;: Trade Agreements Act &middot; RGD&nbsp;: durci I-Temp</span>
     </div>
   </div>
 
@@ -435,7 +446,9 @@
     if (o.taa) tags.push('<span class="tag tag-taa">TAA</span>');
     if (o.rugged) tags.push('<span class="tag tag-rgd">RGD</span>');
     const reach = o.reach ? o.reach + (o.fiber ? ' <span style="opacity:.65;font-weight:400">(' + o.fiber + ')</span>' : '') : '';
-    return '<div class="opt" style="--oc:' + color + '" title="' + esc(o.desc) + '">'
+    return '<div class="opt copy-card" style="--oc:' + color + '" data-copy="' + o.sku + '"'
+      + ' data-copy-label="' + o.sku + '" title="' + esc(o.desc) + ' — cliquer pour copier">'
+      + '<div class="copy-flag">&#10003; Copié !</div>'
       + '<div class="sku">' + o.sku.replace(/^PAN-/, '') + '</div>'
       + (o.std ? '<div class="std">' + o.std + '</div>' : '')
       + (reach ? '<div class="rc">' + reach + '</div>' : '')
@@ -466,8 +479,9 @@
 
     let head = '<thead><tr><th class="corner"></th>';
     speeds.forEach(s => {
-      head += '<th><span class="sp">' + s.replace('G', ' GE').replace('100M', '100 MB')
-        + '</span><span class="ff">' + FORMOF[s] + '</span></th>';
+      head += '<th><span class="pill"><span class="sp">'
+        + s.replace('G', ' GE').replace('100M', '100 MB')
+        + '</span><span class="ff">' + FORMOF[s] + '</span></span></th>';
     });
     head += '</tr></thead>';
 
@@ -494,7 +508,22 @@
     state.q = e.target.value.trim().toLowerCase();
     render();
   });
-  document.getElementById('hm-count').textContent = OPTICS.length + ' modules référencés';
+  document.getElementById('copy-all').addEventListener('click', function () {
+    var list = OPTICS.filter(keep).map(function (x) { return x.sku; });
+    if (!list.length) return;
+    var txt = list.join('\n');
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt);
+    document.body.removeChild(ta);
+    var lab = this.querySelector('span');
+    lab.textContent = list.length + ' SKU copiés';
+    setTimeout(function () { lab.textContent = 'Copier les SKU affichés'; }, 1800);
+  });
+  document.getElementById('hm-count').textContent = OPTICS.length;
   buildFilters();
   render();
   </script>

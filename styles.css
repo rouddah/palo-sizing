@@ -269,75 +269,67 @@ body::before {
 /* ── Dropdown ── */
 .dropdown { position: relative; }
 
+/* la liste est collee au bouton et un pont transparent couvre le trajet
+   de la souris : plus de fermeture intempestive */
 .dropdown-menu {
-  display: none;
   position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  min-width: 260px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  padding: 6px;
+  top: 100%;
+  left: -10px;
+  min-width: 226px;
+  padding-top: 10px;
   z-index: 300;
-  animation: dropIn .15s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px);
+  transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui), visibility .16s;
 }
-
-@keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+.dropdown-menu > .dropdown-inner {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  box-shadow: 0 22px 50px -20px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.25);
+  padding: 7px;
 }
-
+.dropdown.open .dropdown-menu,
 .dropdown:hover .dropdown-menu,
-.dropdown:focus-within .dropdown-menu { display: block; }
+.dropdown:focus-within .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
 
 .dropdown-item {
   display: flex !important;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px !important;
+  padding: 9px 13px !important;
   border-radius: 8px;
   text-decoration: none;
-  transition: background .15s;
   color: inherit !important;
+  transition: background .14s, color .14s;
 }
-
-.dropdown-item:hover { background: var(--surface2); }
-
-.dropdown-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
-}
-
-.dropdown-item-name {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-bright);
-}
-
-.dropdown-item-sub {
-  display: block;
-  font-size: 11px;
+.dropdown-item svg {
+  width: 16px; height: 16px;
+  flex: none;
   color: var(--text-muted);
-  margin-top: 1px;
+  transition: color .14s;
 }
-
-.dropdown-soon { opacity: 0.4; pointer-events: none; }
-
-.dropdown-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
+.dropdown-item .dropdown-item-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.1px;
+  white-space: nowrap;
 }
+.dropdown-item:hover { background: var(--surface2); }
+.dropdown-item:hover svg,
+.dropdown-item:hover .dropdown-item-name { color: var(--text-bright); }
+.dropdown-item.current { background: var(--accent-dim); }
+.dropdown-item.current svg,
+.dropdown-item.current .dropdown-item-name { color: var(--accent); }
+
+.dropdown-divider { height: 1px; background: var(--border); margin: 6px 8px; }
+.dropdown-soon { opacity: .4; pointer-events: none; }
 
 /* ── Hero ── */
 .hero {
@@ -1638,3 +1630,134 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 @media (prefers-reduced-motion: reduce) {
   .comparison-table tbody tr { transition: none; }
 }
+
+/* ── Copie au clic ─────────────────────────────────────────── */
+[data-copy] { cursor: copy; position: relative; }
+[data-copy].copied { color: var(--green) !important; }
+
+#copy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(14px);
+  z-index: 900;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-bright);
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+  padding: 9px 16px;
+  box-shadow: 0 18px 40px -18px rgba(0,0,0,.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s var(--ease-ui), transform .18s var(--ease-ui);
+}
+#copy-toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+#copy-toast.err { border-left-color: var(--red); }
+
+/* ── Bandeau d'outil (pages optiques / accessoires) ────────── */
+.tool-bar {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 25;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.tool-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.tool-head .tk {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--accent-dim);
+  border-radius: 5px;
+  padding: 3px 9px;
+  white-space: nowrap;
+}
+.tool-head h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+.tool-head .sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border);
+  padding-left: 14px;
+  min-width: 0;
+}
+.tool-head .acts { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.btn-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 7px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .16s, color .16s, transform .16s var(--ease-ui);
+}
+.btn-tool:hover { color: var(--text-bright); border-color: var(--accent); transform: translateY(-1px); }
+.btn-tool svg { width: 13px; height: 13px; opacity: .8; }
+.tool-src { font-family: var(--mono); font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+.tool-src b { color: var(--accent); font-weight: 700; }
+
+/* ── Copie : la carte entiere bascule au vert ──────────────── */
+.copy-card { cursor: copy; }
+.copy-card .copy-flag {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  border-radius: inherit;
+  z-index: 3;
+  background: #1fae54;
+  color: #04170b;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(.97);
+  transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui);
+}
+.copy-card.copied { border-color: var(--green) !important; }
+.copy-card.copied .copy-flag { opacity: 1; transform: scale(1); }
+
+/* ── Legende de la matrice ─────────────────────────────────── */
+.mx-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 20px;
+  padding: 9px 24px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+.mx-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.mx-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }

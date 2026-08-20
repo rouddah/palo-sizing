@@ -18,11 +18,20 @@
 
   const ngfwActive = NGFW_PAGES.indexOf(page) !== -1 ? ' active' : '';
 
-  function item(href, name, sub) {
-    var on = page === href ? ' style="color:var(--accent)"' : '';
-    return '<a class="dropdown-item" href="' + href + '">'
-      + '<span class="dropdown-item-name"' + on + '>' + name + '</span>'
-      + '<span class="dropdown-item-sub">' + sub + '</span></a>';
+  const ICONS = {
+    table: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>',
+    optic: '<circle cx="12" cy="12" r="3"/><path d="M2 12h7M15 12h7M12 2v7M12 15v7"/>',
+    box: '<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
+  };
+
+  function item(href, name, icon) {
+    var cur = page === href ? ' current' : '';
+    return '<a class="dropdown-item' + cur + '" href="' + href + '">'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '
+      + 'stroke-linecap="round" stroke-linejoin="round">' + ICONS[icon] + '</svg>'
+      + '<span class="dropdown-item-name">' + name + '</span></a>';
   }
 
   const headerHTML = `
@@ -39,15 +48,15 @@
 
   <nav class="header-nav">
     <div class="dropdown">
-      <a class="nav-link nav-link-netsec${ngfwActive}" href="pa-series.html">NGFW<span class="nav-caret">&#9662;</span></a>
-      <div class="dropdown-menu">
-        ${item('pa-series.html', 'Comparateur PA-Series', '39 modeles, debits, interfaces et capacites')}
-        ${item('qualification.html', 'Qualification', 'Trouver la gamme a partir du besoin client')}
-        ${item('optiques.html', 'Optiques', 'Transceivers par debit et par support')}
-        ${item('accessoires.html', 'Accessoires', 'Alimentations, rack, ventilation, disques')}
+      <a class="nav-link nav-link-netsec${ngfwActive}" href="pa-series.html" aria-haspopup="true" aria-expanded="false">NGFW<span class="nav-caret">&#9662;</span></a>
+      <div class="dropdown-menu"><div class="dropdown-inner">
+        ${item('pa-series.html', 'Comparateur', 'table')}
+        ${item('qualification.html', 'Qualification', 'target')}
+        ${item('optiques.html', 'Transceivers', 'optic')}
+        ${item('accessoires.html', 'Accessoires', 'box')}
         <div class="dropdown-divider"></div>
-        ${item('panorama.html', 'Panorama', 'Gestion centralisee : M-Series, VM, SCM')}
-      </div>
+        ${item('panorama.html', 'Panorama', 'grid')}
+      </div></div>
     </div>
 
     <a class="${cls('prisma.html', 'nav-link-sase')}"    href="prisma.html">SASE</a>
@@ -71,6 +80,41 @@
 
   const root = document.getElementById('header-root');
   if (root) root.outerHTML = headerHTML;
+
+  // ── Menu deroulant : clic, clavier, tactile ──
+  (function () {
+    const dd = document.querySelector('.dropdown');
+    if (!dd) return;
+    const trigger = dd.querySelector('.nav-link');
+    const items = [].slice.call(dd.querySelectorAll('.dropdown-item'));
+
+    function open(v) {
+      dd.classList.toggle('open', v);
+      trigger.setAttribute('aria-expanded', v ? 'true' : 'false');
+    }
+
+    // Le clic ouvre le menu au lieu de suivre le lien : sur tactile il n'y a
+    // pas de survol, et sur desktop on evite de partir avant d'avoir choisi.
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      open(!dd.classList.contains('open'));
+      if (dd.classList.contains('open') && items[0]) items[0].focus();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!dd.contains(e.target)) open(false);
+    });
+
+    dd.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { open(false); trigger.focus(); return; }
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      open(true);
+      const i = items.indexOf(document.activeElement);
+      const n = e.key === 'ArrowDown' ? i + 1 : i - 1;
+      (items[(n + items.length) % items.length] || items[0]).focus();
+    });
+  })();
 
   // ── Theme ──
   window.toggleTheme = function () {
