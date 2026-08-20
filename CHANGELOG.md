@@ -1,5 +1,61 @@
 # Changelog
 
+## [Session 4] - 20 aout 2026
+
+### Separation comparateur / qualification
+- feat(pa-series): la page ne contient plus que le tableau de comparaison. Barre de modes, wizard commercial et guide de qualification retires.
+- feat(qualification): nouvelle page qualification.html avec les deux vues sorties de pa-series (Qualification rapide, Guide de qualification) + lien retour vers le comparateur.
+- feat(data): MODELS et fmtN externalises dans data/pa-models.js, source unique chargee par les deux pages (l'ancien data/pa-models.js etait obsolete et n'etait reference nulle part).
+- feat(header): nouvel onglet Qualification dans la navigation.
+- refactor(styles): .wiz-action-btn remonte de pa-series vers styles.css (utilise par le comparateur et par la qualification).
+- fix(pa-series): hauteur du tableau recalculee (la barre de modes ne prend plus de place) et loadCompareFromURL n'appelle plus setMode.
+
+### UI v4 - diffusion du langage visuel NGFW aux autres pages
+- feat(styles): heros de page animes (lueur radiale, obliques du logo Palo en filigrane, titre en degrade Precision AI, puces de contexte).
+- feat(styles): accent par pilier pose sur <body data-pillar> - SASE violet, Cortex vert, Idira ambre. La famille Network Security garde l'orange etabli.
+- feat(ui.js): revelation au defilement en cascade, compteurs animes sur les chiffres cles, jauge de lecture. IntersectionObserver, aucune dependance, prefers-reduced-motion respecte.
+- feat(styles): motion sur les cartes (elevation + bordure d'accent), trait de section qui se dessine a l'arrivee, lignes de tableau teintees au survol.
+- feat(pages): prisma, browser, cortex, panorama, idira et resources passent au hero enrichi.
+- fix(styles): garde-fou impression - les blocs a revelation restent visibles a l'impression.
+
+## [Session 3] — 30 juin 2026 (après-midi)
+
+### prisma.html (refonte totale)
+- feat: réécriture complète avec navigation par onglets JavaScript
+- feat: onglet Prisma Access (SSE) — tout le contenu SSE existant préservé
+- feat: onglet Prisma SD-WAN — tableaux ION physiques et vION séparés + 4 overview cards
+- feat: onglet Prisma Browser — tableau comparatif Education/Core/Pro (source: deck licensing)
+- feat: détail PRO avec AWP/AXS/ABP, Advanced Data Protection (Beyond), Advanced Identity Protection (Web PAM), ADEM RUM
+- feat: options de connectivité Prisma Browser Connector / NGFW Connector / ZTNA Connector
+- feat: lien vers browser.html depuis l'onglet Browser
+- fix: section Ressources toujours visible (hors onglets)
+- fix: plus d'em-dash dans le nouveau contenu (tirets normaux)
+- fix: encodage UTF-8 avec HTML entities pour les caractères accentués
+
+### wizard.html (corrections V3 — WIZARD_V3_POLISH.md)
+- fix: boutons choix remplacés par .wiz-choice (styled, hover, .selected accent)
+- fix: texte d'aide via .wiz-helper (p, pas div/input — plus de champ désactivé)
+- fix: tous les accents français corrigés (UTF-8 natif : Précédent, catégories, etc.)
+- fix: bouton Précédent visible : background surface2, border, color text
+- feat: logique Cortex V3 complète (5 cas A/B/C/D/E per spec)
+  - Cas A (externalise) : bloc MSSP sans aucun SKU Cortex
+  - Cas B (SOC moderniser) : Cortex XSIAM + Cortex Cloud
+  - Cas C (SOC construire) : Cortex XDR Pro + Cortex Cloud
+  - Cas D (< 200 endpoints) : XDR Prevent ou MSSP, pas de Cortex Pro
+  - Cas E (Je ne sais pas) : 4 questions de qualification, pas de SKU
+- feat: bloc pitch client copy-paste en haut de la page résultat (4 gabarits selon profil)
+- feat: bouton Copier fonctionnel (clipboard API + fallback execCommand)
+- fix: lien pa-series.html#PA-400 (ancre dynamique selon famille recommandée)
+- fix: buildExport() corrigé pour les 5 cas Cortex
+
+### pa-series.html
+- fix: ajout id="PA-400" sur le bouton filtre PA-400 (ancre pour wizard)
+
+### resources.html
+- fix: ajout id="mssp" sur la section 8 (ancre resources.html#mssp pour wizard)
+
+---
+
 ## [Session 2] — 30 juin 2026
 
 ### wizard.html (réécriture totale v2)
