@@ -2463,3 +2463,22 @@ h2, h3 { line-height: 1.22; }
    Le titre de l'accueil se termine par un point pose apres un span
    colore : sans cela il pouvait se retrouver seul sur sa ligne. */
 .lead h1 .accent { white-space: normal; }
+
+/* ── Focus des champs : une marque que rien ne peut annuler ──
+   Plusieurs champs posaient outline: none sans rien mettre a la
+   place, parfois en style en ligne, que la feuille ne peut pas
+   surcharger. Au clavier, on perdait alors sa position dans le
+   formulaire.
+
+   L'anneau passe donc par box-shadow, qui survit a outline: none, et
+   l'outline reste en complement pour le mode contraste eleve, ou les
+   ombres ne sont pas rendues. */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[contenteditable]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 3px var(--accent-line);
+  border-color: var(--accent);
+}

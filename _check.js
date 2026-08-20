@@ -177,6 +177,27 @@ htmlFiles.concat(jsFiles).forEach(f => {
   });
 });
 
+/* ── 7. Em-dash dans le contenu ─────────────────────
+   Regle du projet : pas de tiret cadratin dans le contenu. Elle est
+   verifiee ici parce qu elle s etait reperdue : 242 en avaient
+   repris place, dont les titres de toutes les pages.
+
+   Deux usages restent legitimes et ne sont pas comptes :
+     - le marqueur d absence dans une cellule de tableau, ou le
+       tiret cadratin est une convention typographique ;
+     - les commentaires de code, que la regle ne vise pas. */
+htmlFiles.forEach(f => {
+  const txt = fs.readFileSync(path.join(ROOT, f), 'utf8');
+  txt.split('\n').forEach((line, i) => {
+    if (!/\u2014|&mdash;/.test(line)) return;
+    const t = line.trim();
+    if (/^\/\/|^\/\*|^\*|^<!--/.test(t)) return;              // commentaire
+    if (/['"`\u0060]\u2014['"`\u0060]|>\u2014</.test(line)) return;   // marqueur d absence
+    problems.push(f + ':' + (i + 1) + ' : em-dash dans le contenu -> '
+      + t.slice(0, 60));
+  });
+});
+
 /* ── Rapport ───────────────────────────────────────────────── */
 console.log('Fichiers JS verifies      : ' + jsFiles.length);
 console.log('Pages HTML verifiees      : ' + htmlFiles.length);
