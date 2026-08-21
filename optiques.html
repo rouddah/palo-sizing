@@ -97,8 +97,27 @@
     }
     .flt-reset:hover { color: var(--text-bright); }
 
-    /* ── Matrice ── */
+    /* ── Matrice ──
+       Une colonne par debit, une ligne par support. Deux principes :
+       la couleur code le support et rien d'autre, et un module est une
+       ligne de texte, pas une carte. */
+    .mx-frame { position: relative; }
     .mx-outer { overflow-x: auto; padding: 0 0 60px; }
+    /* Le tableau deborde a droite bien avant le bord de l'ecran. Sans
+       repere, il a l'air de s'arreter la ou l'ecran s'arrete. Le voile
+       disparait des que la derniere colonne est atteinte. */
+    .mx-frame::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 60px;
+      width: 56px;
+      pointer-events: none;
+      background: linear-gradient(to right, transparent, var(--bg));
+      opacity: 1;
+      transition: opacity .2s var(--ease-ui);
+    }
+    .mx-frame.at-end::after { opacity: 0; }
+
     .mx {
       border-collapse: separate;
       border-spacing: 0;
@@ -110,44 +129,53 @@
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
-    /* Le conteneur .mx-outer defile en X : c'est lui le referentiel du sticky.
-       top:0 garde l'en-tete en haut du tableau sans le decaler vers le bas. */
+
+    /* En-tete de colonne. Le debit se lit comme un chiffre, aligne a
+       gauche sur la colonne qu'il annonce. La pastille ovale qui
+       l'entourait pesait plus lourd que la donnee qu'elle portait, et
+       elle flottait au centre d'une colonne dont le contenu, lui,
+       commence a gauche.
+       Le conteneur .mx-outer defile en X : c'est lui le referentiel du
+       sticky. top:0 garde l'en-tete en haut du tableau. */
     .mx thead th {
       position: sticky;
       top: 0;
       z-index: 10;
       background: var(--bg2);
-      padding: 14px 10px 12px;
-      text-align: center;
-      min-width: 214px;
-    }
-    .mx thead th .pill {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-      padding: 7px 20px 8px;
-      border-radius: var(--r-pill);
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      border-bottom: 2px solid var(--border2);
+      padding: var(--sp-3) 14px 10px;
+      text-align: left;
+      min-width: 190px;
     }
     .mx thead th .sp {
       display: block;
-      font-family: var(--font);
-      font-size: 16px;
+      font-family: var(--mono);
+      font-size: var(--text-lg);
       font-weight: 700;
       color: var(--text-bright);
-      letter-spacing: -0.3px;
+      letter-spacing: -0.4px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .mx thead th .sp em {
+      font-style: normal;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 3px;
+      letter-spacing: 0;
     }
     .mx thead th .ff {
       display: block;
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: var(--text-2xs);
       font-weight: 600;
-      color: var(--accent-txt);
-      margin-top: 2px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: var(--sp-1);
     }
-    .mx thead th.corner { min-width: 190px; background: var(--bg); }
+    .mx thead th.corner { min-width: 168px; background: var(--bg); }
 
     .mx td.rowhead, .mx thead th.corner {
       position: sticky;
@@ -158,117 +186,103 @@
     }
     .mx thead th.corner { z-index: 11; }
     .mx td.rowhead {
-      padding: 16px 16px 16px 18px;
-      min-width: 190px;
+      padding: 14px 14px 14px 0;
+      min-width: 168px;
+      /* La teinte du support vit ici, sur un filet vertical, et nulle
+         part ailleurs. Elle etait posee sur chacun des 45 modules :
+         quarante-cinq cadres teintes ne codent plus rien. */
+      border-left: 3px solid var(--rc, var(--accent));
+      padding-left: 14px;
     }
     .mx td.rowhead .rn {
       font-family: var(--font);
-      font-size: 15px;
+      font-size: var(--text-sm);
       font-weight: 700;
       color: var(--text-bright);
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-    .mx td.rowhead .rn::before {
-      content: '';
-      width: 9px; height: 9px;
-      border-radius: var(--r-xs);
-      background: var(--rc, var(--accent));
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--rc, var(--accent)) 18%, transparent);
     }
     .mx td.rowhead .rs {
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: var(--text-2xs);
       color: var(--text-muted);
-      margin-top: 5px;
-      padding-left: 18px;
+      margin-top: var(--sp-1);
       line-height: 1.5;
     }
-    .mx td.cell { padding: 9px; background: var(--bg); }
+    .mx td.cell { padding: var(--sp-1) var(--sp-2); background: var(--bg); }
+    .mx td.cell.is-empty { background: var(--bg2); }
     .mx tr:hover td.cell { background: var(--surface); }
+    .mx tr:hover td.cell.is-empty { background: var(--bg2); }
 
-    /* ── Carte module ── */
+    /* ── Entree module ──
+       Chaque module etait une carte : cadre arrondi, fond teinte, ombre
+       et levitation au survol. Quarante-cinq cartes dans une grille, ce
+       n'est plus une matrice, c'est un mur. Deux lignes de texte
+       separees par un filet suffisent, et la portee remonte a droite
+       pour s'aligner d'une entree a l'autre : c'est le chiffre qu'on
+       vient chercher. */
     .opt {
       position: relative;
-      border: 1px solid var(--oc, var(--border));
-      border-radius: var(--r-md);
-      background: color-mix(in srgb, var(--oc, var(--accent)) 7%, var(--surface));
-      padding: 9px 11px 10px;
-      text-align: center;
-      transition: transform .2s var(--ease-ui), box-shadow .2s, border-color .2s;
-      cursor: default;
+      padding: var(--sp-2) 10px;
+      border-radius: var(--r-sm);
+      transition: background .16s;
     }
-    .opt + .opt { margin-top: 7px; }
-    .opt:hover {
-      transform: translateY(-2px);
-      border-color: var(--oc, var(--accent));
-      box-shadow: 0 10px 22px -12px var(--oc, var(--accent));
+    .opt + .opt { box-shadow: inset 0 1px 0 var(--border); }
+    .opt:hover { background: var(--surface2); }
+    .opt-l1 {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
     }
     .opt .sku {
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: var(--text-xs);
       font-weight: 700;
-      /* --oc est pose en ligne par le JS depuis la table des debits :
-         cette teinte ne suit pas le theme et devient illisible sur
-         fond clair. Elle habille le cadre de la carte, pas le texte. */
       color: var(--text-bright);
       letter-spacing: -0.2px;
       word-break: break-word;
     }
-    .opt .std {
-      font-family: var(--font);
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 3px;
-    }
-    .opt .rc {
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 600;
+    .opt .reach {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
       color: var(--text);
-      margin-top: 3px;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
     }
+    .opt-l2 {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-top: 3px;
+      min-height: 15px;
+    }
+    .opt .std, .opt .fib {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      color: var(--text-muted);
+    }
+    .opt .fib { opacity: .8; }
     .opt .tags {
       display: flex;
-      justify-content: center;
-      gap: 4px;
-      margin-top: 6px;
-      flex-wrap: wrap;
+      gap: var(--sp-1);
+      margin-left: auto;
     }
     .opt .tag {
       font-family: var(--mono);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: .4px;
-      padding: 1px 5px;
+      padding: 0 4px;
       border-radius: var(--r-xs);
-      /* Le cadre porte la teinte produit, le texte prend l'encre
-         lisible. Avant, les deux etaient la meme couleur : une pastille
-         jaune posee sur une carte deja teintee de jaune tombait a
-         1,43:1. La distinction visuelle reste, portee par le cadre. */
+      /* Le cadre porte la teinte, le texte prend l'encre lisible : une
+         pastille jaune sur fond jaune tombait a 1,43:1. */
       border: 1px solid var(--tc, currentColor);
       color: var(--text);
-      opacity: .95;
+      line-height: 15px;
     }
     .tag-bidi { --tc: var(--pai-2); }
     .tag-taa  { --tc: var(--c-prisma); }
     .tag-rgd  { --tc: var(--c-strata); }
-    .opt .conn {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 5px;
-      opacity: .8;
-    }
-    .cell-empty {
-      display: block;
-      text-align: center;
-      color: var(--text-muted);
-      opacity: .3;
-      font-size: 15px;
-      padding: 14px 0;
-    }
 
     /* ── Reste ── */
     .mx-note {
@@ -285,6 +299,7 @@
     @media (max-width: 900px) {
       .flt-lab { min-width: 100%; }
       .mx thead th { position: static; }
+      .mx td.rowhead, .mx thead th.corner { position: static; }
     }
   </style>
 </head>
@@ -332,9 +347,11 @@
     </div>
   </div>
 
-  <div class="mx-outer">
-    <table class="mx" id="mx"></table>
-    <div class="mx-empty" id="empty" style="display:none">Aucun module ne correspond &agrave; ces crit&egrave;res.</div>
+  <div class="mx-frame" id="mx-frame">
+    <div class="mx-outer" id="mx-outer">
+      <table class="mx" id="mx"></table>
+      <div class="mx-empty" id="empty" style="display:none">Aucun module ne correspond &agrave; ces crit&egrave;res.</div>
+    </div>
   </div>
 
   <div class="mx-note">
@@ -451,20 +468,24 @@
   }
 
   /* ══ Rendu ══ */
-  function card(o, color) {
+  function card(o) {
     const tags = [];
     if (o.bidi) tags.push('<span class="tag tag-bidi">BiDi</span>');
     if (o.taa) tags.push('<span class="tag tag-taa">TAA</span>');
     if (o.rugged) tags.push('<span class="tag tag-rgd">RGD</span>');
-    const reach = o.reach ? o.reach + (o.fiber ? ' <span style="opacity:.65;font-weight:400">(' + o.fiber + ')</span>' : '') : '';
-    return '<div class="opt copy-card" style="--oc:' + color + '" data-copy="' + o.sku + '"'
-      + ' data-copy-label="' + o.sku + '" data-tip="' + o.sku + '|' + esc(o.desc) + '<br><b>Cliquer pour copier la référence.</b>">'
-      + '<div class="copy-flag"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg> Copié !</div>'
-      + '<div class="sku">' + o.sku.replace(/^PAN-/, '') + '</div>'
-      + (o.std ? '<div class="std">' + o.std + '</div>' : '')
-      + (reach ? '<div class="rc">' + reach + '</div>' : '')
-      + (tags.length ? '<div class="tags">' + tags.join('') + '</div>' : '')
-      + (o.conn ? '<div class="conn">' + o.conn + '</div>' : '')
+    /* Ligne 2 : la norme, puis le type de fibre et le connecteur. Le
+       type de fibre qualifie la portee, il ne la remplace pas. */
+    const detail = [o.fiber, o.conn].filter(Boolean).join(' \u00b7 ');
+    return '<div class="opt copy-card" data-copy="' + o.sku + '"'
+      + ' data-copy-label="' + o.sku + '" data-tip="' + o.sku + '|' + esc(o.desc) + '<br><b>Cliquer pour copier la r\u00e9f\u00e9rence.</b>">'
+      + '<div class="copy-flag"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg> Copi\u00e9 !</div>'
+      + '<div class="opt-l1"><span class="sku">' + o.sku.replace(/^PAN-/, '') + '</span>'
+      +   (o.reach ? '<span class="reach">' + o.reach + '</span>' : '') + '</div>'
+      + '<div class="opt-l2">'
+      +   (o.std ? '<span class="std">' + o.std + '</span>' : '')
+      +   (detail ? '<span class="fib">' + detail + '</span>' : '')
+      +   (tags.length ? '<span class="tags">' + tags.join('') + '</span>' : '')
+      + '</div>'
       + '</div>';
   }
 
@@ -488,11 +509,14 @@
     }
     empty.style.display = 'none';
 
+    /* « 100G » se lit « 100 » puis son unite : le chiffre porte le
+       poids typographique, l'unite l'accompagne. */
     let head = '<thead><tr><th class="corner"></th>';
     speeds.forEach(s => {
-      head += '<th><span class="pill"><span class="sp">'
-        + s.replace('G', ' GE').replace('100M', '100 MB')
-        + '</span><span class="ff">' + FORMOF[s] + '</span></span></th>';
+      const n = s.replace(/[GM]$/, '');
+      const u = s.endsWith('M') ? 'Mb/s' : 'Gb/s';
+      head += '<th scope="col"><span class="sp">' + n + '<em>' + u + '</em></span>'
+        + '<span class="ff">' + FORMOF[s] + '</span></th>';
     });
     head += '</tr></thead>';
 
@@ -502,10 +526,12 @@
         + '<div class="rn">' + m.k + '</div><div class="rs">' + m.sub + '</div></td>';
       speeds.forEach(s => {
         const list = shown.filter(o => o.speed === s && o.media === m.k);
-        body += '<td class="cell">'
-          + (list.length ? list.map(o => card(o, m.color)).join('')
-                         : '<span class="cell-empty">, </span>')
-          + '</td>';
+        /* Une case vide reste vide : elle prend un fond legerement en
+           retrait et l'oeil la saute. Le point qu'on y posait avant
+           donnait a lire quelque chose la ou il n'y a rien. */
+        body += list.length
+          ? '<td class="cell">' + list.map(o => card(o)).join('') + '</td>'
+          : '<td class="cell is-empty"></td>';
       });
       body += '</tr>';
     });
@@ -534,6 +560,20 @@
     lab.textContent = list.length + ' SKU copiés';
     setTimeout(function () { lab.textContent = 'Copier les SKU affichés'; }, 1800);
   });
+  /* Le voile de droite ne se justifie que s'il reste des colonnes. */
+  (function () {
+    const outer = document.getElementById('mx-outer');
+    const frame = document.getElementById('mx-frame');
+    const sync = () => {
+      const reste = outer.scrollWidth - outer.clientWidth - outer.scrollLeft;
+      frame.classList.toggle('at-end', reste < 4);
+    };
+    outer.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    new MutationObserver(sync).observe(document.getElementById('mx'), { childList: true });
+    sync();
+  })();
+
   document.getElementById('hm-count').textContent = OPTICS.length;
   buildFilters();
   render();

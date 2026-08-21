@@ -340,7 +340,8 @@ body {
   padding-top: 10px;
   z-index: 300;
   opacity: 0;
-  visibility: hidden;  transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui), visibility .16s;
+  visibility: hidden;
+  transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui), visibility .16s;
 }
 .dropdown-menu > .dropdown-inner {
   background: var(--surface);
@@ -522,7 +523,8 @@ body {
 .tool-card::after { display: none; }
 
 .tool-card:hover {
-  border-color: var(--border2);  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  border-color: var(--border2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   background: var(--surface2);
 }
 
@@ -737,7 +739,8 @@ body {
 }
 
 .model-card:hover {
-  border-color: var(--accent);}
+  border-color: var(--accent);
+}
 
 
 
@@ -857,7 +860,8 @@ body {
   overflow: hidden;
 }
 .bento-card:hover {
-  border-color: var(--pillar);}
+  border-color: var(--pillar);
+}
 
 
 
@@ -909,7 +913,8 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: var(--pillar-color);  transition: transform 0.2s;
+  background: var(--pillar-color);
+  transition: transform 0.2s;
 }
 
 
@@ -1159,7 +1164,8 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 }
 .page-header .hero-meta span:hover {
   border-color: var(--pillar);
-  color: var(--text-bright);}
+  color: var(--text-bright);
+}
 
 /* La revelation au defilement est definie une seule fois, plus bas. */
 
@@ -1177,7 +1183,8 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 .addon-card:hover,
 .policy-card:hover,
 .product-card:hover,
-.pillar-card:hover {  border-color: var(--pillar);
+.pillar-card:hover {
+  border-color: var(--pillar);
   box-shadow: 0 16px 34px -20px var(--pillar);
 }
 .metric-card .metric-val { font-variant-numeric: tabular-nums; }
@@ -1427,6 +1434,21 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
   min-width: 0;
 }
 .tool-head .acts { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+/* En dessous de 1100px, le sous-titre se retrouve coince entre le titre
+   et les actions et se comprime en colonne de trois mots. Il passe a la
+   ligne, sur toute la largeur, et laisse tomber son filet de gauche qui
+   ne separe plus rien. */
+@media (max-width: 1100px) {
+  .tool-head { flex-wrap: wrap; }
+  .tool-head .acts { order: 2; }
+  .tool-head .sub {
+    order: 3;
+    flex: 1 0 100%;
+    border-left: none;
+    padding-left: 0;
+    margin-top: var(--sp-1);
+  }
+}
 .btn-tool {
   display: inline-flex;
   align-items: center;

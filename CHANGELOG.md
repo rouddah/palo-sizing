@@ -105,6 +105,43 @@ plafonnaient entre 4,1 et 4,5:1 avec la meilleure des deux encres, dont
 trois deja en production. Elles sont assombries. Le controle porte
 desormais sur les 54.
 
+### La matrice des optiques
+
+Elle etait construite en cartes : chaque module portait un cadre
+arrondi, un fond teinte de la couleur de son support, une ombre et une
+levitation au survol. Quarante-cinq cartes dans une grille, ce n'est
+plus une matrice, c'est un mur. Les en-tetes de colonne, eux, etaient
+des pastilles ovales centrees au-dessus de colonnes dont le contenu
+commence a gauche.
+
+- **L'en-tete de colonne est typographique** : le debit se lit comme un
+  chiffre, son unite l'accompagne en petit, le form factor suit en
+  capitales espacees. Plus d'ovale.
+- **Un module tient en deux lignes** : reference et portee sur la
+  premiere, norme, fibre, connecteur et badges sur la seconde. Les
+  portees s'alignent a droite d'une entree a l'autre : c'est le chiffre
+  qu'on vient chercher.
+- **La couleur du support ne teinte plus les modules.** Elle vit sur un
+  filet vertical en tete de ligne, et nulle part ailleurs. Quarante-cinq
+  cadres teintes ne codent plus rien.
+- **Une case vide reste vide**, avec un fond en retrait. Elle portait un
+  caractere a 30% d'opacite, ce qui donnait a lire quelque chose la ou
+  il n'y a rien.
+- **Le debordement horizontal se voit** : un voile sur le bord droit
+  signale qu'il reste des colonnes, et disparait a la derniere.
+
+La matrice tient desormais ses quatre lignes de support dans un ecran,
+la ou deux depassaient avant.
+
+Au passage, sous 1100px le sous-titre des barres d'outils se comprimait
+en colonne de trois mots entre le titre et les boutons. Il passe a la
+ligne.
+
+### Fins de ligne
+
+`styles.css` portait encore des retours chariot isoles au milieu de
+lignes, reliquat d'un ancien editeur. Le depot n'en contient plus.
+
 ### Garde-fous ajoutes
 
 - `_data-audit.js` entre au build. Il verifie ce qu'aucune datasheet ne
