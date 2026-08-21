@@ -1,6 +1,6 @@
 /* Genere a partir des references officielles Palo Alto Networks.
-   AUCUN PRIX n'est repris ici : uniquement SKU, description et attributs
-   techniques deduits de la description officielle.
+   Champs publies : SKU, description et attributs techniques deduits de
+   la description officielle.
    Regenerer avec _extract_hw.py apres mise a jour du catalogue. */
 
 const OPTICS = [

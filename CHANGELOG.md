@@ -551,8 +551,8 @@ d'emblee : tant qu'un chiffre defile, il est faux.
 
 ### Accueil
 
-Le paragraphe defensif (« Aucun prix publie, aucune reference
-inventee ») disparait au profit d'une ligne qui enonce le contrat de
+Le paragraphe defensif qui enumerait ce que le site ne fait pas
+disparait au profit d'une ligne qui enonce le contrat de
 l'outil : « Contraintes de trafic en entree, modele PA-Series et
 subscriptions en sortie. » Les quatre chiffres deviennent un bandeau
 continu separe par des filets de 1px, avec infobulle au survol et
@@ -713,7 +713,7 @@ passent AA, le plus faible a 6.03:1.
 ### Nouveaux outils NGFW (inspires du sizing guide Fortinet de Loic)
 - feat(optiques): nouvelle page optiques.html - matrice des transceivers par debit (100M a 400G) et par support (multimode, monomode, cuivre, DAC/AOC). Filtres debit / support / portee / BiDi / TAA / durci + recherche. 45 modules.
 - feat(accessoires): nouvelle page accessoires.html - 207 references d'alimentations, kits rack, ventilation, disques et divers, filtrables par rayon et par plateforme.
-- feat(data): pa-optics.js et pa-accessories.js generes depuis les references officielles Palo Alto par _extract_hw.py. AUCUN PRIX n'est repris, conformement a la regle du projet : SKU, description et attributs techniques uniquement.
+- feat(data): pa-optics.js et pa-accessories.js generes depuis les references officielles Palo Alto par _extract_hw.py. Champs retenus, conformement a la regle du projet : SKU, description et attributs techniques uniquement.
 - fix(data): PAN-SFP-100BASE-FX etait classe en 1G, sa description officielle se contredit ("100BASE-FX 100Mbps" puis "1000BASE-LX compliant"). Le motif 100 Mb est desormais teste en premier.
 
 ### Navigation

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Extrait optiques et accessoires du catalogue Palo Alto vers data/*.js.
 
-Regle du projet : AUCUN PRIX ne sort de ce script. On ne garde que
-SKU, description, plateforme et les attributs techniques deduits de la description.
+Regle du projet : le script ne retient que SKU, description, plateforme et
+les attributs techniques deduits de la description. Rien d autre ne sort.
 
 Le classeur source n'est pas versionne et son chemin n'est pas ecrit ici :
 il se passe en argument, ou par la variable d'environnement PA_CATALOG ;
@@ -230,8 +230,8 @@ acc.sort(key=lambda a: (a['bucket'], a['family'], a['sku']))
 
 # ─────────────────────────────────────────────── ecriture
 hdr = ("/* Genere a partir des references officielles Palo Alto Networks.\n"
-       "   AUCUN PRIX n\'est repris ici : uniquement SKU, description et attributs\n"
-       "   techniques deduits de la description officielle.\n"
+       "   Champs publies : SKU, description et attributs techniques deduits de\n"
+       "   la description officielle.\n"
        "   Regenerer avec _extract_hw.py apres mise a jour du catalogue. */\n\n")
 
 io.open('data/pa-optics.js', 'w', encoding='utf8').write(

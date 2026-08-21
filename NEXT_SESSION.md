@@ -103,7 +103,8 @@ sur le troisieme PA-50R, le statut de commercialisation de la PA-1400.
 ## Regles non negociables (rappel)
 
 - Stack inchangee : HTML/CSS/JS vanilla, pas de framework, pas de compilation
-- Pas de prix, jamais
+- Rien d'autre que de la donnee technique : SKU, debits, interfaces,
+  dates de fin de vie. Aucune donnee commerciale, sous aucune forme
 - Pas d'em-dash dans le contenu nouveau
 - Noms officiels PAN en anglais (Mobile User, Service Connection, Remote Network)
 - Donnees chiffrees sourcees uniquement, sinon champ nul + `_to_verify.md`
