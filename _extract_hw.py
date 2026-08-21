@@ -1,20 +1,32 @@
 # -*- coding: utf-8 -*-
-"""Extrait optiques et accessoires de la price list Palo Alto vers data/*.js.
+"""Extrait optiques et accessoires du catalogue Palo Alto vers data/*.js.
 
 Regle du projet : AUCUN PRIX ne sort de ce script. On ne garde que
 SKU, description, plateforme et les attributs techniques deduits de la description.
+
+Le classeur source n'est pas versionne et son chemin n'est pas ecrit ici :
+il se passe en argument, ou par la variable d'environnement PA_CATALOG ;
+le nom de la feuille se passe de la meme facon.
+
+    PA_CATALOG_SHEET=<feuille> python _extract_hw.py <classeur.xlsx>
 """
 import io
 import json
+import os
 import re
 import sys
 
 import openpyxl
 
-XLSX = r'C:\Users\rayna\Downloads\AUG 2026.xlsx'
+XLSX = sys.argv[1] if len(sys.argv) > 1 else os.environ.get('PA_CATALOG')
+if not XLSX:
+    sys.exit("usage : python _extract_hw.py <classeur.xlsx>  (ou variable d environnement PA_CATALOG)")
 
 wb = openpyxl.load_workbook(XLSX, read_only=True, data_only=True)
-ws = wb['GLOBAL Price List']
+SHEET = os.environ.get('PA_CATALOG_SHEET') or (sys.argv[2] if len(sys.argv) > 2 else None)
+if not SHEET:
+    sys.exit("feuille source non precisee : PA_CATALOG_SHEET ou 2e argument")
+ws = wb[SHEET]
 
 rows = []
 for r in ws.iter_rows(min_row=6, values_only=True):
@@ -57,7 +69,7 @@ SPEED_OVERRIDE = {
     'PAN-QSFPDD-DAC-3M':         '400G',   # QSFP-DD
     'PAN-QSFPDD-4X100GBASE-LR':  '400G',   # 4 x 100G, utilisable en 1 x 400G
     # PAN-SFPDD-DAC-3M : ports SFP-DD du NPC PA-7500 en detection automatique,
-    # la price list ne donne pas de debit -> laisse hors matrice, section cables.
+    # le catalogue ne donne pas de debit -> laisse hors matrice, section cables.
 }
 
 
@@ -159,7 +171,7 @@ ACC_TYPES = {
     'Cable Gland': 'Presse-etoupe',
 }
 # Les cinq rayons dans lesquels on range les accessoires. Le libelle precis
-# de la price list reste affiche en sous-titre.
+# du catalogue reste affiche en sous-titre.
 BUCKET = {
     'Power Cord': 'Alimentation', 'Power Supply': 'Alimentation',
     'Power Adaptor': 'Alimentation', 'Power Accessories': 'Alimentation',
@@ -183,7 +195,7 @@ PLATFORMS = [
 
 
 def iso_date(v):
-    """La price list donne les dates en MM/DD/YYYY : on normalise en YYYY-MM-DD."""
+    """Le catalogue donne les dates en MM/DD/YYYY : on normalise en YYYY-MM-DD."""
     if not v:
         return ''
     s = str(v)[:10]
@@ -217,10 +229,10 @@ for x in rows:
 acc.sort(key=lambda a: (a['bucket'], a['family'], a['sku']))
 
 # ─────────────────────────────────────────────── ecriture
-hdr = ("/* Genere depuis la price list Palo Alto GLOBAL (AUG 2026) le 2026-08-20.\n"
-       "   AUCUN PRIX n'est repris ici : uniquement SKU, description et attributs\n"
+hdr = ("/* Genere a partir des references officielles Palo Alto Networks.\n"
+       "   AUCUN PRIX n\'est repris ici : uniquement SKU, description et attributs\n"
        "   techniques deduits de la description officielle.\n"
-       "   Regenerer avec _extract_hw.py apres depot d'une nouvelle price list. */\n\n")
+       "   Regenerer avec _extract_hw.py apres mise a jour du catalogue. */\n\n")
 
 io.open('data/pa-optics.js', 'w', encoding='utf8').write(
     hdr + 'const OPTICS = ' + json.dumps(optics, ensure_ascii=False, indent=0) + ';\n')

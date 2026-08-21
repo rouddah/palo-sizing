@@ -1,7 +1,7 @@
-/* Genere depuis la price list Palo Alto GLOBAL (AUG 2026) le 2026-08-20.
+/* Genere a partir des references officielles Palo Alto Networks.
    AUCUN PRIX n'est repris ici : uniquement SKU, description et attributs
    techniques deduits de la description officielle.
-   Regenerer avec _extract_hw.py apres depot d'une nouvelle price list. */
+   Regenerer avec _extract_hw.py apres mise a jour du catalogue. */
 
 const OPTICS = [
 {
