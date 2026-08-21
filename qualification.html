@@ -1180,7 +1180,16 @@
       .sort((a, b) => b.tp - a.tp)[0];
     const topLabel = topModel ? topModel.id : primary.id;
     const needRate = fmtRate(needTp);
-    const utilClass = primary.utilPct > 90 ? 'crit' : primary.utilPct > 65 ? 'warn' : 'ok';
+    /* Charge sur le modele retenu, en pourcentage de sa capacite
+       datasheet. C'est le seul chiffre qui corresponde a la
+       recommandation affichee. */
+    const chargePct = retenu
+      ? Math.round(Math.max(
+          needTp   / retenu.m.tp,
+          needSess / retenu.m.sess,
+          needCps  / retenu.m.cps) * 100)
+      : primary.utilPct;
+    const utilClass = chargePct > 90 ? 'crit' : chargePct > 65 ? 'warn' : 'ok';
     const confClassWb = confidence === 'green' ? 'ok' : confidence === 'orange' ? 'warn' : 'crit';
     const confIcon = confidence === 'green' ? 'check' : 'alert';
 
@@ -1206,11 +1215,12 @@
        au-dela, on passe au cran superieur. */
     html += '<div class="wb-gauge">'
       + '<div class="wb-gauge-head">'
-      +   '<span>Charge sur ' + topLabel + ', ' + primary.tpMax + ' Gbps TP ' + '<button type="button" class="wb-help" data-tip="Charge estimée|Calculée sur le modèle le plus capable de la série. Un modèle inférieur peut suffire si le débit réel est confirmé.">?</button></span>'
-      +   '<span class="wb-gauge-pct" style="color:var(--' + utilClass + ')">' + primary.utilPct + '%</span>'
+      +   '<span>Charge sur ' + (retenu ? retenu.m.id : topLabel) + ', '
+      +     (retenu ? retenu.m.tp : primary.tpMax) + ' Gbps TP ' + '<button type="button" class="wb-help" data-tip="Charge estimée|Calculée sur le modèle le plus capable de la série. Un modèle inférieur peut suffire si le débit réel est confirmé.">?</button></span>'
+      +   '<span class="wb-gauge-pct" style="color:var(--' + utilClass + ')">' + chargePct + '%</span>'
       + '</div>'
       + '<div class="wb-gauge-track" role="img" aria-label="Charge estimée ' + primary.utilPct + ' pour cent de la capacité Threat Prevention">'
-      +   '<div class="wb-gauge-fill ' + utilClass + '" style="width:' + Math.min(primary.utilPct, 100) + '%"></div>'
+      +   '<div class="wb-gauge-fill ' + utilClass + '" style="width:' + Math.min(chargePct, 100) + '%"></div>'
       +   '<div class="wb-gauge-mark"></div>'
       + '</div>'
       + '<div class="wb-gauge-scale"><span>0%</span><span>65% charge max</span><span>100%</span></div>'
@@ -1422,9 +1432,28 @@
 
     /* ── 9. Brief transmissible ── */
     const typeLabel = type === 'branch' ? 'Agence' : type === 'campus' ? 'Siège ou campus' : 'Datacenter';
-    const sslLabel = ssl === 'yes' ? 'Active' : ssl === 'no' ? 'Non prévu' : 'À confirmer';
+    const sslLabel = ssl === 'yes' ? 'Activé' : ssl === 'no' ? 'Non prévu' : 'À confirmer';
     const cloudLabel = cloud === 'high' ? 'SaaS intensif' : 'Web et messagerie';
-    const recoText = reco.map(f => f.id + ' Series (' + f.modeles + ')').join(' ou ');
+    /* Le modele retenu en tete, la serie en second : le lecteur doit
+       trouver la reference avant l'explication. */
+    /* Le brief part chez le client : il ne doit contenir aucune valeur
+       brute du formulaire. Chaque code a son libelle francais. */
+    const LBL = {
+      iot:    { none: 'aucun', moderate: 'quelques dizaines', heavy: 'centaines ou plus' },
+      ha:     { yes: 'paire HA', no: 'appliance seule' },
+      growth: { stable: 'stable (x1)', moderate: 'modérée (x1,3)', strong: 'forte (x1,5)' },
+      sector: { finance: 'finance, banque, assurance', health: 'santé, pharma',
+                industry: 'industrie, OT', retail: 'commerce, distribution',
+                education: 'éducation, recherche', public: 'secteur public',
+                services: 'services, conseil', tech: 'tech, SaaS', other: 'autre' },
+      exist:  { none: 'aucun, nouveau site', fortinet: 'Fortinet FortiGate',
+                checkpoint: 'Check Point Quantum', cisco: 'Cisco Firepower / ASA',
+                sophos: 'Sophos', other: 'autre' }
+    };
+
+    const recoText = retenu
+      ? retenu.m.id + ' (' + primary.id + ' Series, ' + retenu.m.f + ')'
+      : reco.map(f => f.id + ' Series (' + f.modeles + ')').join(' ou ');
     const subsList = subs.map(s => s.name + (s.included ? ' (socle)' : ' (selon contexte)')).join(', ');
 
     const briefText = `QUALIFICATION FIREWALL PALO ALTO NETWORKS
@@ -1433,27 +1462,31 @@ ${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Rédacteur 
 ${confLabel}
 
 CONTRAINTES
-  Debit du lien       : ${rawBw === 'unknown' ? 'non renseigne (hypothese 200 Mbps)' : bwMbps + ' Mbps'}
-  Utilisateurs        : ${rawUsers === 'unknown' ? 'non renseigne (hypothese 250)' : users}
-  Accès distant       : ${rawRemote === 'unknown' ? 'non renseigne' : rawRemote}
-  Profil de trafic    : ${cloudLabel}
-  Dechiffrement SSL   : ${sslLabel}
-  Equipements non ger.: ${rawIot === 'unknown' ? 'non renseigne' : rawIot}
-  Role du site        : ${typeLabel}${rawType === 'unknown' ? ' (hypothese)' : ''}
-  Nombre de sites     : ${rawSites === 'unknown' ? 'non renseigne (hypothese 1)' : sites}
-  Haute disponibilité : ${rawHa === 'unknown' ? 'non renseigne' : rawHa === 'yes' ? 'paire HA' : 'appliance seule'}
-  Croissance 3 ans    : ${rawGrowth === 'unknown' ? 'non renseigne (hypothese x1,3)' : growth}
-  Secteur             : ${rawSector === 'unknown' ? 'non renseigne' : rawSector}
-  Parc en place       : ${rawExist === 'unknown' ? 'non renseigne' : rawExist}${rawExistModel !== 'unknown' ? ' ' + rawExistModel : ''}
+  Débit à inspecter   : ${rawBw === 'unknown' ? 'non renseigné (hypothèse 200 Mbps)' : fmtExact(bwMbps) + ' Mbps'}
+  Utilisateurs        : ${rawUsers === 'unknown' ? 'non renseigné (hypothèse 250)' : fmtExact(users)}
+  Utilisateurs distants : ${rawRemote === 'unknown' ? 'non renseigné' : fmtExact(parseInt(rawRemote))}
+  Profil de trafic    : ${cloudLabel}${rawCloud === 'unknown' ? ' (hypothèse)' : ''}
+  Déchiffrement SSL   : ${sslLabel}
+  Équipements non gérés : ${LBL.iot[rawIot] || 'non renseigné'}
+  Rôle du site        : ${typeLabel}${rawType === 'unknown' ? ' (hypothèse)' : ''}
+  Nombre de sites     : ${rawSites === 'unknown' ? 'non renseigné (hypothèse 1)' : sites}
+  Haute disponibilité : ${LBL.ha[rawHa] || 'non renseigné'}
+  Croissance à 3 ans  : ${LBL.growth[rawGrowth] || 'non renseigné (hypothèse x1,3)'}
+  Secteur             : ${LBL.sector[rawSector] || 'non renseigné'}
+  Parc en place       : ${LBL.exist[rawExist] || 'non renseigné'}${rawExistModel !== 'unknown' ? ' ' + rawExistModel : ''}
 
 RECOMMANDATION
-  Gamme               : ${recoText}
-  Debit TP requis     : ${needRate.val} ${needRate.unit}
+  Modèle retenu       : ${recoText}
+  Facteur dimensionnant : ${retenu ? (retenu.facteur === 'debit' ? 'débit' : retenu.facteur) : 'débit'}
+  Interfaces          : ${retenu ? fmtInterfaces(retenu.m) : 'voir datasheet'}
+  Appliances          : ${(sites || 1) * (rawHa === 'yes' ? 2 : 1)}${rawHa === 'yes' ? ' (paires HA)' : rawHa === 'no' ? '' : ' (HA non renseignée)'}
+  Débit TP requis     : ${needRate.val} ${needRate.unit}
   Sessions requises   : ${fmtN(needSess)}
-  Charge estimee      : ${primary.utilPct}% de ${primary.tpMax} Gbps TP
+  CPS requis          : ${fmtN(needCps)} (sessions / 30 s, hypothèse)
+  Charge estimée      : ${chargePct}% de la capacité du ${retenu ? retenu.m.id : primary.id}
   Subscriptions       : ${subsList}
-${assumptions.length ? '\nHYPOTHESES\n  ' + assumptions.join('\n  ') : ''}
-${openQuestions.length ? '\nA CONFIRMER\n  ' + openQuestions.join('\n  ') : ''}
+${assumptions.length ? '\nHYPOTHÈSES RETENUES\n  ' + assumptions.join('\n  ') : ''}
+${openQuestions.length ? '\nÀ CONFIRMER\n  ' + openQuestions.join('\n  ') : ''}
 
 Estimation de première qualification. Dimensionnement définitif à valider par
 un ingénieur avant-vente, sur SLR ou trafic réel.
@@ -1527,7 +1560,10 @@ Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
         clientName, partnerName,
         sector: rawSector, existing: rawExist, existingModel: rawExistModel,
         iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
-        recoText, reco, needTp, needSess,
+        recoText, reco, needTp, needSess, needCps,
+        modele: retenu ? retenu.m : null,
+        facteur: retenu ? retenu.facteur : null,
+        interfaces: retenu ? fmtInterfaces(retenu.m) : null,
         assumptions, openQuestions, subs
       });
     });

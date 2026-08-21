@@ -1,5 +1,75 @@
 # Changelog
 
+## Session 14 - 21 aout 2026 : l'etabli descend au modele
+
+### Pourquoi l'etabli plutot que le wizard
+
+Les deux outils se recouvraient en fonction et se completaient en
+perimetre. Mesure : le wizard mentionne SASE, Cortex et XSIAM
+**44 fois** contre 6 pour l'etabli ; l'etabli mentionne Threat
+Prevention, WildFire et GlobalProtect **21 fois** contre 4.
+
+L'investissement va a l'etabli : c'est l'outil technique pour
+l'audience du site, il a l'interaction a recalcul continu, et le coeur
+de valeur du site est le dimensionnement NGFW. Le wizard reste le
+parcours business, inchange.
+
+### Du modele, pas de la serie
+
+L'etabli annonçait « PA-3400 Series, modeles candidats PA-3410 a
+PA-3440 ». Un avant-vente ne commande pas une serie. Les donnees
+portaient 33 champs par modele ; l'outil n'en affichait que la famille.
+
+**Trois metriques decident du dimensionnement d'un NGFW**, et c'est
+toujours la plus contraignante qui impose le modele :
+
+| metrique | ce qu'elle mesure |
+| --- | --- |
+| debit Threat Prevention | toutes protections actives |
+| sessions concurrentes | flux ouverts simultanement |
+| CPS | nouvelles connexions par seconde |
+
+Un modele peut tenir le debit et s'ecrouler sur les sessions : le SaaS
+et la visioconference ouvrent beaucoup de petites sessions pour peu de
+bande passante. C'est pourquoi l'ecran **nomme desormais le facteur
+dimensionnant**, et pas seulement le verdict.
+
+Verifie au test : 3000 utilisateurs SaaS sur 300 Mbps donnent bien
+« sessions » et non « debit ».
+
+### Ce qui a ete ajoute
+
+- **Besoin en CPS**, qui manquait entierement. Estime a partir des
+  sessions et d'une duree de vie moyenne de 30 s, hypothese affichee
+  comme telle et a remplacer par le CPS mesure des qu'il existe.
+- **Selection du modele le plus juste** qui tienne les trois
+  contraintes a 65% de la datasheet. Le plus juste, pas le plus large :
+  un modele surdimensionne est un budget perdu, pas une securite.
+- **Tableau des trois modeles pertinents** de la serie avec leur charge
+  sur chaque metrique : on voit ce qu'on gagne a monter d'un cran.
+- **Fiche materielle** : format, interfaces detaillees, nombre
+  d'appliances, reference chassis.
+
+### Deux incoherences corrigees au passage
+
+**La jauge mesurait le haut de serie.** Elle affichait « Charge sur
+PA-3440, 20 Gbps TP : 28% » quand le tableau juste en dessous
+annonçait « PA-3420 RETENU, 56% ». Deux chiffres pour la meme chose,
+dont un qui ne correspondait a aucune recommandation. La jauge mesure
+desormais le modele retenu.
+
+**L'outil affirmait « sans redondance »** quand la haute disponibilite
+n'etait pas renseignee. Il ecrit maintenant « doubler si une paire HA
+est retenue » : il dit ce qu'il sait et signale ce qu'il ignore.
+
+### Le brief part chez le client
+
+Il etait entierement desaccentue alors que l'ecran ne l'est pas, et
+affichait les valeurs brutes du formulaire : « strong », « fortinet »,
+« heavy ». Chaque code a desormais son libelle francais, et le
+document porte la reference exacte, le facteur dimensionnant, les
+interfaces et le nombre d'appliances.
+
 ## Session 13 - 21 aout 2026 : systeme de design, accessibilite, garde-fous
 
 Session menee en autonomie, consigne : « ameliore l'UI et self improve ».
