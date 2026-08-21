@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessoires NGFW · Sizing Guide</title>
+  <meta name="description" content="Alimentations, kits rack, ventilation, disques et accessoires Palo Alto Networks par plateforme, avec references officielles et dates de fin de vie." />
+  <meta property="og:title" content="Accessoires NGFW · Sizing Guide" />
+  <meta property="og:description" content="Alimentations, kits rack, ventilation et disques Palo Alto Networks, filtrables par plateforme." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Filtres ── */
+    .flt-wrap {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 20;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .flt-row { display: flex; align-items: center; gap: 9px; padding: 9px 24px; flex-wrap: wrap; }
+    .flt-row + .flt-row { border-top: 1px solid var(--border); }
+    .flt-lab {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      color: var(--text-muted); min-width: 92px;
+    }
+    .chip {
+      font-family: var(--font); font-size: 12px; font-weight: 500;
+      color: var(--text-muted); background: transparent;
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      padding: 5px 13px; cursor: pointer; white-space: nowrap;
+      transition: color .16s, border-color .16s, background .16s, transform .16s var(--ease-ui);
+    }
+    .chip:hover { color: var(--text-bright); border-color: var(--border2); transform: translateY(-1px); }
+    .chip.on {
+      background: var(--accent); border-color: var(--accent); color: var(--on-accent);
+      box-shadow: 0 6px 16px -8px var(--accent-glow);
+    }
+    .chip .n { opacity: .55; font-family: var(--mono); font-size: 10px; margin-left: 5px; }
+    .flt-search {
+      flex: 1; min-width: 190px; max-width: 340px;
+      font-family: var(--mono); font-size: 12px; color: var(--text-bright);
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); padding: 6px 12px; outline: none; transition: border-color .16s;
+    }
+    .flt-search:focus { border-color: var(--accent); }
+    .flt-count { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+    .flt-count b { color: var(--accent-txt); font-weight: 700; }
+    .flt-reset {
+      font-family: var(--font); font-size: 11px; color: var(--text-muted);
+      background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0 4px;
+    }
+    .flt-reset:hover { color: var(--text-bright); }
+
+    /* ── Rayons ── */
+    .bucket { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+    .bucket-head {
+      display: flex; align-items: baseline; gap: 12px;
+      margin: 34px 0 14px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .bucket-head h2 {
+      font-family: var(--font); font-size: 16px; font-weight: 700;
+      color: var(--text-bright); letter-spacing: -0.3px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .bucket-head h2::before {
+      content: ''; width: 9px; height: 9px; border-radius: var(--r-xs);
+      background: var(--bc, var(--accent));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--bc, var(--accent)) 18%, transparent);
+    }
+    .bucket-head .n { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+
+    .parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(322px, 1fr)); gap: 10px; }
+    .part {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--bc, var(--accent));
+      border-radius: var(--r-md);
+      padding: 12px 14px 13px;
+      transition: transform .22s var(--ease-ui), border-color .22s, box-shadow .22s;
+    }
+    .part:hover {
+      transform: translateY(-3px);
+      border-color: var(--bc, var(--accent));
+      box-shadow: 0 14px 28px -18px var(--bc, var(--accent));
+    }
+    .part .sku {
+      font-family: var(--mono); font-size: 12px; font-weight: 700;
+      color: var(--text-bright); letter-spacing: -0.2px; word-break: break-word;
+      padding-right: 74px;
+    }
+    .part .fam {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: var(--text-muted); margin-top: 3px;
+    }
+    .part .d {
+      font-size: 12px; line-height: 1.5; color: var(--text-muted); margin-top: 7px;
+    }
+    .part .pf { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 9px; }
+    .part .pf span {
+      font-family: var(--mono); font-size: 10px; font-weight: 600;
+      color: var(--text-dim); background: var(--surface2);
+      border: 1px solid var(--border); border-radius: var(--r-xs); padding: 2px 6px;
+    }
+    .part .eol {
+      position: absolute; top: 11px; right: 12px;
+      font-family: var(--mono); font-size: 10px; font-weight: 700;
+      color: var(--red); background: var(--red-dim);
+      border: 1px solid rgba(239,68,68,.3); border-radius: var(--r-xs); padding: 1px 5px;
+    }
+    .empty { text-align: center; padding: 70px 24px; color: var(--text-muted); font-size: 14px; }
+    @media (max-width: 900px) { .flt-lab { min-width: 100%; } }
+  </style>
+</head>
+<body data-bg="calme">
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="bg.js" defer></script>
+  <script src="data/pa-accessories.js"></script>
+
+  <div class="tool-bar">
+    <div class="tool-head">
+      <span class="tk">Accessoires</span>
+      <h1>Alimentations, rack &amp; pi&egrave;ces</h1>
+      <span class="sub">Ce qu'on oublie dans une commande · cliquez une r&eacute;f&eacute;rence pour la copier.</span>
+      <span class="acts">
+        <button class="btn-tool" id="copy-all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copier les SKU affich&eacute;s</span></button>
+        <span class="tool-src"><b id="hm-count">0</b> r&eacute;f&eacute;rences officielles</span>
+      </span>
+    </div>
+    <div class="flt-row">
+      <span class="flt-lab">Rayon</span>
+      <div id="f-bucket"></div>
+      <span class="flt-count"><b id="cnt">0</b> r&eacute;f&eacute;rences affich&eacute;es</span>
+    </div>
+    <div class="flt-row">
+      <span class="flt-lab">Plateforme</span>
+      <div id="f-plat"></div>
+    </div>
+    <div class="flt-row">
+      <span class="flt-lab">Recherche</span>
+      <input class="flt-search" id="q" type="search" placeholder="SKU ou description&hellip;" autocomplete="off" />
+      <button class="flt-reset" onclick="resetAll()">Tout r&eacute;afficher</button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+  <div class="empty" id="empty" style="display:none">Aucune r&eacute;f&eacute;rence ne correspond &agrave; ces crit&egrave;res.</div>
+
+  <div class="bucket" style="margin-top:36px">
+    <div class="info-note">
+      <strong>&Agrave; savoir&nbsp;:</strong> ces r&eacute;f&eacute;rences sont des pi&egrave;ces de rechange ou des compl&eacute;ments · l'appliance est livr&eacute;e avec son alimentation et, selon les mod&egrave;les, son kit rack. Les mentions <em>FRU</em> (field replaceable unit) et <em>OSF</em> (on site FRU) d&eacute;signent la m&ecirc;me pi&egrave;ce sous un contrat d'intervention diff&eacute;rent. Une r&eacute;f&eacute;rence sans plateforme indiqu&eacute;e est g&eacute;n&eacute;rique ou couvre plusieurs gammes&nbsp;: lisez la description.
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">R&eacute;f&eacute;rences issues des datasheets officielles Palo Alto Networks</div>
+  </footer>
+
+  <script>
+  const BUCKETS = [
+    { k: 'Alimentation',   color: 'var(--c-strata)' },
+    { k: 'Rack & montage', color: 'var(--c-prisma)' },
+    { k: 'Ventilation',    color: 'var(--cortex)' },
+    { k: 'Stockage',       color: 'var(--pai-2)' },
+    { k: 'Divers',         color: 'var(--text-dim)' }
+  ];
+  const PLATS = [...new Set(ACCESSORIES.flatMap(a => a.platforms))].sort();
+  const state = { bucket: new Set(), plat: new Set(), q: '' };
+
+  function chip(lab, on, n) {
+    return '<button class="chip' + (on ? ' on' : '') + '">' + lab
+      + (n !== undefined ? '<span class="n">' + n + '</span>' : '') + '</button>';
+  }
+
+  function buildFilters() {
+    document.getElementById('f-bucket').innerHTML =
+      chip('Tous', state.bucket.size === 0) +
+      BUCKETS.map(b => chip(b.k, state.bucket.has(b.k),
+        ACCESSORIES.filter(a => a.bucket === b.k).length)).join('');
+    document.getElementById('f-plat').innerHTML =
+      chip('Toutes', state.plat.size === 0) +
+      PLATS.map(p => chip(p, state.plat.has(p),
+        ACCESSORIES.filter(a => a.platforms.includes(p)).length)).join('');
+    wire('f-bucket', BUCKETS.map(b => b.k), state.bucket);
+    wire('f-plat', PLATS, state.plat);
+  }
+
+  function wire(id, keys, set) {
+    document.getElementById(id).querySelectorAll('.chip').forEach((b, i) => {
+      b.addEventListener('click', () => {
+        if (i === 0) set.clear();
+        else {
+          const k = keys[i - 1];
+          set.has(k) ? set.delete(k) : set.add(k);
+        }
+        buildFilters();
+        render();
+      });
+    });
+  }
+
+  function resetAll() {
+    state.bucket.clear(); state.plat.clear(); state.q = '';
+    document.getElementById('q').value = '';
+    buildFilters(); render();
+  }
+
+  function keep(a) {
+    if (state.bucket.size && !state.bucket.has(a.bucket)) return false;
+    if (state.plat.size && !a.platforms.some(p => state.plat.has(p))) return false;
+    if (state.q && !(a.sku + ' ' + a.desc).toLowerCase().includes(state.q)) return false;
+    return true;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  }
+
+  function render() {
+    const shown = ACCESSORIES.filter(keep);
+    document.getElementById('cnt').textContent = shown.length;
+    const host = document.getElementById('list');
+    const empty = document.getElementById('empty');
+
+    if (!shown.length) { host.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    host.innerHTML = BUCKETS.filter(b => shown.some(a => a.bucket === b.k)).map(b => {
+      const list = shown.filter(a => a.bucket === b.k);
+      return '<section class="bucket" style="--bc:' + b.color + '">'
+        + '<div class="bucket-head"><h2>' + b.k + '</h2>'
+        + '<span class="n">' + list.length + ' référence' + (list.length > 1 ? 's' : '') + '</span></div>'
+        + '<div class="parts">' + list.map(part).join('') + '</div></section>';
+    }).join('');
+  }
+
+  function part(a) {
+    return '<article class="part copy-card" data-copy="' + a.sku + '" data-tip="' + a.sku + '|' + esc(a.desc) + (a.platforms.length ? '<br>Plateformes : ' + a.platforms.join(', ') : '') + '<br><b>Cliquer pour copier la référence.</b>">'
+      + '<div class="copy-flag"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg> Copié !</div>'
+      + (a.eol ? '<span class="eol" title="Fin de commercialisation">EoS ' + a.eol.slice(0, 7) + '</span>' : '')
+      + '<div class="sku">' + a.sku + '</div>'
+      + '<div class="fam">' + a.family + '</div>'
+      + '<div class="d">' + esc(a.desc) + '</div>'
+      + (a.platforms.length ? '<div class="pf">' + a.platforms.map(p => '<span>' + p + '</span>').join('') + '</div>' : '')
+      + '</article>';
+  }
+
+  document.getElementById('q').addEventListener('input', e => {
+    state.q = e.target.value.trim().toLowerCase();
+    render();
+  });
+  document.getElementById('copy-all').addEventListener('click', function () {
+    var list = ACCESSORIES.filter(keep).map(function (x) { return x.sku; });
+    if (!list.length) return;
+    var txt = list.join('\n');
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt);
+    document.body.removeChild(ta);
+    var lab = this.querySelector('span');
+    lab.textContent = list.length + ' SKU copiés';
+    setTimeout(function () { lab.textContent = 'Copier les SKU affichés'; }, 1800);
+  });
+  document.getElementById('hm-count').textContent = ACCESSORIES.length;
+  buildFilters();
+  render();
+  </script>
+</body>
+</html>

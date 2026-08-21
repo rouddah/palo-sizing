@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sizing Guide · Palo Alto Networks</title>
+  <meta name="description" content="Outils de dimensionnement Palo Alto Networks pour les partenaires Exclusive Networks : comparateur PA-Series, qualification, transceivers, accessoires et ressources." />
+  <meta property="og:title" content="Sizing Guide · Palo Alto Networks" />
+  <meta property="og:description" content="Comparateur PA-Series, qualification NGFW, transceivers et accessoires, sur sources officielles." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Ouverture ─────────────────────────────────────────── */
+    .lead {
+      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 84px 24px 54px;
+      overflow: hidden;
+    }
+
+    .lead-kick {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    .lead-kick::before {
+      content: '';
+      width: 26px; height: 2px;
+      border-radius: var(--r-xs);
+      background: var(--accent);
+    }
+
+    .lead h1 {
+      font-size: clamp(38px, 6.4vw, 76px);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -2.6px;
+      color: var(--text-bright);
+      max-width: 17ch;
+    }
+    .lead p.intro {
+      margin-top: 20px;
+      font-size: clamp(15px, 1.5vw, 18px);
+      line-height: 1.62;
+      color: var(--text-muted);
+      max-width: 62ch;
+    }
+    .lead-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+    /* ── Chiffres d'inventaire ─────────────────────────────
+       Quatre cartes cote a cote, separees par un filet de 1px plutot
+       que par du vide : la rangee se lit comme un bandeau de donnees,
+       pas comme quatre tuiles posees la. */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+      gap: 1px;
+      margin-top: 52px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 940px;
+    }
+    .stat {
+      background: var(--surface);
+      padding: var(--pad-card);
+      cursor: default;
+      outline: none;
+      --edge: var(--wire);
+    }
+    .stat:hover, .stat:focus-visible { background: var(--surface2); }
+
+    /* Le chiffre est une donnee : monospace, chiffres tabulaires pour
+       que la boite ne tremble pas pendant le comptage. */
+    .stat .stat-num {
+      font-family: var(--mono);
+      font-size: clamp(28px, 3.2vw, 38px);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.03em;
+      color: var(--text-bright);
+      line-height: 1;
+      transition: color var(--dur) var(--ease);
+    }
+    .stat:hover .stat-num, .stat:focus-visible .stat-num { color: var(--wire); }
+
+    .stat .lb {
+      margin-top: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .stat .lb-sub {
+      margin-top: 3px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .lead h1 .accent { color: var(--accent-txt); }
+
+    /* ── Sections ──────────────────────────────────────────── */
+    .band { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+    .band-head {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin: 58px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .band-head h2 {
+      font-size: 13px;
+      font-family: var(--mono);
+      font-weight: 700;
+      letter-spacing: 1.9px;
+      text-transform: uppercase;
+      color: var(--text-bright);
+    }
+    .band-head span { font-size: 12px; color: var(--text-muted); }
+
+    /* ── Cartes outil ──────────────────────────────────────── */
+    .tools { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+    .tcard {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--pad-card);
+      overflow: hidden;
+      transition: transform var(--dur) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  background-color var(--dur-fast) var(--ease);
+    }
+    /* La carte se souleve, son filet d'accent se trace, sa fleche part.
+       Trois signaux pour un seul geste : le survol devient lisible sans
+       qu'aucun texte ne bouge. */
+    .tcard:hover, .tcard:focus-visible {
+      transform: translate3d(0, -4px, 0);
+      border-color: var(--fx, var(--border2));
+      background: var(--surface2);
+    }
+    .tcard::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 1px;
+      background: var(--fx, var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--dur) var(--ease);
+    }
+    .tcard:hover::after, .tcard:focus-visible::after { transform: scaleX(1); }
+    .tcard .go { transition: transform var(--dur-fast) var(--ease); display: inline-block; }
+    .tcard:hover .go { transform: translate3d(4px, 0, 0); }
+    .tcard .card-ico { transition: transform var(--dur) var(--ease); }
+    .tcard:hover .card-ico { transform: scale(1.06); }
+    .tcard:hover {
+      transform: translateY(-5px);
+      border-color: color-mix(in srgb, var(--fx) 55%, var(--border));
+      box-shadow: 0 22px 44px -26px color-mix(in srgb, var(--fx) 85%, transparent);
+    }
+    .tcard .ic {
+      width: 38px; height: 38px;
+      border-radius: var(--r-md);
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--fx) 13%, transparent);
+      border: 1px solid color-mix(in srgb, var(--fx) 32%, transparent);
+      color: var(--fx);
+      margin-bottom: 16px;
+    }
+    .tcard .ic svg { width: 18px; height: 18px; }
+    .tcard h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tcard h3 .go {
+      color: var(--fx);
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: opacity .25s, transform .25s var(--ease-ui);
+    }
+    .tcard:hover h3 .go { opacity: 1; transform: none; }
+    .tcard p { margin-top: 7px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+    .tcard .tag {
+      display: inline-block;
+      margin-top: 13px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .9px;
+      text-transform: uppercase;
+      /* la teinte de la carte habille le cadre, pas le texte : elle
+          est trop vive pour porter des caracteres de 10px sur clair */
+      color: var(--text);
+      background: color-mix(in srgb, var(--fx) 13%, transparent);
+      border: 1px solid color-mix(in srgb, var(--fx) 34%, transparent);
+      border-radius: var(--r-sm);
+      padding: 3px 8px;
+    }
+
+    /* ── Piliers ───────────────────────────────────────────── */
+    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .pcard2 {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      border-radius: var(--r-lg);
+      padding: var(--pad-large);
+      background: linear-gradient(155deg,
+        color-mix(in srgb, var(--fx) 15%, var(--surface)), var(--surface) 62%);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform .3s var(--ease-ui), border-color .3s;
+    }
+    .pcard2 { transition: transform var(--dur) var(--ease), border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease); }
+    .pcard2:hover, .pcard2:focus-visible {
+      transform: translate3d(0, -4px, 0);
+      border-color: var(--fx);
+      background: var(--surface2);
+    }
+    .pcard2 .k {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      color: var(--fx);
+    }
+    .pcard2 h3 {
+      margin-top: 9px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.5px;
+    }
+    .pcard2 p { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+
+    @media (max-width: 760px) { .lead { padding-top: 54px; } }
+  </style>
+</head>
+<body>
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="bg.js" defer></script>
+
+  <!-- ── Ouverture ── -->
+  <section class="lead amb" data-rise>
+    <div class="lead-kick">Sizing Guide &middot; Palo Alto Networks</div>
+    <h1>Sizer du Palo <span class="accent">sans ouvrir de datasheets</span>.</h1>
+    <p class="intro">Contraintes de trafic en entr&eacute;e, mod&egrave;le PA-Series et subscriptions en sortie.</p>
+    <div class="lead-actions">
+      <a class="act primary" href="qualification.html">
+        Dimensionner un firewall<span data-ic="arrow" data-ic-size="14"></span>
+      </a>
+      <a class="act" href="pa-series.html">
+        Comparer les PA-Series<span data-ic="arrow" data-ic-size="14"></span>
+      </a>
+      <a class="act ghost" href="optiques.html">
+        Trouver un transceiver<span data-ic="arrow" data-ic-size="14"></span>
+      </a>
+    </div>
+
+    <!-- Chiffres d'inventaire. data-count porte la valeur de reference :
+         c'est elle qui est posee en fin d'animation, jamais le contenu
+         du noeud pendant qu'il defile. -->
+    <div class="stats">
+      <div class="stat lift lift-edge" tabindex="0"
+           data-tip="Mod&egrave;les PA-Series|De la PA-410 &agrave; la PA-7500 : d&eacute;bit Threat Prevention, sessions, CPS, ports, End of Sale. PA-1500, PA-3500, PA-5500 et PA-50R comprises.">
+        <div class="stat-num" data-count="54">0</div>
+        <div class="lb">Mod&egrave;les PA-Series</div>
+        <div class="lb-sub">PA-410 &rarr; PA-7500, 12 s&eacute;ries</div>
+      </div>
+      <div class="stat lift lift-edge" tabindex="0"
+           data-tip="Modules optiques|De 100 Mbps &agrave; 400 Gbps : monomode, multimode, cuivre, DAC/AOC, avec port&eacute;e et connecteur.">
+        <div class="stat-num" data-count="45">0</div>
+        <div class="lb">Modules optiques</div>
+        <div class="lb-sub">100 Mbps &rarr; 400 Gbps</div>
+      </div>
+      <div class="stat lift lift-edge" tabindex="0"
+           data-tip="Accessoires|Alimentations, rack, ventilation, stockage : filtr&eacute;s par plateforme, avec date de fin de vie.">
+        <div class="stat-num" data-count="207">0</div>
+        <div class="lb">Accessoires</div>
+        <div class="lb-sub">alimentation, rack, stockage</div>
+      </div>
+      <div class="stat lift lift-edge" tabindex="0"
+           data-tip="Piliers couverts|NGFW, SASE, Cortex, Idira : chaque pilier a sa page produit et ses r&egrave;gles de dimensionnement.">
+        <div class="stat-num" data-count="4">0</div>
+        <div class="lb">Piliers couverts</div>
+        <div class="lb-sub">NGFW, SASE, Cortex, Idira</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Outils ── -->
+  <div class="band">
+    <div class="band-head"><h2>Les outils</h2><span>Tout ce qui se calcule ou se compare</span></div>
+    <div class="tools" id="tools"></div>
+  </div>
+
+  <!-- ── Piliers ── -->
+  <div class="band">
+    <div class="band-head"><h2>Le portefeuille</h2><span>Quatre piliers, une page par pilier</span></div>
+    <div class="pillars" id="pillars"></div>
+  </div>
+
+  <!-- ── Ressources ── -->
+  <div class="band">
+    <div class="band-head"><h2>Ressources &amp; liens</h2><span>Portails partenaires, datasheets, outils officiels</span></div>
+  </div>
+  <div id="app"><p class="status-msg">Chargement&hellip;</p></div>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Donn&eacute;es issues des datasheets officielles Palo Alto Networks</div>
+  </footer>
+
+  <script src="links.js"></script>
+  <script>
+  /* ══ Outils du guide ══ */
+  const I = {
+    table: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+    optic: '<circle cx="12" cy="12" r="3"/><path d="M2 12h7M15 12h7M12 2v7M12 15v7"/>',
+    box: '<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
+    wand: '<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M3 21l9-9"/>',
+    search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>'
+  };
+
+  const TOOLS = [
+    ['pa-series.html', 'table', 'Comparateur PA-Series', 'Les 54 modèles côte à côte : débits appmix, sessions, interfaces, capacités et fin de commercialisation. Sélectionnez jusqu\'a quatre modèles pour un tableau comparatif.', '54 modèles', 'var(--pai-3)'],
+    ['qualification.html', 'target', 'Qualification NGFW', 'Cinq questions pour identifier la gamme adaptée, et un guide d\'entretien a derouler avec le client avant de recommander quoi que ce soit.', 'Avant-vente', 'var(--pai-2)'],
+    ['optiques.html', 'optic', 'Transceivers', 'La matrice des optiques par débit et par support. Cliquez une référence pour la copier, ou exportez d\'un coup tous les SKU filtrés.', '45 modules', 'var(--c-prisma)'],
+    ['accessoires.html', 'box', 'Alimentations & accessoires', 'Ce qu\'on oublie dans une commande : alimentation de rechange, kit rack, tiroir de ventilation, disque de logs. Filtrable par plateforme.', '207 références', 'var(--c-strata)'],
+    ['search.html', 'search', 'Recherche & sizing', 'Retrouver un firewall a partir d\'un debit cible, d\'un nombre d\'utilisateurs ou d\'un critère d\'interface.', 'Par critère', 'var(--c-cortex)']
+  ];
+
+  document.getElementById('tools').innerHTML = TOOLS.map(function (t) {
+    return '<a class="tcard" style="--fx:' + t[5] + '" href="' + t[0] + '" data-reveal>'
+      + '<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + I[t[1]] + '</svg></div>'
+      + '<h3>' + t[2] + '<span class="go">&rarr;</span></h3>'
+      + '<p>' + t[3] + '</p>'
+      + '<span class="tag">' + t[4] + '</span></a>';
+  }).join('');
+
+  /* ══ Piliers ══ */
+  const PILLARS = [
+    ['pa-series.html', 'Network Security', 'NGFW', 'PA-Series, Panorama et les abonnements Precision AI. Le socle matériel et sa gestion centralisée.', 'var(--c-strata)'],
+    ['prisma.html', 'SASE', 'Prisma', 'Prisma Access, Prisma SD-WAN et Prisma Browser, pilotés depuis Strata Cloud Manager.', 'var(--c-prisma)'],
+    ['cortex.html', 'SecOps', 'Cortex', 'XDR, XSIAM, XSOAR, AgentiX, Xpanse et Cortex Cloud : la plateforme d\'operations de securite.', 'var(--c-cortex)'],
+    ['idira.html', 'Identity', 'Idira', 'Le quatrième pilier, lancé en mai 2026 : identités humaines, agentiques et machine.', 'var(--identity)']
+  ];
+
+  document.getElementById('pillars').innerHTML = PILLARS.map(function (p) {
+    return '<a class="pcard2" style="--fx:' + p[4] + '" href="' + p[0] + '" data-reveal>'
+      + '<div class="k">' + p[1] + '</div><h3>' + p[2] + '</h3><p>' + p[3] + '</p></a>';
+  }).join('');
+
+  /* ══ Ressources (links.js) ══ */
+  function renderCard(item) {
+    const ext = item.type === 'external' ? 'target="_blank" rel="noopener noreferrer"' : '';
+    return '<a class="tool-card' + (item.highlight ? ' card-partner' : '') + '" href="' + item.href + '" ' + ext + '>'
+      + '<div class="card-icon">' + item.icon + '</div>'
+      + '<div class="card-title">' + item.title + '<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg></span></div>'
+      + '<div class="card-description">' + item.description + '</div></a>';
+  }
+
+  function renderApp(data) {
+    const app = document.getElementById('app');
+    // le rayon « Outils du guide » a sa propre section plus haut
+    const cats = data.categories.filter(function (c) { return c.id !== 'outils'; });
+    app.innerHTML = '<nav class="cat-nav" id="cat-nav">'
+      + cats.map(function (c, i) { return '<button data-index="' + i + '" class="' + (i === 0 ? 'active' : '') + '">' + c.title + '</button>'; }).join('')
+      + '</nav>'
+      + cats.map(function (c, i) {
+          return '<section class="category-section ' + (i === 0 ? 'visible' : '') + '" id="cat-' + i + '">'
+            + '<div class="tools-grid">' + c.items.map(renderCard).join('') + '</div></section>';
+        }).join('');
+
+    document.getElementById('cat-nav').addEventListener('click', function (e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      document.querySelectorAll('.cat-nav button').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.category-section').forEach(function (s) { s.classList.remove('visible'); });
+      btn.classList.add('active');
+      document.getElementById('cat-' + btn.dataset.index).classList.add('visible');
+    });
+  }
+
+  try { renderApp(LINKS_DATA); }
+  catch (err) {
+    document.getElementById('app').innerHTML = '<p class="status-msg">Erreur de chargement (' + err.message + ')</p>';
+  }
+  </script>
+</body>
+</html>

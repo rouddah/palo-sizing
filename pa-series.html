@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparateur PA-Series · Sizing Guide</title>
+  <meta name="description" content="Comparateur technique PA-Series Palo Alto Networks : 54 modèles, de la PA-410 à la PA-7500, débits, sessions, interfaces et fin de commercialisation. PA-1500, PA-3500, PA-5500 et PA-50R comprises." />
+  <meta property="og:title" content="Sizing Guide · PA-Series NGFW" />
+  <meta property="og:description" content="Comparateur technique des firewalls PA-Series Palo Alto Networks." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --label-w: 220px;
+      --col-w:   148px;
+    }
+
+    /* ── Toolbars ── */
+    .tb-wrap {
+      position: relative; z-index: 2;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar + .toolbar {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+
+    .tb-label {
+      
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .tb-sep {
+      width: 1px; height: 20px;
+      background: var(--border2);
+      flex-shrink: 0;
+    }
+
+    .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    /* Le filtre glisse vers son etat actif au lieu d'y sauter. */
+    .fb {
+      transition: background-color var(--dur-fast) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  color var(--dur-fast) var(--ease),
+                  transform var(--dur-fast) var(--ease);
+      
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: var(--r-xs);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .fb:hover { border-color: var(--border2); color: var(--text-bright); }
+    .fb.on    { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
+
+    .stats-bar {
+      padding: 5px 20px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 20px;
+      
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .stats-bar strong { color: var(--accent-txt); }
+
+    /* ── Table container ── */
+    .table-outer {
+      position: relative; z-index: 1;
+      overflow-x: scroll;
+      overflow-y: auto;
+      height: calc(100vh - var(--header-h) - 108px);
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
+    .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: var(--r-sm); min-height: 40px; }
+    .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .table-outer::-webkit-scrollbar-corner { background: var(--bg2); }
+    @supports (scrollbar-width: auto) {
+      .table-outer { scrollbar-width: auto; scrollbar-color: var(--border2) var(--bg2); }
+    }
+
+    .pa-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      min-width: max-content;
+    }
+
+    /* ── Sticky label column ── */
+    .th-corner,
+    .spec-label-cell {
+      position: sticky;
+      left: 0;
+      width: var(--label-w);
+      min-width: var(--label-w);
+      max-width: var(--label-w);
+      z-index: 20;
+    }
+
+    .th-corner {
+      background: var(--bg);
+      z-index: 62;
+      top: 0;
+    }
+
+    .spec-label-cell {
+      background: var(--surface);
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      border-right: 2px solid var(--border2);
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
+      transition: background .1s, border-right-color .1s;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.15);
+    }
+
+    /* ── Sticky header row ── */
+    .col-header-row th {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+    }
+
+    .model-hw {
+      background: linear-gradient(180deg, #f7f8fa, #e9ecf1);
+      padding: 7px 8px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+    .model-hw img {
+      max-width: 100%;
+      max-height: 26px;
+      width: auto;
+      object-fit: contain;
+      transition: transform .3s var(--ease-ui);
+    }
+    .model-th:hover .model-hw img { transform: scale(1.09); }
+
+    /* ── Model header card ── */
+    .model-th {
+      width: var(--col-w);
+      min-width: var(--col-w);
+      max-width: var(--col-w);
+      padding: 5px 4px 0;
+      vertical-align: bottom;
+    }
+
+    .model-card-clip { overflow: hidden; border-radius: var(--r-md) var(--r-md) 0 0; }
+
+    .model-card-top {
+      padding: 10px 12px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      cursor: pointer;
+      transition: filter .15s;
+    }
+    .model-card-top:hover { filter: brightness(1.15); }
+
+    .model-card-top::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background .15s;
+    }
+    .model-card-top:hover::before { background: rgba(255,255,255,0.08); }
+
+    .model-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      /* la couleur vient de .model-card-top, calculee d'apres le fond */
+      color: inherit;
+    }
+
+    .model-target {
+      font-size: 10px;
+      /* meme encre que le nom, simplement adoucie : un blanc fixe ne
+         tenait pas sur les couleurs claires de la gamme */
+      color: inherit;
+      opacity: .82;
+      font-family: var(--mono);
+      letter-spacing: 0.03em;
+    }
+
+    .model-card-bot {
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .model-ds-link {
+      
+      font-size: 10px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color .15s;
+    }
+    .model-ds-link:hover { color: rgba(255,255,255,0.9); }
+
+    .sel-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .model-th.selected .sel-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .model-th.selected .model-card-top { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* ── Value cells ── */
+    .val-cell {
+      width: var(--col-w);
+      /* Rythme serre : on tient plus de lignes a l'ecran, et un
+         comparateur se lit en balayant une colonne, pas en lisant. */
+      padding: 5px 12px;
+      /* Chiffres alignes a droite : les ordres de grandeur se comparent
+         alors a la position, sans avoir a lire la valeur. */
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      border-left: 2px solid transparent;
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      color: var(--text);
+      transition: background var(--dur-fast) var(--ease);
+      white-space: nowrap;
+    }
+
+    /* Zebra */
+    tr.data-row:nth-child(even) .val-cell,
+    tr.data-row:nth-child(even) .spec-label-cell { background: var(--surface2); }
+
+    tr.data-row:hover .val-cell,
+    tr.data-row:hover .spec-label-cell {
+      background: color-mix(in srgb, var(--accent) 7%, transparent) !important;
+    }
+    tr.data-row:hover .spec-label-cell {
+      border-right-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    /* Max highlight */
+    .val-max {
+      color: var(--green) !important;
+      font-weight: 700;
+    }
+    .val-max::after {
+      content: ' ↑';
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    .val-na { color: var(--text-muted); opacity: 0.4; font-weight: 400; }
+
+    /* Metriques de dimensionnement : debits et sessions. Ce sont elles
+       qui tranchent le choix du modele, elles portent donc le poids. */
+    tr[data-cat="perf"] .val-cell,
+    tr[data-cat="sess"] .val-cell {
+      font-weight: 700;
+      color: var(--text-bright);
+      font-size: 12px;
+    }
+    tr[data-cat="perf"] .spec-label-cell,
+    tr[data-cat="sess"] .spec-label-cell { color: var(--text-bright); font-weight: 600; }
+    /* une valeur absente reste en retrait, meme sur une ligne critique */
+    tr[data-cat="perf"] .val-cell.val-na,
+    tr[data-cat="sess"] .val-cell.val-na { font-weight: 400; color: var(--text-muted); }
+
+    .badge-yes {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: var(--r-xs);
+      font-size: 10px;
+      background: var(--ok-dim);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green);
+    }
+
+    /* EoS model styling */
+    .badge-eos-pa {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: var(--r-xs);
+      font-size: 10px;
+      background: var(--warn-dim);
+      border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+      /* couleur figee avant : elle ne suivait pas le theme */
+      color: var(--warn);
+    }
+    .model-th.eos-model .model-card-top::after {
+      content: 'EoS';
+      position: absolute;
+      top: 5px; right: 7px;
+      background: rgba(234,179,8,0.25);
+      border: 1px solid rgba(234,179,8,0.6);
+      color: #fbbf24;
+      font-size: 10px;
+      
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: var(--r-xs);
+      letter-spacing: 0.07em;
+    }
+
+    /* Measurement note in stats bar */
+    .stats-note {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Category rows ── */
+    .cat-row td {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 0;
+    }
+
+    .cat-row td.cat-label-cell {
+      position: sticky;
+      left: 0;
+      z-index: 40;
+      background: var(--bg2);
+      border-right: 2px solid var(--accent);
+    }
+
+    .cat-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+    }
+
+    .cat-inner-text {
+      
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-bright);
+    }
+
+    /* ── Row entrance animation ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    tr.data-row { animation: slideIn .2s ease backwards; }
+
+    /* ── Hidden modifier ── */
+    .col-hidden { display: none; }
+
+    /* ── Glossary tooltips ── */
+    .glossary-tip {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dotted var(--text-muted);
+    }
+    .glossary-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      background: var(--surface3);
+      color: var(--text-bright);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 1.5;
+      padding: 8px 12px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border2);
+      white-space: normal;
+      width: max-content;
+      max-width: 260px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 200;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .glossary-tip:hover::after { opacity: 1; }
+
+    /* ── Compare button ── */
+    .cmp-fab {
+      position: fixed;
+      top: calc(var(--header-h) + 10px);
+      right: 20px;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--r-md);
+      color: var(--on-accent);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(232,75,26,0.4);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cmp-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,75,26,0.5); }
+    .cmp-fab.visible { display: flex; }
+
+    /* ── Compare modal ── */
+    .cmp-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+      overflow-y: auto;
+    }
+    .cmp-overlay.open { display: flex; }
+
+    .cmp-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 92vw;
+      max-width: 1000px;
+      position: relative;
+    }
+
+    .cmp-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 20px;
+    }
+
+    .cmp-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 30px; height: 30px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--r-sm); cursor: pointer;
+      color: var(--text-muted); font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cmp-close:hover { color: var(--text-bright); }
+
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font); overflow: auto; }
+    .cmp-table th, .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .cmp-table thead th { background: var(--surface2); font-family: var(--font); font-size: 14px; font-weight: 700; position: sticky; top: 0; }
+    .cmp-table td:first-child { text-align: left; color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; background: var(--surface); position: sticky; left: 0; }
+    .cmp-table tr:hover td { background: var(--surface2) !important; }
+    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 13px; }
+    .ct-val { font-family: var(--mono); font-size: 13px; color: var(--text); }
+
+    .fb:hover { transform: translate3d(0,-1px,0); }
+    .fb:active { transform: none; transition-duration: 60ms; }
+    /* La colonne de modele se souleve legerement au survol : elle
+       indique la cible du clic sans decaler le tableau. */
+    .model-col, .model-card { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+    .model-col:hover, .model-card:hover { transform: translate3d(0,-3px,0); }
+  </style>
+</head>
+<body data-bg="calme">
+  <div id="header-root"></div>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="bg.js" defer></script>
+  <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
+
+  <!-- ── Toolbars ── -->
+  <div class="tb-wrap">
+    <div class="toolbar">
+      <span class="tb-label">Catégories</span>
+      <div class="tb-sep"></div>
+      <div class="filter-group" id="cat-filters">
+        <button class="fb on" data-cat="all" onclick="filterCat(this)">Toutes</button>
+        <button class="fb" data-cat="perf"  onclick="filterCat(this)">Performances</button>
+        <button class="fb" data-cat="sess"  onclick="filterCat(this)">Sessions</button>
+        <button class="fb" data-cat="ports" onclick="filterCat(this)">Interfaces</button>
+        <button class="fb" data-cat="hw"    onclick="filterCat(this)">Hardware</button>
+        <button class="fb" data-cat="cap"   onclick="filterCat(this)">Capacités</button>
+        <button class="fb" data-cat="vpn"   onclick="filterCat(this)">VPN & SD-WAN</button>
+        <button class="fb" data-cat="feat"  onclick="filterCat(this)">Fonctionnalités</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-label">Série</span>
+      <div class="tb-sep"></div>
+      <!-- Les boutons de serie sont construits depuis MODELS au chargement :
+           une serie ajoutee aux donnees apparait ici sans toucher au HTML. -->
+      <div class="filter-group" id="series-filters"></div>
+      <div class="tb-sep"></div>
+      <span class="tb-label">Format</span>
+      <div class="filter-group" id="form-filters">
+        <button class="fb on" data-form="all"     onclick="filterForm(this)">Tous</button>
+        <button class="fb" data-form="Desktop"    onclick="filterForm(this)">Desktop</button>
+        <button class="fb" data-form="1U Rack"    onclick="filterForm(this)">1U Rack</button>
+        <button class="fb" data-form="2U Rack"    onclick="filterForm(this)">2U Rack</button>
+        <button class="fb" data-form="Chassis"    onclick="filterForm(this)">Chassis</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-label">Recherche</span>
+      <div class="tb-sep"></div>
+      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
+      <div class="tb-sep"></div>
+      <span class="tb-label">Trier par</span>
+      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
+        <option value="default">Ordre par défaut</option>
+        <option value="tp">Débit Threat Prevention</option>
+        <option value="fw">Débit App-ID</option>
+        <option value="sess">Sessions concurrentes</option>
+        <option value="cps">CPS</option>
+      </select>
+    </div>
+    <div class="stats-bar">
+      <span>Modèles affichés : <strong id="stat-models">25</strong></span>
+      <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
+      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+    </div>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-outer">
+    <table class="pa-table" id="pa-table">
+      <thead>
+        <tr class="col-header-row" id="header-row">
+          <th class="th-corner"></th>
+          <!-- model columns injected by JS -->
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Compare FAB ── -->
+  <button class="cmp-fab" id="cmp-fab" onclick="openCompare()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Comparer (<span id="cmp-count">0</span>)
+  </button>
+
+  <!-- ── Compare modal ── -->
+  <div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompare()">
+    <div class="cmp-modal">
+      <div class="cmp-title">Comparaison</div>
+      <button class="cmp-close" onclick="closeCompare()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
+      <div id="cmp-actions"></div>
+    </div>
+  </div>
+
+  <script>
+  const ROWS = [
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
+    { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
+    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
+    { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
+    { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
+    { cat:'cap',   label:'Sessions SSL/TLS déchiffrement',   fn: m => m.ssl       != null ? fmtN(m.ssl)       : '—', num: m => m.ssl       != null ? m.ssl       : null },
+    { cat:'cap',   label:'Objets adresses max',              fn: m => m.addr      != null ? fmtN(m.addr)      : '—', num: m => m.addr      != null ? m.addr      : null },
+    { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
+    { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
+    { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
+    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
+    { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
+    { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
+    { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
+    { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
+    { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
+    { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
+    { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
+    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
+    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
+    { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
+    { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
+  ];
+
+  const CATS = {
+    perf:  { label:'Performances',    icon:'▸' },
+    sess:  { label:'Sessions',        icon:'▸' },
+    cap:   { label:'Capacités',       icon:'▸' },
+    vpn:   { label:'VPN & SD-WAN',    icon:'▸' },
+    ports: { label:'Interfaces',      icon:'▸' },
+    hw:    { label:'Hardware',        icon:'▸' },
+    feat:  { label:'Fonctionnalités', icon:'▸' },
+    ref:   { label:'Références / SKU', icon:'▸' },
+  };
+
+  /* ══ State ══ */
+  let activeCat    = 'all';
+  let activeSeries = 'all';
+  let activeForm   = 'all';
+  let selected     = new Set();
+
+  const EOS_REPLACEMENTS = {
+    'PA-820': 'PA-1410', 'PA-850': 'PA-1420',
+    'PA-7050': 'PA-7500', 'PA-7080': 'PA-7500',
+  };
+
+  /* ══ Build table ══ */
+
+  /* Encre lisible sur une couleur donnee.
+
+     Les couleurs de gamme vont du bleu nuit au jaune vif : une encre
+     unique ne peut pas tenir sur les deux. On mesure la luminance
+     relative du fond, formule WCAG, et on choisit le charbon ou le
+     blanc selon celui qui contraste le plus. Le seuil de 0,45 place
+     la bascule la ou les deux se valent. */
+  function inkOn(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return '#fff';
+    var v = [0, 2, 4].map(function (i) {
+      var c = parseInt(h.substr(i, 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    var lum = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    /* On ne devine pas avec un seuil : on calcule le contraste des deux
+       encres et on garde la meilleure. Un seuil fixe a 0,45 laissait
+       l'ambre #f59e0b en blanc, a 2,15:1, alors que le charbon y donne
+       8,6:1. Le seuil est le mauvais critere ; la comparaison est le
+       bon. */
+    var withWhite = 1.05 / (lum + 0.05);
+    var withInk   = (lum + 0.05) / 0.06665;   // #10151c, luminance 0.01665
+    return withInk > withWhite ? '#10151c' : '#ffffff';
+  }
+  /* Vignette officielle du boitier, decoupee dans le stencil Visio Palo Alto.
+     Absente pour quelques references : la colonne reste alors sans image. */
+  function chassis(id) {
+    var k = id.toLowerCase();
+    var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[k];
+    if (!e) return '';
+    return '<div class="model-hw"><img src="' + e.img + '" alt="' + e.label + '" loading="lazy"></div>';
+  }
+
+  function buildTable() {
+    let visible = MODELS.filter(m =>
+      (activeSeries === 'all' || m.s === activeSeries) &&
+      (activeForm   === 'all' || m.f.startsWith(activeForm)) &&
+      (searchQuery === '' || m.id.toLowerCase().includes(searchQuery) || m.target.toLowerCase().includes(searchQuery))
+    );
+    if (sortMetric !== 'default') {
+      const key = { tp:'tp', fw:'fw', sess:'sess', cps:'cps' }[sortMetric];
+      if (key) visible = [...visible].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+    }
+
+    // Header
+    const hRow = document.getElementById('header-row');
+    const DS_URLS = {
+      'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+      'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
+      'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+      'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+      'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+      'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+      'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+      'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
+      'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
+      'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
+      'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
+      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
+    };
+    hRow.innerHTML = `<th class="th-corner"></th>` +
+      visible.map(m => {
+        const ink = inkOn(m.color);
+        // le rappel de remplacement vit sur la carte : il prend la meme
+        // encre, a opacite reduite, plutot qu'un jaune fixe illisible
+        const repl = m.eos && EOS_REPLACEMENTS[m.id]
+          ? `<span style="display:block;font-size:10px;margin-top:2px;color:${ink};opacity:.78">&rarr; ${EOS_REPLACEMENTS[m.id]}</span>`
+          : '';
+        return `
+        <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
+          <div class="model-card-clip">
+            <div class="model-card-top" style="background:${m.color};color:${ink}">
+              <span class="model-name">${m.id}</span>
+              <span class="model-target">${m.target}${repl}</span>
+            </div>
+            ${chassis(m.id)}
+            <div class="model-card-bot" style="background:${m.color}22">
+              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> Datasheet</a>
+              <div class="sel-dot"></div>
+            </div>
+          </div>
+        </th>`;
+      }).join('');
+
+    // Body
+    let seenCats = new Set();
+    let html     = '';
+    let delay    = 0;
+
+    ROWS.forEach(row => {
+      if (activeCat !== 'all' && row.cat !== activeCat) return;
+
+      // Category separator
+      const catKey = row.cat;
+      if (!seenCats.has(catKey) && CATS[catKey]) {
+        seenCats.add(catKey);
+        html += `<tr class="cat-row">
+          <td class="cat-label-cell">
+            <div class="cat-inner">
+              <span class="cat-inner-text">${CATS[catKey].label}</span>
+            </div>
+          </td>
+          ${visible.map(() => '<td class="cat-spacer"></td>').join('')}
+        </tr>`;
+      }
+
+      // Find max numeric value across visible models (for highlighting)
+      let maxVal = -Infinity;
+      if (row.num) {
+        visible.forEach(m => { const v = row.num(m); if(v > maxVal) maxVal = v; });
+      }
+
+      const cells = visible.map(m => {
+        const raw = row.fn(m);
+        const num = row.num ? row.num(m) : null;
+        const isMax = num !== null && num === maxVal && maxVal > 0;
+        const isNa  = raw === '—';
+        let cls = 'val-cell';
+        if (isMax) cls += ' val-max';
+        else if (isNa) cls += ' val-na';
+        return `<td class="${cls}" style="border-left-color:${m.color}22">${raw}</td>`;
+      }).join('');
+
+      html += `<tr class="data-row" data-cat="${row.cat}" style="animation-delay:${delay}ms">
+        <td class="spec-label-cell">${row.label}</td>
+        ${cells}
+      </tr>`;
+      delay += 12;
+    });
+
+    document.getElementById('table-body').innerHTML = html;
+    document.getElementById('stat-models').textContent = visible.length;
+  }
+
+  /* ══ Filters ══ */
+  let searchQuery = '';
+  let sortMetric = 'default';
+
+  function filterCat(btn) {
+    document.querySelectorAll('#cat-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeCat = btn.dataset.cat;
+    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildTable();
+  }
+
+  /* Les series affichees suivent les donnees, pas une liste ecrite a la
+     main : une serie ajoutee a MODELS apparait dans la barre de filtres
+     au rechargement. Le badge EoS se deduit des modeles eux-memes. */
+  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
+  const SERIES_EOS_TITRE = { 'PA-800': 'End of Sale · août 2024',
+                             'PA-7000': 'End of Sale · décembre 2025' };
+
+  function buildSeriesFilters() {
+    const box = document.getElementById('series-filters');
+    if (!box) return;
+    const series = [];
+    MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
+    box.innerHTML = '<button class="fb on" data-series="all" onclick="filterSeries(this)">Toutes</button>'
+      + series.map(sid => {
+          const eos = MODELS.filter(m => m.s === sid).every(m => m.eos);
+          const badge = eos
+            ? ' <span style="font-size:10px;color:var(--yellow)">EoS</span>'
+            : (SERIES_NEW.indexOf(sid) !== -1
+                ? ' <span style="font-size:10px;color:var(--ok);font-weight:700">New</span>' : '');
+          const titre = SERIES_EOS_TITRE[sid] ? ' title="' + SERIES_EOS_TITRE[sid] + '"' : '';
+          return '<button class="fb" data-series="' + sid + '" onclick="filterSeries(this)"' + titre + '>'
+               + sid + badge + '</button>';
+        }).join('');
+  }
+
+  function filterSeries(btn) {
+    document.querySelectorAll('#series-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeSeries = btn.dataset.series;
+    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildTable();
+  }
+
+  function filterForm(btn) {
+    document.querySelectorAll('#form-filters .fb').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    activeForm = btn.dataset.form;
+    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildTable();
+  }
+
+  function filterSearch(q) {
+    searchQuery = q.trim().toLowerCase();
+    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildTable();
+  }
+
+  function sortModels(metric) {
+    sortMetric = metric;
+    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildTable();
+  }
+
+  /* ══ Selection ══ */
+  function toggleSel(id) {
+    if (selected.has(id)) {
+      selected.delete(id);
+    } else {
+      if (selected.size >= 4) return;
+      selected.add(id);
+    }
+    document.querySelectorAll(`[id="mh-${id}"]`).forEach(el => el.classList.toggle('selected', selected.has(id)));
+    const fab   = document.getElementById('cmp-fab');
+    const count = document.getElementById('cmp-count');
+    count.textContent = selected.size;
+    fab.classList.toggle('visible', selected.size >= 2);
+  }
+
+  /* ══ Compare ══ */
+  let cmpDiffOnly = false;
+
+  function openCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    renderCompare(models);
+    document.getElementById('cmp-overlay').classList.add('open');
+    const cmpUrl = window.location.origin + window.location.pathname + '?cmp=' + models.map(m => m.id).join(',');
+    history.replaceState(null, '', cmpUrl);
+  }
+
+  function renderCompare(models) {
+    const head = `<thead><tr><th style="text-align:left">
+      <label style="font-size:10px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px">
+        <input type="checkbox" ${cmpDiffOnly?'checked':''} onchange="cmpDiffOnly=this.checked;renderCompare([${models.map(m=>`MODELS.find(x=>x.id==='${m.id}')`).join(',')}])"> Différences uniquement
+      </label>
+    </th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
+
+    const body = ROWS.map(row => {
+      const vals = models.map(m => row.fn(m));
+      const nums = models.map(m => row.num ? row.num(m) : null);
+      if (cmpDiffOnly && row.num) {
+        const unique = new Set(nums.filter(n => n !== null));
+        if (unique.size <= 1) return '';
+      }
+      const maxN = Math.max(...nums.filter(n => n !== null));
+      const cells = vals.map((v, i) => {
+        const isBest = nums[i] !== null && nums[i] === maxN && maxN > 0;
+        return `<td class="${isBest ? 'ct-max' : 'ct-val'}">${v}</td>`;
+      }).join('');
+      return `<tr><td>${row.label}</td>${cells}</tr>`;
+    }).filter(Boolean).join('');
+
+    const actions = `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="wiz-action-btn secondary" onclick="copyCompare()">Copier la comparaison</button>
+      <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copié !'">Partager le lien</button>
+    </div>`;
+
+    document.getElementById('cmp-table').innerHTML = head + `<tbody>${body}</tbody>`;
+    const actionsEl = document.getElementById('cmp-actions');
+    if (actionsEl) actionsEl.innerHTML = actions;
+  }
+
+  function copyCompare() {
+    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n';
+    text += models.map(m => m.id).join(' | ') + '\n\n';
+    ROWS.forEach(row => {
+      const vals = models.map(m => row.fn(m).replace(/<[^>]+>/g, ''));
+      const label = row.label.replace(/<[^>]+>/g, '');
+      text += label + ' : ' + vals.join(' | ') + '\n';
+    });
+    text += '\nEstimation indicative. Données issues des datasheets officielles Palo Alto Networks.';
+    navigator.clipboard.writeText(text);
+  }
+
+  function closeCompare() {
+    document.getElementById('cmp-overlay').classList.remove('open');
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  function loadCompareFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const cmp = params.get('cmp');
+    if (cmp) {
+      cmp.split(',').forEach(id => { if (MODELS.find(m => m.id === id)) selected.add(id); });
+      if (selected.size >= 2) openCompare();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildSeriesFilters();
+  buildTable();
+  </script>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.2 / 12.1 / 11.2 / 11.1) · Dernière mise à jour : août 2026</div>
+    <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
+  </footer>
+</body>
+</html>
