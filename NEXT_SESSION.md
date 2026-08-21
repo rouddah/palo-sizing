@@ -1,6 +1,6 @@
 # Briefing session suivante - palo-sizing
 
-> Mis a jour le 20 aout 2026 (session 6). A lire en debut de session avant de toucher quoi que ce soit.
+> Mis a jour le 21 aout 2026 (session 15). A lire en debut de session avant de toucher quoi que ce soit.
 
 ## Contexte rapide
 
@@ -21,7 +21,8 @@ npm run deploy       # check + smoke + stage + wrangler
 
 | commande | role |
 | --- | --- |
-| `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, compteurs de l'accueil adosses aux donnees, emojis (entites HTML comprises), em-dash dans le contenu |
+| `npm run data` | `_data-audit.js` : coherence interne des 54 modeles. Une valeur non publiee par la datasheet sort en avertissement, pas en erreur |
+| `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, compteurs de l'accueil et nombres de modeles ecrits dans les pages adosses aux donnees, emojis (entites HTML comprises), em-dash dans le contenu |
 | `npm test` | `_smoke.js` : charge `qualification.html` dans jsdom, joue 5 cas de dimensionnement, controle l'etiquetage des champs et l'echappement |
 | `npm run responsive` | `_responsive.js` : 8 pages a 6 largeurs, refuse tout debordement horizontal |
 | `npm run contrast` | `_contrast.js` : 13 pages x 2 themes, contraste AA, en composant les fonds translucides |
@@ -59,44 +60,45 @@ npm run deploy
 Le push GitHub ne declenche **pas** le deploiement Cloudflare. Toujours lancer
 `npm run deploy` a la main.
 
-## Etat au 20 aout 2026 (session 6)
+## Etat au 21 aout 2026 (session 15)
 
-Refonte du systeme de design et de l'outil de dimensionnement. Detail complet
-dans `CHANGELOG.md`. Les points a retenir avant d'editer :
+Le catalogue a ete recontrole datasheet par datasheet et complete.
+Detail dans `CHANGELOG.md`. A retenir avant d'editer :
 
-- **La couche decorative « FX v5 » a ete supprimee** (aurore de fond animee,
-  texte en degrade, obliques derivantes, spot suivant le curseur, levitation
-  des cartes, compteurs animes, jauge de lecture). C'etait une demande
-  explicite : ne pas la reintroduire.
-- **Typo** : pile `system-ui` pour l'interface, Geist Mono pour les seules
-  metriques. C'est le dernier webfont du site, ne pas en rajouter.
-- **Couleur** : passer par `--accent-txt` pour tout libelle colore (`#FA582D`
-  ne tient pas 4.5:1 sur `--surface3`) et par `--on-accent` pour du texte pose
-  sur un aplat orange (le blanc y plafonne a 3.23:1).
-- **Pictogrammes** : `icons.js`, via `<span data-ic="nom">` ou `ic("nom")` en
-  JS. **Plus aucun emoji sur le site**, `_check.js` le verifie.
-- **`qualification.html` est un etabli a deux volets** : contraintes a gauche,
-  recommandation a droite, recalcul continu a chaque saisie (il n'y a plus de
-  bouton « calculer »). Classes prefixees `.wb-`.
-- **Fins de ligne** : tout est en LF, fixe par `.gitattributes`. Le depot etait
-  en CRLF/LF mixte, ce qui faisait echouer silencieusement les remplacements de
-  chaines multilignes.
+- **54 modeles, 12 series.** Ajoutees : PA-1500, PA-3500, PA-5500,
+  PA-50R, plus PA-501 et PA-520-5G.
+- **`data/pa-models.js` est la seule source.** La page recherche portait
+  sa propre copie : elle a ete supprimee. Les bornes de serie de
+  l'etabli et les boutons de filtre des deux pages sont derives des
+  donnees, en calcul **paresseux** (au premier appel, pas au
+  chargement : l'ordre des scripts differe entre navigateur et DOM de
+  test).
+- **Un champ nul veut dire « non publie ».** Le VPN IPsec et le CPS des
+  PA-3500 et des trois premiers PA-5500 sont TBD chez Palo Alto. Ne pas
+  les estimer. Dans l'etabli, une metrique nulle sort du calcul et un
+  encart le dit ; ne pas la traiter comme une capacite infinie, cela
+  revient a ne jamais proposer le modele.
+- **Ne pas inventer de SKU.** Six modeles ont un `sku` nul parce que la
+  datasheet ne publie pas la reference chassis.
+- **Les couleurs de modele sont des fonds**, pas des encres : elles
+  doivent tenir 4,5:1 avec le blanc ou le charbon. `npm run contrast`
+  le verifie sur les 54.
+- **`_data-audit.js` tourne au build.** Ajouter un modele incoherent
+  fait echouer `npm run build`.
 
 ## Tache ouverte
 
-**Jeu de pictogrammes officiel Palo Alto** : le pptx telecharge est chiffre par
-la protection des droits Microsoft, donc inexploitable. Voir `_to_verify.md`.
-Quand un export SVG sera disponible, il suffira de remplacer les traces de
-`PATHS` dans `icons.js` : aucune page a modifier.
+`_to_verify.md` liste ce qui attend une confirmation Palo Alto : les
+valeurs TBD, les references chassis manquantes, la contradiction de nom
+sur le troisieme PA-50R, le statut de commercialisation de la PA-1400.
 
-## Phases non traitees de la refonte
+## Chantiers non traites
 
-Les phases 1 et 2 (systeme de design, outil de dimensionnement) sont livrees.
-Restent, si besoin :
-
-- passe de densite sur `pa-series.html` (le comparateur)
+- passe de densite sur `pa-series.html`, le comparateur
 - audit de la microcopie sur les pages produit (prisma, cortex, browser)
-- `wizard.html` et `search.html` n'ont recu que le nettoyage des emojis
+- `wizard.html` n'a recu que le nettoyage des emojis
+- la PA-50R est volontairement hors du moteur de recommandation de
+  l'etabli : un profil de bureau ne se dimensionne pas sur un boitier OT
 
 ## Regles non negociables (rappel)
 
@@ -104,5 +106,7 @@ Restent, si besoin :
 - Pas de prix, jamais
 - Pas d'em-dash dans le contenu nouveau
 - Noms officiels PAN en anglais (Mobile User, Service Connection, Remote Network)
-- Donnees chiffrees sourcees uniquement, sinon `[a confirmer]` + `_to_verify.md`
+- Donnees chiffrees sourcees uniquement, sinon champ nul + `_to_verify.md`
 - Ne pas inventer de SKU
+- Ne jamais nommer un document interne dans le depot ou sur le site :
+  la source annoncee est la datasheet officielle

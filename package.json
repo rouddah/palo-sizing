@@ -8,10 +8,11 @@
   "private": true,
   "description": "Sizing Guide PANW - site statique, aucune etape de build",
   "scripts": {
-    "build": "node _check.js && node _smoke.js && node _responsive.js && node _contrast.js && node _keyboard.js",
+    "build": "node _check.js && node _data-audit.js && node _smoke.js && node _responsive.js && node _contrast.js && node _keyboard.js",
     "check": "node _check.js",
+    "data": "node _data-audit.js",
     "test": "node _smoke.js",
-    "deploy": "node _check.js && node _smoke.js && node _stage.js && npx wrangler pages deploy .deploy --project-name palo-sizing --branch main --commit-dirty=true",
+    "deploy": "node _check.js && node _data-audit.js && node _smoke.js && node _stage.js && npx wrangler pages deploy .deploy --project-name palo-sizing --branch main --commit-dirty=true",
     "responsive": "node _responsive.js",
     "stage": "node _stage.js",
     "contrast": "node _contrast.js",

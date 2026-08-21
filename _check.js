@@ -143,6 +143,23 @@ try {
         + ' alors que la donnee en contient ' + want);
     }
   });
+
+  /* Le compteur anime n'est pas le seul endroit ou un nombre de modeles
+     est ecrit : il y en a dans les descriptions de cartes et dans les
+     balises meta. Ces chiffres-la vieillissaient sans que rien ne le
+     signale, et le site a longtemps annonce 39 modeles pour 33. */
+  const NB = /(\d+)\s+mod[eè]les/g;
+  fs.readdirSync(ROOT).filter(f => f.endsWith('.html')).forEach(file => {
+    const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    let m;
+    while ((m = NB.exec(src))) {
+      if (+m[1] !== counts.models) {
+        const ligne = src.slice(0, m.index).split(String.fromCharCode(10)).length;
+        problems.push(file + ':' + ligne + ' : annonce ' + m[1]
+          + ' modeles alors que la donnee en contient ' + counts.models);
+      }
+    }
+  });
 } catch (e) {
   problems.push('controle des compteurs impossible : ' + e.message);
 }

@@ -1,41 +1,113 @@
-# Éléments à vérifier / valider
+# Points a confirmer a la source
 
-> Fichier généré automatiquement lors de la refonte du 29 juin 2026.
-> Ces éléments ont été identifiés lors du grep final mais n'ont pas été modifiés faute de validation suffisante.
+> Ce fichier ne liste que ce qui est **volontairement en attente** : une
+> valeur qu'aucune datasheet ne publie, une contradiction interne a un
+> document officiel, un arbitrage editorial non tranche. Une valeur
+> fausse ne se met pas ici, elle se corrige.
+>
+> Releve du 21 aout 2026, apres relecture des douze datasheets PA-Series.
 
-## pa-series.html — "IoT Security" résiduel (subscription name)
+## Valeurs portees TBD par les datasheets d'aout 2026
 
-| Ligne | Contenu | Statut |
-|-------|---------|--------|
-| 1174 | `data-tip="...IoT Security."` — tooltip sur le critère IoT dans le wizard technique | À valider : renommer en "Device Security" si la subscription a effectivement changé de nom dans le catalogue NGFW |
-| 1361 | `"...appelle une sécurité adaptée (IoT Security)."` — texte du guide de dimensionnement | À renommer en "Device Security" |
-| 1365 | `"...nécessitent la subscription IoT Security pour..."` — texte du guide | À renommer en "Device Security" |
-| 2390 | `subs.push({ name:'IoT Security', ... })` — objet JS de subscription dans le moteur de calcul | À renommer en "Device Security" ; vérifier que le SKU associé est toujours correct |
+Ces champs sont **nuls** dans `data/pa-models.js` et s'affichent en tiret
+sur tout le site. Ils ne sont pas estimes : sur un outil de
+dimensionnement, un chiffre invente est pire qu'un trou.
 
-**Contexte :** La transition IoT Security → Device Security est officielle depuis le 15 août 2025.
-Ces références sont dans pa-series.html qui dépasse 2 750 lignes. Une modification chirurgicale est possible mais doit être validée par rapport aux spécifications PA-Series-Complete-Specs.md.
+| Serie | Champ | Etat |
+| --- | --- | --- |
+| PA-3500, les quatre modeles | debit VPN IPsec | TBD dans la datasheet |
+| PA-3500, les quatre modeles | nouvelles sessions/s (CPS) | TBD dans la datasheet |
+| PA-5510, PA-5520, PA-5530 | debit VPN IPsec | TBD dans la datasheet |
+| PA-5510, PA-5520, PA-5530 | nouvelles sessions/s (CPS) | TBD dans la datasheet |
 
-## pa-series.html — CN-Series / AI Runtime Security
+Consequence dans l'etabli de dimensionnement : une metrique non publiee
+ne peut ni valider ni disqualifier un modele. Elle sort du calcul, et le
+volet de recommandation affiche un encart qui nomme le trou. A reprendre
+des que Palo Alto publie les chiffres.
 
-La page mentionne potentiellement CN-Series sans mention de la transition vers AI Runtime Security (Prisma AIRS 2.0, oct. 2025). À vérifier lors d'une prochaine passe sur pa-series.html.
+## References chassis non publiees
 
-## Idira — Pilier Identity (nouveau, mai 2026)
+Les datasheets suivantes ne donnent que les SKU d'accessoires, pas la
+reference du boitier. Le champ `sku` reste nul : la regle du projet
+interdit d'inventer une reference.
 
-Selon le prompt, ajouter :
-- Une carte sur index.html dans une catégorie "Identité"
-- Une page `idira.html` listant les composants (PAM, IAM, EPM, Identity Governance, Workforce Password Management, Agentic Identities, Secrets Management)
-- À arbitrer avec l'équipe commerciale avant d'ajouter : cela représente un nouveau pilier produit hors NGFW/SASE/SecOps
+- PA-501 et PA-520-5G, datasheet PA-500
+- les quatre modeles PA-50R
 
-## Jeu de pictogrammes officiel Palo Alto - RESOLU (20 aout 2026)
+## PA-50R : nom du troisieme modele
 
-Le premier fichier telecharge etait chiffre par la protection des droits
-Microsoft. Reexporte depuis PowerPoint, il s ouvre normalement.
+La datasheet se contredit d'une table a l'autre :
 
-458 pictogrammes ont ete convertis du DrawingML vers SVG. Neuf sont
-employes par le site, dans les titres de groupe et de section. Le
-convertisseur vit dans tools/icons/ (voir son README).
+- Table 1, performances : le modele est nomme **PA-54R-POE-5G**
+- Table 4, materiel : il est nomme **PA-54R-POE** et porte « N/A » dans
+  la colonne cellulaire
+
+Le site retient **PA-54R-POE**, sans 5G : c'est la table materielle qui
+decrit les interfaces, et elle est explicite sur l'absence de modem. A
+confirmer aupres de Palo Alto.
+
+## PA-50R : budget PoE
+
+Trois des quatre modeles annoncent PoE. La datasheet donne la
+consommation maximale du boitier (225,1 W) mais pas le budget PoE
+disponible. Le champ `poeW` reste nul.
+
+## PA-1400 : statut de commercialisation
+
+La page End of Life de Palo Alto comporte une entree PA-1400, mais elle
+voisine des lignes ION (Prisma SD-WAN) et les dates lues ne collent pas
+avec une serie encore mise en avant. La serie est donc laissee **active**
+sur le site. A verifier sur la matrice EoL officielle avant d'y poser un
+drapeau EoS.
+
+## Capacites de configuration
+
+Zones, politiques, tunnels IPsec site-a-site, sessions de dechiffrement,
+objets adresses, regles NAT, profils de securite : **les datasheets 2026
+ne les publient plus**. Elles ne sont renseignees que sur les modeles
+pour lesquels une edition anterieure les donnait. Les series ajoutees en
+aout 2026 les portent a nul, et le comparateur affiche un tiret.
+
+## PA-800 et PA-7000 : datasheets retirees
+
+Les deux series sont End of Sale et leurs datasheets ne sont plus
+publiees. Leurs valeurs viennent des editions anterieures et n'ont pas pu
+etre recontrolees a la source. Elles restent affichees avec leur drapeau
+EoS et leur date de fin de vie.
+
+## PA-500 : systemes virtuels du bas de gamme
+
+La datasheet PA-500 ecrit « -- » en systemes virtuels pour PA-501,
+PA-505, PA-510 et PA-520, la ou celle du PA-400 ecrit « 1/1 » pour ses
+propres entrees de gamme. Le site suit la datasheet et n'affiche rien
+pour ces quatre modeles. Si la distinction n'est qu'une coquetterie de
+mise en page chez Palo Alto, il faudra remettre « 1 / 1 ».
+
+## PA-50R hors du moteur de recommandation
+
+La gamme durcie est presente dans le comparateur et dans la recherche,
+mais elle ne figure pas dans les series que l'etabli de dimensionnement
+peut recommander : un profil de bureau ne se dimensionne pas sur un
+boitier OT. Arbitrage editorial, a revoir si le site couvre un jour
+l'industriel pour lui-meme.
+
+## pa-series.html : CN-Series et AI Runtime Security
+
+La page mentionne peut-etre encore CN-Series sans signaler la transition
+vers AI Runtime Security (Prisma AIRS 2.0, oct. 2025). A verifier lors
+d'une prochaine passe sur la page.
+
+## Jeu de pictogrammes officiel - resolu le 20 aout 2026
+
+458 pictogrammes convertis du DrawingML vers SVG, neuf employes par le
+site. Le convertisseur vit dans `tools/icons/`.
 
 Mesure a retenir : le jeu officiel est dessine pour la projection. En
-dessous de 20px ses traits les plus fins disparaissent. Les affordances
-d interface (coche, croix, chevron, fleche) restent donc une geometrie
-au trait, dessinee pour ces tailles-la.
+dessous de 20 px ses traits les plus fins disparaissent. Les affordances
+d'interface (coche, croix, chevron, fleche) restent donc une geometrie au
+trait, dessinee pour ces tailles-la.
+
+## IoT Security vers Device Security - resolu
+
+La transition est appliquee partout : plus aucune occurrence d'« IoT
+Security » dans les pages ni dans les scripts.

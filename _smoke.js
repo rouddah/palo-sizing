@@ -51,10 +51,15 @@ const CASES = [
     expectSeries: 'PA-5'
   },
   {
+    // 10 Gbps x1,5 croissance x1,5 SSL = 22,5 Gbps TP.
+    // Le cas attendait une PA-5400 tant que c'etait la premiere serie a
+    // tenir ce debit. Depuis l'annonce de la PA-3500, le PA-3540 porte
+    // 35 Gbps TP pour 64% de charge : il tient le besoin dans un format
+    // plus petit, et un modele surdimensionne reste un budget perdu.
     name: 'Datacenter 10 Gbps, SSL actif, croissance forte',
     set: { 'wiz-bw': '10000', 'wiz-users': '5000', 'wiz-type': 'dc',
            'wiz-ssl': 'yes', 'wiz-sites': '1', 'wiz-growth': 'strong' },
-    expectSeries: 'PA-54'
+    expectSeries: 'PA-35'
   },
   {
     // Peu de debit mais beaucoup d'utilisateurs en SaaS intensif : ce

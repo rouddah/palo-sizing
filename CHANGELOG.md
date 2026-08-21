@@ -1,5 +1,122 @@
 # Changelog
 
+## Session 15 - 21 aout 2026 : le catalogue rattrape les datasheets
+
+### Ce qui a declenche la session
+
+Palo Alto a annonce les PA-1500 et PA-3500. La demande etait de les
+ajouter, et de **recontroler toutes les valeurs deja publiees** sur le
+site. Les douze datasheets PA-Series ont ete relues une par une.
+
+### Les chiffres de performance etaient bons
+
+C'est le premier resultat, et il vaut d'etre ecrit : sur les 33 modeles
+deja presents, **aucun debit, aucune session, aucun CPS n'etait faux**.
+Table 1 de chaque datasheet, ligne par ligne, tout concorde.
+
+### Les comptes de ports, eux, ne l'etaient pas
+
+C'est la Table 3 qui a livre les erreurs, toujours la meme : les ports
+cuivre multi-gigabit etaient comptes comme des SFP+.
+
+| Modeles | Etait affiche | Datasheet |
+| --- | --- | --- |
+| PA-3410 a PA-3440 | 22 x SFP+ | 12 x cuivre mGig + 10 x SFP+ |
+| PA-5410 a PA-5445 | 20 x SFP+ | 8 x cuivre mGig + 12 x SFP+ |
+| PA-1410, PA-1420 | 8 et 4 x RJ45 | 12 x RJ45, les ports PoE manquaient |
+| PA-415, PA-445, PA-455, PA-455-5G | combo compte a la place du cuivre | jusqu'a 10 x RJ45 |
+
+Le PA-7500 comptait **les memes ports physiques trois fois** : 24 en
+SFP+, 24 en SFP28 et 40 en QSFP28, pour 40 ports reels. La configuration
+de reference porte 24 SFP-DD et 16 QSFP-DD, rien d'autre.
+
+### Quatre series et deux modeles manquaient
+
+Le site s'arretait a 33 modeles. Il en compte 54.
+
+- **PA-1500** : PA-1510-POE, PA-1520-POE, PA-1530-POE. Quantum-optimized,
+  16 ports PoE++ 90 W, commutation de niveau 2 integree.
+- **PA-3500** : PA-3510 a PA-3540, jusqu'a 35 Gbps Threat Prevention.
+- **PA-5500** : PA-5510 a PA-5580, jusqu'a 300 Gbps Threat Prevention et
+  des QSFP-DD 400G. Elle n'avait jamais ete saisie.
+- **PA-50R** : quatre boitiers durcis pour l'OT, absents eux aussi.
+- **PA-501** et **PA-520-5G**, oublies de la serie PA-500.
+
+### Ce que la datasheet ne dit pas, le site ne le dit pas
+
+Les datasheets d'aout 2026 portent **TBD** sur le VPN IPsec et le CPS des
+PA-3500 et des trois premiers PA-5500. Ces champs restent nuls et
+s'affichent en tiret. Consequence sur l'etabli de dimensionnement : une
+metrique non publiee ne peut ni valider ni disqualifier un modele, elle
+sort du calcul, et le volet de recommandation affiche un encart qui nomme
+le trou.
+
+L'inverse aurait ete plus simple a coder et faux : exclure ces modeles
+par une capacite infinie revenait a ne jamais les proposer, y compris
+quand ils tiennent tres bien le besoin.
+
+Meme regle pour les references : les datasheets PA-500 et PA-50R ne
+publient que des SKU d'accessoires. Les six modeles concernes portent un
+`sku` nul plutot qu'une reference devinee.
+
+### Trois listes ecrites a la main ont ete supprimees
+
+Ajouter une serie demandait de la recopier a quatre endroits. Les trois
+qui restaient sont maintenant derivees des donnees :
+
+- les **bornes de serie** de l'etabli (`tpMin`, `tpMax`, `sessMax`,
+  modeles couverts) etaient recopiees des datasheets a la main ;
+- les **boutons de filtre** du comparateur et de la recherche etaient
+  ecrits en dur, et une serie ajoutee aux donnees n'y apparaissait pas ;
+- la page **recherche portait sa propre copie des 33 modeles**, figee une
+  generation de catalogue en arriere.
+
+Un seul jeu de donnees, `data/pa-models.js`, et une derivation
+**paresseuse** : le calcul se fait au premier appel, pas au chargement,
+parce que l'ordre d'execution des scripts n'est pas le meme dans un
+navigateur et dans un DOM de test.
+
+### Deux defauts trouves en chemin
+
+**La serie de repli passait devant.** Une serie qui ne tenait qu'a 90% de
+sa datasheet etait recommandee des qu'elle arrivait la premiere, meme si
+une serie superieure tenait dans la marge des 65%. L'arrivee de la
+PA-1500 a rendu le defaut visible : un besoin de 22,5 Gbps recommandait
+un PA-1530-POE charge a 83%. Le repli n'est desormais propose que si rien
+ne tient dans la marge.
+
+**Le cas de test attendait la mauvaise serie.** 10 Gbps avec
+dechiffrement et croissance forte donnaient une PA-5400 tant que c'etait
+la premiere serie a tenir 22,5 Gbps. Le PA-3540 les tient a 64% de
+charge. Le test attend maintenant la PA-3500.
+
+### Favicone
+
+Elle etait construite a plein cadre : les trois barres de la marque
+touchaient les quatre bords et s'y trouvaient coupees. Elle est
+refabriquee a partir du logo officiel, marque isolee du mot-symbole,
+detouree puis reposee centree avec 12% de marge. Une version 180 px est
+ajoutee pour l'icone d'ecran d'accueil.
+
+### Six teintes ne tenaient pas le contraste
+
+Le nom du modele est pose sur la couleur du modele. Six teintes
+plafonnaient entre 4,1 et 4,5:1 avec la meilleure des deux encres, dont
+trois deja en production. Elles sont assombries. Le controle porte
+desormais sur les 54.
+
+### Garde-fous ajoutes
+
+- `_data-audit.js` entre au build. Il verifie ce qu'aucune datasheet ne
+  peut contredire : le debit Threat Prevention ne depasse pas l'App-ID,
+  un modele superieur n'est pas en dessous de son cadet, les tunnels
+  GlobalProtect ne depassent pas les sessions. Une valeur **non publiee**
+  n'y est pas une erreur mais un avertissement : le controle separe ce
+  qui est faux de ce qui manque.
+- `_check.js` compare tout nombre de modeles ecrit dans une page au
+  contenu reel des donnees. Le site a longtemps annonce 39 modeles pour
+  33, et rien ne le signalait.
+
 ## Session 14 - 21 aout 2026 : l'etabli descend au modele
 
 ### Pourquoi l'etabli plutot que le wizard

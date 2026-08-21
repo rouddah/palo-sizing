@@ -2,7 +2,8 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sizing Guide · Recherche & Sizing</title>
   <meta name="description" content="Recherche multi-criteres dans le catalogue Palo Alto Networks : filtres par debit, sessions, type de site et fonctionnalites." />
@@ -539,6 +540,7 @@
   <script src="header.js"></script>
   <script src="ui.js"></script>
   <script src="icons.js"></script>
+  <script src="data/pa-models.js"></script>
   <script src="bg.js" defer></script>
 
   <div style="background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 24px;text-align:center;font-size:12px;color:var(--text-muted)">
@@ -614,15 +616,8 @@
       <div class="filter-group">
         <span class="filter-label">Série</span>
         <div class="ff-group">
-          <button class="ff-btn series-btn active" data-series="all"    onclick="setSeries(this)">Tous</button>
-          <button class="ff-btn series-btn"        data-series="PA-400" onclick="setSeries(this)">PA-400</button>
-          <button class="ff-btn series-btn"        data-series="PA-500" onclick="setSeries(this)">PA-500 <span style="font-size:10px;color:var(--ok);font-weight:700">New</span></button>
-          <button class="ff-btn series-btn"        data-series="PA-800" onclick="setSeries(this)" title="End of Sale · août 2024">PA-800 <span style="font-size:10px;opacity:0.6">EoS</span></button>
-          <button class="ff-btn series-btn"        data-series="PA-1400" onclick="setSeries(this)">PA-1400</button>
-          <button class="ff-btn series-btn"        data-series="PA-3400" onclick="setSeries(this)">PA-3400</button>
-          <button class="ff-btn series-btn"        data-series="PA-5400" onclick="setSeries(this)">PA-5400</button>
-          <button class="ff-btn series-btn"        data-series="PA-7000" onclick="setSeries(this)">PA-7000</button>
-          <button class="ff-btn series-btn"        data-series="PA-7500" onclick="setSeries(this)">PA-7500</button>
+          <!-- construits depuis MODELS au chargement : une serie ajoutee
+               aux donnees apparait ici sans toucher au HTML -->
         </div>
       </div>
 
@@ -733,52 +728,32 @@
     'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
     'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
     'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
-    'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
+    'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
+    'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
+    'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
+    'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
+    'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
   };
 
-  /* ══════════════════════════════════════════════
-     DATA · extraite des datasheets officielles PAN
-  ══════════════════════════════════════════════ */
-  const MODELS = [
-    // id, series, form, poe, fw(Gbps), tp(Gbps), vpn(Gbps), sessions, cps, rj45, sfp1g, sfp10g, sfp25g, sfp100g
-    { id:'PA-410',    series:'PA-400',  form:'Desktop',    poe:false, fw:1.4,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:7,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-415',    series:'PA-400',  form:'Desktop',    poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-415-5G', series:'PA-400',  form:'Desktop',    poe:true,  fw:1.5,   tp:0.8,   vpn:0.5,  sess:64000,      cps:11400,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-440',    series:'PA-400',  form:'Desktop',    poe:false, fw:2.4,   tp:1.2,   vpn:1.1,  sess:200000,     cps:34000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-445',    series:'PA-400',  form:'Desktop',    poe:true,  fw:2.7,   tp:1.25,  vpn:1.1,  sess:200000,     cps:34000,   rj45:5,  sfp1:1,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-450',    series:'PA-400',  form:'Desktop',    poe:false, fw:3.3,   tp:2.1,   vpn:1.7,  sess:300000,     cps:48000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-455',    series:'PA-400',  form:'Desktop',    poe:true,  fw:3.6,   tp:2.3,   vpn:1.8,  sess:300000,     cps:56000,   rj45:4,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-455-5G', series:'PA-400',  form:'Desktop',    poe:true,  fw:3.2,   tp:1.8,   vpn:1.6,  sess:300000,     cps:48000,   rj45:6,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-460',    series:'PA-400',  form:'Desktop',    poe:false, fw:4.2,   tp:3.0,   vpn:2.3,  sess:400000,     cps:67000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    // PA-500 Series — août 2025 | Source : datasheet officielle PAN-OS 12.1
-    { id:'PA-505',    series:'PA-500',  form:'1U Rack',    poe:false, fw:1.2,   tp:0.8,   vpn:0.4,  sess:64000,      cps:10000,   rj45:7,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-510',    series:'PA-500',  form:'1U Rack',    poe:false, fw:1.8,   tp:1.2,   vpn:0.8,  sess:98000,      cps:15000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-520',    series:'PA-500',  form:'1U Rack',    poe:false, fw:2.8,   tp:1.8,   vpn:1.5,  sess:148000,     cps:25000,   rj45:8,  sfp1:0,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-540',    series:'PA-500',  form:'1U Rack',    poe:false, fw:3.8,   tp:2.2,   vpn:2.0,  sess:248000,     cps:50000,   rj45:8,  sfp1:2,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-545-POE',series:'PA-500',  form:'1U Rack',    poe:true,  fw:5.0,   tp:3.0,   vpn:3.0,  sess:298000,     cps:55000,   rj45:12, sfp1:4,  sfp10:0,  sfp25:0, sfp100:0 },
-    { id:'PA-550',    series:'PA-500',  form:'1U Rack',    poe:false, fw:6.5,   tp:4.5,   vpn:4.0,  sess:398000,     cps:70000,   rj45:12, sfp1:2,  sfp10:2,  sfp25:0, sfp100:0 },
-    { id:'PA-555-POE',series:'PA-500',  form:'1U Rack',    poe:true,  fw:7.5,   tp:5.0,   vpn:4.5,  sess:448000,     cps:75000,   rj45:12, sfp1:2,  sfp10:2,  sfp25:0, sfp100:0 },
-    { id:'PA-560',    series:'PA-500',  form:'1U Rack',    poe:false, fw:8.5,   tp:6.0,   vpn:5.5,  sess:598000,     cps:100000,  rj45:16, sfp1:4,  sfp10:4,  sfp25:0, sfp100:0 },
-    { id:'PA-1410',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:8.5,   tp:4.5,   vpn:4.1,  sess:945000,     cps:100000,  rj45:8,  sfp1:6,  sfp10:4,  sfp25:0, sfp100:0 },
-    { id:'PA-1420',   series:'PA-1400', form:'1U Rack',    poe:true,  fw:9.5,   tp:6.2,   vpn:5.6,  sess:1400000,    cps:140000,  rj45:4,  sfp1:2,  sfp10:8,  sfp25:0, sfp100:0 },
-    { id:'PA-3410',   series:'PA-3400', form:'1U Rack',    poe:false, fw:14,    tp:7.5,   vpn:6.6,  sess:1400000,    cps:145000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:0 },
-    { id:'PA-3420',   series:'PA-3400', form:'1U Rack',    poe:false, fw:19,    tp:10,    vpn:9.9,  sess:2200000,    cps:220000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:0 },
-    { id:'PA-3430',   series:'PA-3400', form:'1U Rack',    poe:false, fw:29,    tp:15,    vpn:12,   sess:2500000,    cps:240000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:2 },
-    { id:'PA-3440',   series:'PA-3400', form:'1U Rack',    poe:false, fw:35,    tp:20,    vpn:14.5, sess:3000000,    cps:268000,  rj45:0,  sfp1:0,  sfp10:22, sfp25:4, sfp100:2 },
-    { id:'PA-5410',   series:'PA-5400', form:'2U Rack',    poe:false, fw:52,    tp:32,    vpn:20,   sess:5000000,    cps:270000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5420',   series:'PA-5400', form:'2U Rack',    poe:false, fw:70,    tp:50,    vpn:28,   sess:7000000,    cps:370000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5430',   series:'PA-5400', form:'2U Rack',    poe:false, fw:80,    tp:60,    vpn:42,   sess:9000000,    cps:380000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5440',   series:'PA-5400', form:'2U Rack',    poe:false, fw:85,    tp:70,    vpn:58,   sess:20000000,   cps:390000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-5445',   series:'PA-5400', form:'2U Rack',    poe:false, fw:90,    tp:76,    vpn:64,   sess:48000000,   cps:449000,  rj45:0,  sfp1:0,  sfp10:20, sfp25:4, sfp100:4 },
-    { id:'PA-7050',   series:'PA-7000', form:'Chassis 9U', poe:false, fw:343,   tp:184,   vpn:190,  sess:245000000,  cps:4000000, rj45:0,  sfp1:48, sfp10:48, sfp25:0, sfp100:24 },
-    { id:'PA-7080',   series:'PA-7000', form:'Chassis 19U',poe:false, fw:590,   tp:305,   vpn:310,  sess:416000000,  cps:6000000, rj45:0,  sfp1:80, sfp10:80, sfp25:0, sfp100:40 },
-    // PA-7500 : config ref. 6×DPC-A + 2×NPC-A + 1×MPC-A | 24×SFP-DD (100G/25G/10G) + 16×QSFP-DD (400G/100G)
-    { id:'PA-7500',   series:'PA-7500', form:'Chassis 14U',poe:false, fw:1500,  tp:1440,  vpn:407,  sess:440000000,  cps:7200000, rj45:0,  sfp1:0,  sfp10:24, sfp25:24, sfp100:40 },
-    // PA-800 Series — End of Sale (EoS) août 2024 · Remplacement recommandé : PA-1400
-    // Source : datasheets officielles PAN, PAN-OS 11.1 (dernière version supportée)
-    { id:'PA-820',    series:'PA-800',  form:'1U Rack',    poe:false, fw:1.6,   tp:0.9,   vpn:1.3,  sess:128000,     cps:8100,    rj45:4,  sfp1:8,  sfp10:0,  sfp25:0, sfp100:0, eos:true },
-    { id:'PA-850',    series:'PA-800',  form:'1U Rack',    poe:false, fw:2.0,   tp:1.0,   vpn:1.6,  sess:192000,     cps:13100,   rj45:4,  sfp1:4,  sfp10:4,  sfp25:0, sfp100:0, eos:true },
-  ];
+  /* Les modeles viennent de data/pa-models.js, source unique du site.
+     Cette page en portait sa propre copie, figee a une generation de
+     catalogue en arriere, avec des comptes de ports d'avant la
+     relecture des datasheets. Deux jeux de donnees, deux verites, et celle qui se lit
+     ici n'etait plus la bonne.
+     Les deux noms de champs propres a cette page (series, form) sont
+     conserves par une vue, pour ne pas reecrire tout son rendu.
+     La vue est construite au premier appel et non au chargement :
+     MODELS vient d'un autre fichier, et l'ordre d'execution des scripts
+     n'est pas garanti hors navigateur. */
+  let _catalogue = null;
+  function catalogue() {
+    if (!_catalogue) {
+      _catalogue = MODELS.map(function (m) {
+        return Object.assign({}, m, { series: m.s, form: m.f });
+      });
+    }
+    return _catalogue;
+  }
 
   /* ══ State ══ */
   let state = { mode:'tp', bw:1.5, ff:'all', series:'all', sortBy:'ratio' };
@@ -811,6 +786,34 @@
   }
 
   /* ── Series selector ── */
+  /* La barre de series suit les donnees : elle etait ecrite a la main et
+     ne montrait pas les series ajoutees au catalogue. Le badge EoS se
+     deduit des modeles, il ne se recopie pas. */
+  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
+  const SERIES_TITRE = { 'PA-800': 'End of Sale · août 2024',
+                         'PA-7000': 'End of Sale · décembre 2025' };
+
+  function buildSeriesButtons() {
+    const box = document.querySelector('.ff-group');
+    if (!box) return;
+    const series = [];
+    catalogue().forEach(function (m) { if (series.indexOf(m.series) === -1) series.push(m.series); });
+    box.innerHTML =
+      '<button class="ff-btn series-btn active" data-series="all" onclick="setSeries(this)">Tous</button>'
+      + series.map(function (sid) {
+          const eos = catalogue().filter(function (m) { return m.series === sid; })
+                             .every(function (m) { return m.eos; });
+          const badge = eos
+            ? ' <span style="font-size:10px;opacity:0.6">EoS</span>'
+            : (SERIES_NEW.indexOf(sid) !== -1
+                ? ' <span style="font-size:10px;color:var(--ok);font-weight:700">New</span>' : '');
+          const titre = SERIES_TITRE[sid] ? ' title="' + SERIES_TITRE[sid] + '"' : '';
+          return '<button class="ff-btn series-btn" data-series="' + sid + '" onclick="setSeries(this)"'
+               + titre + '>' + sid + badge + '</button>';
+        }).join('');
+  }
+  document.addEventListener('DOMContentLoaded', buildSeriesButtons);
+
   function setSeries(btn) {
     document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -857,12 +860,16 @@
     const ff       = state.ff;
     const series   = state.series;
 
+    /* Un debit que la datasheet ne publie pas vaut null. Le comparer a un
+       besoin ferait sortir le modele silencieusement : on renvoie null et
+       le filtre laisse passer, le rendu affiche le trou. */
     function throughput(m) {
-      return state.mode === 'fw' ? m.fw : state.mode === 'tp' ? m.tp : m.vpn;
+      const v = state.mode === 'fw' ? m.fw : state.mode === 'tp' ? m.tp : m.vpn;
+      return v == null ? null : v;
     }
 
     // Filter & score
-    const candidates = MODELS
+    const candidates = catalogue()
       .filter(m => {
         if (ff !== 'all' && !m.form.startsWith(ff)) return false;
         if (series !== 'all' && m.series !== series) return false;
@@ -872,20 +879,21 @@
         if (m.sfp10 < reqSfp10)  return false;
         if (m.sfp25 < reqSfp25)  return false;
         if (m.sfp100< reqSfp100) return false;
-        if (users > 0 && throughput(m) < reqGbps) return false;
+        const thr = throughput(m);
+        if (users > 0 && thr != null && thr < reqGbps) return false;
         if (reqSess > 0 && m.sess < reqSess) return false;
         return true;
       })
       .map(m => {
         const tp = throughput(m);
-        const ratio = reqGbps > 0 ? tp / reqGbps : 1;
+        const ratio = (reqGbps > 0 && tp != null) ? tp / reqGbps : 1;
         return { ...m, _tp: tp, _ratio: ratio };
       })
       .sort((a, b) => {
         const s = state.sortBy;
         if (s === 'fw')   return b.fw   - a.fw;
         if (s === 'tp')   return b.tp   - a.tp;
-        if (s === 'vpn')  return b.vpn  - a.vpn;
+        if (s === 'vpn')  return (b.vpn || 0) - (a.vpn || 0);
         if (s === 'sess') return b.sess - a.sess;
         return a._ratio - b._ratio; // default: meilleur fit
       });
@@ -951,7 +959,7 @@
             </div>
             <div class="stat">
               <span class="stat-name">IPsec VPN</span>
-              <span class="stat-val">${m.vpn} Gbps</span>
+              <span class="stat-val">${m.vpn != null ? m.vpn + ' Gbps' : '—'}</span>
             </div>
             <div class="stat">
               <span class="stat-name">Sessions max</span>
@@ -959,7 +967,7 @@
             </div>
             <div class="stat">
               <span class="stat-name">Nouvelles/s</span>
-              <span class="stat-val">${fmtNum(m.cps)}</span>
+              <span class="stat-val">${m.cps != null ? fmtNum(m.cps) : '—'}</span>
             </div>
           </div>
           <div class="ports-row">${portChips}</div>
@@ -997,7 +1005,7 @@
 
   /* ── Compare modal ── */
   function openCompare() {
-    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    const models = [...selected].map(id => catalogue().find(m => m.id === id)).filter(Boolean);
     if (models.length < 2) return;
 
     const cols = models.map(m => `<th>${m.id}</th>`).join('');
@@ -1005,14 +1013,15 @@
     const rows = [
       ['App-ID FW',       m => m.fw    + ' Gbps'],
       ['Threat Prevention',m => m.tp   + ' Gbps'],
-      ['IPsec VPN',       m => m.vpn   + ' Gbps'],
+      ['IPsec VPN',       m => m.vpn != null ? m.vpn + ' Gbps' : '—'],
       ['Sessions max',    m => fmtNum(m.sess)],
-      ['Nouvelles sess/s',m => fmtNum(m.cps)],
+      ['Nouvelles sess/s',m => m.cps != null ? fmtNum(m.cps) : '—'],
       ['1G RJ45',         m => m.rj45  || '—'],
       ['1G SFP',          m => m.sfp1  || '—'],
       ['10G SFP+',        m => m.sfp10 || '—'],
       ['25G SFP28',       m => m.sfp25 || '—'],
       ['100G QSFP28',     m => m.sfp100|| '—'],
+      ['400G QSFP-DD',    m => m.sfp400|| '—'],
       ['Format',          m => m.form],
       ['PoE',             m => m.poe ? 'Oui' : '—'],
     ];

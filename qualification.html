@@ -2,7 +2,8 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Qualification NGFW · Sizing Guide</title>
   <meta name="description" content="Qualification rapide et guide d'entretien pour dimensionner un firewall PA-Series Palo Alto Networks a partir des reponses du client." />
@@ -828,14 +829,11 @@
 
 
   /* ══ Commercial wizard — recommendation engine ══
-     Seuils issus des bornes reelles des datasheets officielles :
-       PA-400 : TP 0.8–3.0 Gbps         · source : datasheet PA-400 PAN-OS 12.1
-       PA-500 : TP 0.8–6.0 Gbps         · source : datasheet PA-500 PAN-OS 12.1
-       PA-1400 : TP 4.5–6.2 Gbps        · source : datasheet PA-1400 PAN-OS 12.1
-       PA-3400 : TP 7.5–20 Gbps         · source : datasheet PA-3400 PAN-OS 12.1
-       PA-5400 : TP 35–76 Gbps          · source : datasheet PA-5400 PAN-OS 12.1
-       PA-7500 : TP 1440 Gbps           · source : datasheet PA-7500 PAN-OS 11.1
-     Garde-fou : ne pas depasser 60-70% de la capacite datasheet
+     Les bornes de chaque serie ne sont plus ecrites ici : elles etaient
+     recopiees des datasheets a la main et elles ont vieilli des la
+     publication suivante. Elles sont derivees de MODELS, source unique
+     du site, juste en dessous.
+     Garde-fou : ne pas depasser 60-70% de la capacite datasheet.
   ══ */
   /* ══ Base concurrents — mapping vers PA-Series ══
      Sources : datasheets officielles Fortinet (Product Matrix 2026) et Check Point (Appliance Comparison 2026)
@@ -920,14 +918,44 @@
     }
   }
 
-  const FAMILIES = [
-    { id:'PA-400',  tpMin:0.8, tpMax:3.0,  sessMax:400000,   modeles:'PA-410 à PA-460',       form:'Desktop',   pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
-    { id:'PA-500',  tpMin:0.8, tpMax:6.0,  sessMax:598000,   modeles:'PA-505 à PA-560',       form:'1U Rack',   pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
-    { id:'PA-1400', tpMin:4.5, tpMax:6.2,  sessMax:1400000,  modeles:'PA-1410 et PA-1420',    form:'1U Rack',   pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
-    { id:'PA-3400', tpMin:7.5, tpMax:20,   sessMax:3000000,  modeles:'PA-3410 à PA-3440',     form:'1U Rack',   pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
-    { id:'PA-5400', tpMin:35,  tpMax:76,   sessMax:48000000, modeles:'PA-5410 à PA-5445',     form:'2U Rack',   pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
-    { id:'PA-7500', tpMin:1440,tpMax:1440, sessMax:440000000,modeles:'PA-7500 (chassis)',     form:'Chassis',   pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series' },
+  /* Metadonnees editoriales des series. Aucun chiffre ici : les bornes
+     de debit et de sessions sont derivees de MODELS, sinon les deux jeux
+     divergent des la datasheet suivante. La PA-50R n'y figure pas : c'est
+     une gamme durcie pour l'OT, elle ne se recommande pas sur un profil
+     de bureau. Elle reste comparable dans le comparateur. */
+  const FAMILY_META = [
+    { id:'PA-400',  form:'Desktop',      pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
+    { id:'PA-500',  form:'1U Rack',      pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
+    { id:'PA-1400', form:'1U Rack',      pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
+    { id:'PA-1500', form:'1U Rack',      pos:'Grandes agences et campus', desc:'Gamme quantum-optimized annoncée en 2026. 16 ports PoE++ 90 W, commutation de niveau 2 intégrée et déchiffrement des flux post-quantiques, pour consolider le réseau du site sur le firewall.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series' },
+    { id:'PA-3400', form:'1U Rack',      pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
+    { id:'PA-3500', form:'1U / 2U Rack', pos:'Périmètre, campus et petits datacenters', desc:'Gamme quantum-optimized annoncée en 2026, avec ports 100G en façade et clustering NGFW actif/actif. La datasheet ne publie pas encore le VPN IPsec ni le CPS.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series' },
+    { id:'PA-5400', form:'2U Rack',      pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
+    { id:'PA-5500', form:'2U / 3U Rack', pos:'Datacenters et grands campus', desc:'Gamme quantum-optimized annoncée en 2026, jusqu’à 300 Gbps Threat Prevention et des ports QSFP-DD 400G. Le CPS des trois premiers modèles n’est pas encore publié.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series' },
+    { id:'PA-7500', form:'Chassis',      pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500' },
   ];
+
+  /* Les series sont classees par capacite croissante : le moteur les
+     parcourt dans l'ordre et retient la premiere qui tient le besoin.
+     Le calcul est differe au premier appel, pas fait au chargement :
+     MODELS vient d'un autre fichier, et l'ordre d'execution des
+     scripts n'est pas le meme dans un navigateur et dans un DOM de
+     test. Une derivation paresseuse ne depend plus de cet ordre. */
+  let _familles = null;
+  function familles() {
+    if (_familles) return _familles;
+    _familles = FAMILY_META.map(function (meta) {
+      const list = MODELS.filter(function (m) { return m.s === meta.id && !m.eos; });
+      const tps  = list.map(function (m) { return m.tp; });
+      return Object.assign({}, meta, {
+        tpMin:   Math.min.apply(null, tps),
+        tpMax:   Math.max.apply(null, tps),
+        sessMax: Math.max.apply(null, list.map(function (m) { return m.sess; })),
+        modeles: list.length > 1 ? list[0].id + ' à ' + list[list.length - 1].id : list[0].id
+      });
+    }).sort(function (a, b) { return a.tpMax - b.tpMax; });
+    return _familles;
+  }
 
   const COMPETITOR_ARGS = {
     fortinet: {
@@ -1008,12 +1036,19 @@
            datasheet elle-meme. */
         const chTp   = m.tp   ? needTp   / (m.tp   * MARGE) : Infinity;
         const chSess = m.sess ? needSess / (m.sess * MARGE) : Infinity;
-        const chCps  = m.cps  ? needCps  / (m.cps  * MARGE) : Infinity;
-        const pire = Math.max(chTp, chSess, chCps);
+        /* Les datasheets des series annoncees portent TBD sur le CPS.
+           Une metrique non publiee ne peut ni valider ni disqualifier un
+           modele : elle sort du calcul, et la sortie signale le trou.
+           L'exclure par Infinity reviendrait a ne jamais proposer un
+           modele qui tient peut-etre tres bien. */
+        const chCps  = m.cps ? needCps / (m.cps * MARGE) : null;
+        const mesurees = [chTp, chSess].concat(chCps === null ? [] : [chCps]);
+        const pire = Math.max.apply(null, mesurees);
         const facteur = pire === chTp ? 'debit'
                       : pire === chSess ? 'sessions' : 'CPS';
         return {
           m: m, chTp: chTp, chSess: chSess, chCps: chCps,
+          cpsInconnu: m.cps == null,
           charge: pire, facteur: facteur, tient: pire <= 1
         };
       })
@@ -1033,6 +1068,7 @@
     if (m.sfp10)  parts.push(m.sfp10  + ' x SFP+ 10G');
     if (m.sfp25)  parts.push(m.sfp25  + ' x SFP28 25G');
     if (m.sfp100) parts.push(m.sfp100 + ' x QSFP28 100G');
+    if (m.sfp400) parts.push(m.sfp400 + ' x QSFP-DD 400G');
     return parts.length ? parts.join(' · ') : 'voir datasheet';
   }
 
@@ -1106,16 +1142,24 @@
 
     const reco = [];
     const alsoConsider = [];
+    const FAMILIES = familles();
+    /* Une serie qui tient a 65% de la datasheet est retenue. Une serie
+       qui ne tient qu'a 90% est un repli : elle n'est proposee que si
+       aucune serie superieure ne tient dans la marge. Sans cette
+       reserve, l'arrivee d'une gamme intermediaire suffisait a faire
+       recommander un modele charge a plus de 80%. */
+    let repli = null;
     for (const fam of FAMILIES) {
       const tpAt65 = fam.tpMax * 0.65;
       const tpAt90 = fam.tpMax * 0.9;
       if (needTp <= tpAt65) {
         reco.push({ ...fam, utilPct: Math.round((needTp / fam.tpMax) * 100) });
         if (reco.length >= 2) break;
-      } else if (needTp <= tpAt90 && reco.length === 0) {
-        reco.push({ ...fam, utilPct: Math.round((needTp / fam.tpMax) * 100), tight: true });
+      } else if (needTp <= tpAt90 && !repli) {
+        repli = { ...fam, utilPct: Math.round((needTp / fam.tpMax) * 100), tight: true };
       }
     }
+    if (!reco.length && repli) reco.push(repli);
     if (reco.length === 1 && reco[0].tight) {
       const idx = FAMILIES.indexOf(FAMILIES.find(f => f.id === reco[0].id));
       if (idx < FAMILIES.length - 1) alsoConsider.push(FAMILIES[idx + 1]);
@@ -1184,10 +1228,10 @@
        datasheet. C'est le seul chiffre qui corresponde a la
        recommandation affichee. */
     const chargePct = retenu
-      ? Math.round(Math.max(
+      ? Math.round(Math.max.apply(null, [
           needTp   / retenu.m.tp,
-          needSess / retenu.m.sess,
-          needCps  / retenu.m.cps) * 100)
+          needSess / retenu.m.sess
+        ].concat(retenu.m.cps ? [needCps / retenu.m.cps] : [])) * 100)
       : primary.utilPct;
     const utilClass = chargePct > 90 ? 'crit' : chargePct > 65 ? 'warn' : 'ok';
     const confClassWb = confidence === 'green' ? 'ok' : confidence === 'orange' ? 'warn' : 'crit';
@@ -1252,7 +1296,10 @@
       + '<tr><th scope="row">Nouvelles connexions '
       +   '<button type="button" class="wb-help" data-tip="CPS|Nouvelles connexions par seconde. Estimees a partir des sessions concurrentes et d une duree de vie moyenne de 30 s, valeur de travail pour du trafic mixte. A remplacer par le CPS mesure sur le parc des qu il existe.">?</button></th>'
       +   '<td class="num need"><span class="val">' + fmtN(needCps) + '</span><span class="u">CPS</span></td>'
-      +   (retenu ? num(fmtN(retenu.m.cps), 'CPS') : '<td class="num"><span class="u">selon modele</span></td>') + '</tr>'
+      +   (retenu
+            ? (retenu.m.cps ? num(fmtN(retenu.m.cps), 'CPS')
+                            : '<td class="num"><span class="u">non publi&eacute;</span></td>')
+            : '<td class="num"><span class="u">selon modele</span></td>') + '</tr>'
 
       + '<tr><th scope="row">Débit du lien</th>'
       +   '<td class="num need"><span class="val">' + fmtExact(bwMbps) + '</span><span class="u">Mbps</span></td>'
@@ -1267,6 +1314,15 @@
       +   '<td class="num"><span class="u">à 3 ans</span></td></tr>'
 
       + '</tbody></table></div>';
+
+    /* Le trou de donnee se dit, il ne se devine pas. */
+    if (retenu && retenu.m.cps == null) {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>CPS non publi&eacute; pour ' + retenu.m.id + '.</b> La datasheet de la s&eacute;rie '
+        + 'porte encore TBD sur les nouvelles connexions par seconde. Le mod&egrave;le a donc &eacute;t&eacute; '
+        + 'retenu sur le d&eacute;bit et les sessions seuls : v&eacute;rifier le CPS aupr&egrave;s de Palo Alto '
+        + 'avant de figer la configuration.</div></div>';
+    }
 
     if (sessPct > 65) {
       html += '<div class="wb-note">' + ic('alert', 15)
@@ -1308,7 +1364,8 @@
           + '<th scope="row" style="font-family:var(--mono);font-weight:' + (ret ? '700' : '500') + ';color:'
           +   (ret ? 'var(--accent-txt)' : 'var(--text)') + '">' + c.m.id
           +   (ret ? ' <span style="font-size:9px;letter-spacing:.06em">RETENU</span>' : '') + '</th>'
-          + num(c.m.tp, 'Gbps') + num(fmtN(c.m.sess)) + num(fmtN(c.m.cps))
+          + num(c.m.tp, 'Gbps') + num(fmtN(c.m.sess))
+          + (c.m.cps ? num(fmtN(c.m.cps)) : '<td class="num"><span class="u">n. p.</span></td>')
           + '<td class="num"><span class="val" style="color:var(--' + cls + ')">' + pct + '</span><span class="u">%</span></td>'
           + '</tr>';
       });

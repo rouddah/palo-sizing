@@ -2,10 +2,11 @@
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comparateur PA-Series · Sizing Guide</title>
-  <meta name="description" content="Comparateur technique PA-Series Palo Alto Networks : 39 modèles, de la PA-410 à la PA-7500, débits, sessions, interfaces et fin de commercialisation." />
+  <meta name="description" content="Comparateur technique PA-Series Palo Alto Networks : 54 modèles, de la PA-410 à la PA-7500, débits, sessions, interfaces et fin de commercialisation. PA-1500, PA-3500, PA-5500 et PA-50R comprises." />
   <meta property="og:title" content="Sizing Guide · PA-Series NGFW" />
   <meta property="og:description" content="Comparateur technique des firewalls PA-Series Palo Alto Networks." />
   <meta property="og:type" content="website" />
@@ -536,17 +537,9 @@
     <div class="toolbar">
       <span class="tb-label">Série</span>
       <div class="tb-sep"></div>
-      <div class="filter-group" id="series-filters">
-        <button class="fb on" data-series="all"  onclick="filterSeries(this)">Toutes</button>
-        <button class="fb" id="PA-400" data-series="PA-400"  onclick="filterSeries(this)">PA-400</button>
-        <button class="fb" data-series="PA-500"  onclick="filterSeries(this)">PA-500 <span style="font-size:10px;color:var(--ok);font-weight:700">New</span></button>
-        <button class="fb" data-series="PA-800"  onclick="filterSeries(this)" title="End of Sale · août 2024">PA-800 <span style="font-size:10px;color:var(--yellow)">EoS</span></button>
-        <button class="fb" data-series="PA-1400" onclick="filterSeries(this)">PA-1400</button>
-        <button class="fb" data-series="PA-3400" onclick="filterSeries(this)">PA-3400</button>
-        <button class="fb" data-series="PA-5400" onclick="filterSeries(this)">PA-5400</button>
-        <button class="fb" data-series="PA-7000" onclick="filterSeries(this)" title="End of Sale · décembre 2025">PA-7000 <span style="font-size:10px;color:var(--yellow)">EoS</span></button>
-        <button class="fb" data-series="PA-7500" onclick="filterSeries(this)">PA-7500</button>
-      </div>
+      <!-- Les boutons de serie sont construits depuis MODELS au chargement :
+           une serie ajoutee aux donnees apparait ici sans toucher au HTML. -->
+      <div class="filter-group" id="series-filters"></div>
       <div class="tb-sep"></div>
       <span class="tb-label">Format</span>
       <div class="filter-group" id="form-filters">
@@ -613,9 +606,9 @@
   const ROWS = [
     { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
     { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn   + ' Gbps', num: m => m.vpn   },
+    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
     { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
-    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => fmtN(m.cps),       num: m => m.cps   },
+    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
     { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
     { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
     { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
@@ -632,6 +625,7 @@
     { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
     { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
     { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
     { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
     { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
     { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
@@ -726,7 +720,11 @@
       'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
       'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
       'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
-      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500-series',
+      'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
+      'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
+      'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
+      'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
+      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
     };
     hRow.innerHTML = `<th class="th-corner"></th>` +
       visible.map(m => {
@@ -812,6 +810,31 @@
     activeCat = btn.dataset.cat;
     document.addEventListener('DOMContentLoaded', loadCompareFromURL);
   buildTable();
+  }
+
+  /* Les series affichees suivent les donnees, pas une liste ecrite a la
+     main : une serie ajoutee a MODELS apparait dans la barre de filtres
+     au rechargement. Le badge EoS se deduit des modeles eux-memes. */
+  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
+  const SERIES_EOS_TITRE = { 'PA-800': 'End of Sale · août 2024',
+                             'PA-7000': 'End of Sale · décembre 2025' };
+
+  function buildSeriesFilters() {
+    const box = document.getElementById('series-filters');
+    if (!box) return;
+    const series = [];
+    MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
+    box.innerHTML = '<button class="fb on" data-series="all" onclick="filterSeries(this)">Toutes</button>'
+      + series.map(sid => {
+          const eos = MODELS.filter(m => m.s === sid).every(m => m.eos);
+          const badge = eos
+            ? ' <span style="font-size:10px;color:var(--yellow)">EoS</span>'
+            : (SERIES_NEW.indexOf(sid) !== -1
+                ? ' <span style="font-size:10px;color:var(--ok);font-weight:700">New</span>' : '');
+          const titre = SERIES_EOS_TITRE[sid] ? ' title="' + SERIES_EOS_TITRE[sid] + '"' : '';
+          return '<button class="fb" data-series="' + sid + '" onclick="filterSeries(this)"' + titre + '>'
+               + sid + badge + '</button>';
+        }).join('');
   }
 
   function filterSeries(btn) {
@@ -928,12 +951,13 @@
   }
 
   document.addEventListener('DOMContentLoaded', loadCompareFromURL);
+  buildSeriesFilters();
   buildTable();
   </script>
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.1 / 11.2 / 11.1) · Dernière mise à jour : juin 2026</div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (PAN-OS 12.2 / 12.1 / 11.2 / 11.1) · Dernière mise à jour : août 2026</div>
     <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
   </footer>
 </body>
