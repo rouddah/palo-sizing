@@ -968,6 +968,74 @@
     },
   };
 
+  /* ══ Selection au modele pres ══
+
+     Trois metriques decident du dimensionnement d'un NGFW, et c'est
+     toujours la plus contraignante qui impose le modele :
+
+       debit Threat Prevention  toutes protections actives
+       sessions concurrentes    nombre de flux ouverts simultanement
+       CPS                      nouvelles connexions par seconde
+
+     Un modele peut tenir le debit et s'ecrouler sur les sessions : le
+     SaaS et la visioconference ouvrent beaucoup de petites sessions
+     pour peu de debit. C'est pour cela qu'on affiche laquelle des
+     trois contraint le choix, et pas seulement le verdict. */
+
+  /* Marge de dimensionnement retenue par le projet : on ne depasse pas
+     65% de la capacite datasheet, ce qui laisse de quoi absorber les
+     pics et une annee de derive. */
+  const MARGE = 0.65;
+
+  /* Nouvelles connexions par seconde, estimees a partir des sessions
+     concurrentes et de la duree de vie moyenne d'une session.
+
+     30 secondes est une valeur de travail pour du trafic d'entreprise
+     mixte : le web court et le SaaS ouvrent et ferment vite, la
+     visioconference et les transferts tiennent bien plus longtemps.
+     C'est une hypothese, elle est affichee comme telle, et le CPS
+     mesure sur le parc existant doit la remplacer des qu'il existe. */
+  const DUREE_SESSION_S = 30;
+
+  function choisirModeles(needTp, needSess, needCps, familleId) {
+    const dansLaSerie = MODELS.filter(m => m.s === familleId && !m.eos);
+    const pool = dansLaSerie.length ? dansLaSerie : MODELS.filter(m => !m.eos);
+
+    return pool
+      .map(m => {
+        /* Taux de charge sur chaque metrique. Au-dela de 1, le modele
+           depasse la marge ; au-dela de 1/MARGE il depasse la
+           datasheet elle-meme. */
+        const chTp   = m.tp   ? needTp   / (m.tp   * MARGE) : Infinity;
+        const chSess = m.sess ? needSess / (m.sess * MARGE) : Infinity;
+        const chCps  = m.cps  ? needCps  / (m.cps  * MARGE) : Infinity;
+        const pire = Math.max(chTp, chSess, chCps);
+        const facteur = pire === chTp ? 'debit'
+                      : pire === chSess ? 'sessions' : 'CPS';
+        return {
+          m: m, chTp: chTp, chSess: chSess, chCps: chCps,
+          charge: pire, facteur: facteur, tient: pire <= 1
+        };
+      })
+      /* Le plus juste d'abord : celui qui tient avec le moins de
+         capacite inutilisee. Un modele surdimensionne est un budget
+         perdu, pas une securite. */
+      .sort((a, b) => {
+        if (a.tient !== b.tient) return a.tient ? -1 : 1;
+        return a.tient ? b.charge - a.charge : a.charge - b.charge;
+      });
+  }
+
+  function fmtInterfaces(m) {
+    const parts = [];
+    if (m.rj45)   parts.push(m.rj45   + ' x RJ45 1G');
+    if (m.sfp1)   parts.push(m.sfp1   + ' x SFP 1G');
+    if (m.sfp10)  parts.push(m.sfp10  + ' x SFP+ 10G');
+    if (m.sfp25)  parts.push(m.sfp25  + ' x SFP28 25G');
+    if (m.sfp100) parts.push(m.sfp100 + ' x QSFP28 100G');
+    return parts.length ? parts.join(' · ') : 'voir datasheet';
+  }
+
   function runCommercialWizard() {
     const _v = id => { const el = document.getElementById(id); return el ? (el.value === '' ? 'unknown' : el.value) : 'unknown'; };
     const clientName = document.getElementById('wiz-client')?.value?.trim() || '';
@@ -1014,6 +1082,11 @@
     const sessPerUser = cloud === 'high' ? 35 : 10;
     const iotSess = rawIot === 'heavy' ? 500 : rawIot === 'moderate' ? 100 : 0;
     const needSess = Math.round((users * sessPerUser + iotSess) * growthFactor);
+
+    /* Nouvelles connexions par seconde. C'est la metrique qui coince
+       le plus souvent sur un parc a fort usage SaaS, et elle
+       n'apparaissait nulle part. */
+    const needCps = Math.round(needSess / DUREE_SESSION_S);
 
     if (rawRemote === 'unknown') openQuestions.push('Combien d\'utilisateurs se connectent à distance (VPN, télétravail) ?');
     if (rawExist === 'unknown') openQuestions.push('Quel firewall est actuellement en place (marque et modèle) ?');
@@ -1094,6 +1167,11 @@
 
     const primary = reco[0];
 
+    /* Modeles de la serie retenue, classes du plus juste au plus
+       large. On ne se contente plus d'annoncer la serie. */
+    const candidats = choisirModeles(needTp, needSess, needCps, primary.id);
+    const retenu = (candidats.find(c => c.tient) || candidats[0]) || null;
+
     /* Modele le plus capable de la serie retenue : c'est LUI que la jauge
        mesure, pas la serie. Sans cette precision, un lecteur peut croire
        que le premier modele de la gamme tient le debit affiche. */
@@ -1112,8 +1190,11 @@
     html += '<div class="wb-verdict amb" style="--amb-color:' + (utilClass === 'ok' ? 'var(--live-dim)' : utilClass === 'warn' ? 'var(--warn-dim)' : 'var(--crit-dim)') + '">'
       + '<div class="wb-verdict-top">'
       +   '<div>'
-      +     '<div class="wb-verdict-family">' + primary.id + ' Series</div>'
-      +     '<div class="wb-verdict-pos">' + primary.pos + ' &middot; ' + primary.form + '</div>'
+      +     '<div class="wb-verdict-family">' + (retenu ? retenu.m.id : primary.id + ' Series') + '</div>'
+      +     '<div class="wb-verdict-pos">'
+      +       (retenu ? primary.id + ' Series &middot; ' + retenu.m.f + ' &middot; ' + retenu.m.target
+                      : primary.pos + ' &middot; ' + primary.form)
+      +     '</div>'
       +   '</div>'
       +   '<span class="wb-conf ' + confClassWb + '">' + ic(confIcon, 12) + confLabel + '</span>'
       + '</div>'
@@ -1156,7 +1237,12 @@
 
       + '<tr><th scope="row">Sessions concurrentes</th>'
       +   '<td class="num need"><span class="val">' + fmtN(needSess) + '</span></td>'
-      +   num(fmtN(primary.sessMax)) + '</tr>'
+      +   num(retenu ? fmtN(retenu.m.sess) : fmtN(primary.sessMax)) + '</tr>'
+
+      + '<tr><th scope="row">Nouvelles connexions '
+      +   '<button type="button" class="wb-help" data-tip="CPS|Nouvelles connexions par seconde. Estimees a partir des sessions concurrentes et d une duree de vie moyenne de 30 s, valeur de travail pour du trafic mixte. A remplacer par le CPS mesure sur le parc des qu il existe.">?</button></th>'
+      +   '<td class="num need"><span class="val">' + fmtN(needCps) + '</span><span class="u">CPS</span></td>'
+      +   (retenu ? num(fmtN(retenu.m.cps), 'CPS') : '<td class="num"><span class="u">selon modele</span></td>') + '</tr>'
 
       + '<tr><th scope="row">Débit du lien</th>'
       +   '<td class="num need"><span class="val">' + fmtExact(bwMbps) + '</span><span class="u">Mbps</span></td>'
@@ -1176,6 +1262,68 @@
       html += '<div class="wb-note">' + ic('alert', 15)
         + '<div><b>Sessions : ' + sessPct + '% de la capacité.</b> Le nombre de sessions concurrentes, '
         + 'et non le débit, devient le facteur limitant. Vérifier le profil de trafic avec le client.</div></div>';
+    }
+
+    /* ── 3bis. Ce qui contraint reellement le choix ──
+       Des trois metriques, une seule impose le modele. La nommer evite
+       de discuter du debit quand ce sont les sessions qui bloquent. */
+    if (retenu) {
+      const FACT = {
+        'debit':    ['throughput', 'Le débit Threat Prevention impose le modèle.'],
+        'sessions': ['sessions',   'Ce sont les sessions concurrentes qui imposent le modèle, pas le débit. Un usage SaaS ouvre beaucoup de flux pour peu de bande passante.'],
+        'CPS':      ['sessions',   'Ce sont les nouvelles connexions par seconde qui imposent le modèle. Vérifier le CPS réel avant de trancher.']
+      };
+      const fx = FACT[retenu.facteur] || FACT['debit'];
+      html += '<h3 class="wb-group-title">' + ic(fx[0], 20) + 'Facteur dimensionnant</h3>'
+        + '<p style="font-size:var(--text-xs);line-height:1.6;color:var(--text);margin-bottom:var(--sp-4)">'
+        +   '<b style="color:var(--accent-txt);text-transform:uppercase;font-family:var(--mono);font-size:11px;letter-spacing:.08em">'
+        +   retenu.facteur + '</b><br>' + fx[1] + '</p>';
+
+      /* Les trois modeles les plus pertinents de la serie, avec leur
+         charge sur chaque metrique. L'ingenieur voit d'un coup ce
+         qu'il gagne ou perd en montant d'un cran. */
+      const top = candidats.slice(0, 3);
+      html += '<div class="wb-metrics-wrap"><table class="wb-metrics">'
+        + '<caption>Modèles de la série ' + primary.id + '</caption>'
+        + '<thead><tr><th scope="col">Modèle</th>'
+        + '<th scope="col" style="text-align:right">Débit TP</th>'
+        + '<th scope="col" style="text-align:right">Sessions</th>'
+        + '<th scope="col" style="text-align:right">CPS</th>'
+        + '<th scope="col" style="text-align:right">Charge</th></tr></thead><tbody>';
+      top.forEach(function (c) {
+        const pct = Math.round(c.charge * 100 * 0.65);   // en % de la datasheet
+        const cls = pct > 90 ? 'crit' : pct > 65 ? 'warn' : 'ok';
+        const ret = (retenu && c.m.id === retenu.m.id);
+        html += '<tr' + (ret ? ' style="background:var(--accent-dim)"' : '') + '>'
+          + '<th scope="row" style="font-family:var(--mono);font-weight:' + (ret ? '700' : '500') + ';color:'
+          +   (ret ? 'var(--accent-txt)' : 'var(--text)') + '">' + c.m.id
+          +   (ret ? ' <span style="font-size:9px;letter-spacing:.06em">RETENU</span>' : '') + '</th>'
+          + num(c.m.tp, 'Gbps') + num(fmtN(c.m.sess)) + num(fmtN(c.m.cps))
+          + '<td class="num"><span class="val" style="color:var(--' + cls + ')">' + pct + '</span><span class="u">%</span></td>'
+          + '</tr>';
+      });
+      html += '</tbody></table></div>';
+
+      /* Fiche materielle : ce qu'il faut savoir avant de commander. */
+      const nbSites = (sites && sites > 0) ? sites : 1;
+      const parPaire = (rawHa === 'yes') ? 2 : 1;
+      const total = nbSites * parPaire;
+      html += '<h3 class="wb-group-title">' + ic('rack', 20) + 'À prévoir</h3><ul class="wb-list">'
+        + '<li>' + ic('rack', 14).replace('class="ic"', 'class="ic ic-add"')
+        +   '<span><b>' + retenu.m.f + '</b> &middot; ' + fmtInterfaces(retenu.m) + '</span></li>'
+        + '<li>' + ic('ha', 14).replace('class="ic"', 'class="ic ic-add"')
+        +   '<span><b>' + total + ' appliance' + (total > 1 ? 's' : '') + '</b> &middot; '
+        +   nbSites + ' site' + (nbSites > 1 ? 's' : '')
+        +   (parPaire === 2
+              ? ', en paire HA : chaque membre doit tenir 100% de la charge'
+              : rawHa === 'no'
+                ? ', appliance seule, sans redondance'
+                : ', haute disponibilité non renseignée : doubler si une paire HA est retenue')
+        +   '</span></li>'
+        + (retenu.m.sku ? '<li>' + ic('copy', 14).replace('class="ic"', 'class="ic ic-add"')
+            + '<span>Référence châssis <b>' + retenu.m.sku + '</b>, hors subscriptions et support</span>'
+            + '<span class="tag">datasheet</span></li>' : '')
+        + '</ul>';
     }
 
     /* ── 4. Hypotheses : ce que l'outil a comble tout seul ── */

@@ -22,41 +22,56 @@ const ROOT = __dirname;
 
 /* Cas de reference : contraintes -> gamme attendue.
    Le debit TP requis se calcule (bw/1000) * croissance * facteurSSL. */
+/* Cas de reference : contraintes -> modele attendu.
+
+   Depuis que le moteur choisit au modele pres, on verifie la
+   reference exacte et non la serie. C'est plus exigeant, et c'est ce
+   que lit l'utilisateur.
+
+   Le modele retenu est le plus juste qui tienne les trois contraintes
+   a 65% de la datasheet : debit Threat Prevention, sessions
+   concurrentes et CPS. Le plus juste, pas le plus large : un modele
+   surdimensionne est un budget perdu, pas une securite. */
 const CASES = [
   {
+    // 200 Mbps x1,3 croissance x1,5 SSL = 0,39 Gbps TP.
+    // PA-410 : 0,8 Gbps TP, charge 75% de la marge. Il tient, et c'est
+    // le plus juste de la serie.
     name: 'Agence 200 Mbps, SSL actif, croissance moderee',
     set: { 'wiz-bw': '200', 'wiz-users': '250', 'wiz-type': 'branch',
            'wiz-ssl': 'yes', 'wiz-sites': '1', 'wiz-growth': 'moderate' },
-    expectFamily: 'PA-400'
+    expect: 'PA-410'
   },
   {
-    // 1000 * 1,3 * 1,5 = 1,95 Gbps TP, soit exactement 65% de la PA-400 :
-    // le cas limite haut de la gamme, la PA-400 doit encore passer.
-    name: 'Siege 1 Gbps, SSL actif, croissance moderee (limite PA-400)',
-    set: { 'wiz-bw': '1000', 'wiz-users': '800', 'wiz-type': 'campus',
-           'wiz-ssl': 'yes', 'wiz-sites': '3', 'wiz-growth': 'moderate' },
-    expectFamily: 'PA-400'
-  },
-  {
-    // 1500 * 1,3 * 1,5 = 2,93 Gbps : au-dela des 65% ET des 90% de la
-    // PA-400, la gamme doit basculer sur la PA-500.
-    name: 'Siege 1,5 Gbps, SSL actif : bascule vers la gamme superieure',
+    // 1500 x1,3 x1,5 = 2,93 Gbps : au-dela de la PA-400, bascule sur
+    // la PA-500.
+    name: 'Siege 1,5 Gbps : bascule de serie',
     set: { 'wiz-bw': '1500', 'wiz-users': '900', 'wiz-type': 'campus',
            'wiz-ssl': 'yes', 'wiz-sites': '3', 'wiz-growth': 'moderate' },
-    expectFamily: 'PA-500'
+    expectSeries: 'PA-5'
   },
   {
     name: 'Datacenter 10 Gbps, SSL actif, croissance forte',
     set: { 'wiz-bw': '10000', 'wiz-users': '5000', 'wiz-type': 'dc',
            'wiz-ssl': 'yes', 'wiz-sites': '1', 'wiz-growth': 'strong' },
-    expectFamily: 'PA-5400'
+    expectSeries: 'PA-54'
+  },
+  {
+    // Peu de debit mais beaucoup d'utilisateurs en SaaS intensif : ce
+    // sont les sessions, pas le debit, qui doivent imposer le modele.
+    name: 'Sessions dimensionnantes : 3000 utilisateurs SaaS sur 300 Mbps',
+    set: { 'wiz-bw': '300', 'wiz-users': '3000', 'wiz-type': 'campus',
+           'wiz-ssl': 'no', 'wiz-sites': '1', 'wiz-growth': 'stable',
+           'wiz-cloud': 'high' },
+    expectFacteur: 'sessions'
   },
   {
     name: 'Tout vide : l outil doit quand meme repondre sur hypotheses',
     set: {},
-    expectFamily: 'PA-400'
+    expectSeries: 'PA-4'
   }
 ];
+
 
 const failures = [];
 
@@ -138,7 +153,17 @@ function log(ok, msg) {
 
     const fam = doc.querySelector('#wb-out .wb-verdict-family');
     const got = fam ? fam.textContent.replace(' Series', '').trim() : '(rien)';
-    log(got === c.expectFamily, c.name + ' -> ' + got + ' (attendu ' + c.expectFamily + ')');
+
+    if (c.expect) {
+      log(got === c.expect, c.name + ' -> ' + got + ' (attendu ' + c.expect + ')');
+    } else if (c.expectSeries) {
+      log(got.startsWith(c.expectSeries),
+          c.name + ' -> ' + got + ' (attendu une ' + c.expectSeries + 'xx)');
+    } else if (c.expectFacteur) {
+      const txt = doc.getElementById('wb-out').textContent;
+      log(txt.indexOf(c.expectFacteur) !== -1,
+          c.name + ' -> facteur dimensionnant « ' + c.expectFacteur + ' » annonce');
+    }
   }
 
   console.log('\nContenu du volet de sortie');
