@@ -1,5 +1,124 @@
 # Changelog
 
+## Session 16 - 21 aout 2026 : les pages produit repassees a la source
+
+Consigne : verifier toutes les informations de tous les produits
+couverts, Prisma Access, Prisma SD-WAN, Prisma Browser, Cortex,
+Panorama, Idira. Douze datasheets et guides officiels relus, plus le
+catalogue courant pour les references.
+
+### J'avais invente des references
+
+C'est le point le plus grave de la session precedente. Dix SKU de
+chassis, pour les PA-1500, les PA-3500 et les PA-5510 a PA-5530, avaient
+ete deduits du motif des series precedentes. Le catalogue courant montre
+qu'aucun de ces dix n'existe : ces series sont annoncees, elles ne sont
+pas commandables. Les dix champs sont repasses a nul.
+
+En sens inverse, deux references sont confirmees : le PA-501 porte bien
+`PAN-PA-501`, et les PA-5540 a PA-5580 leurs references AC et DC.
+
+La regle etait pourtant ecrite noir sur blanc. Une reference deduite d'un
+motif reste une reference inventee.
+
+### Prisma Access : le modele de licence decrit n'existait plus
+
+La page presentait « 3 editions Mobile Users, 2 editions Remote
+Networks », un modele ou l'edition depend du type de connexion. Le guide
+de licences officiel decrit l'inverse : **trois editions de base par cas
+d'usage** (Secure Web Gateway, Zero Trust Network Access, Enterprise) et
+**trois compteurs de facturation** independants de l'edition, dont un
+compteur par site apparu avec les branches SASE.
+
+Les deux tableaux d'editions sont remplaces par un seul, aligne sur la
+table du guide. Le socle commun est enfin dit : acces a plus de 150
+emplacements cloud, 250 GB de transfert par an, connexion par
+GlobalProtect, Prisma Agent, Explicit Proxy ou IPsec.
+
+Au passage : **100+ PoP est devenu 150+**, et le SLA de performance SaaS
+a 35 ms manquait a cote des 10 ms de traitement.
+
+### Prisma SD-WAN : trois debits faux d'un facteur cinq a sept
+
+| Affiche | Datasheet d'avril 2026 |
+| --- | --- |
+| vION 3102, 0,7 Gbps | ION 3102V, 100 Mbps |
+| vION 3104, 1,1 Gbps | ION 3104V, 200 Mbps |
+| vION 3108, 1,8 Gbps | ION 3108V, 350 Mbps |
+| vION 7108, 3 Gbps | ION 7108V, 3 Gbps |
+| vION 7116, 10 Gbps | ION 7116V, 10 Gbps |
+
+Sur un outil de dimensionnement, un facteur sept sur une bande passante
+n'est pas une coquille. Le suffixe est aussi un V en fin de nom, pas un v
+en prefixe, et les deux modeles datacenter tournent egalement sur AWS,
+Azure et Google Cloud.
+
+### Prisma Browser : le support s'arretait a deux systemes
+
+La page annonçait Windows et macOS supportes, Linux et le mobile en
+roadmap. La datasheet de juin 2026 donne les six systemes supportes :
+Windows, macOS, Linux, ChromeOS, iOS et Android, avec Prisma Browser
+Mobile pour les terminaux mobiles et une edition dediee a Microsoft
+Intune. Le nom « Prisma Access Browser » traine encore dans le document
+officiel precedent : c'est **Prisma Browser**.
+
+Les trois editions Education, Core et Pro sont, elles, confirmees au
+catalogue, Pro etant la seule a inclure l'acces aux applications privees.
+
+### Cortex : une version de retard
+
+XSIAM est en **3.5** depuis mai 2026, pas en 3.0. Deux capacites que la
+page presentait comme des fonctions de XSIAM 3.0 sont devenues des
+produits nommes : **Cortex Advanced Email Security** et **Cortex
+Exposure Management**.
+
+Le compte d'integrations etait ecrit a deux endroits avec deux valeurs
+differentes, 800+ et 900+, et aucune des deux n'etait a jour : la page
+AgentiX annonce **1 100+ integrations pretes a l'emploi**. AgentiX n'est
+pas un produit qui « remplace progressivement XSOAR », c'est la
+generation suivante de XSOAR.
+
+Le ROI Forrester passe de 257% a **300%**.
+
+Verifie et laisse tel quel, en revanche : 2 900+ modeles ML, 2 600+
+modeles analytiques, 13 300+ detections, 98% de reduction du MTTR, 100%
+de couverture MITRE ATT&CK Round 6, 99% AV-Comparatives EPR 2025,
+resolution mediane a 43 secondes.
+
+### Panorama : deux plafonds trop hauts, un modele retire
+
+Le M-700 etait annonce a 10 000 appareils ; la documentation le plafonne
+a **5 000**, au meme palier que le M-600. L'appliance virtuelle passe de
+1 000 a **2 500** appareils, de 10 000 a **20 000** logs/s, et son
+stockage est chiffre : 24 TB, 48 TB en paire haute disponibilite.
+
+Le **M-600 ne figure plus au catalogue courant** : ses references sont
+passees a la liste des SKU supprimes. Seuls le M-300 et le M-700 restent
+commandables, et la page le dit maintenant.
+
+### Idira : trois composants manquaient, et son origine n'etait pas dite
+
+La page produit nomme **Vendor Privileged Access**, **Unified Secrets
+Governance** et **Application Credentials Delivery**, absents du site.
+« Agentic Identities » s'appelle officiellement **Secure AI Agents**.
+
+Surtout, la plateforme est batie sur la technologie de Privileged Access
+Management de **CyberArk**, acquis par Palo Alto Networks. C'est ce qui
+explique d'ou vient sa maturite PAM, et le site n'en disait rien.
+
+### Un glyphe qui donnait a lire une virgule
+
+Les cases « non inclus » des tableaux produit rendaient une virgule,
+meme defaut que les cases vides de la matrice des optiques. Quinze
+cellules remises au tiret.
+
+### Ce qui reste en attente
+
+`_to_verify.md` porte desormais un tableau des chiffres affiches dont je
+n'ai pas retrouve la source officielle : les compteurs CDSS de la page
+Prisma, les 15 PB/jour de Cortex, les debits de logs Panorama. Ils ne
+sont pas retires, ils sont signales.
+
 ## Session 15 - 21 aout 2026 : le catalogue rattrape les datasheets
 
 ### Ce qui a declenche la session

@@ -45,7 +45,7 @@
           <tr>
             <th style="text-align:left;min-width:260px">Caractéristique</th>
             <th>M-300</th>
-            <th>M-600</th>
+            <th>M-600 <span style="font-size:10px;color:var(--yellow);font-weight:600">plus commandable</span></th>
             <th>M-700</th>
             <th>Panorama VM<br><small style="font-weight:400;font-size:10px">ESXi / KVM / Hyper-V</small></th>
             <th>Strata Cloud Manager</th>
@@ -56,7 +56,7 @@
           <tr>
             <td>SKU</td>
             <td class="val-med" style="font-family:var(--mono);font-size:11px">PAN-M-300</td>
-            <td class="val-med" style="font-family:var(--mono);font-size:11px">PAN-M-600</td>
+            <td class="val-med" style="font-family:var(--mono);font-size:11px">PAN-M-600 <span style="color:var(--yellow)">&middot; retire</span></td>
             <td class="val-high" style="font-family:var(--mono);font-size:11px">PAN-M-700</td>
             <td class="val-med" style="font-family:var(--mono);font-size:11px">PAN-PANORAMA-SYS</td>
             <td class="val-high" style="font-family:var(--mono);font-size:11px">SCM licence</td>
@@ -67,8 +67,8 @@
             <td>Appareils gérés max</td>
             <td class="val-low">1,000</td>
             <td class="val-med">5,000</td>
-            <td class="val-high">10,000</td>
-            <td class="val-med">1,000 <small style="color:var(--text-muted)">(std)</small></td>
+            <td class="val-high">5,000</td>
+            <td class="val-med">2,500 <small style="color:var(--text-muted)">(Management Only)</small></td>
             <td class="val-high">Selon licence SCM</td>
           </tr>
           <tr>
@@ -76,7 +76,7 @@
             <td class="val-low">4 TB SSD</td>
             <td class="val-med">24 TB SSD</td>
             <td class="val-high">48 TB SSD</td>
-            <td class="val-low">Selon vDisks</td>
+            <td class="val-low">24 TB <small style="color:var(--text-muted)">(48 TB en paire HA)</small></td>
             <td class="val-high">Extensible cloud</td>
           </tr>
           <tr>
@@ -84,7 +84,7 @@
             <td class="val-low">16,500</td>
             <td class="val-med">25,000</td>
             <td class="val-high">36,500</td>
-            <td class="val-low">~10,000</td>
+            <td class="val-low">20,000</td>
             <td class="val-high">Scalable</td>
           </tr>
           <tr>
@@ -216,8 +216,8 @@
     </div>
 
     <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
-      Panorama VM en mode standard gère jusqu'à 1,000 appareils. Avec un abonnement Panorama+, cette limite peut être augmentée.
-      Le mode Dedicated Log Collector permet d'atteindre des capacités d'ingestion supérieures : M-300 ≈ 33,000 logs/s · M-600 ≈ 50,000 logs/s · M-700 ≈ 77,000 logs/s (source : Panorama Sizing &amp; Design Guide PAN KB).
+      En mode Management Only, l'appliance virtuelle Panorama gère jusqu'à 2 500 appareils, ingère jusqu'à 20 000 logs/s et adresse 24 TB de stockage de logs, 48 TB en paire haute disponibilité.
+      Le M-600 ne figure plus au catalogue courant : seuls le M-300 et le M-700 restent commandables. Le mode Dedicated Log Collector permet d'atteindre des capacités d'ingestion supérieures : M-300 ≈ 33,000 logs/s · M-600 ≈ 50,000 logs/s · M-700 ≈ 77,000 logs/s (source : Panorama Sizing &amp; Design Guide PAN KB).
       Strata Cloud Manager (SCM) est l'option de gestion cloud-first, recommandée pour les nouveaux déploiements multi-sites. Panorama reste pertinent pour les architectures full on-prem, les contraintes de souveraineté ou les très grands parcs.
     </div>
   </div>
@@ -253,7 +253,7 @@
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Donnees issues des datasheets officielles Palo Alto Networks · Derniere mise a jour : juin 2026</div>
+    <div style="margin-top:4px;font-size:10px">Donnees issues des datasheets officielles Palo Alto Networks · Derniere mise a jour : aout 2026</div>
   </footer>
 </body>
 </html>

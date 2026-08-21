@@ -1,6 +1,6 @@
 # Briefing session suivante - palo-sizing
 
-> Mis a jour le 21 aout 2026 (session 15). A lire en debut de session avant de toucher quoi que ce soit.
+> Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
 ## Contexte rapide
 
@@ -85,6 +85,15 @@ Detail dans `CHANGELOG.md`. A retenir avant d'editer :
   le verifie sur les 54.
 - **`_data-audit.js` tourne au build.** Ajouter un modele incoherent
   fait echouer `npm run build`.
+
+## Regle apprise a ses depens (session 16)
+
+Dix references chassis avaient ete **deduites du motif** des series
+precedentes : `PAN-PA-1510-POE`, `PAN-PA-3510`, `PAN-PA-5510-AC`... Le
+catalogue courant montre qu'aucune n'existe. Une reference deduite d'un
+motif est une reference inventee, et la regle du projet l'interdit sans
+exception. Toute reference posee doit avoir ete **vue** dans une source,
+pas reconstituee.
 
 ## Tache ouverte
 
