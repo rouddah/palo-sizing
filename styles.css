@@ -2504,3 +2504,6 @@ textarea:focus-visible,
   box-shadow: 0 0 0 3px var(--accent-line);
   border-color: var(--accent);
 }
+
+/* Detail des vitesses multi-gig dans le comparateur (pa-series.html). */
+.ports-note { color: var(--text-muted); font-size: var(--text-xs); white-space: nowrap; }

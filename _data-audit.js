@@ -64,7 +64,7 @@ for (const m of MODELS) {
   if (m.gp && m.sess && m.gp > m.sess) E(id + 'tunnels GP ' + m.gp + ' > sessions ' + m.sess);
 
   /* Un chassis sans aucune interface ne se deploie pas. */
-  const ports = (m.rj45 || 0) + (m.sfp1 || 0) + (m.sfp10 || 0) + (m.sfp25 || 0) + (m.sfp100 || 0);
+  const ports = (m.rj45 || 0) + (m.mg || 0) + (m.sfp1 || 0) + (m.sfp10 || 0) + (m.sfp25 || 0) + (m.sfp100 || 0);
   if (ports === 0 && !/7000|7500/.test(m.s)) E(id + 'aucune interface declaree');
 
   /* Le SKU suit un format stable chez Palo Alto. */

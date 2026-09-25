@@ -1103,6 +1103,7 @@
   function fmtInterfaces(m) {
     const parts = [];
     if (m.rj45)   parts.push(m.rj45   + ' x RJ45 1G');
+    if (m.mg)     parts.push(m.mgInfo || (m.mg + ' x RJ45 multi-gig'));
     if (m.sfp1)   parts.push(m.sfp1   + ' x SFP 1G');
     if (m.sfp10)  parts.push(m.sfp10  + ' x SFP+ 10G');
     if (m.sfp25)  parts.push(m.sfp25  + ' x SFP28 25G');

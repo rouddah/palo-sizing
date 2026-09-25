@@ -1,5 +1,24 @@
 # Changelog
 
+## 25 septembre 2026 : ports 1G et multi-gig n'etaient plus confondus
+
+Le champ `rj45` additionnait les ports 1G et les ports cuivre multi-gig,
+et le comparateur l'affichait sous « 1G RJ45 ». Releve section I/O de
+chaque datasheet : 23 modeles corriges.
+
+- Nouveau champ `mg` (ports cuivre 2.5G / 5G / 10G) et `mgInfo` (detail
+  des vitesses, tel que la datasheet l'ecrit). `rj45` ne compte plus que
+  les ports 1G.
+- PA-545-POE et PA-555-POE : 8 x 1G + 4 x 1G/2.5G PoE (et non 12 x 1G).
+- PA-1410 : 8 x 1G + 4 x 1G/2.5G/5G PoE. PA-1420 : 4 x 1G + 8 x 1G/2.5G/5G.
+- PA-1510-POE : 12 x 1G + 8 x 1G/2.5G/5G. PA-1520/1530-POE : 8 x 1G + 12
+  multi-gig, dont 4 ou 8 jusqu'a 10G.
+- PA-3400 : 12 x 1G/2.5G/5G/10G, aucun port 1G seul. PA-3500 : 8 x 10G
+  mGig. PA-5400 : 8 x 1G/2.5G/5G/10G. PA-5510 a 5530 : 10 x 10GE mGig.
+- Recherche : nouveau critere « Cuivre 2.5G et plus » ; un besoin de ports
+  1G se couvre aussi avec des ports multi-gig, pas l'inverse.
+- Comparateur : ligne « Cuivre multi-gig » avec le detail des vitesses.
+
 ## 25 septembre 2026 : le debit a inspecter se calcule aussi par l'usage
 
 Consigne : le nombre d'utilisateurs et les autres metriques doivent servir

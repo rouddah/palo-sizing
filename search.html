@@ -638,8 +638,12 @@
         <span class="filter-label">Interfaces minimum requises</span>
         <div class="iface-grid">
           <div class="iface-field">
-            <label for="i_rj45">1G RJ45</label>
+            <label for="i_rj45">RJ45 cuivre (1G)</label>
             <input type="number" id="i_rj45" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label for="i_mg">Cuivre 2.5G et plus</label>
+            <input type="number" id="i_mg" min="0" value="0" />
           </div>
           <div class="iface-field">
             <label for="i_sfp">1G SFP</label>
@@ -833,7 +837,7 @@
 
   document.getElementById('userCount').addEventListener('input', () => { updateComputedTP(); liveSearch(); });
   document.getElementById('sessMin').addEventListener('input', liveSearch);
-  ['i_rj45','i_sfp','i_10g','i_25g','i_100g'].forEach(id =>
+  ['i_rj45','i_mg','i_sfp','i_10g','i_25g','i_100g'].forEach(id =>
     document.getElementById(id).addEventListener('input', liveSearch)
   );
   document.getElementById('i_poe').addEventListener('change', liveSearch);
@@ -851,6 +855,7 @@
     const users    = parseInt(document.getElementById('userCount').value) || 0;
     const reqGbps  = users * state.bw / 1000;
     const reqRj45  = parseInt(document.getElementById('i_rj45').value)  || 0;
+    const reqMg    = parseInt(document.getElementById('i_mg').value)    || 0;
     const reqSfp1  = parseInt(document.getElementById('i_sfp').value)   || 0;
     const reqSfp10 = parseInt(document.getElementById('i_10g').value)   || 0;
     const reqSfp25 = parseInt(document.getElementById('i_25g').value)   || 0;
@@ -874,7 +879,10 @@
         if (ff !== 'all' && !m.form.startsWith(ff)) return false;
         if (series !== 'all' && m.series !== series) return false;
         if (reqPoe && !m.poe) return false;
-        if (m.rj45  < reqRj45)   return false;
+        /* Un port multi-gig tourne aussi a 1G : un besoin de cuivre 1G se
+           couvre avec les deux. L'inverse est faux. */
+        if ((m.rj45 || 0) + (m.mg || 0) < reqRj45 + reqMg) return false;
+        if ((m.mg || 0) < reqMg) return false;
         if (m.sfp1  < reqSfp1)   return false;
         if (m.sfp10 < reqSfp10)  return false;
         if (m.sfp25 < reqSfp25)  return false;
@@ -899,7 +907,7 @@
       });
 
     selected.clear();
-    renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
+    renderResults(candidates, reqGbps, { reqRj45, reqMg, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
   }
 
   /* ── Render results ── */
@@ -926,7 +934,8 @@
       const isOversize= pct < 40;
 
       const portChips = [
-        m.rj45   ? `<span class="port-chip ${m.rj45   >= ifaces.reqRj45   ? 'ok' : 'short'}">${m.rj45} × 1G RJ45</span>` : '',
+        m.rj45   ? `<span class="port-chip ${m.rj45 + (m.mg || 0) - (ifaces.reqMg || 0) >= ifaces.reqRj45 ? 'ok' : 'short'}">${m.rj45} × 1G RJ45</span>` : '',
+        m.mg     ? `<span class="port-chip ${m.mg >= (ifaces.reqMg || 0) ? 'ok' : 'short'}" title="${m.mgInfo}">${m.mg} × cuivre multi-gig</span>` : '',
         m.sfp1   ? `<span class="port-chip ${m.sfp1   >= ifaces.reqSfp1   ? 'ok' : 'short'}">${m.sfp1} × 1G SFP</span>`  : '',
         m.sfp10  ? `<span class="port-chip ${m.sfp10  >= ifaces.reqSfp10  ? 'ok' : 'short'}">${m.sfp10} × 10G SFP+</span>` : '',
         m.sfp25  ? `<span class="port-chip ${m.sfp25  >= ifaces.reqSfp25  ? 'ok' : 'short'}">${m.sfp25} × 25G SFP28</span>` : '',
@@ -1017,6 +1026,7 @@
       ['Sessions max',    m => fmtNum(m.sess)],
       ['Nouvelles sess/s',m => m.cps != null ? fmtNum(m.cps) : '—'],
       ['1G RJ45',         m => m.rj45  || '—'],
+      ['Cuivre multi-gig',m => m.mg ? m.mg + ' (' + m.mgInfo + ')' : '—'],
       ['1G SFP',          m => m.sfp1  || '—'],
       ['10G SFP+',        m => m.sfp10 || '—'],
       ['25G SFP28',       m => m.sfp25 || '—'],
@@ -1064,6 +1074,7 @@
     document.getElementById('i_10g').value   = 0;
     document.getElementById('i_25g').value   = 0;
     document.getElementById('i_100g').value  = 0;
+    document.getElementById('i_mg').value    = 0;
     document.getElementById('i_poe').value   = 'no';
     document.getElementById('sort-by').value = 'ratio';
     document.getElementById('computed-tp').textContent = '';

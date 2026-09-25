@@ -621,6 +621,7 @@
     { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'Cuivre multi-gig (2.5G / 5G / 10G)', fn: m => m.mg ? m.mg + ' <span class="ports-note">(' + m.mgInfo + ')</span>' : '—', num: m => m.mg },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
     { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
     { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
