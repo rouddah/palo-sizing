@@ -1,5 +1,34 @@
 # Changelog
 
+## 25 septembre 2026 : le debit a inspecter se calcule aussi par l'usage
+
+Consigne : le nombre d'utilisateurs et les autres metriques doivent servir
+a dimensionner le debit d'inspection, pas seulement les sessions.
+
+- **Base du debit au choix** : automatique (le lien s'il est connu, sinon
+  l'usage), lien, usage, ou le plus eleve des deux. Lien inconnu : le
+  debit n'est plus une hypothese fixe a 200 Mbps, il est reconstruit par
+  utilisateurs x Mbps du profil.
+- **Profils d'usage** : chacun porte maintenant un debit par utilisateur
+  actif en heure de pointe, en plus des sessions (0,3 / 0,8 / 2 / 4 Mbps).
+  Deux profils ajoutes : visio HD et stockage cloud, R&D et gros transferts.
+- **Controle croise lien / usage** : une alerte quand l'usage depasse le
+  lien de plus de 50% (lien sature ou profil trop fort), ou quand le lien
+  vaut plus de quatre fois l'usage.
+- **Trafic est-ouest** : nouveau champ, ajoute au debit a inspecter.
+  Question ouverte en datacenter s'il n'est pas renseigne.
+- **Dechiffrement gradue** : part du trafic dechiffre (25 / 50 / 90%) au
+  lieu d'un oui/non a x1,5. `yes` garde sa valeur x1,5 : les URL partagees
+  restent valides.
+- **Utilisateurs distants** : l'infobulle disait qu'ils s'ajoutaient au
+  debit, le calcul les ignorait. Avec GlobalProtect termine sur le
+  boitier, ils comptent en usage, en sessions, en debit VPN et en tunnels,
+  deux capacites qui entrent au choix du modele et peuvent le dicter.
+- **Decomposition affichee** : lien, usage, est-ouest, dechiffrement,
+  croissance, puis le debit Threat Prevention requis.
+- `_smoke.js` : quatre cas ajoutes (usage sans lien, lien incoherent, base
+  usage, GlobalProtect). Les cinq cas historiques donnent le meme modele.
+
 ## Session 16 - 21 aout 2026 : les pages produit repassees a la source
 
 Consigne : verifier toutes les informations de tous les produits

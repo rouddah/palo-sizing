@@ -71,6 +71,38 @@ const CASES = [
     expectFacteur: 'sessions'
   },
   {
+    // Lien inconnu : le debit n'est plus une hypothese fixe a 200 Mbps,
+    // il est reconstruit par l'usage (2000 x 2 Mbps = 4000 Mbps).
+    name: 'Lien inconnu : debit reconstruit par l usage',
+    set: { 'wiz-users': '2000', 'wiz-cloud': 'video', 'wiz-type': 'campus',
+           'wiz-ssl': 'yes', 'wiz-sites': '1', 'wiz-growth': 'moderate' },
+    expectText: '4 000', notSeries: 'PA-4'
+  },
+  {
+    // Lien de 100 Mbps pour 1000 utilisateurs SaaS : l'usage (800 Mbps)
+    // contredit le lien, la sortie doit le signaler.
+    name: 'Usage incoherent avec le lien : alerte',
+    set: { 'wiz-bw': '100', 'wiz-users': '1000', 'wiz-cloud': 'high', 'wiz-type': 'campus',
+           'wiz-ssl': 'no', 'wiz-sites': '1', 'wiz-growth': 'stable' },
+    expectText: 'dépasse nettement le lien'
+  },
+  {
+    // Meme cas, base forcee sur l'usage : on ne doit plus tomber sur le
+    // plus petit modele.
+    name: 'Base usage : le debit suit les utilisateurs',
+    set: { 'wiz-bw': '100', 'wiz-users': '1000', 'wiz-cloud': 'high', 'wiz-type': 'campus',
+           'wiz-ssl': 'yes', 'wiz-sites': '1', 'wiz-growth': 'moderate', 'wiz-basis': 'usage' },
+    notExpect: 'PA-410', expectText: '0,8 Mbps, base retenue'
+  },
+  {
+    // GlobalProtect termine sur le boitier : tunnels et debit VPN entrent
+    // au calcul et s'affichent.
+    name: 'GlobalProtect sur le firewall : tunnels comptes',
+    set: { 'wiz-bw': '500', 'wiz-users': '200', 'wiz-remote': '800', 'wiz-remote-mode': 'gp',
+           'wiz-type': 'campus', 'wiz-ssl': 'no', 'wiz-sites': '1', 'wiz-growth': 'stable' },
+    expectText: 'Tunnels GlobalProtect'
+  },
+  {
     name: 'Tout vide : l outil doit quand meme repondre sur hypotheses',
     set: {},
     expectSeries: 'PA-4'
@@ -164,6 +196,11 @@ function log(ok, msg) {
     } else if (c.expectSeries) {
       log(got.startsWith(c.expectSeries),
           c.name + ' -> ' + got + ' (attendu une ' + c.expectSeries + 'xx)');
+    } else if (c.expectText || c.notExpect || c.notSeries) {
+      const txt = doc.getElementById('wb-out').textContent.replace(/\u202f|\u00a0/g, ' ');
+      const okTxt = !c.expectText || txt.indexOf(c.expectText) !== -1;
+      const okNot = (!c.notExpect || got !== c.notExpect) && (!c.notSeries || !got.startsWith(c.notSeries));
+      log(okTxt && okNot, c.name + ' -> ' + got + (c.expectText ? ' (texte « ' + c.expectText + ' » ' + (okTxt ? 'present' : 'ABSENT') + ')' : ''));
     } else if (c.expectFacteur) {
       const txt = doc.getElementById('wb-out').textContent;
       log(txt.indexOf(c.expectFacteur) !== -1,

@@ -209,8 +209,8 @@
               <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="20"></span>Charge réseau</h3>
 
               <div class="wb-field">
-                <label for="wiz-bw">Débit à inspecter <span class="wb-unit">Mbps</span>
-                  <button type="button" class="wb-help" data-tip="Débit à inspecter|Lien Internet ou lien inter-zones du site principal, en Mbps. 1 Gbps = 1000 Mbps. Base du calcul du débit Threat Prevention requis.">?</button>
+                <label for="wiz-bw">Débit du lien Internet <span class="wb-unit">Mbps</span>
+                  <button type="button" class="wb-help" data-tip="Débit du lien Internet|Abonnement souscrit du site principal, en Mbps. 1 Gbps = 1000 Mbps. Plafond réel du trafic nord-sud : c'est la base du calcul quand il est connu, et l'usage estimé est contrôlé contre lui.">?</button>
                 </label>
                 <input type="number" id="wiz-bw" inputmode="numeric" placeholder="200" min="1" max="1000000" step="1" value="">
               </div>
@@ -218,7 +218,7 @@
               <div class="wb-row">
                 <div class="wb-field">
                   <label for="wiz-users">Utilisateurs
-                    <button type="button" class="wb-help" data-tip="Utilisateurs|Postes et terminaux actifs simultanément. Croisé avec le profil de trafic pour estimer les sessions concurrentes, pas le débit.">?</button>
+                    <button type="button" class="wb-help" data-tip="Utilisateurs|Postes et terminaux actifs simultanément sur le site. Multipliés par le profil d'usage, ils donnent les sessions concurrentes et le débit consommé, contrôlé contre le lien.">?</button>
                   </label>
                   <input type="number" id="wiz-users" inputmode="numeric" placeholder="250" min="1" max="500000" step="1" value="">
                 </div>
@@ -229,14 +229,43 @@
                   <input type="number" id="wiz-remote" inputmode="numeric" placeholder="50" min="0" max="500000" step="1" value="">
                 </div>
               </div>
+              <div class="wb-field">
+                <label for="wiz-remote-mode">Accès distant
+                  <button type="button" class="wb-help" data-tip="Accès distant|Si GlobalProtect se termine sur ce firewall, les utilisateurs distants pèsent sur ses sessions, son débit VPN et son nombre de tunnels. Avec Prisma Access, ils sont servis par le cloud et ne chargent pas le boîtier.">?</button>
+                </label>
+                <select id="wiz-remote-mode">
+                  <option value="unknown" selected>Non renseigné</option>
+                  <option value="gp">GlobalProtect terminé sur ce firewall</option>
+                  <option value="sase">Prisma Access ou autre service cloud</option>
+                </select>
+              </div>
 
               <div class="wb-field">
                 <label for="wiz-cloud">Profil de trafic <button type="button" class="wb-help" data-tip="Profil de trafic|Ratio sessions par utilisateur. Le SaaS et la visioconférence multiplient les sessions concurrentes bien plus vite que le débit.">?</button></label>
                 <select id="wiz-cloud">
                   <option value="unknown" selected>Non renseigné</option>
-                  <option value="low">Web et messagerie, ~10 sessions/utilisateur</option>
-                  <option value="high">SaaS intensif M365, Teams, ~35 sessions/utilisateur</option>
+                  <option value="low">Web et messagerie : ~10 sessions, ~0,3 Mbps par utilisateur</option>
+                  <option value="high">SaaS M365, Teams audio : ~35 sessions, ~0,8 Mbps</option>
+                  <option value="video">Visio HD et stockage cloud : ~40 sessions, ~2 Mbps</option>
+                  <option value="heavy">R&amp;D, CAO, vidéo, gros transferts : ~25 sessions, ~4 Mbps</option>
                 </select>
+              </div>
+              <div class="wb-field">
+                <label for="wiz-basis">Base du débit à inspecter
+                  <button type="button" class="wb-help" data-tip="Base du débit|Automatique : le lien s'il est connu, sinon l'usage estimé (utilisateurs x Mbps du profil). Usage : quand le lien va changer ou n'est pas représentatif. Le plus élevé : prudent, quand le lien sature déjà en heure de pointe.">?</button>
+                </label>
+                <select id="wiz-basis">
+                  <option value="auto" selected>Automatique (lien, sinon usage)</option>
+                  <option value="link">Lien Internet</option>
+                  <option value="usage">Usage estimé (utilisateurs x profil)</option>
+                  <option value="max">Le plus élevé des deux</option>
+                </select>
+              </div>
+              <div class="wb-field">
+                <label for="wiz-ew">Trafic est-ouest à inspecter <span class="wb-unit">Mbps</span>
+                  <button type="button" class="wb-help" data-tip="Trafic est-ouest|Flux internes qui traversent le firewall entre zones : utilisateurs vers serveurs, segmentation du datacenter, OT vers IT. Il ne passe pas par le lien Internet et s'ajoute au débit à inspecter. À relever sur le cœur de réseau.">?</button>
+                </label>
+                <input type="number" id="wiz-ew" inputmode="numeric" placeholder="0" min="0" max="1000000" step="1" value="">
               </div>
             </div>
 
@@ -245,12 +274,14 @@
 
               <div class="wb-field">
                 <label for="wiz-ssl">Déchiffrement SSL
-                  <button type="button" class="wb-help" data-tip="Déchiffrement SSL|Entrant et sortant. Le calcul majore le débit Threat Prevention requis d'un facteur 1,5. Vérifier la part de trafic HTTPS réellement déchiffrée.">?</button>
+                  <button type="button" class="wb-help" data-tip="Déchiffrement SSL|Part du trafic réellement déchiffrée. Un flux déchiffré coûte environ deux fois plus qu'un flux inspecté en clair : la charge est majorée de la part déchiffrée (x1,25 pour ~25%, x1,5 pour ~50%, x1,9 pour ~90%). Règle de travail, à valider auprès de Palo Alto sur les gros projets.">?</button>
                 </label>
                 <select id="wiz-ssl">
                   <option value="unknown" selected>Non renseigné</option>
-                  <option value="yes">Activé</option>
                   <option value="no">Non prévu</option>
+                  <option value="partial">Ciblé, ~25% du trafic (x1,25)</option>
+                  <option value="yes">Majoritaire, ~50% du trafic (x1,5)</option>
+                  <option value="full">Quasi total, ~90% du trafic (x1,9)</option>
                 </select>
               </div>
 
@@ -800,7 +831,7 @@
   });
 
   /* ══ Partage par URL ══ */
-  const URL_FIELDS = ['client','partner','users','sites','type','bw','ssl','cloud','sector','existing','existing-model','iot','ha','remote','growth'];
+  const URL_FIELDS = ['client','partner','users','sites','type','bw','ssl','cloud','sector','existing','existing-model','iot','ha','remote','growth','remote-mode','basis','ew'];
 
   function encodeSession() {
     const params = new URLSearchParams();
@@ -1025,7 +1056,7 @@
      mesure sur le parc existant doit la remplacer des qu'il existe. */
   const DUREE_SESSION_S = 30;
 
-  function choisirModeles(needTp, needSess, needCps, familleId) {
+  function choisirModeles(needTp, needSess, needCps, familleId, needVpn, needTunnels) {
     const dansLaSerie = MODELS.filter(m => m.s === familleId && !m.eos);
     const pool = dansLaSerie.length ? dansLaSerie : MODELS.filter(m => !m.eos);
 
@@ -1042,13 +1073,21 @@
            L'exclure par Infinity reviendrait a ne jamais proposer un
            modele qui tient peut-etre tres bien. */
         const chCps  = m.cps ? needCps / (m.cps * MARGE) : null;
-        const mesurees = [chTp, chSess].concat(chCps === null ? [] : [chCps]);
+        /* GlobalProtect terminé sur le boîtier : débit VPN et tunnels
+           entrent au calcul, avec la même règle de trou de donnée. */
+        const chVpn  = needVpn && m.vpn ? needVpn / (m.vpn * MARGE) : null;
+        const chTun  = needTunnels && m.gp ? needTunnels / (m.gp * MARGE) : null;
+        const mesurees = [chTp, chSess].concat(chCps === null ? [] : [chCps])
+          .concat(chVpn === null ? [] : [chVpn]).concat(chTun === null ? [] : [chTun]);
         const pire = Math.max.apply(null, mesurees);
         const facteur = pire === chTp ? 'debit'
-                      : pire === chSess ? 'sessions' : 'CPS';
+                      : pire === chSess ? 'sessions'
+                      : pire === chVpn ? 'VPN'
+                      : pire === chTun ? 'tunnels' : 'CPS';
         return {
-          m: m, chTp: chTp, chSess: chSess, chCps: chCps,
+          m: m, chTp: chTp, chSess: chSess, chCps: chCps, chVpn: chVpn, chTun: chTun,
           cpsInconnu: m.cps == null,
+          gpInconnu: !!needTunnels && m.gp == null,
           charge: pire, facteur: facteur, tient: pire <= 1
         };
       })
@@ -1089,6 +1128,9 @@
     const rawHa     = _v('wiz-ha');
     const rawRemote = _v('wiz-remote');
     const rawGrowth = _v('wiz-growth');
+    const rawRemoteMode = _v('wiz-remote-mode');
+    const rawEw     = _v('wiz-ew');
+    const basis     = _v('wiz-basis') === 'unknown' ? 'auto' : _v('wiz-basis');
 
     const validationWarning = validateInputs();
     const assumptions = [];
@@ -1097,9 +1139,52 @@
     const users = rawUsers === 'unknown' ? (assumptions.push('Nombre d\'utilisateurs : hypothèse 250 (PME moyenne)'), 250) : parseInt(rawUsers);
     const sites = rawSites === 'unknown' ? (assumptions.push('Nombre de sites : hypothèse 1 site unique'), 1) : parseInt(rawSites);
     const type = rawType === 'unknown' ? (assumptions.push('Type de site : hypothèse siège/campus'), openQuestions.push('Quel est le type de site principal (agence, siège, datacenter) ?'), 'campus') : rawType;
-    const bwMbps = rawBw === 'unknown' ? (assumptions.push('Débit Internet : hypothèse 200 Mbps (PME standard)'), openQuestions.push('Quel est le débit de la connexion Internet principale ?'), 200) : parseInt(rawBw);
-    const ssl = rawSsl === 'unknown' ? (assumptions.push('Déchiffrement SSL : hypothèse activé (recommandation sécuritaire)'), 'yes') : rawSsl;
-    const cloud = rawCloud === 'unknown' ? (assumptions.push('Profil de trafic : hypothèse usage mixte SaaS'), 'high') : rawCloud;
+    const ssl = rawSsl === 'unknown' ? (assumptions.push('Déchiffrement SSL : hypothèse majoritaire, ~50% du trafic (recommandation sécuritaire)'), 'yes') : rawSsl;
+    const cloud = rawCloud === 'unknown' ? (assumptions.push('Profil d\'usage : hypothèse SaaS M365 et Teams'), 'high') : rawCloud;
+
+    /* ══ Débit à inspecter : le lien, l'usage, ou les deux ══
+       Le lien souscrit est le plafond réel du trafic nord-sud. L'usage
+       (utilisateurs actifs x débit moyen en heure de pointe du profil)
+       le reconstruit quand le lien est inconnu, et le contrôle quand il
+       est connu : un écart fort veut dire un lien saturé ou une
+       hypothèse de profil à revoir, et la sortie le dit.
+
+       Débits par utilisateur actif en heure de pointe : valeurs de
+       travail, cohérentes avec les recommandations réseau de Microsoft
+       pour M365 et Teams (audio ~0,1 Mbps, vidéo HD 1,5 à 4 Mbps par
+       flux). À remplacer par la mesure dès que le client en a une. */
+    const PROFIL = {
+      low:   { sess: 10, mbps: 0.3 },
+      high:  { sess: 35, mbps: 0.8 },
+      video: { sess: 40, mbps: 2 },
+      heavy: { sess: 25, mbps: 4 }
+    };
+    const prof = PROFIL[cloud] || PROFIL.high;
+    const remoteCount0 = rawRemote === 'unknown' ? 0 : Math.max(0, parseInt(rawRemote) || 0);
+    const gpLocal = rawRemoteMode === 'gp';
+    const iotMbps = rawIot === 'heavy' ? 50 : rawIot === 'moderate' ? 10 : 0;
+    /* Le distant en GlobalProtect terminé ici entre par le même lien
+       qu'il ressort (hairpin) : il compte dans l'usage, à mi-régime
+       (un nomade consomme moins qu'un poste au bureau en moyenne). */
+    const usageMbps = Math.round(users * prof.mbps + (gpLocal ? remoteCount0 * prof.mbps * 0.5 : 0) + iotMbps);
+    const ewMbps = rawEw === 'unknown' ? 0 : Math.max(0, parseInt(rawEw) || 0);
+    let baseSource;
+    let bwMbps;
+    if (rawBw === 'unknown') {
+      bwMbps = usageMbps; baseSource = 'usage';
+      assumptions.push('Débit Internet inconnu : reconstruit par l\'usage, ' + users + ' utilisateurs x ' + String(prof.mbps).replace('.', ',') + ' Mbps = ' + usageMbps + ' Mbps');
+      openQuestions.push('Quel est le débit de la connexion Internet principale ?');
+    } else {
+      const lien = parseInt(rawBw);
+      if (basis === 'usage') { bwMbps = usageMbps; baseSource = 'usage'; }
+      else if (basis === 'max') { bwMbps = Math.max(lien, usageMbps); baseSource = usageMbps > lien ? 'usage' : 'lien'; }
+      else { bwMbps = lien; baseSource = 'lien'; }
+    }
+    const lienMbps = rawBw === 'unknown' ? null : parseInt(rawBw);
+    if (rawType === 'dc' && rawEw === 'unknown')
+      openQuestions.push('Quel volume de trafic est-ouest (inter-zones, segmentation) le firewall doit-il inspecter ?');
+    if (remoteCount0 > 0 && rawRemoteMode === 'unknown')
+      openQuestions.push('Les utilisateurs distants se connectent-ils en GlobalProtect sur ce firewall, ou via Prisma Access ?');
     const growth = rawGrowth === 'unknown' ? (assumptions.push('Croissance : hypothèse +30% à 3 ans'), 'moderate') : rawGrowth;
 
     if (rawUsers === 'unknown') openQuestions.push('Combien de collaborateurs utilisent le réseau ?');
@@ -1111,13 +1196,21 @@
     if (rawRemote === 'unknown') openQuestions.push('Quelle part des utilisateurs est en télétravail ?');
 
     const growthFactor = growth === 'strong' ? 1.5 : growth === 'moderate' ? 1.3 : 1.0;
-    const bwGbps = (bwMbps / 1000) * growthFactor;
-    const sslFactor = ssl === 'yes' ? 1.5 : 1.0;
+    const bwGbps = ((bwMbps + ewMbps) / 1000) * growthFactor;
+    /* Un flux déchiffré coûte environ le double d'un flux inspecté en
+       clair : la charge est majorée de la part déchiffrée. */
+    const SSL_PART = { no: 0, partial: 0.25, yes: 0.5, full: 0.9 };
+    const sslFactor = 1 + (SSL_PART[ssl] || 0);
     const needTp = bwGbps * sslFactor;
 
-    const sessPerUser = cloud === 'high' ? 35 : 10;
+    const sessPerUser = prof.sess;
     const iotSess = rawIot === 'heavy' ? 500 : rawIot === 'moderate' ? 100 : 0;
-    const needSess = Math.round((users * sessPerUser + iotSess) * growthFactor);
+    const needSess = Math.round((users * sessPerUser + (gpLocal ? remoteCount0 * sessPerUser : 0) + iotSess) * growthFactor);
+
+    /* GlobalProtect terminé sur le boîtier : débit chiffré (IPsec/SSL)
+       et nombre de tunnels, deux capacités publiées à part. */
+    const needVpn = gpLocal && remoteCount0 > 0 ? (remoteCount0 * prof.mbps * 0.5 / 1000) * growthFactor : 0;
+    const needTunnels = gpLocal ? Math.round(remoteCount0 * growthFactor) : 0;
 
     /* Nouvelles connexions par seconde. C'est la metrique qui coince
        le plus souvent sur un parc a fort usage SaaS, et elle
@@ -1213,7 +1306,7 @@
 
     /* Modeles de la serie retenue, classes du plus juste au plus
        large. On ne se contente plus d'annoncer la serie. */
-    const candidats = choisirModeles(needTp, needSess, needCps, primary.id);
+    const candidats = choisirModeles(needTp, needSess, needCps, primary.id, needVpn, needTunnels);
     const retenu = (candidats.find(c => c.tient) || candidats[0]) || null;
 
     /* Modele le plus capable de la serie retenue : c'est LUI que la jauge
@@ -1301,19 +1394,66 @@
                             : '<td class="num"><span class="u">non publi&eacute;</span></td>')
             : '<td class="num"><span class="u">selon modele</span></td>') + '</tr>'
 
-      + '<tr><th scope="row">Débit du lien</th>'
-      +   '<td class="num need"><span class="val">' + fmtExact(bwMbps) + '</span><span class="u">Mbps</span></td>'
-      +   '<td class="num"><span class="u">reference</span></td></tr>'
-
-      + '<tr><th scope="row">Facteur SSL appliqué</th>'
-      +   '<td class="num need"><span class="val">x' + sslFactor.toFixed(1).replace('.', ',') + '</span></td>'
-      +   '<td class="num"><span class="u">' + (ssl === 'yes' ? 'déchiffrement actif' : 'sans déchiffrement') + '</span></td></tr>'
-
-      + '<tr><th scope="row">Marge de croissance</th>'
-      +   '<td class="num need"><span class="val">x' + growthFactor.toFixed(1).replace('.', ',') + '</span></td>'
-      +   '<td class="num"><span class="u">à 3 ans</span></td></tr>'
+      + (needVpn ? '<tr><th scope="row">Débit VPN GlobalProtect</th>'
+      +   '<td class="num need"><span class="val">' + fmtRate(needVpn).val + '</span><span class="u">' + fmtRate(needVpn).unit + '</span></td>'
+      +   (retenu && retenu.m.vpn ? num(retenu.m.vpn, 'Gbps') : '<td class="num"><span class="u">non publi&eacute;</span></td>') + '</tr>'
+      + '<tr><th scope="row">Tunnels GlobalProtect</th>'
+      +   '<td class="num need"><span class="val">' + fmtN(needTunnels) + '</span></td>'
+      +   (retenu && retenu.m.gp ? num(fmtN(retenu.m.gp)) : '<td class="num"><span class="u">non publi&eacute;</span></td>') + '</tr>' : '')
 
       + '</tbody></table></div>';
+
+    /* ── 3a. D'où vient le débit requis ──
+       Chaque terme est affiché : le chiffre final se discute avec le
+       client terme à terme, pas en bloc. */
+    const BASE_LIB = { lien: 'lien Internet', usage: 'usage estimé' };
+    html += '<div class="wb-metrics-wrap"><table class="wb-metrics">'
+      + '<caption>Décomposition du débit à inspecter</caption>'
+      + '<thead><tr><th scope="col">Terme</th><th scope="col" style="text-align:right">Valeur</th>'
+      + '<th scope="col" style="text-align:right">Source</th></tr></thead><tbody>'
+      + '<tr><th scope="row">Lien Internet</th>'
+      +   (lienMbps == null ? '<td class="num"><span class="u">inconnu</span></td>'
+                            : '<td class="num"><span class="val">' + fmtExact(lienMbps) + '</span><span class="u">Mbps</span></td>')
+      +   '<td class="num"><span class="u">' + (baseSource === 'lien' ? 'base retenue' : 'contrôle') + '</span></td></tr>'
+      + '<tr><th scope="row">Usage estimé</th>'
+      +   '<td class="num"><span class="val">' + fmtExact(usageMbps) + '</span><span class="u">Mbps</span></td>'
+      +   '<td class="num"><span class="u">' + fmtExact(users) + ' x ' + String(prof.mbps).replace('.', ',') + ' Mbps'
+      +     (gpLocal && remoteCount0 ? ' + distants' : '') + (iotMbps ? ' + IoT' : '')
+      +     (baseSource === 'usage' ? ', base retenue' : '') + '</span></td></tr>'
+      + (ewMbps ? '<tr><th scope="row">Est-ouest</th>'
+      +   '<td class="num"><span class="val">+' + fmtExact(ewMbps) + '</span><span class="u">Mbps</span></td>'
+      +   '<td class="num"><span class="u">inter-zones</span></td></tr>' : '')
+      + '<tr><th scope="row">Déchiffrement</th>'
+      +   '<td class="num"><span class="val">x' + sslFactor.toFixed(2).replace(/0$/, '').replace('.', ',') + '</span></td>'
+      +   '<td class="num"><span class="u">' + ({ no: 'sans déchiffrement', partial: '~25% déchiffré', yes: '~50% déchiffré', full: '~90% déchiffré' }[ssl] || '') + '</span></td></tr>'
+      + '<tr><th scope="row">Croissance</th>'
+      +   '<td class="num"><span class="val">x' + growthFactor.toFixed(1).replace('.', ',') + '</span></td>'
+      +   '<td class="num"><span class="u">à 3 ans</span></td></tr>'
+      + '<tr><th scope="row">Débit Threat Prevention requis</th>'
+      +   '<td class="num need"><span class="val">' + needRate.val + '</span><span class="u">' + needRate.unit + '</span></td>'
+      +   '<td class="num"><span class="u">(' + BASE_LIB[baseSource] + (ewMbps ? ' + est-ouest' : '') + ') x SSL x croissance</span></td></tr>'
+
+
+      + '</tbody></table></div>';
+
+    /* Lien et usage ne racontent pas la même histoire : le dire. */
+    if (lienMbps != null && usageMbps > lienMbps * 1.5) {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>L\'usage estimé (' + fmtExact(usageMbps) + ' Mbps) dépasse nettement le lien (' + fmtExact(lienMbps) + ' Mbps).</b> '
+        + 'Soit le lien sature déjà en heure de pointe, et une montée en débit est probable pendant la vie du boîtier, '
+        + 'soit le profil d\'usage est trop fort pour ce client. Relever le taux d\'occupation du lien ; si le lien va évoluer, '
+        + 'passer la base du débit sur « Usage » ou « Le plus élevé ».</div></div>';
+    } else if (lienMbps != null && usageMbps < lienMbps * 0.25 && baseSource === 'lien') {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>Le lien (' + fmtExact(lienMbps) + ' Mbps) est largement au-dessus de l\'usage estimé (' + fmtExact(usageMbps) + ' Mbps).</b> '
+        + 'Le dimensionnement sur le lien reste le choix prudent : le firewall doit absorber un pic au débit du lien. '
+        + 'Si le client accepte de dimensionner sur l\'usage mesuré, un modèle inférieur peut suffire.</div></div>';
+    }
+    if (retenu && retenu.gpInconnu) {
+      html += '<div class="wb-note">' + ic('alert', 15)
+        + '<div><b>Nombre de tunnels GlobalProtect non publié pour ' + retenu.m.id + '.</b> '
+        + fmtExact(needTunnels) + ' tunnels simultanés sont nécessaires : le vérifier auprès de Palo Alto.</div></div>';
+    }
 
     /* Le trou de donnee se dit, il ne se devine pas. */
     if (retenu && retenu.m.cps == null) {
@@ -1337,7 +1477,9 @@
       const FACT = {
         'debit':    ['throughput', 'Le débit Threat Prevention impose le modèle.'],
         'sessions': ['sessions',   'Ce sont les sessions concurrentes qui imposent le modèle, pas le débit. Un usage SaaS ouvre beaucoup de flux pour peu de bande passante.'],
-        'CPS':      ['sessions',   'Ce sont les nouvelles connexions par seconde qui imposent le modèle. Vérifier le CPS réel avant de trancher.']
+        'CPS':      ['sessions',   'Ce sont les nouvelles connexions par seconde qui imposent le modèle. Vérifier le CPS réel avant de trancher.'],
+        'VPN':      ['throughput', 'C\'est le débit VPN de GlobalProtect terminé sur le boîtier qui impose le modèle. Prisma Access sortirait cette charge du firewall.'],
+        'tunnels':  ['sessions',   'C\'est le nombre de tunnels GlobalProtect simultanés qui impose le modèle. Prisma Access sortirait cette charge du firewall.']
       };
       const fx = FACT[retenu.facteur] || FACT['debit'];
       html += '<h3 class="wb-group-title">' + ic(fx[0], 20) + 'Facteur dimensionnant</h3>'
@@ -1519,7 +1661,9 @@ ${clientName ? 'Client : ' + clientName + '\n' : ''}${partnerName ? 'Rédacteur 
 ${confLabel}
 
 CONTRAINTES
-  Débit à inspecter   : ${rawBw === 'unknown' ? 'non renseigné (hypothèse 200 Mbps)' : fmtExact(bwMbps) + ' Mbps'}
+  Lien Internet       : ${rawBw === 'unknown' ? 'non renseigné' : fmtExact(lienMbps) + ' Mbps'}
+  Usage estimé        : ${fmtExact(usageMbps)} Mbps (${fmtExact(users)} utilisateurs x ${String(prof.mbps).replace('.', ',')} Mbps)
+  Base retenue        : ${baseSource === 'lien' ? 'lien Internet' : 'usage estimé'}${ewMbps ? ' + ' + fmtExact(ewMbps) + ' Mbps est-ouest' : ''}
   Utilisateurs        : ${rawUsers === 'unknown' ? 'non renseigné (hypothèse 250)' : fmtExact(users)}
   Utilisateurs distants : ${rawRemote === 'unknown' ? 'non renseigné' : fmtExact(parseInt(rawRemote))}
   Profil de trafic    : ${cloudLabel}${rawCloud === 'unknown' ? ' (hypothèse)' : ''}
