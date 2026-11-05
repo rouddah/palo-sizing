@@ -1,5 +1,43 @@
 # Changelog
 
+## Session 19 - 5 novembre 2026 : audit exhaustif v9, champ par champ (branche audit-v9)
+
+Les 59 modeles relus valeur par valeur contre la datasheet de leur serie,
+la documentation technique Palo Alto pour la HA et les versions, et la page
+officielle des fins de vie. Detail, avec page et table pour chaque valeur :
+`AUDIT_EXHAUSTIF_2026-11.md`.
+
+- Ports : le cuivre multi-gig etait compte en « 1G RJ45 » sur dix series.
+  Nouveau champ `mgig` (avec les vitesses exactes dans `mgigSp`) ; `rj45`
+  ne compte plus que le cuivre 1G. Ports combo SFP/RJ45 sortis de `sfp1`
+  (champ `combo`). PA-7500 : 24 SFP-DD comptes a tort en QSFP28 (champ
+  `sfpdd`). Nombre de ports PoE (`poeP`).
+- HA par modele, sourcee : `haAP`, `haAA` (false quand la doc l'exclut :
+  PA-5500 et PA-7500), `haCl` (HA clustering 4, 6 ou 8 membres, NGFW
+  clustering 2 membres), `haPorts`, `haNote`. PA-800 : A/A publie, etait a
+  false. PA-3500 et PA-50R : A/A classique non publie, etait a true.
+- PA-800 recontrolee sur sa datasheet, toujours en ligne : cinq debits
+  corriges (le site portait les valeurs HTTP au lieu d'appmix), vsys non
+  publies. La datasheet PA-7000 est aussi en ligne, valeurs conformes.
+- Nouveaux champs : PAN-OS minimal, dernier PAN-OS, PAN-OS des mesures,
+  dates EoS/EoL, stockage, alimentation, refroidissement, lignes I/O et
+  Management I/O de la datasheet.
+- References PA-7050/7080 et PA-7500 remplacees par celles vues a la source
+  (`-AC-SYS`, `-A-SYS`) ; PA-455R-5G renseignee.
+- `m5g` nul (non publie) partout ou la datasheet n'a pas de section Mobile
+  Network ; libelle « 5G Security ». GlobalProtect non publie sur PA-400 et
+  PA-400R, SD-WAN non publie sur PA-7500.
+- PA-500 : format « Desktop (rack 1U en option) », la datasheet donne des
+  dimensions de bureau et vend le rack a part.
+- Comparateur : toutes ces lignes dans Tableau et Comparaison, « Non
+  supporte » distinct de « non publie » ; loupe avec ports detailles, HA et
+  EoS annoncee. Recherche : filtre cuivre qui compte 1G, multi-gig et combo,
+  filtre multi-gig, 100G QSFP28 ou SFP-DD. Etabli : interfaces detaillees,
+  modes HA publies du modele retenu, textes PA-500, PA-3500, PA-5500
+  corriges, version PAN-OS par serie. Mode guide : PA-5450 et PA-7000 (fin
+  de vente) retires des paliers.
+- `_data-audit.js` exige les nouveaux champs et controle leur coherence.
+
 ## Session 18 - 5 novembre 2026 : refonte v8, DA et ergonomie (branche refonte-v8)
 
 Retour de Rayan sur la v7 : DA inchangee, site statique, menus durs a

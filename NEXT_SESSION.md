@@ -2,6 +2,22 @@
 
 > Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
+## Audit v9 (branche audit-v9, non fusionnee, non deployee)
+
+Voir CHANGELOG session 19 et `AUDIT_EXHAUSTIF_2026-11.md`. A savoir avant
+d'editer `data/pa-models.js` :
+- `rj45` = cuivre 1G seulement ; le multi-gig va dans `mgig` (+ `mgigSp`),
+  les combos SFP/RJ45 dans `combo`, les SFP-DD dans `sfpdd`.
+- HA : `haAP`, `haAA` (true / false = exclu par la doc / null = non publie),
+  `haCl`, `haPorts`, `haNote`. Ne jamais lire « NGFW clustering with
+  active/active » comme une HA actif/actif classique.
+- Extraire les PDF avec `pdftotext -layout -enc UTF-8` : sans UTF-8 les
+  renvois de note (†, ‡) disparaissent, et avec eux les « Future release ».
+- `_data-audit.js` refuse un modele sans les champs v9 (null si non publie).
+- Le tableau par modele de `AUDIT_EXHAUSTIF_2026-11.md` sort de
+  `node tools/audit/make-audit.js data/pa-models.js <sortie.md>` : le
+  regenerer apres toute modification de donnees.
+
 ## Refonte v8 (branche refonte-v8, non fusionnee)
 
 Voir CHANGELOG session 18. Points a connaitre avant d'editer :
