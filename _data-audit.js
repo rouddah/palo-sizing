@@ -64,8 +64,28 @@ for (const m of MODELS) {
   if (m.gp && m.sess && m.gp > m.sess) E(id + 'tunnels GP ' + m.gp + ' > sessions ' + m.sess);
 
   /* Un chassis sans aucune interface ne se deploie pas. */
-  const ports = (m.rj45 || 0) + (m.sfp1 || 0) + (m.sfp10 || 0) + (m.sfp25 || 0) + (m.sfp100 || 0);
+  const ports = (m.rj45 || 0) + (m.mgig || 0) + (m.combo || 0) + (m.sfp1 || 0) + (m.sfp10 || 0)
+    + (m.sfp25 || 0) + (m.sfp100 || 0) + (m.sfp400 || 0) + (m.sfpdd || 0);
   if (ports === 0 && !/7000|7500/.test(m.s)) E(id + 'aucune interface declaree');
+
+  /* Champs de l'audit v9 : presents sur chaque modele (nul = non publie). */
+  ['mgig', 'mgigSp', 'combo', 'sfpdd', 'poeP', 'haAP', 'haAA', 'haCl', 'haNote', 'haPorts',
+   'panosMin', 'panosMax', 'eosD', 'eolD', 'dsOs', 'disk', 'psu', 'cool', 'io', 'mgmt'].forEach(k => {
+    if (!(k in m)) E(id + 'champ ' + k + ' absent (mettre null si non publie)');
+  });
+  if (m.mgig > 0 && !m.mgigSp) E(id + 'ports multi-gig sans vitesses (mgigSp)');
+  if (!m.mgig && m.mgigSp) E(id + 'vitesses multi-gig sans port multi-gig');
+  if (m.poeP > 0 && !m.poe) E(id + m.poeP + ' ports PoE sur un modele sans PoE');
+  if (m.poe && m.poeP === 0) E(id + 'modele PoE avec zero port PoE');
+  if (m.poeP == null && m.poe) W(id + 'nombre de ports PoE non publie');
+  if (m.haAA === true && m.haAP !== true) E(id + 'actif/actif sans actif/passif');
+  if (m.haAP == null) W(id + 'HA actif/passif non publiee');
+  if (m.haAA == null) W(id + 'HA actif/actif non publiee (hors clustering)');
+  if (m.eosD && !/^\d{4}-\d{2}-\d{2}$/.test(m.eosD)) E(id + 'date EoS hors format ISO');
+  if (m.eolD && !/^\d{4}-\d{2}-\d{2}$/.test(m.eolD)) E(id + 'date EoL hors format ISO');
+  if (m.eosD && m.eolD && m.eolD <= m.eosD) E(id + 'EoL avant EoS');
+  if (m.eos && !m.eosD) W(id + 'fin de vente sans date publiee');
+  if (m.panosMin == null) W(id + 'premiere version PAN-OS non publiee');
 
   /* Le SKU suit un format stable chez Palo Alto. */
   if (!m.sku) W(id + 'reference chassis non publiee par la datasheet');
