@@ -39,8 +39,8 @@ Choix a connaitre :
 ## Ports
 
 Comptes repris des tableaux d'interfaces, hors management, console, HA et
-synchronisation dedies. Classement par format physique : `rj45` toutes
-vitesses cuivre, `sfp1` SFP, `sfp10` SFP+, `sfp25` SFP28 et SFP56, `sfp100`
+synchronisation dedies. Classement par format physique : `rj45` cuivre 1G
+(multi-gig dans `mgig` depuis le second releve, voir section Materiel), `sfp1` SFP, `sfp10` SFP+, `sfp25` SFP28 et SFP56, `sfp100`
 QSFP28 et QSFP56, `sfp400` QSFP-DD. Un port mixte RJ45/SFP est compte une fois,
 cote SFP. Le libelle `ports` garde la description exacte (vitesses 2.5G, 5G,
 50G, 200G comprises). Chassis Fortinet 7000F : ports nuls, ils dependent des
@@ -194,8 +194,9 @@ cisco.com, mais c'est le premier candidat a verifier au prochain releve.
   aucun `fw`, `tp`, `vpn`, `sess` ou `cps` nul.
 - Ports nuls (null) sur les chassis FortiGate 7081F et 7121F : ils dependent
   des modules.
-- Les champs PA propres au site (GlobalProtect, zones, politiques, SKU, PoE,
-  vsys) ne sont pas fournis pour les concurrents.
+- Les champs PA propres au site (GlobalProtect, zones, politiques, SKU,
+  vsys) ne sont pas fournis pour les concurrents. PoE, multi-gig, HA et
+  alimentation le sont depuis le second releve (section Materiel ci-dessous).
 
 ## Controles
 
@@ -214,3 +215,183 @@ telechargements hors navigateur) : extraction du texte du PDF dans la page,
 puis lecture visuelle des tableaux quand l'extraction melangeait les
 colonnes (19100, Spark 2500). Datasheets Cisco lues dans leur page HTML,
 tableau par tableau.
+
+## Materiel : multi-gig, PoE, haute disponibilite, alimentation (5 novembre 2026, second releve)
+
+Les 69 boitiers ont ete releves au meme niveau de detail que les PA, dans la
+meme datasheet que leurs performances (`ds`, revision `dsRev` inchangee).
+Regle identique : non publie = null, jamais estime ; chaque valeur porte sa
+source dans `hwSrc` (page ou tableau et ligne), et le texte HA de la
+datasheet est dans `haNote`. Ces champs s'affichent dans le comparateur
+(vues Tableau et Comparaison, et fiche imprimable) ; ils n'entrent dans
+aucun ecart, barre, maximum ni dans l'etabli.
+
+Changement de convention : `rj45` ne compte plus que le cuivre 1G, comme
+pour les PA. Le cuivre 2.5G, 5G et 10GBASE-T passe dans `mgig`, vitesses
+ecrites dans `mgigSp`. rj45 + mgig egale l'ancien rj45 sur les 67 modeles a
+ports fixes (controle fait a la fusion). Les ports mixtes RJ45/SFP restent
+comptes une fois cote SFP (FortiGate 80F, 90G, Spark 2530 a 2590), pas
+dans un champ `combo`.
+
+| Champ | Fortinet (29) | Check Point (20) | Cisco (20) |
+|---|---|---|---|
+| `mgig` publie / null | 27 / 2 | 20 / 0 | 20 / 0 |
+| dont modeles a multi-gig | 6 | 11 | 1 |
+| `poeP` publie / null | 4 / 25 | 0 / 20 | 12 / 8 |
+| `haAP` publie / null | 29 / 0 | 14 / 6 | 20 / 0 |
+| `haAA` publie / null | 29 / 0 | 14 / 6 | 10 / 10 |
+| `haCl` publie / null | 28 / 1 | 20 / 0 | 9 / 11 |
+| `psuR` publie / null | 23 / 6 | 20 / 0 | 19 / 1 |
+
+Total : 318 valeurs publiees, 96 non publiees, sur 6 champs x 69 modeles
+(hors vitesses multi-gig, texte d'alimentation et notes).
+
+Lecture par editeur :
+
+- **Fortinet** : ligne « High Availability Configurations » de chaque
+  datasheet. Le nombre de membres du clustering n'est publie nulle part
+  (champ libelle « nombre de membres non publie »). 30G : actif/passif et
+  actif/actif, pas de clustering. Chassis 7000F : « FGSP (Active-Active) »
+  et clustering. PoE : 0 seulement quand la datasheet l'ecrit (40F ligne PoE
+  a 0, 50G PoE reserve a la variante SFP-POE, 70G et 80F tiret dans la
+  colonne du modele) ; les autres datasheets n'ont pas de ligne PoE, donc
+  null. Variantes PoE non dupliquees : 50G-SFP-POE (4 PoE/+ et 1 FortiLink
+  PoE+, 60 W), 70G-POE (4, 60 W), 80F-POE (6 + 2 FortiLink, 96 W).
+  Alimentation : adaptateur externe sans redondance ecrite sur 30G a 71F
+  (null), second adaptateur en option sur 80F et 90G, double alimentation
+  de serie a partir du 120G (non hot-swap sur 120G, 200G, 400G, 700G).
+- **Check Point** : lu dans le navigateur, page par page. Force : « Active/
+  Active L2, Active/Passive L2 and L3 », « ClusterXL or VRRP », sans nombre
+  de membres. Spark 2500 : seule la mention « ClusterXL High Availability »
+  est publiee, modes non precises, donc A/P et A/A null. Aucune datasheet
+  Check Point n'a de ligne PoE : 20 null. Alimentation : colonne « Redundant
+  Power » du tableau de commande (Base) pour les 9000, 19000 et 29000 ;
+  ligne « Dual Power » pour les Spark (No sur 2530 et 2550, Available sur
+  2560 et 2570, Dual power supply commande sur 2580 et 2590). Multi-gig :
+  2.5G sur Spark 2580/2590 et Force 3950/3970/3980, 10GbE RJ45 sur 3950,
+  colonne « 1/10 GbE Copper » des Force 9100 a 9800 (ports reseau RJ45
+  embarques, hors management et synchronisation).
+- **Cisco** : logiciel Threat Defense. Un actif/actif publie pour ASA
+  seulement (Firepower 1120/1140/1150) reste null, comme les 1200 qui ne
+  publient que « active/standby HA pairs ». 3100 : clustering jusqu'a 8
+  chassis (pas sur la 3105) ; 4200 et 6100 : jusqu'a 16, actif/actif « with
+  clustering ». PoE : 2 PoE+ sur la Firepower 1010, 4 ports 802.3at (120 W)
+  sur la 1210CP ; pas de ligne PoE sur les 3100, et la 4200 ne cite pas le
+  PoE : null. Secure Firewall 1250 : 8x 2.5GBASE-T, seul multi-gig Cisco.
+
+Contradictions des datasheets, notees dans le champ `psu` :
+
+- Force 3920 : la ligne PSU du tableau p.5 reprend le stockage ; la
+  redondance vient de la p.4 (« Dual External AC-DC Adaptors »).
+- Force 3970 : « Dual Internal PSUs » p.4, « Dual (External) » p.5.
+- Spark 2590 : « Dual internal power supply » a la commande, « External
+  Power Supply » dans le tableau.
+- FortiGate 3000G : « Hot Swappable, 2+2 » p.8, « 2 AC power supplies » a
+  la commande p.10.
+- Cisco 4200 : ports fixes « SFP28 » dans le tableau, « SFP+ » dans la
+  synthese (le site garde sfp10).
+
+Points ouverts, non modifies faute de seconde lecture :
+
+- FortiGate 3500F (32 SFP28) et 3500G (30 SFP28) : les 2 ports HA semblent
+  inclus dans le compte (schema p.7 du 3500F, commande p.10 du 3500G),
+  alors que la regle du site les exclut. A recompter au prochain releve.
+- Firepower 1120/1140/1150 et 1200 compacts : `psuR` false lu dans « single
+  AC input » / « Single input, external power supply », la datasheet ne dit
+  pas « non redondante » en toutes lettres.
+- Les Spark existent en versions Wi-Fi et 5G, les FortiGate en -DC : ce
+  sont les chiffres du modele de base.
+
+Methode : Fortinet, PDF telecharges et lus colonne par colonne
+(coordonnees de mots PyMuPDF, pour ne pas melanger deux modeles) ; Check
+Point, lecture visuelle dans le navigateur (le site refuse les
+telechargements hors navigateur, et l'extraction texte des PDF passe par
+des polices sous-ensemble) ; Cisco, tableaux des pages HTML. Controle :
+`node _competitors.js` (dans `npm run build`) refuse un modele sans ces
+champs, une valeur publiee sans source, un mgig sans vitesses, un em-dash.
+
+### Releve par modele (n.p. = non publie)
+
+### Fortinet
+
+| Modele | RJ45 1G | mGig (vitesses) | PoE | A/P | A/A | Clustering | Redondance alim. |
+|---|---|---|---|---|---|---|---|
+| FortiGate 30G | 4 | 0 | n.p. | oui | oui | n.p. | n.p. |
+| FortiGate 40F | 5 | 0 | 0 | oui | oui | Clustering (nombre de membres non publié) | n.p. |
+| FortiGate 50G | 5 | 0 | 0 | oui | oui | Clustering (nombre de membres non publié) | n.p. |
+| FortiGate 60F | 10 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | n.p. |
+| FortiGate 71F | 10 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | n.p. |
+| FortiGate 70G | 10 | 0 | 0 | oui | oui | Clustering (nombre de membres non publié) | n.p. |
+| FortiGate 80F | 8 | 0 | 0 | oui | oui | Clustering (nombre de membres non publié) | option |
+| FortiGate 90G | 8 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | option |
+| FortiGate 120G | 16 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 200G | 8 | 8 (5/2.5/GE RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 400F | 16 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 400G | 0 | 8 (5/2.5/GE RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 700G | 8 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 900G | 16 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 1000F | 0 | 8 (10 GE / 5 GE / 2.5 GE / GE / 100M RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 1800F | 16 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 2600F | 0 | 16 (10 GE / GE RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3000F | 0 | 16 (10 GE / 5 GE / 2.5 GE / GE RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3000G | 0 | 16 (10 GE / 5 GE / 2.5 GE / GE RJ45) | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3200F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3500F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3500G | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3700F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 3800G | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 4200F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 4400F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 4800F | 0 | 0 | n.p. | oui | oui | Clustering (nombre de membres non publié) | oui |
+| FortiGate 7081F | n.p. | n.p. | n.p. | oui | oui | FGSP (Active-Active) et Clustering (nombre de membres non publié) | oui |
+| FortiGate 7121F | n.p. | n.p. | n.p. | oui | oui | FGSP (Active-Active) et Clustering (nombre de membres non publié) | oui |
+
+### Check Point
+
+| Modele | RJ45 1G | mGig (vitesses) | PoE | A/P | A/A | Clustering | Redondance alim. |
+|---|---|---|---|---|---|---|---|
+| Spark 2530 | 6 | 0 | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | non |
+| Spark 2550 | 6 | 0 | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | non |
+| Spark 2560 | 9 | 0 | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | option |
+| Spark 2570 | 9 | 0 | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | option |
+| Spark 2580 | 8 | 2 (2.5GbE RJ45) | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | oui |
+| Spark 2590 | 16 | 2 (2.5GbE RJ45) | n.p. | n.p. | n.p. | ClusterXL High Availability (modes et nombre de membres non publiés) | oui |
+| Force 3920 | 8 | 0 | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 3950 | 8 | 4 (2.5GbE RJ45 (2), 10GbE RJ45 (2, dont 1 partagé avec le management)) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 3970 | 16 | 2 (2.5GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 3980 | 16 | 2 (2.5GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 9100 | 0 | 8 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 9200 | 0 | 8 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 9300 | 0 | 8 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | option |
+| Force 9400 | 0 | 8 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | option |
+| Force 9700 | 0 | 4 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | option |
+| Force 9800 | 0 | 4 (1/10GbE RJ45) | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | option |
+| Force 19100 | 0 | 0 | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 19200 | 0 | 0 | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 29100 | 0 | 0 | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+| Force 29200 | 0 | 0 | n.p. | oui | oui | ClusterXL ou VRRP (nombre de membres non publié) | oui |
+
+### Cisco
+
+| Modele | RJ45 1G | mGig (vitesses) | PoE | A/P | A/A | Clustering | Redondance alim. |
+|---|---|---|---|---|---|---|---|
+| Firepower 1010 | 8 | 0 | 2 | oui | n.p. | n.p. | n.p. |
+| Firepower 1120 | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Firepower 1140 | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Firepower 1150 | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 1210CE | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 1210CP | 8 | 0 | 4 | oui | n.p. | n.p. | non |
+| Secure Firewall 1220CX | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 1230 | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 1240 | 8 | 0 | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 1250 | 0 | 8 (2.5GBASE-T) | 0 | oui | n.p. | n.p. | non |
+| Secure Firewall 3105 | 8 | 0 | n.p. | oui | oui | n.p. | option |
+| Secure Firewall 3110 | 8 | 0 | n.p. | oui | oui | Clustering jusqu’à 8 membres | option |
+| Secure Firewall 3120 | 8 | 0 | n.p. | oui | oui | Clustering jusqu’à 8 membres | option |
+| Secure Firewall 3130 | 8 | 0 | n.p. | oui | oui | Clustering jusqu’à 8 membres | oui |
+| Secure Firewall 3140 | 8 | 0 | n.p. | oui | oui | Clustering jusqu’à 8 membres | oui |
+| Secure Firewall 4215 | 0 | 0 | n.p. | oui | oui | Clustering jusqu’à 16 membres | oui |
+| Secure Firewall 4225 | 0 | 0 | n.p. | oui | oui | Clustering jusqu’à 16 membres | oui |
+| Secure Firewall 4245 | 0 | 0 | n.p. | oui | oui | Clustering jusqu’à 16 membres | oui |
+| Secure Firewall 6160 | 0 | 0 | 0 | oui | oui | Clustering jusqu’à 16 membres | oui |
+| Secure Firewall 6170 | 0 | 0 | 0 | oui | oui | Clustering jusqu’à 16 membres | oui |
