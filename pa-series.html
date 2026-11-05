@@ -12,39 +12,6 @@
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ============================================================
-       Comparateur PA-Series v7
-       ------------------------------------------------------------
-       La page occupe l'ecran sur poste fixe : filtres en haut, tableau
-       qui defile pour lui-meme, bac de comparaison en bas. La selection
-       est explicite (un bouton par colonne), le defilement horizontal
-       se fait colonne par colonne (boutons, fleches du clavier,
-       molette sur les en-tetes, aimantation par colonne).
-       ============================================================ */
-    :root {
-      --label-w: 220px;
-      --col-w:   148px;
-    }
-
-    @media (min-width: 769px) {
-      body.cmp-page {
-        display: flex;
-        flex-direction: column;
-        height: 100dvh;
-        overflow: hidden;
-      }
-      body.cmp-page > .site-header,
-      body.cmp-page > .tb-wrap,
-      body.cmp-page > .nav-strip,
-      body.cmp-page > .vendor-note,
-      body.cmp-page > .site-footer { flex: none; }
-      body.cmp-page > .table-outer { flex: 1 1 auto; min-height: 0; height: auto; }
-      body.cmp-page > .site-footer { padding: var(--sp-2) var(--sp-4); }
-      /* sources et version deja dites dans le bandeau : le pied tient
-         sur une ligne et rend sa hauteur au tableau */
-      body.cmp-page > .site-footer > div + div { display: none; }
-    }
-
     /* ── Barres de filtres ── */
     .tb-wrap {
       position: relative; z-index: 2;
@@ -570,149 +537,320 @@
     .pa-empty b { color: var(--text-bright); display: block; margin-bottom: var(--sp-1); }
     .pa-empty button { margin-top: var(--sp-3); }
 
-    /* ── Bac de comparaison ──
-       Il monte du bas quand un premier modele est retenu et reste la
-       tant qu'il y en a un : la selection ne depend plus de l'endroit
-       ou l'on a defile. */
-    .tray {
-      position: fixed;
-      left: 50%;
-      bottom: var(--sp-4);
-      z-index: 200;
-      width: min(960px, calc(100vw - var(--sp-6)));
-      transform: translate3d(-50%, calc(100% + var(--sp-6)), 0);
-      opacity: 0;
-      visibility: hidden;
-      transition: transform var(--dur) var(--ease),
-                  opacity var(--dur) var(--ease),
-                  visibility 0s linear var(--dur);
+
+    /* ============================================================
+       Comparateur v8 : la gamme sur un axe, la comparaison en face
+       ------------------------------------------------------------
+       Trois vues sur la meme selection : la gamme (explorateur sur
+       un axe logarithmique), le tableau complet, et la comparaison
+       cote a cote. La selection vit dans un bac fixe en bas d'ecran.
+       ============================================================ */
+    :root { --label-w: 220px; --col-w: 148px; --lane-lab: 210px; }
+
+    @media (min-width: 861px) {
+      body.cmp-page { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+      body.cmp-page > .site-header, body.cmp-page > .site-footer { flex: none; }
+      body.cmp-page > .cmp { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+      .cmp > .view { flex: 1 1 auto; min-height: 0; overflow: auto; }
+      body.cmp-page > .site-footer { padding: var(--sp-2) var(--sp-4); }
+      body.cmp-page > .site-footer > div + div { display: none; }
+      #view-tbl:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+      #view-tbl .table-outer { flex: 1 1 auto; min-height: 0; height: auto; }
     }
-    .tray.on {
-      transform: translate3d(-50%, 0, 0);
-      opacity: 1;
-      visibility: visible;
-      transition-delay: 0s;
+    .view[hidden] { display: none !important; }
+
+    /* ── Barre du comparateur ── */
+    .cmp-bar {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: var(--sp-3) var(--sp-5);
+      padding: var(--sp-4) var(--sp-6);
+      border-bottom: 1px solid var(--border);
     }
-    .tray-in {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-3);
-      flex-wrap: wrap;
-      padding: var(--sp-2) var(--sp-3);
-      background: color-mix(in srgb, var(--surface) 94%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border2);
-      border-radius: var(--r-lg);
-      box-shadow: 0 18px 44px -18px rgba(0,0,0,.65), 0 1px 2px rgba(0,0,0,.3);
-    }
-    [data-theme="light"] .tray-in { box-shadow: 0 18px 40px -20px rgba(11,15,20,.35), 0 1px 2px rgba(11,15,20,.08); }
-    .tray-title {
-      font-size: var(--text-2xs);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text-muted);
-    }
-    .tray-list { display: flex; gap: var(--sp-2); list-style: none; flex-wrap: wrap; min-width: 0; }
-    .tray-chip, .tray-slot {
-      display: inline-flex; align-items: center; gap: var(--sp-2);
-      height: 32px;
-      padding: 0 var(--sp-1) 0 var(--sp-3);
-      border-radius: var(--r-sm);
-      font-family: var(--mono);
-      font-size: var(--text-xs);
-      font-weight: 700;
-    }
-    .tray-chip { background: var(--surface2); border: 1px solid var(--border2); color: var(--text-bright); }
-    .tray-chip .dot { width: 8px; height: 8px; border-radius: var(--r-pill); flex: none; }
-    .tray-slot { width: 104px; border: 1px dashed var(--border2); }
-    .chip-x {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 24px; height: 24px;
-      border: 0; border-radius: var(--r-xs);
-      background: none; color: var(--text-muted);
-      cursor: pointer;
+    .cmp-title h1 { font: 700 24px/1 var(--font); letter-spacing: -.02em; color: var(--text-bright); white-space: nowrap; }
+    .cmp-title h1 span { color: var(--accent-txt); }
+    .cmp-count { margin-top: 6px; font: 400 12px/1 var(--mono); color: var(--text-muted); white-space: nowrap; }
+    .seg { display: inline-flex; border: 1px solid var(--border2); border-radius: var(--r-md); padding: 2px; gap: 2px; }
+    .seg button {
+      font: 500 13px/1 var(--font); color: var(--text-dim);
+      background: none; border: 0; border-radius: var(--r-sm);
+      padding: 8px 12px; cursor: pointer; white-space: nowrap;
       transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
     }
-    .chip-x:hover { color: var(--text-bright); background: var(--surface3); }
-    .tray-msg { font-size: var(--text-xs); color: var(--warn); }
-    .tray-msg:empty { display: none; }
-    .tray-actions { display: flex; gap: var(--sp-2); margin-left: auto; }
-    .tray-btn {
-      font: inherit; font-size: var(--text-xs); font-weight: 600;
-      min-height: 32px;
-      padding: 0 var(--sp-3);
-      border-radius: var(--r-sm);
-      border: 1px solid var(--border2);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    .seg button:hover { color: var(--text-bright); }
+    .seg button[aria-selected="true"], .seg button[aria-checked="true"] { background: var(--surface3); color: var(--text-bright); font-weight: 700; }
+    .seg button:disabled { opacity: .45; cursor: default; }
+    .seg .n { font-family: var(--mono); color: var(--accent-txt); margin-left: 4px; }
+    .cmp-search {
+      display: flex; align-items: center; gap: var(--sp-2);
+      height: 36px; padding: 0 var(--sp-3);
+      border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--surface);
+      color: var(--text-muted); min-width: 230px;
     }
-    .tray-btn:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-bright); }
-    .tray-btn:active:not(:disabled) { transform: scale(.97); }
-    .tray-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
-    .tray-btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-    .tray-btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
-    .tray-btn:disabled { opacity: .45; cursor: default; }
+    .cmp-search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; font: 400 14px/1 var(--font); color: var(--text-bright); }
+    .cmp-search:focus-within { border-color: var(--accent); }
+    .cmp-search input:focus-visible { outline: none; }
+    .bar-k { font: 400 12px/1 var(--font); color: var(--text-muted); margin-right: var(--sp-2); white-space: nowrap; }
+    .bar-grp { display: flex; align-items: center; }
+    .tgl { display: inline-flex; align-items: center; gap: var(--sp-2); font: 400 13px/1 var(--font); color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+    .tgl input, .vchk input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+    .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+    .vendors[hidden] { display: none; }
+    .vchk { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--font); color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+    .bar-end { margin-left: auto; }
+    .xp-only { display: contents; }
+    body[data-view="tbl"] .xp-only, body[data-view="cmp"] .xp-only { display: none; }
 
-    /* ── Fenetre de comparaison ── */
-    .cmp-overlay {
-      display: flex;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.72);
-      z-index: 300;
-      align-items: flex-start;
-      justify-content: center;
-      padding: var(--sp-8) var(--sp-4);
-      overflow-y: auto;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity var(--dur) var(--ease), visibility 0s linear var(--dur);
+    /* ── Explorateur ── */
+    .view-xp { position: relative; padding: 0 var(--sp-6) 130px; }
+    .xp-axis {
+      position: sticky; top: 0; z-index: 5;
+      height: 44px; margin-left: var(--lane-lab);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border2);
     }
-    .cmp-overlay.open { opacity: 1; visibility: visible; transition-delay: 0s; }
-    .cmp-modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      padding: var(--sp-6);
-      width: 92vw;
-      max-width: 1000px;
-      position: relative;
-      transform: translate3d(0, calc(var(--shift) * 2), 0) scale(.985);
-      transition: transform var(--dur-slow) var(--ease);
+    .xp-tick { position: absolute; bottom: 0; transform: translateX(-50%); font: 400 11px/1 var(--mono); color: var(--text-muted); padding-bottom: 8px; white-space: nowrap; }
+    .xp-tick::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 5px; background: var(--border2); }
+    .xp-unit { position: absolute; left: 0; top: 10px; font: 700 12px/1 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .xp-unit span { font-weight: 400; color: var(--text-muted); }
+    .xp-np { position: absolute; bottom: 0; right: 0; width: 64px; text-align: center; font: 400 11px/1.2 var(--font); color: var(--text-muted); padding-bottom: 6px; border-left: 1px dashed var(--border2); height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+    .xp-plot { position: relative; }
+    .xp-grid { position: absolute; top: 0; bottom: 0; left: var(--lane-lab); right: 0; pointer-events: none; }
+    .xp-grid i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); opacity: .6; }
+    .xp-lane {
+      position: relative; display: flex;
+      border-bottom: 1px solid var(--border);
     }
-    .cmp-overlay.open .cmp-modal { transform: none; }
-    .cmp-title { font-size: var(--text-lg); font-weight: 700; color: var(--text-bright); margin-bottom: var(--sp-2); }
-    .cmp-sub { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--sp-4); }
-    .cmp-close {
-      position: absolute; top: var(--sp-4); right: var(--sp-4);
-      width: 32px; height: 32px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--r-sm); cursor: pointer;
-      color: var(--text-muted);
-      display: flex; align-items: center; justify-content: center;
+    .xp-lane.is-off { opacity: .28; }
+    .xp-lane.is-hidden { display: none; }
+    .xp-lab {
+      flex: none; width: var(--lane-lab);
+      display: flex; flex-direction: column; justify-content: center; gap: 3px;
+      padding: 8px var(--sp-3) 8px 0;
     }
-    .cmp-close:hover { color: var(--text-bright); }
-    .cmp-diff { display: inline-flex; align-items: center; gap: var(--sp-1); font-size: var(--text-xs); color: var(--text-muted); cursor: pointer; font-weight: 500; }
-    .cmp-scroll { overflow-x: auto; }
-    .cmp-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-    .cmp-table th, .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
-    .cmp-table thead th { background: var(--surface2); font-size: var(--text-sm); font-weight: 700; position: sticky; top: 0; color: var(--text-bright); }
-    .cmp-table thead th .sw { display: inline-block; width: 8px; height: 8px; border-radius: var(--r-pill); margin-right: var(--sp-1); }
-    .cmp-table td:first-child, .cmp-table th:first-child { text-align: left; background: var(--surface); position: sticky; left: 0; }
-    .cmp-table td:first-child { color: var(--text); font-weight: 500; }
-    .cmp-table tr:hover td { background: var(--surface2); }
-    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); }
-    .ct-val { font-family: var(--mono); color: var(--text); }
-    .cmp-actions { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+    .xp-lab b { font: 700 14px/1.1 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .xp-lab b .eos { font: 700 10px/1 var(--mono); color: var(--warn); margin-left: 6px; }
+    .xp-lab span { font: 400 11.5px/1.25 var(--font); color: var(--text-muted); }
+    .xp-lab img { height: 14px; width: auto; max-width: 150px; object-fit: contain; object-position: left; margin-top: 3px; opacity: .9; }
+    .xp-lane.is-comp .xp-lab b { color: var(--text-dim); }
+    .xp-track { position: relative; flex: 1; min-width: 0; }
+    .xp-span { position: absolute; height: 2px; margin-top: -1px; background: var(--border2); border-radius: 1px; }
+    .xp-lane:not(.is-comp) .xp-span { background: color-mix(in srgb, var(--accent) 40%, var(--border2)); }
+    .xp-lane.is-comp .xp-span { background: repeating-linear-gradient(90deg, var(--border2) 0 4px, transparent 4px 7px); }
+    .xp-sep { padding: var(--sp-5) 0 var(--sp-2) var(--lane-lab); font: 400 12.5px/1.5 var(--font); color: var(--text-muted); border-bottom: 1px solid var(--border2); }
+    .xp-sep b { color: var(--text-bright); font-weight: 700; }
 
-    /* ── Mobile ──
-       Les filtres tiennent chacun sur une ligne qui defile : les trois
-       barres prenaient plus de la moitie du premier ecran. */
-    @media (max-width: 768px) {
-      :root { --label-w: 128px; --col-w: 132px; }
+    .xp-tok {
+      position: absolute; left: 0; top: 0;
+      height: 18px; padding: 0 4px;
+      font: 600 11.5px/18px var(--mono); color: var(--text-dim);
+      background: none; border: 0; border-radius: var(--r-sm);
+      white-space: nowrap; cursor: pointer;
+      will-change: transform;
+    }
+    .xp-tok .d {
+      position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px;
+      border-radius: 50%; background: var(--text-muted);
+      box-shadow: 0 0 0 2px var(--bg);
+      transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+    }
+    .xp-tok .l { position: absolute; width: 1px; margin-left: -.5px; background: var(--border2); }
+    .xp-lane:not(.is-comp) .xp-tok .d { background: var(--text-dim); }
+    .xp-tok:hover, .xp-tok:focus-visible, .xp-tok.is-hot { color: var(--text-bright); background: var(--surface3); }
+    .xp-tok:hover .d, .xp-tok:focus-visible .d, .xp-tok.is-hot .d { transform: scale(1.4); background: var(--text-bright); }
+    .xp-tok[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+    .xp-tok[aria-pressed="true"] .d { background: var(--accent); transform: scale(1.5); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent); }
+    .xp-tok[aria-pressed="true"] .l { background: var(--accent); }
+    .xp-tok.is-dim { opacity: .22; }
+    .xp-tok.is-eos { font-style: italic; }
+    .xp-tok:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .xp-tok .b, .xp-tok .v { display: none; }
+    .is-list .xp-tick, .is-list .xp-np { display: none; }
+    .is-list .xp-axis { height: 34px; }
+    .xp-box { position: absolute; left: 0; top: 0; height: 18px; width: auto; max-width: 150px; object-fit: contain; opacity: .95; pointer-events: none; }
+    .xp-list .xp-box, .xp-list .xp-span, .xp-list .xp-grid, .xp-list .xp-tok .d, .xp-list .xp-tok .l { display: none; }
+    .xp-list .xp-track { display: flex; flex-direction: column; padding: 4px 0 10px; }
+    .xp-list .xp-tok {
+      position: relative; transform: none !important; height: 32px; width: 100%;
+      display: grid; grid-template-columns: 104px 1fr 78px; align-items: center; gap: 10px; text-align: left;
+    }
+    .xp-list .xp-tok .b { display: block; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .xp-list .xp-tok .b i { display: block; height: 100%; background: var(--text-muted); }
+    .xp-list .xp-tok[aria-pressed="true"] .b i { background: var(--on-accent); }
+    .xp-list .xp-tok .v { display: block; text-align: right; font-weight: 400; }
+    .xp-list .xp-tok .n { overflow: hidden; text-overflow: ellipsis; }
+    .xp-note { margin: var(--sp-4) 0 0 var(--lane-lab); font: 400 12px/1.6 var(--font); color: var(--text-muted); max-width: 90ch; }
+    .xp-note kbd { margin: 0 2px; }
+
+    /* Loupe : le boitier et ses chiffres, au survol ou au focus */
+    .xp-loupe {
+      position: absolute; z-index: 30; left: 0; top: 0;
+      width: 300px; padding: var(--sp-4);
+      background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r-lg);
+      box-shadow: 0 30px 60px -24px rgba(0,0,0,.7);
+      pointer-events: none; opacity: 0; visibility: hidden;
+    }
+    [data-theme="light"] .xp-loupe { box-shadow: 0 24px 50px -24px rgba(11,12,15,.35); }
+    .xp-loupe .ph { height: 54px; display: flex; align-items: center; justify-content: center; margin: -4px 0 var(--sp-3); }
+    .xp-loupe .ph img { max-height: 54px; max-width: 100%; object-fit: contain; }
+    .xp-loupe h3 { font: 700 20px/1 var(--mono); color: var(--text-bright); letter-spacing: -.02em; }
+    .xp-loupe .sub { margin-top: 5px; font: 400 12px/1.4 var(--font); color: var(--text-muted); }
+    .xp-loupe dl { display: grid; grid-template-columns: 1fr auto; gap: 5px var(--sp-3); margin-top: var(--sp-3); padding-top: var(--sp-3); border-top: 1px solid var(--border); }
+    .xp-loupe dt { font: 400 12px/1.3 var(--font); color: var(--text-muted); }
+    .xp-loupe dd { font: 700 12.5px/1.3 var(--mono); color: var(--text-bright); text-align: right; }
+    .xp-loupe dd.np { font-weight: 400; font-style: italic; color: var(--text-muted); font-family: var(--font); }
+    .xp-loupe .hint { margin-top: var(--sp-3); font: 400 11.5px/1.4 var(--font); color: var(--text-muted); }
+    .xp-loupe .hint b { color: var(--accent-txt); }
+    .xp-loupe .prof { margin-top: var(--sp-2); font: 400 11px/1.4 var(--font); color: var(--warn); }
+
+    /* Visuel absent : un plastron dessine, sans pretendre etre une photo */
+    .hw-ph { display: block; width: 120px; height: 22px; border: 1px solid var(--border2); border-radius: 3px;
+      background: repeating-linear-gradient(90deg, transparent 0 9px, var(--border) 9px 10px) 10px 6px / calc(100% - 20px) 9px no-repeat; }
+    .hw-ph.u2 { height: 30px; } .hw-ph.u3 { height: 38px; } .hw-ph.ch { height: 48px; width: 70px; }
+    .hw-ph.dt { width: 90px; height: 18px; border-radius: 5px; }
+
+    /* ── Bac de selection ── */
+    .sel {
+      position: fixed; z-index: 120;
+      left: 50%; bottom: calc(var(--dock-h) + var(--sp-4));
+      width: min(1080px, calc(100vw - 32px));
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: var(--sp-3);
+      padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border2); border-radius: var(--r-lg);
+      box-shadow: 0 24px 50px -24px rgba(0,0,0,.8);
+    }
+    [data-theme="light"] .sel { box-shadow: 0 20px 40px -24px rgba(11,12,15,.3); }
+    body[data-view="cmp"] .sel { display: none; }
+    .sel-k { font: 700 13px/1.2 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .sel-k span { display: block; font-weight: 400; font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+    .sel-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); flex: 1; min-width: 0; list-style: none; }
+    .slot { position: relative; height: 52px; border-radius: var(--r-md); }
+    .slot.is-empty { border: 1px dashed var(--border2); display: flex; align-items: center; justify-content: center; font: 400 12px/1 var(--mono); color: var(--text-muted); }
+    .slot-card {
+      position: absolute; inset: 0;
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px var(--sp-2);
+      padding: 6px 6px 6px 10px;
+      border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--surface2);
+      overflow: hidden;
+    }
+    .slot-card .nm { font: 700 13px/1.1 var(--mono); color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-card .vl { grid-column: 1; font: 400 11px/1.1 var(--font); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-card .rm { grid-row: 1 / span 2; grid-column: 2; width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: var(--r-sm); background: none; color: var(--text-muted); cursor: pointer; }
+    .slot-card .rm:hover { color: var(--text-bright); background: var(--surface3); }
+    .slot-card::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--accent); }
+    .slot-card.is-comp::before { background: var(--text-muted); }
+    .sel-acts { display: flex; gap: var(--sp-2); }
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      height: 40px; padding: 0 var(--sp-4);
+      font: 600 13.5px/1 var(--font); color: var(--text);
+      background: none; border: 1px solid var(--border2); border-radius: var(--r-sm);
+      cursor: pointer; white-space: nowrap; text-decoration: none;
+      transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    }
+    .btn:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-bright); }
+    .btn:active:not(:disabled) { transform: scale(.97); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+    .btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+    .btn:disabled { opacity: .45; cursor: default; }
+    .sel-msg { position: absolute; left: var(--sp-4); bottom: calc(100% + 6px); font: 500 12px/1 var(--font); color: var(--warn); }
+    .sel-msg:empty { display: none; }
+    .flyer {
+      position: fixed; z-index: 400; left: 0; top: 0; pointer-events: none;
+      font: 700 13px/1 var(--mono); color: var(--on-accent); background: var(--accent);
+      padding: 6px 9px; border-radius: var(--r-sm);
+      box-shadow: 0 10px 30px -8px rgba(250,88,45,.6);
+    }
+
+    /* ── Vue comparaison ── */
+    .view-cmp { padding: 0 var(--sp-6) var(--sp-8); }
+    .cv-bar {
+      position: sticky; top: 0; z-index: 6;
+      display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4);
+      padding: var(--sp-3) 0; background: var(--bg);
+    }
+    .cv-bar h2 { font: 700 18px/1 var(--font); color: var(--text-bright); margin-right: auto; }
+    .cv { --n: 2; max-width: 1280px; }
+    .cv-row {
+      display: grid; grid-template-columns: 250px repeat(var(--n), minmax(0, 1fr));
+      column-gap: var(--sp-5); align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .cv-heads { position: sticky; top: 64px; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--border2); align-items: end; }
+    .cv-head { position: relative; padding: var(--sp-3) 0 var(--sp-4); min-width: 0; }
+    .cv-head .ph { height: 46px; display: flex; align-items: center; margin-bottom: var(--sp-3); }
+    .cv-head .ph img { max-height: 46px; max-width: 100%; object-fit: contain; object-position: left; }
+    .cv-head .nm { font: 700 clamp(18px, 1.8vw, 26px)/1 var(--mono); letter-spacing: -.02em; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cv-head .sb { margin-top: 6px; font: 400 12.5px/1.35 var(--font); color: var(--text-muted); }
+    .cv-head .lk { display: inline-flex; gap: var(--sp-3); margin-top: var(--sp-2); align-items: center; }
+    .cv-head .lk a { font: 500 12px/1 var(--font); color: var(--text-dim); text-underline-offset: 3px; }
+    .cv-head .rm { font: 500 12px/1 var(--font); color: var(--text-muted); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .cv-head::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); }
+    .cv-head.is-comp::before { background: var(--text-muted); }
+    .cv-cat { padding: var(--sp-6) 0 var(--sp-2); font: 700 15px/1 var(--font); color: var(--text-bright); border-bottom: 1px solid var(--border2); }
+    .cv-lab { padding: 10px 0; font: 400 13px/1.35 var(--font); color: var(--text); }
+    .cv-lab .spec-sub { display: block; font-size: 11px; color: var(--text-muted); }
+    .cv-c { position: relative; padding: 10px 0 12px; min-width: 0; }
+    .cv-v { font: 400 14px/1.2 var(--mono); color: var(--text-bright); white-space: nowrap; }
+    .cv-c.is-top .cv-v { font-weight: 700; }
+    .cv-c .np { font: italic 400 12.5px/1.2 var(--font); color: var(--text-muted); }
+    .cv-d { margin-left: var(--sp-2); font: 400 11.5px/1 var(--mono); color: var(--text-muted); }
+    .cv-c.is-top .cv-d { color: var(--accent-txt); font-family: var(--font); font-weight: 600; }
+    .cv-bar-t { position: absolute; left: 0; bottom: 4px; height: 3px; width: 100%; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .cv-bar-t i { display: block; height: 100%; background: var(--text-muted); transform-origin: left; border-radius: 2px; }
+    .cv-c.is-top .cv-bar-t i { background: var(--accent); }
+    .cv-row.is-same .cv-v { color: var(--text-dim); }
+    .cv-prof { display: block; margin-top: 3px; font: 400 10.5px/1.2 var(--font); color: var(--warn); }
+    .cv-note { margin-top: var(--sp-4); font: 400 12px/1.6 var(--font); color: var(--text-muted); max-width: 100ch; }
+    .cv-empty { padding: var(--sp-8) 0; font-size: 15px; color: var(--text-dim); }
+
+    /* ── Tableau (vue complete) : en-tete compacte ── */
+    #view-tbl .tb-wrap { border-bottom: 1px solid var(--border); }
+    .model-card-top { border-radius: 0; }
+
+    /* ── Mobile ── */
+    @media (max-width: 860px) {
+      :root { --label-w: 128px; --col-w: 132px; --lane-lab: 0px; }
+      .cmp-bar { padding: var(--sp-4); gap: var(--sp-3); }
+      .cmp-title { width: 100%; }
+      .cmp-search { min-width: 0; flex: 1 1 100%; }
+      .seg { max-width: 100%; overflow-x: auto; }
+      .bar-k { display: none; }
+      .view-xp { padding: 0 var(--sp-4) 170px; }
+      .xp-axis { margin-left: 0; top: var(--header-h); }
+      .xp-lane { flex-direction: column; }
+      .xp-lab { width: auto; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: var(--sp-2); padding: var(--sp-3) 0 0; }
+
+      .xp-lab img { display: none; }
+      .xp-note, .xp-sep { margin-left: 0; padding-left: 0; }
+      .xp-grid { left: 0; }
+      .sel { flex-wrap: wrap; padding: var(--sp-2); gap: var(--sp-2); bottom: calc(var(--dock-h) + var(--sp-2)); width: calc(100vw - 16px); }
+      .sel-k { display: none; }
+      .sel-slots { grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 1 1 100%; gap: 4px; }
+      .slot { height: 40px; }
+      .slot-card { padding: 4px 2px 4px 7px; grid-template-columns: 1fr; }
+      .slot-card .vl { display: none; }
+      .slot-card .nm { font-size: 11px; }
+      .slot-card .rm { display: none; }
+      .sel-acts { width: 100%; }
+      .sel-acts .btn { flex: 1; justify-content: center; height: 38px; }
+      .view-cmp { padding: 0 var(--sp-3) 120px; }
+      .cv-bar { position: static; gap: var(--sp-2); }
+      .cv-bar h2 { display: none; }
+      .cv-bar .btn { height: 34px; padding: 0 var(--sp-3); font-size: 12.5px; }
+      .cmp-title h1 { font-size: 21px; }
+      .cmp-count { display: none; }
+      .cv-row { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: var(--sp-2); }
+      .cv-lab { grid-column: 1 / -1; padding: 10px 0 0; font-size: 12px; color: var(--text-muted); }
+      .cv-heads { top: 0; }
+      .view-cmp .cv-heads { top: var(--header-h); }
+      .cv-head .ph { display: none; }
+      .cv-head .nm { font-size: 14px; }
+      .cv-head .sb, .cv-head .lk a { display: none; }
+      .cv-v { font-size: 12.5px; white-space: normal; }
+      .cv-d { display: block; margin: 3px 0 0; }
       .toolbar { flex-wrap: nowrap; overflow-x: auto; padding: var(--sp-2) var(--sp-3); scrollbar-width: none; }
       .toolbar::-webkit-scrollbar { display: none; }
       .filter-group { flex-wrap: nowrap; }
@@ -721,34 +859,68 @@
       .tb-tools .tb-group:first-child { flex: 1 1 100%; }
       .nav-strip { padding: var(--sp-1) var(--sp-3); }
       .stats-note, .ns-hint { display: none; }
-      .table-outer { height: 72vh; }
+      .table-outer { height: 70vh; }
       .spec-label-cell { padding: 6px var(--sp-2); font-size: var(--text-2xs); }
-      .tray { bottom: var(--sp-2); width: calc(100vw - var(--sp-4)); }
-      .tray-in { gap: var(--sp-2); padding: var(--sp-2); }
-      .tray-title, .tray-slot { display: none; }
-      .tray-list { flex-wrap: nowrap; overflow-x: auto; width: 100%; scrollbar-width: none; }
-      .tray-chip { flex: none; }
-      .tray-actions { margin-left: 0; width: 100%; }
-      .tray-actions .primary { margin-left: auto; }
-      .tray-btn { padding: 0 var(--sp-2); }
-      .cmp-modal { padding: var(--sp-4); width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .xp-tok .d, .btn { transition: none; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .tray, .cmp-overlay, .cmp-modal, .model-card-clip, .sel-box svg { transition: none; }
-      .table-outer { scroll-behavior: auto; }
-    }
   </style>
 </head>
-<body data-bg="calme" class="cmp-page">
+<body data-bg="calme" class="cmp-page" data-view="xp">
   <div id="header-root"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/CustomEase.min.js"></script>
   <script src="header.js"></script>
   <script src="ui.js"></script>
   <script src="icons.js"></script>
-  <script src="bg.js" defer></script>
   <script src="data/pa-models.js"></script>
   <script src="data/pa-chassis.js"></script>
 
+  <main class="cmp" id="main">
+    <!-- ── Barre du comparateur : vue, filtre, axe, concurrents ── -->
+    <div class="cmp-bar">
+      <div class="cmp-title">
+        <h1>Comparateur <span>PA-Series</span></h1>
+        <p class="cmp-count" id="cmp-count"></p>
+      </div>
+      <div class="seg" role="tablist" aria-label="Vue">
+        <button type="button" role="tab" id="tab-xp" aria-selected="true" aria-controls="view-xp">Gamme</button>
+        <button type="button" role="tab" id="tab-tbl" aria-selected="false" aria-controls="view-tbl">Tableau</button>
+        <button type="button" role="tab" id="tab-cmp" aria-selected="false" aria-controls="view-cmp">Comparaison<span class="n" id="tab-cmp-n"></span></button>
+      </div>
+      <label class="cmp-search">
+        <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Filtrer : 3420, campus, PoE" autocomplete="off" aria-label="Filtrer les modèles par nom ou usage">
+      </label>
+      <div class="xp-only">
+        <div class="bar-grp"><span class="bar-k" id="lb-axis">Axe</span>
+          <div class="seg" role="radiogroup" aria-labelledby="lb-axis" id="axis-seg">
+            <button type="button" role="radio" aria-checked="true" data-m="tp">Threat Prevention</button>
+            <button type="button" role="radio" aria-checked="false" data-m="fw">App-ID</button>
+            <button type="button" role="radio" aria-checked="false" data-m="sess">Sessions</button>
+            <button type="button" role="radio" aria-checked="false" data-m="cps">CPS</button>
+          </div>
+        </div>
+        <label class="tgl"><input type="checkbox" id="hide-eos"> Masquer les fins de vente</label>
+      </div>
+      <div class="vendors bar-end" id="vendors" hidden role="group" aria-labelledby="lb-vendors">
+        <span class="bar-k" id="lb-vendors">Concurrents</span>
+      </div>
+    </div>
+
+    <!-- ── Vue gamme ── -->
+    <section class="view view-xp" id="view-xp" role="tabpanel" aria-labelledby="tab-xp">
+      <div class="xp-axis" id="xp-axis" aria-hidden="true"></div>
+      <div class="xp-plot" id="xp-plot" aria-label="Modèles rangés par débit. Flèches pour se déplacer, Entrée pour ajouter à la comparaison." role="group"></div>
+      <p class="xp-note" id="xp-note"></p>
+      <div class="xp-loupe" id="xp-loupe" aria-hidden="true"></div>
+    </section>
+
+    <!-- ── Vue tableau ── -->
+    <section class="view view-tbl" id="view-tbl" role="tabpanel" aria-labelledby="tab-tbl" hidden>
   <!-- ── Filtres ── -->
   <div class="tb-wrap">
     <div class="toolbar">
@@ -795,9 +967,6 @@
       </div>
       <div class="range" id="rg-tp"></div>
       <div class="range" id="rg-sess"></div>
-      <div class="vendors" id="vendors" hidden role="group" aria-labelledby="lb-vendors">
-        <span class="tb-label" id="lb-vendors">Concurrents</span>
-      </div>
       <button type="button" class="tb-reset" id="tb-reset" hidden>Tout réafficher</button>
     </div>
   </div>
@@ -835,33 +1004,34 @@
     </div>
   </div>
 
-  <!-- ── Bac de comparaison ── -->
-  <section class="tray" id="tray" aria-label="Modèles retenus pour la comparaison">
-    <div class="tray-in">
-      <span class="tray-title">À comparer</span>
-      <ol class="tray-list" id="tray-list"></ol>
-      <span class="tray-msg" id="tray-msg" aria-live="polite"></span>
-      <div class="tray-actions">
-        <button type="button" class="tray-btn" id="tray-iso" aria-pressed="false">Isoler ces colonnes</button>
-        <button type="button" class="tray-btn" id="tray-clear">Vider</button>
-        <button type="button" class="tray-btn primary" id="tray-go" disabled>Comparer</button>
+    </section>
+
+    <!-- ── Vue comparaison ── -->
+    <section class="view view-cmp" id="view-cmp" role="tabpanel" aria-labelledby="tab-cmp" hidden>
+      <div class="cv-bar">
+        <button type="button" class="btn" id="cv-back"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Revenir à la gamme</button>
+        <h2 id="cv-title">Comparaison</h2>
+        <label class="tgl"><input type="checkbox" id="cv-diff"> Écarts seulement</label>
+        <button type="button" class="btn" id="cv-copy">Copier le texte</button>
+        <button type="button" class="btn" id="cv-link">Copier le lien</button>
       </div>
+      <div class="cv" id="cv"></div>
+      <p class="cv-note" id="cv-note"></p>
+    </section>
+  </main>
+
+  <!-- ── Bac de selection ── -->
+  <section class="sel" id="sel" aria-label="Modèles retenus pour la comparaison">
+    <span class="sel-msg" id="sel-msg" aria-live="polite"></span>
+    <p class="sel-k">À comparer<span id="sel-hint">deux à quatre modèles</span></p>
+    <ol class="sel-slots" id="sel-slots"></ol>
+    <div class="sel-acts">
+      <button type="button" class="btn" id="sel-clear">Vider</button>
+      <button type="button" class="btn primary" id="sel-go" disabled>Comparer</button>
     </div>
   </section>
 
-  <!-- ── Fenetre de comparaison ── -->
-  <div class="cmp-overlay" id="cmp-overlay">
-    <div class="cmp-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
-      <div class="cmp-title" id="cmp-title">Comparaison</div>
-      <div class="cmp-sub" id="cmp-sub"></div>
-      <button type="button" class="cmp-close" id="cmp-close"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <div class="cmp-scroll"><table class="cmp-table" id="cmp-table"></table></div>
-      <div class="cmp-actions" id="cmp-actions"></div>
-    </div>
-  </div>
-
   <script>
-
   const ROWS = [
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
@@ -1343,97 +1513,6 @@
     document.getElementById('pa-empty-reset').addEventListener('click', reset);
   }
 
-  /* ══ Selection et bac ══ */
-  function say(msg) {
-    const el = document.getElementById('tray-msg');
-    el.textContent = msg;
-    if (window.Motion) Motion.tick(el);
-  }
-
-  function toggleSel(k) {
-    const i = selected.indexOf(k);
-    if (i !== -1) selected.splice(i, 1);
-    else {
-      if (selected.length >= MAX_SEL) { say('Quatre modèles au plus : retirez-en un d\'abord.'); return; }
-      selected.push(k);
-    }
-    say('');
-    store.set('pan-cmp-sel', selected);
-    const on = selected.indexOf(k) !== -1;
-    document.querySelectorAll('th.model-th[data-k="' + CSS.escape(k) + '"]').forEach(th => {
-      th.classList.toggle('selected', on);
-      const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', String(on));
-    });
-    document.querySelectorAll('[data-m="' + CSS.escape(k) + '"]').forEach(td => td.classList.toggle('is-sel', on));
-    if (!selected.length && state.isolate) { state.isolate = false; rebuild(); }
-    else if (state.isolate) rebuild();
-    renderTray();
-  }
-
-  function renderTray() {
-    const tray = document.getElementById('tray');
-    const list = document.getElementById('tray-list');
-    const paint = () => {
-      let h = selected.map(k => {
-        const m = byKey(k); if (!m) return '';
-        const sw = m._v ? 'var(--text-muted)' : m.color;
-        return '<li class="tray-chip" data-k="' + esc(k) + '"><span class="dot" style="background:' + sw + '"></span>' + esc(m.id)
-          + '<button type="button" class="chip-x" data-k="' + esc(k) + '" aria-label="Retirer ' + esc(m.id) + '">' + ICO.x + '</button></li>';
-      }).join('');
-      for (let i = selected.length; i < MAX_SEL; i++) h += '<li class="tray-slot" aria-hidden="true"></li>';
-      list.innerHTML = h;
-    };
-    if (window.Motion && tray.classList.contains('on')) Motion.flip(list, '.tray-chip', paint);
-    else paint();
-    const on = selected.length > 0;
-    tray.classList.toggle('on', on);
-    document.body.classList.toggle('has-tray', on);
-    const go = document.getElementById('tray-go');
-    go.disabled = selected.length < 2;
-    go.textContent = selected.length >= 2 ? 'Comparer les ' + selected.length : 'Comparer';
-    const iso = document.getElementById('tray-iso');
-    iso.setAttribute('aria-pressed', String(state.isolate));
-    iso.textContent = state.isolate ? 'Revoir tous les modèles' : 'Isoler ces colonnes';
-  }
-
-  function wireSelection() {
-    document.getElementById('header-row').addEventListener('click', e => {
-      if (e.target.closest('a, .vendor-badge')) return;
-      const t = e.target.closest('[data-act="sel"]'); if (!t) return;
-      const th = t.closest('th.model-th'); if (th) toggleSel(th.dataset.k);
-    });
-    document.getElementById('tray-list').addEventListener('click', e => {
-      const x = e.target.closest('.chip-x'); if (!x) return;
-      const k = x.dataset.k;
-      const next = x.closest('li').nextElementSibling;
-      toggleSel(k);
-      // le focus ne doit pas tomber dans le vide apres un retrait
-      const target = document.querySelector('#tray-list .chip-x') || document.getElementById('tray-clear');
-      if (selected.length) target.focus(); else document.getElementById('table-outer').focus();
-    });
-    document.getElementById('tray-clear').addEventListener('click', () => {
-      const ks = selected.slice();
-      selected = []; store.set('pan-cmp-sel', selected);
-      ks.forEach(k => {
-        document.querySelectorAll('th.model-th[data-k="' + CSS.escape(k) + '"]').forEach(th => {
-          th.classList.remove('selected');
-          const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', 'false');
-        });
-        document.querySelectorAll('[data-m="' + CSS.escape(k) + '"]').forEach(td => td.classList.remove('is-sel'));
-      });
-      say('');
-      if (state.isolate) { state.isolate = false; rebuild(); }
-      renderTray();
-      document.getElementById('table-outer').focus();
-    });
-    document.getElementById('tray-iso').addEventListener('click', () => {
-      state.isolate = !state.isolate;
-      rebuild(); renderTray();
-      document.getElementById('table-outer').scrollTo({ left: 0 });
-    });
-    document.getElementById('tray-go').addEventListener('click', openCompare);
-  }
-
   /* ══ Defilement horizontal maitrise ══ */
   function colWidth() {
     const th = document.querySelector('th.model-th');
@@ -1458,6 +1537,7 @@
     const ths = document.querySelectorAll('th.model-th');
     const prev = document.getElementById('ns-prev'), next = document.getElementById('ns-next');
     const pos = document.getElementById('ns-pos');
+    if (!outer.offsetParent || !colWidth()) return;   // vue tableau masquee
     if (!ths.length) { pos.textContent = ''; prev.disabled = next.disabled = true; return; }
     const w = colWidth();
     const first = Math.min(ths.length - 1, Math.round(outer.scrollLeft / w));
@@ -1496,42 +1576,581 @@
     }, { passive: false });
   }
 
-  /* ══ Fenetre de comparaison ══ */
-  let cmpDiffOnly = false, lastFocus = null;
 
-  function openCompare() {
-    const models = selected.map(byKey).filter(Boolean);
-    if (models.length < 2) return;
-    renderCompare(models);
-    lastFocus = document.activeElement;
-    document.getElementById('cmp-overlay').classList.add('open');
-    history.replaceState(null, '', location.pathname + '?cmp=' + models.map(m => encodeURIComponent(m.id)).join(','));
-    setTimeout(() => document.getElementById('cmp-close').focus(), 30);
+  /* ════════════════════════════════════════════════════════════
+     v8 : explorateur de gamme, selection, comparaison
+     ════════════════════════════════════════════════════════════ */
+  const reduceM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const G = (window.gsap && !reduceM) ? window.gsap : null;
+  const HAS_FLIP = !!(G && window.Flip);
+  if (HAS_FLIP) gsap.registerPlugin(Flip);
+
+  state.view = 'xp';
+  state.metric = 'tp';
+  state.hideEos = false;
+
+  const METRICS = {
+    tp:   { label: 'Threat Prevention', unit: 'Gbps', fmt: v => fmtG(v) },
+    fw:   { label: 'App-ID Firewall', unit: 'Gbps', fmt: v => fmtG(v) },
+    sess: { label: 'Sessions concurrentes', unit: '', fmt: v => fmtN(v) },
+    cps:  { label: 'Nouvelles sessions par seconde', unit: '', fmt: v => fmtN(v) }
+  };
+  function fmtG(v) { return v == null ? 'non publié' : String(v).replace('.', ',') + ' Gbps'; }
+  function fmtMetric(key, v) { return v == null ? 'non publié' : METRICS[key].fmt(v); }
+  const shortId = id => String(id).replace(/^(PA|FG|Force|Spark|Cisco)-/, '');
+
+  /* Deux visuels du stencil ne montrent pas le bon boitier (PA-5445 :
+     un PA-450R ; PA-7050 : un fragment de facade). Ils ne sont pas
+     affiches, le plastron dessine les remplace. */
+  const BAD_PHOTO = { 'PA-5445': 1, 'PA-7050': 1 };
+  function photo(m) {
+    if (!m || m._v || BAD_PHOTO[m.id]) return null;
+    const e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[String(m.id).toLowerCase()];
+    return e ? e.img : null;
+  }
+  function phHTML(m) {
+    const src = photo(m);
+    if (src) return '<img src="' + src + '" alt="Face avant ' + esc(m.id) + '" loading="lazy">';
+    const f = String(m.f || '');
+    const k = /Chassis/.test(f) ? 'ch' : /3U/.test(f) ? 'u3' : /2U/.test(f) ? 'u2' : /Desktop/.test(f) ? 'dt' : '';
+    return '<span class="hw-ph ' + k + '" role="img" aria-label="Visuel non disponible' + (f ? ', format ' + esc(f) : '') + '"></span>';
+  }
+  function portsLine(m) {
+    const p = [['rj45', 'RJ45'], ['sfp1', 'SFP'], ['sfp10', 'SFP+'], ['sfp25', 'SFP28'], ['sfp100', 'QSFP28'], ['sfp400', 'QSFP-DD']]
+      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + x[1]);
+    return p.length ? p.join(' · ') : 'non publié';
+  }
+  const SEL = window.CmpSel || { get: () => store.get('pan-cmp-sel', []), set: a => store.set('pan-cmp-sel', a) };
+
+  /* ══ Couloirs : une serie par ligne, un editeur par ligne ══ */
+  let LANES = [];
+  function buildLaneData() {
+    const series = [];
+    MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
+    LANES = series.map(s => {
+      const ms = paModels().filter(m => m.s === s);
+      const forms = [];
+      ms.forEach(m => { const f = String(m.f).replace(' Rack', ''); if (forms.indexOf(f) === -1) forms.push(f); });
+      return { id: s, name: s, models: ms, comp: false, eos: ms.every(m => m.eos),
+        sub: ms.length + (ms.length > 1 ? ' modèles' : ' modèle') + ' · ' + forms[0] };
+    });
+    if (COMP) COMP.order.forEach(vid => {
+      if (!state.vendors.has(vid)) return;
+      const V = COMP.vendors[vid];
+      LANES.push({ id: 'v:' + vid, name: V.name, models: COMP.models.filter(c => c.v === vid), comp: true, vendor: V,
+        sub: V.line });
+    });
   }
 
-  function renderCompare(models) {
-    const comp = models.some(m => m._v);
-    document.getElementById('cmp-sub').textContent = comp
-      ? 'Les débits des concurrents suivent la définition de leur éditeur et ne se comparent pas un pour un aux débits appmix des PA. Le meilleur chiffre n\'est surligné qu\'entre PA.'
-      : 'Le meilleur chiffre de chaque ligne est surligné. Valeurs issues des datasheets officielles.';
-    const head = '<thead><tr><th><label class="cmp-diff"><input type="checkbox" id="cmp-diff"' + (cmpDiffOnly ? ' checked' : '') + '> Différences uniquement</label></th>'
-      + models.map(m => '<th><span class="sw" style="background:' + (m._v ? 'var(--text-muted)' : m.color) + '"></span>' + esc(m.id) + '</th>').join('') + '</tr></thead>';
-    const body = ROWS.map(row => {
-      const vals = models.map(m => cellRaw(row, m));
-      if (cmpDiffOnly && new Set(vals.map(v => v.replace(/<[^>]+>/g, ''))).size <= 1) return '';
-      const nums = models.map(m => (!m._v && row.num) ? row.num(m) : null);
-      const pa = nums.filter(n => n != null);
-      const maxN = pa.length && Math.max.apply(null, pa) > Math.min.apply(null, pa) ? Math.max.apply(null, pa) : null;
-      return '<tr><td>' + rowLabel(row, comp) + '</td>' + vals.map((v, i) =>
-        '<td class="' + (nums[i] != null && nums[i] === maxN && maxN > 0 && pa.length > 1 ? 'ct-max' : 'ct-val') + '">' + v + '</td>').join('') + '</tr>';
-    }).join('');
-    document.getElementById('cmp-table').innerHTML = head + '<tbody>' + body + '</tbody>';
-    document.getElementById('cmp-diff').addEventListener('change', e => { cmpDiffOnly = e.target.checked; renderCompare(models); });
-    document.getElementById('cmp-actions').innerHTML =
-        '<button type="button" class="tray-btn" id="cmp-copy">Copier la comparaison</button>'
-      + '<button type="button" class="tray-btn" id="cmp-link">Copier le lien</button>';
-    document.getElementById('cmp-copy').addEventListener('click', function () { copyCompare(models, this); });
-    document.getElementById('cmp-link').addEventListener('click', function () {
+  /* ══ Echelle logarithmique ══ */
+  const NPW = 70;              // colonne « non publie » a droite de l'axe
+  let SC = null;
+  function makeScale(trackW) {
+    const key = state.metric;
+    const vals = [];
+    LANES.forEach(L => L.models.forEach(m => { const v = m[key]; if (v != null && v > 0) vals.push(v); }));
+    const lo = Math.min.apply(null, vals) / 1.3, hi = Math.max.apply(null, vals) * 1.3;
+    const x0 = 10, x1 = Math.max(x0 + 40, trackW - NPW - 18);
+    const L0 = Math.log(lo), L1 = Math.log(hi);
+    SC = { lo, hi, x0, x1, npX: trackW - NPW / 2, w: trackW,
+      x: v => (v == null || !(v > 0)) ? trackW - NPW / 2 : x0 + (Math.log(v) - L0) / (L1 - L0) * (x1 - x0) };
+    return SC;
+  }
+  function ticks() {
+    const out = [];
+    const dense = SC.w > 640;
+    for (let e = Math.floor(Math.log10(SC.lo)); e <= Math.ceil(Math.log10(SC.hi)); e++) {
+      (dense ? [1, 2, 5] : [1]).forEach(k => { const v = k * Math.pow(10, e); if (v >= SC.lo && v <= SC.hi) out.push(v); });
+    }
+    return out;
+  }
+  function tickLabel(v) {
+    if (METRICS[state.metric].unit === 'Gbps') return String(v).replace('.', ',');
+    return fmtN(v);
+  }
+
+  /* ══ Rendu de l'explorateur ══ */
+  const plot = document.getElementById('xp-plot');
+  const axis = document.getElementById('xp-axis');
+  let rove = null;   // cle du jeton qui porte le tabindex 0
+
+  function matchQ(m) {
+    if (!state.q) return true;
+    const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '') + ' ' + (m.f || '') + (m.poe ? ' poe' : '')).toLowerCase();
+    return state.q.split(/\s+/).every(t => hay.indexOf(t) !== -1);
+  }
+  function laneShown(L) { return !(state.hideEos && L.eos); }
+  function modelShown(m) { return !(state.hideEos && m.eos); }
+
+  function renderExplorer() {
+    buildLaneData();
+    let html = '<div class="xp-grid" id="xp-grid"></div>';
+    let sepDone = false;
+    LANES.forEach(L => {
+      if (L.comp && !sepDone) {
+        sepDone = true;
+        html += '<p class="xp-sep"><b>Concurrents</b>, chiffres de l’éditeur. Chaque éditeur mesure à sa façon : ces points situent un boîtier dans sa gamme, ils ne se comparent pas un pour un aux débits appmix PA.</p>';
+      }
+      const lead = L.models.find(m => photo(m));
+      html += '<div class="xp-lane' + (L.comp ? ' is-comp' : '') + '" data-lane="' + esc(L.id) + '">'
+        + '<div class="xp-lab"><b>' + esc(L.name) + (L.eos ? '<span class="eos">EoS</span>' : '') + '</b>'
+        + '<span>' + esc(L.sub || '') + (L.comp ? ' · ' + esc(shortProfile(L.vendor.metrics && L.vendor.metrics[state.metric]) || 'mesure éditeur') : '') + '</span>'
+        + '</div>'
+        + '<div class="xp-track"><span class="xp-span"></span>' + (lead ? '<img class="xp-box" src="' + photo(lead) + '" alt="" loading="lazy">' : '')
+        + L.models.map(m => {
+            const on = selected.indexOf(m._key) !== -1;
+            return '<button type="button" class="xp-tok' + (m.eos ? ' is-eos' : '') + '" tabindex="-1" data-k="' + esc(m._key) + '" aria-pressed="' + on + '">'
+              + '<span class="l" aria-hidden="true"></span><span class="d" aria-hidden="true"></span><span class="n">' + esc(shortId(m.id)) + '</span>'
+              + '<span class="b" aria-hidden="true"><i></i></span><span class="v" aria-hidden="true"></span></button>';
+          }).join('')
+        + '</div></div>';
+    });
+    plot.innerHTML = html;
+    LANES.forEach(L => {
+      L.el = plot.querySelector('[data-lane="' + CSS.escape(L.id) + '"]');
+      L.toks = L.models.map(m => ({ m, el: L.el.querySelector('[data-k="' + CSS.escape(m._key) + '"]') }));
+    });
+    layoutExplorer(false);
+    labelToks();
+    applyFilterXP();
+    if (!rove || !plot.querySelector('[data-k="' + CSS.escape(rove) + '"]')) {
+      const first = plot.querySelector('.xp-lane:not(.is-hidden) .xp-tok');
+      rove = first ? first.dataset.k : null;
+    }
+    setRove(rove);
+    const n = LANES.filter(L => !L.comp).reduce((a, L) => a + L.models.length, 0);
+    const ns = LANES.filter(L => !L.comp).length;
+    const nc = LANES.filter(L => L.comp).reduce((a, L) => a + L.models.length, 0);
+    document.getElementById('cmp-count').textContent = n + ' PA-Series, ' + ns + ' séries' + (nc ? ', ' + nc + ' concurrents' : '');
+    const notes = 'Échelle logarithmique. Débits appmix des datasheets officielles PAN-OS. Un modèle sans valeur publiée se range dans la colonne « non publié ».';
+    document.getElementById('xp-note').innerHTML = notes + ' Clic ou <kbd>Entrée</kbd> : ajouter à la comparaison. <kbd>Flèches</kbd> : se déplacer. <kbd>/</kbd> : chercher un modèle.';
+  }
+
+  function labelToks() {
+    LANES.forEach(L => L.toks.forEach(t => {
+      const m = t.m, v = m[state.metric];
+      t.el.setAttribute('aria-label', m.id + (m._v ? ' (' + m._vname + ')' : '') + ', ' + METRICS[state.metric].label + ' ' + fmtMetric(state.metric, v)
+        + (m.eos ? ', fin de vente' : '') + (selected.indexOf(m._key) !== -1 ? ', retenu' : ''));
+    }));
+  }
+
+  /* Placement : x selon la metrique ; l'etiquette prend la premiere
+     rangee libre, au-dessus puis en dessous du trait de serie. */
+  const ROW_H = 18;
+  function placeLane(L, trackW) {
+    const items = L.toks.filter(t => modelShown(t.m)).map(t => {
+      if (t.w == null) t.w = t.el.offsetWidth || 40;
+      return { t, x: SC.x(t.m[state.metric]) };
+    }).sort((a, b) => a.x - b.x);
+    const rows = [];
+    items.forEach(it => {
+      const left = Math.max(0, Math.min(trackW - it.t.w, it.x - it.t.w / 2));
+      let r = 0;
+      for (;; r++) {
+        const row = rows[r] || (rows[r] = []);
+        if (row.every(iv => left > iv[1] + 4 || left + it.t.w < iv[0] - 4)) { row.push([left, left + it.t.w]); break; }
+      }
+      it.left = left; it.row = r;
+    });
+    const nAbove = Math.ceil(rows.length / 2), nBelow = Math.floor(rows.length / 2);
+    const lineY = 6 + nAbove * ROW_H + 4;
+    const h = Math.max(46, lineY + 10 + nBelow * ROW_H + 4);
+    items.forEach(it => {
+      const k = Math.floor(it.row / 2), above = it.row % 2 === 0;
+      it.top = above ? lineY - 8 - 18 - k * ROW_H : lineY + 8 + k * ROW_H;
+      it.dotX = it.x - it.left; it.dotY = lineY - it.top;
+      it.leadY = above ? 18 : (lineY - it.top + 4);
+      it.leadH = above ? Math.max(0, lineY - it.top - 18 - 4) : Math.max(0, it.top - lineY - 4);
+    });
+    const xs = items.filter(it => it.t.m[state.metric] != null).map(it => it.x);
+    return { items, h, lineY, spanL: xs.length ? Math.min.apply(null, xs) : 0, spanR: xs.length ? Math.max.apply(null, xs) : 0 };
+  }
+
+  function layoutExplorer(animate) {
+    const sample = plot.querySelector('.xp-track');
+    if (!sample) return;
+    const trackW = sample.getBoundingClientRect().width;
+    makeScale(trackW);
+    const listMode = trackW < 560;
+    plot.classList.toggle('xp-list', listMode);
+    document.getElementById('view-xp').classList.toggle('is-list', listMode);
+    // axe et grille
+    axis.innerHTML = '<span class="xp-unit">' + METRICS[state.metric].label + (METRICS[state.metric].unit ? ' <span>en ' + METRICS[state.metric].unit + ', échelle log</span>' : ' <span>échelle log</span>') + '</span>'
+      + ticks().map(v => '<span class="xp-tick" style="left:' + SC.x(v).toFixed(1) + 'px">' + tickLabel(v) + '</span>').join('')
+      + '<span class="xp-np">non publié</span>';
+    const grid = document.getElementById('xp-grid');
+    if (grid) grid.innerHTML = ticks().map(v => '<i style="left:' + SC.x(v).toFixed(1) + 'px"></i>').join('');
+
+    // ordre des couloirs : du plus petit au plus gros sur la metrique
+    const minOf = L => { const v = L.models.map(m => m[state.metric]).filter(x => x != null); return v.length ? Math.min.apply(null, v) : Infinity; };
+    const order = LANES.filter(L => !L.comp).sort((a, b) => minOf(a) - minOf(b));
+    const flipState = (animate && HAS_FLIP) ? Flip.getState(plot.querySelectorAll('.xp-lane')) : null;
+    const sep = plot.querySelector('.xp-sep');
+    order.forEach(L => plot.insertBefore(L.el, sep || null));
+
+    LANES.forEach(L => {
+      L.el.classList.toggle('is-hidden', !laneShown(L));
+      L.toks.forEach(t => { t.el.hidden = !modelShown(t.m); });
+      if (!laneShown(L)) return;
+      if (listMode) { listLane(L); return; }
+      const P = placeLane(L, trackW);
+      L.el.style.height = P.h + 'px';
+      const box = L.el.querySelector('.xp-box');
+      if (box) {
+        const bw = box.offsetWidth || 90;
+        let bx = P.spanR + 16;
+        if (bx + bw > SC.x1 + 10) bx = Math.max(0, P.spanL - bw - 16);
+        const bv = { x: bx, y: P.lineY - 9 };
+        if (animate && G) G.to(box, Object.assign({ duration: .9, ease: 'power3.inOut' }, bv));
+        else if (window.gsap) gsap.set(box, bv); else box.style.transform = 'translate(' + bx + 'px,' + bv.y + 'px)';
+      }
+      const span = L.el.querySelector('.xp-span');
+      const spanVars = { x: P.spanL, y: P.lineY, width: Math.max(2, P.spanR - P.spanL) };
+      if (animate && G) G.to(span, Object.assign({ duration: .8, ease: 'power3.inOut' }, spanVars));
+      else if (window.gsap) gsap.set(span, spanVars);
+      else { span.style.transform = 'translate(' + P.spanL + 'px,' + P.lineY + 'px)'; span.style.width = spanVars.width + 'px'; }
+      P.items.forEach((it, i) => {
+        const el = it.t.el, d = el.querySelector('.d'), l = el.querySelector('.l');
+        const tv = { x: it.left, y: it.top }, dv = { x: it.dotX, y: it.dotY }, lv = { x: it.dotX, y: it.leadY, height: it.leadH };
+        if (animate && G) {
+          const o = { duration: .9, ease: 'power3.inOut', delay: Math.min(i, 12) * .012 };
+          G.to(el, Object.assign({}, o, tv)); G.to(d, Object.assign({}, o, dv)); G.to(l, Object.assign({}, o, lv));
+        } else if (window.gsap) { gsap.set(el, tv); gsap.set(d, dv); gsap.set(l, lv); }
+        else {
+          el.style.transform = 'translate(' + tv.x + 'px,' + tv.y + 'px)';
+          d.style.transform = 'translate(' + dv.x + 'px,' + dv.y + 'px)';
+          l.style.transform = 'translate(' + lv.x + 'px,' + lv.y + 'px)'; l.style.height = lv.height + 'px';
+        }
+      });
+    });
+    if (flipState) Flip.from(flipState, { duration: .8, ease: 'power3.inOut' });
+  }
+
+  /* Petit ecran : chaque couloir devient une liste rangee par la
+     metrique, avec une barre sur le meme axe logarithmique. */
+  function listLane(L) {
+    L.el.style.height = '';
+    const items = L.toks.filter(t => modelShown(t.m)).sort((a, b) => (a.m[state.metric] == null ? 1e15 : a.m[state.metric]) - (b.m[state.metric] == null ? 1e15 : b.m[state.metric]));
+    items.forEach((t, i) => {
+      const v = t.m[state.metric];
+      t.el.style.order = i;
+      t.el.querySelector('.v').textContent = fmtMetric(state.metric, v);
+      const w = v == null ? 0 : Math.max(2, (SC.x(v) - SC.x0) / (SC.x1 - SC.x0) * 100);
+      t.el.querySelector('.b i').style.width = w.toFixed(1) + '%';
+    });
+  }
+
+  function applyFilterXP() {
+    LANES.forEach(L => {
+      let any = false;
+      L.toks.forEach(t => { const ok = matchQ(t.m); t.el.classList.toggle('is-dim', !ok); if (ok && modelShown(t.m)) any = true; });
+      L.el.classList.toggle('is-off', !any);
+    });
+  }
+
+  /* Entree : les boitiers partent tous du debut de leur couloir et
+     vont se ranger a leur debit. Un seul passage, au chargement. */
+  function introExplorer() {
+    if (!G) return;
+    const lanes = plot.querySelectorAll('.xp-lane:not(.is-hidden)');
+    G.from(axis.children, { opacity: 0, y: -6, duration: .5, stagger: .03, ease: 'power2.out' });
+    G.from(plot.querySelectorAll('.xp-lane:not(.is-hidden) .xp-lab'), { opacity: 0, x: -16, duration: .6, stagger: .04, ease: 'power3.out' });
+    lanes.forEach((ln, li) => {
+      const toks = ln.querySelectorAll('.xp-tok:not([hidden])');
+      toks.forEach((el, i) => {
+        G.from(el, { x: 0, opacity: 0, duration: 1.1, ease: 'expo.out', delay: .25 + li * .05 + i * .025 });
+      });
+      G.from(ln.querySelector('.xp-span'), { width: 2, duration: 1, ease: 'expo.out', delay: .3 + li * .05 });
+    });
+  }
+
+  /* ══ Loupe ══ */
+  const loupe = document.getElementById('xp-loupe');
+  let loupeKey = null;
+  function showLoupe(el) {
+    const m = byKey(el.dataset.k); if (!m) return;
+    loupeKey = m._key;
+    const V = m._v && COMP ? COMP.vendors[m.v] : null;
+    const row = (k, v, np) => '<dt>' + k + '</dt><dd' + (np ? ' class="np"' : '') + '>' + v + '</dd>';
+    loupe.innerHTML = '<div class="ph">' + phHTML(m) + '</div>'
+      + '<h3>' + esc(m.id) + '</h3>'
+      + '<p class="sub">' + (m._v ? esc(m._vname + ' · ' + (m.s || '')) : esc(m.s + ' · ' + m.target)) + ' · ' + esc(m.f || '') + '</p>'
+      + '<dl>'
+      + row(m._v ? 'Firewall' : 'App-ID', fmtG(m.fw), m.fw == null)
+      + row(m._v ? 'Protection complète' : 'Threat Prevention', fmtG(m.tp), m.tp == null)
+      + row('IPsec VPN', fmtG(m.vpn), m.vpn == null)
+      + row('Sessions', m.sess == null ? 'non publié' : fmtN(m.sess), m.sess == null)
+      + row('CPS', m.cps == null ? 'non publié' : fmtN(m.cps), m.cps == null)
+      + row('Ports', esc(portsLine(m)), false)
+      + '</dl>'
+      + (m.eos ? '<p class="prof">End of Sale' + (EOS_REPLACEMENTS[m.id] ? ', remplacé par ' + EOS_REPLACEMENTS[m.id] : '') + '</p>' : '')
+      + (V ? '<p class="prof">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[state.metric]) || 'définition de l’éditeur') + '</p>' : '')
+      + '<p class="hint">' + (selected.indexOf(m._key) !== -1 ? '<b>Retenu.</b> Clic ou Entrée pour le retirer.' : 'Clic ou <b>Entrée</b> : ajouter à la comparaison') + '</p>';
+    const host = document.getElementById('view-xp');
+    const hr = host.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const lw = loupe.offsetWidth, lh = loupe.offsetHeight;
+    let x = r.right - hr.left + 18, y = r.top - hr.top + host.scrollTop - 24;
+    if (x + lw > hr.width - 8) x = r.left - hr.left - lw - 18;
+    if (x < 8) x = 8;
+    const maxY = host.scrollTop + host.clientHeight - lh - 110;
+    y = Math.max(host.scrollTop + 50, Math.min(y, maxY));
+    if (G) {
+      G.killTweensOf(loupe);
+      const shown = loupe.style.visibility === 'visible';
+      G.set(loupe, { visibility: 'visible' });
+      if (shown) G.to(loupe, { x, y, opacity: 1, duration: .28, ease: 'power3.out' });
+      else G.fromTo(loupe, { x, y: y + 8, opacity: 0, scale: .98 }, { y, opacity: 1, scale: 1, duration: .3, ease: 'power3.out' });
+    } else {
+      loupe.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      loupe.style.opacity = '1'; loupe.style.visibility = 'visible';
+    }
+  }
+  let hideT = null;
+  function hideLoupe() {
+    loupeKey = null;
+    if (G) G.to(loupe, { opacity: 0, duration: .15, onComplete: () => { if (!loupeKey) loupe.style.visibility = 'hidden'; } });
+    else { loupe.style.opacity = '0'; loupe.style.visibility = 'hidden'; }
+  }
+
+  /* ══ Clavier : un seul arret de tabulation, les fleches pour le reste ══ */
+  function setRove(k) {
+    plot.querySelectorAll('.xp-tok[tabindex="0"]').forEach(b => b.setAttribute('tabindex', '-1'));
+    const el = k && plot.querySelector('.xp-tok[data-k="' + CSS.escape(k) + '"]');
+    if (el) { el.setAttribute('tabindex', '0'); rove = k; }
+  }
+  function visibleToksOfLane(ln) {
+    return [].slice.call(ln.querySelectorAll('.xp-tok:not([hidden])'))
+      .sort((a, b) => xOf(a) - xOf(b));
+  }
+  function xOf(el) { const r = el.getBoundingClientRect(); return r.left + r.width / 2; }
+  function wireExplorer() {
+    plot.addEventListener('click', e => {
+      const b = e.target.closest('.xp-tok'); if (!b) return;
+      setRove(b.dataset.k);
+      toggleSel(b.dataset.k, b);
+      if (loupeKey === b.dataset.k) showLoupe(b);
+    });
+    plot.addEventListener('pointerover', e => { const b = e.target.closest('.xp-tok'); if (b) { clearTimeout(hideT); showLoupe(b); } });
+    plot.addEventListener('pointerout', e => { const b = e.target.closest('.xp-tok'); if (b) { hideT = setTimeout(hideLoupe, 80); } });
+    plot.addEventListener('focusin', e => { const b = e.target.closest('.xp-tok'); if (b) { clearTimeout(hideT); setRove(b.dataset.k); showLoupe(b); } });
+    plot.addEventListener('focusout', () => { hideT = setTimeout(hideLoupe, 60); });
+    plot.addEventListener('keydown', e => {
+      const b = e.target.closest('.xp-tok'); if (!b) return;
+      const ln = b.closest('.xp-lane');
+      const row = visibleToksOfLane(ln);
+      const i = row.indexOf(b);
+      let next = null;
+      if (e.key === 'ArrowRight') next = row[i + 1];
+      else if (e.key === 'ArrowLeft') next = row[i - 1];
+      else if (e.key === 'Home') next = row[0];
+      else if (e.key === 'End') next = row[row.length - 1];
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const lanes = [].slice.call(plot.querySelectorAll('.xp-lane:not(.is-hidden)'));
+        const target = lanes[lanes.indexOf(ln) + (e.key === 'ArrowDown' ? 1 : -1)];
+        if (target) {
+          const x = xOf(b);
+          next = visibleToksOfLane(target).reduce((best, el) => !best || Math.abs(xOf(el) - x) < Math.abs(xOf(best) - x) ? el : best, null);
+        }
+      } else return;
+      e.preventDefault();
+      if (next) { setRove(next.dataset.k); next.focus(); }
+    });
+    document.getElementById('axis-seg').addEventListener('click', e => {
+      const b = e.target.closest('[data-m]'); if (!b || b.dataset.m === state.metric) return;
+      state.metric = b.dataset.m;
+      document.querySelectorAll('#axis-seg [data-m]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+      hideLoupe();
+      // les libelles concurrents portent le profil de la metrique
+      LANES.forEach(L => { if (L.comp) { const s = L.el.querySelector('.xp-lab span'); if (s) s.textContent = (L.sub || '') + ' · ' + (shortProfile(L.vendor.metrics && L.vendor.metrics[state.metric]) || 'mesure éditeur'); } });
+      layoutExplorer(true);
+      labelToks();
+    });
+    document.getElementById('axis-seg').addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const bs = [].slice.call(document.querySelectorAll('#axis-seg [data-m]'));
+      const i = bs.findIndex(x => x.getAttribute('aria-checked') === 'true');
+      const n = bs[(i + (e.key === 'ArrowRight' ? 1 : -1) + bs.length) % bs.length];
+      e.preventDefault(); n.focus(); n.click();
+    });
+    document.getElementById('hide-eos').addEventListener('change', e => {
+      state.hideEos = e.target.checked;
+      layoutExplorer(true);
+      applyFilterXP();
+    });
+    let rz = 0;
+    window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (state.view === 'xp') layoutExplorer(false); }); });
+  }
+
+  /* ══ Selection ══ */
+  function say(msg) {
+    const el = document.getElementById('sel-msg');
+    el.textContent = msg;
+    if (msg) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3200);
+  }
+  function syncPressed() {
+    plot.querySelectorAll('.xp-tok').forEach(b => b.setAttribute('aria-pressed', String(selected.indexOf(b.dataset.k) !== -1)));
+    document.querySelectorAll('th.model-th').forEach(th => {
+      const on = selected.indexOf(th.dataset.k) !== -1;
+      th.classList.toggle('selected', on);
+      const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', String(on));
+    });
+    document.querySelectorAll('#table-body [data-m]').forEach(td => td.classList.toggle('is-sel', selected.indexOf(td.dataset.m) !== -1));
+    labelToks();
+    const n = selected.length;
+    document.getElementById('tab-cmp-n').textContent = n ? ' ' + n : '';
+    document.getElementById('tab-cmp').disabled = n < 2;
+  }
+  function toggleSel(k, srcEl) {
+    const i = selected.indexOf(k);
+    let added = null;
+    if (i !== -1) selected.splice(i, 1);
+    else {
+      if (selected.length >= MAX_SEL) { say('Quatre modèles au plus : retirez-en un d’abord.'); return; }
+      selected.push(k); added = k;
+    }
+    SEL.set(selected);
+    syncPressed();
+    renderDock(added, srcEl);
+  }
+
+  function slotCard(k) {
+    const m = byKey(k); if (!m) return '';
+    return '<div class="slot-card' + (m._v ? ' is-comp' : '') + '" data-flip-id="m-' + esc(k) + '" data-k="' + esc(k) + '">'
+      + '<span class="nm">' + esc(m.id) + '</span>'
+      + '<span class="vl">' + (m._v ? esc(m._vname) : fmtG(m.tp) + ' TP') + '</span>'
+      + '<button type="button" class="rm" data-rm="' + esc(k) + '" aria-label="Retirer ' + esc(m.id) + '">' + ICO.x + '</button></div>';
+  }
+  function renderDock(added, srcEl) {
+    const box = document.getElementById('sel-slots');
+    const before = (HAS_FLIP && !added) ? Flip.getState(box.querySelectorAll('.slot-card')) : null;
+    let h = '';
+    for (let i = 0; i < MAX_SEL; i++) {
+      h += selected[i] ? '<li class="slot">' + slotCard(selected[i]) + '</li>' : '<li class="slot is-empty" aria-hidden="true">' + (i + 1) + '</li>';
+    }
+    box.innerHTML = h;
+    const go = document.getElementById('sel-go');
+    go.disabled = selected.length < 2;
+    go.textContent = selected.length >= 2 ? 'Comparer les ' + selected.length : 'Comparer';
+    document.getElementById('sel-clear').disabled = !selected.length;
+    document.getElementById('sel-hint').textContent = selected.length >= 2 ? 'prêt à comparer' : selected.length ? 'encore un modèle' : 'deux à quatre modèles';
+    if (before) Flip.from(before, { targets: box.querySelectorAll('.slot-card'), duration: .45, ease: 'power3.out' });
+    if (added) fly(added, srcEl);
+  }
+
+  /* Le modele choisi vole du couloir jusqu'a sa place dans le bac. */
+  function fly(k, srcEl) {
+    const card = document.querySelector('#sel-slots .slot-card[data-k="' + CSS.escape(k) + '"]');
+    if (!card || !G || !srcEl || !srcEl.getBoundingClientRect) return;
+    const a = srcEl.getBoundingClientRect(), b = card.getBoundingClientRect();
+    if (!a.width) return;
+    const m = byKey(k);
+    const f = document.createElement('div');
+    f.className = 'flyer';
+    f.textContent = m ? m.id : k;
+    document.body.appendChild(f);
+    const fw = f.offsetWidth, fh = f.offsetHeight;
+    const x0 = a.left + a.width / 2 - fw / 2, y0 = a.top + a.height / 2 - fh / 2;
+    const x1 = b.left + 10, y1 = b.top + b.height / 2 - fh / 2;
+    G.set(card, { opacity: 0 });
+    G.set(f, { x: x0, y: y0, scale: .8 });
+    const tl = G.timeline({ onComplete: () => { f.remove(); G.fromTo(card, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .3, ease: 'power2.out' }); } });
+    tl.to(f, { x: x1, duration: .7, ease: 'power2.inOut' }, 0)
+      .to(f, { y: y1, duration: .7, ease: 'back.in(1.4)' }, 0)
+      .to(f, { scale: 1.08, duration: .25, ease: 'power2.out' }, 0)
+      .to(f, { scale: 1, duration: .45, ease: 'power2.in' }, .25);
+    setTimeout(() => { if (document.body.contains(f)) { f.remove(); G.set(card, { opacity: 1 }); } }, 1600);
+  }
+
+  function wireDock() {
+    document.getElementById('sel-slots').addEventListener('click', e => {
+      const x = e.target.closest('[data-rm]'); if (!x) return;
+      toggleSel(x.dataset.rm);
+      const nx = document.querySelector('#sel-slots .rm') || document.getElementById('sel-clear');
+      if (selected.length) nx.focus(); else { const t = plot.querySelector('.xp-tok[tabindex="0"]'); if (t && state.view === 'xp') t.focus(); }
+    });
+    document.getElementById('sel-clear').addEventListener('click', () => {
+      selected = []; SEL.set(selected); syncPressed(); renderDock();
+      const t = plot.querySelector('.xp-tok[tabindex="0"]'); if (t && state.view === 'xp') t.focus();
+    });
+    document.getElementById('sel-go').addEventListener('click', () => setView('cmp'));
+    // table : la case « Comparer » de chaque colonne
+    document.getElementById('header-row').addEventListener('click', e => {
+      if (e.target.closest('a, .vendor-badge')) return;
+      const t = e.target.closest('[data-act="sel"]'); if (!t) return;
+      const th = t.closest('th.model-th'); if (th) toggleSel(th.dataset.k, th.querySelector('.sel-btn') || th);
+    });
+  }
+
+  /* ══ Vues ══ */
+  const VIEWS = { xp: 'view-xp', tbl: 'view-tbl', cmp: 'view-cmp' };
+  function showOnly(v) {
+    Object.keys(VIEWS).forEach(k => { document.getElementById(VIEWS[k]).hidden = k !== v; });
+    document.body.dataset.view = v;
+    ['xp', 'tbl', 'cmp'].forEach(k => document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === v)));
+  }
+  function setUrl() {
+    const p = new URLSearchParams();
+    if (state.vendors.size) p.set('vendors', Array.from(state.vendors).join(','));
+    if (state.view === 'tbl') p.set('view', 'table');
+    if (state.view === 'cmp') p.set('cmp', selected.map(k => byKey(k) ? byKey(k).id : k).join(','));
+    const s = p.toString();
+    history.replaceState(null, '', location.pathname + (s ? '?' + s.replace(/%2C/g, ',') : ''));
+  }
+  function setView(v) {
+    if (v === 'cmp' && selected.length < 2) { say('Choisissez au moins deux modèles.'); return; }
+    const prev = state.view;
+    if (v === prev && v !== 'cmp') return;
+    state.view = v;
+    hideLoupe();
+    if (v === 'cmp') {
+      const st = (HAS_FLIP && prev !== 'cmp') ? Flip.getState(document.querySelectorAll('#sel-slots .slot-card')) : null;
+      renderCompare();
+      showOnly('cmp');
+      document.getElementById('view-cmp').scrollTop = 0;
+      if (G) {
+        if (st) Flip.from(st, { targets: document.querySelectorAll('.cv-head'), duration: .8, ease: 'power3.inOut', absolute: true });
+        animateRows(.32);
+      }
+      document.getElementById('cv-back').focus({ preventScroll: true });
+    } else if (prev === 'cmp') {
+      const st = HAS_FLIP ? Flip.getState(document.querySelectorAll('.cv-head')) : null;
+      showOnly(v);
+      renderDock();
+      if (v === 'xp') layoutExplorer(false);
+      if (st) Flip.from(st, { targets: document.querySelectorAll('#sel-slots .slot-card'), duration: .7, ease: 'power3.inOut', absolute: true });
+      if (G) G.from(document.getElementById(VIEWS[v]), { opacity: 0, y: 10, duration: .45, ease: 'power2.out', delay: .1 });
+    } else {
+      showOnly(v);
+      if (v === 'xp') layoutExplorer(false);
+      if (v === 'tbl') { buildTable(); }
+      if (G) G.from(document.getElementById(VIEWS[v]), { opacity: 0, y: 10, duration: .4, ease: 'power2.out' });
+    }
+    setUrl();
+  }
+  function wireViews() {
+    ['xp', 'tbl', 'cmp'].forEach(k => document.getElementById('tab-' + k).addEventListener('click', () => setView(k)));
+    document.querySelector('.seg[role="tablist"]').addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const tabs = ['xp', 'tbl', 'cmp'].map(k => document.getElementById('tab-' + k)).filter(t => !t.disabled);
+      const i = tabs.indexOf(document.activeElement);
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+      e.preventDefault(); n.focus(); n.click();
+    });
+    document.getElementById('cv-back').addEventListener('click', () => setView('xp'));
+    const q = document.getElementById('q'), q2 = document.getElementById('model-search');
+    q.addEventListener('input', () => {
+      state.q = q.value.trim().toLowerCase(); q2.value = q.value;
+      applyFilterXP(); if (state.view === 'tbl') scheduleBuild();
+    });
+    q2.addEventListener('input', () => { q.value = q2.value; applyFilterXP(); });
+    q.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || state.view !== 'xp') return;
+      const hit = plot.querySelector('.xp-lane:not(.is-hidden) .xp-tok:not(.is-dim):not([hidden])');
+      if (hit) { e.preventDefault(); setRove(hit.dataset.k); hit.focus(); }
+    });
+    document.getElementById('cv-diff').addEventListener('change', e => { cmpDiffOnly = e.target.checked; renderCompare(); animateRows(0); });
+    document.getElementById('cv-copy').addEventListener('click', function () { copyCompare(this); });
+    document.getElementById('cv-link').addEventListener('click', function () {
       const b = this;
       (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject()).then(
         () => { b.textContent = 'Lien copié'; setTimeout(() => { b.textContent = 'Copier le lien'; }, 1600); },
@@ -1539,130 +2158,202 @@
     });
   }
 
-  function copyCompare(models, btn) {
-    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
+  /* ══ Comparaison cote a cote ══ */
+  let cmpDiffOnly = false;
+  function cvCell(row, m) {
+    const NP = { html: '<span class="np">non publié</span>', n: null, na: true };
+    if (m._v && !isComparable(row)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
+    if (row.num) {
+      const n = row.num(m);
+      if (n == null) {
+        if (/Budget PoE/.test(row.label) && !m.poe) return { html: 'Sans PoE', n: null };
+        return NP;
+      }
+      if (row.cat === 'ports') return { html: String(n), n };
+      return { html: cellRaw(row, m), n };
+    }
+    if (row.label === 'Format') return m.f ? { html: esc(m.f), n: null } : NP;
+    if (/5G/.test(row.label) && m.m5g == null) return NP;
+    if (/base \/ max/.test(row.label) && !m.vsys) return NP;
+    if (row.cat === 'ref' && !m.sku) return NP;
+    const raw = cellRaw(row, m);
+    if (raw === '—') return { html: 'Non', n: null };
+    return { html: raw, n: null };
+  }
+  function renderCompare() {
+    const models = selected.map(byKey).filter(Boolean);
+    const n = models.length;
+    const cv = document.getElementById('cv');
+    cv.style.setProperty('--n', n);
+    if (n < 2) { cv.innerHTML = '<p class="cv-empty">Choisissez au moins deux modèles sur la gamme.</p>'; return; }
+    const comp = models.some(m => m._v);
+    document.getElementById('cv-title').textContent = models.map(m => m.id).join(' · ');
+    let h = '<div class="cv-row cv-heads"><div class="cv-lab"></div>'
+      + models.map(m => '<div class="cv-head' + (m._v ? ' is-comp' : '') + '" data-flip-id="m-' + esc(m._key) + '">'
+        + '<div class="ph">' + phHTML(m) + '</div>'
+        + '<div class="nm">' + esc(m.id) + '</div>'
+        + '<p class="sb">' + (m._v ? esc(m._vname + ' · ' + (m.s || '')) : esc(m.s + ' · ' + m.target)) + '</p>'
+        + '<div class="lk">' + (m._v ? (m.ds ? '<a href="' + esc(m.ds) + '" target="_blank" rel="noopener">Datasheet ' + esc(m._vname) + '</a>' : '') : '<a href="' + esc(DS_URLS[m.s] || 'resources.html') + '" target="_blank" rel="noopener">Datasheet ' + esc(m.s) + '</a>')
+        + '<button type="button" class="rm" data-rmc="' + esc(m._key) + '" aria-label="Retirer ' + esc(m.id) + ' de la comparaison">Retirer</button></div>'
+        + '</div>').join('') + '</div>';
+    let lastCat = '';
     ROWS.forEach(row => {
-      text += row.label.replace(/<[^>]+>/g, '') + ' : ' + models.map(m => cellRaw(row, m).replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
+      const cells = models.map(m => cvCell(row, m));
+      const plain = cells.map(c => String(c.html).replace(/<[^>]+>/g, ''));
+      const same = plain.every(p => p === plain[0]);
+      if (cmpDiffOnly && same) return;
+      if (comp && models.every(m => m._v) && !isComparable(row)) return;
+      if (row.cat !== lastCat) { lastCat = row.cat; h += '<div class="cv-cat">' + CATS[row.cat].label + '</div>'; }
+      const pa = models.map((m, i) => (!m._v && cells[i].n != null) ? cells[i].n : null);
+      const nums = pa.filter(v => v != null);
+      const max = nums.length > 1 ? Math.max.apply(null, nums) : null;
+      const hasGap = max != null && Math.min.apply(null, nums) < max && max > 0;
+      const field = fieldOf(row);
+      h += '<div class="cv-row' + (same ? ' is-same' : '') + '"><div class="cv-lab">' + rowLabel(row, comp) + '</div>'
+        + cells.map((c, i) => {
+            const m = models[i];
+            let extra = '', cls = 'cv-c', bar = '';
+            if (m._v && !c.na && (field === 'fw' || field === 'tp' || field === 'vpn')) {
+              const V = COMP.vendors[m.v];
+              extra = '<span class="cv-prof">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[field]) || 'définition de l’éditeur') + '</span>';
+            }
+            if (hasGap && pa[i] != null) {
+              const top = pa[i] === max;
+              if (top) cls += ' is-top';
+              const d = top ? 'le plus élevé' : '−' + Math.round((1 - pa[i] / max) * 100) + ' %';
+              extra = '<span class="cv-d">' + d + '</span>' + extra;
+              bar = '<span class="cv-bar-t" aria-hidden="true"><i style="width:' + Math.max(2, pa[i] / max * 100).toFixed(1) + '%"></i></span>';
+            }
+            return '<div class="' + cls + '"><span class="cv-v">' + c.html + '</span>' + extra + bar + '</div>';
+          }).join('') + '</div>';
+    });
+    cv.innerHTML = h;
+    document.getElementById('cv-note').textContent = comp
+      ? 'Les débits des concurrents suivent la définition de leur éditeur, rappelée sous chaque valeur : ils ne se comparent pas un pour un aux débits appmix des PA. Les écarts et les barres ne se calculent qu’entre PA.'
+      : 'Barres et écarts par rapport à la valeur la plus élevée de la ligne. Données issues des datasheets officielles Palo Alto Networks.';
+    cv.querySelectorAll('[data-rmc]').forEach(b => b.addEventListener('click', () => {
+      toggleSel(b.dataset.rmc);
+      if (selected.length < 2) setView('xp');
+      else { renderCompare(); setUrl(); document.getElementById('cv-back').focus(); }
+    }));
+  }
+  function animateRows(delay) {
+    if (!G) return;
+    const rows = document.querySelectorAll('#cv .cv-cat, #cv .cv-row:not(.cv-heads)');
+    const tw = G.from(rows, { opacity: 0, y: 12, duration: .5, stagger: .018, delay, ease: 'power2.out' });
+    G.from(document.querySelectorAll('#cv .cv-bar-t i'), { scaleX: 0, duration: 1, stagger: .012, delay: delay + .2, ease: 'power3.out' });
+    setTimeout(() => tw.progress(1), 4000);
+  }
+  function copyCompare(btn) {
+    const models = selected.map(byKey).filter(Boolean);
+    let text = 'COMPARAISON\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
+    ROWS.forEach(row => {
+      text += row.label.replace(/<[^>]+>/g, '') + ' : ' + models.map(m => cvCell(row, m).html.replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
     });
     if (models.some(m => m._v)) text += '\nDébits concurrents : définitions propres à chaque éditeur, non comparables un pour un.';
-    text += '\nEstimation indicative. Données issues des datasheets officielles.';
+    text += '\nDonnées issues des datasheets officielles.';
     (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
-      () => { btn.textContent = 'Copié'; setTimeout(() => { btn.textContent = 'Copier la comparaison'; }, 1600); },
+      () => { btn.textContent = 'Copié'; setTimeout(() => { btn.textContent = 'Copier le texte'; }, 1600); },
       () => { btn.textContent = 'Copie impossible ici'; });
   }
 
-  function closeCompare() {
-    document.getElementById('cmp-overlay').classList.remove('open');
-    history.replaceState(null, '', location.pathname);
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-
-  function wireModal() {
-    const ov = document.getElementById('cmp-overlay');
-    ov.addEventListener('click', e => { if (e.target === ov) closeCompare(); });
-    document.getElementById('cmp-close').addEventListener('click', closeCompare);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && ov.classList.contains('open')) closeCompare();
-    });
-  }
-
-  /* ══ Concurrents : chargement facultatif ══
-     Le fichier est charge a la demande. S'il manque, la case reste
-     masquee et le comparateur reste strictement PA. */
+  /* ══ Concurrents (fichier facultatif) ══ */
   function initVendors() {
     if (typeof COMPETITORS === 'undefined' || !COMPETITORS || !Array.isArray(COMPETITORS.models)) return;
     const vendors = {};
     (COMPETITORS.vendors || []).forEach(v => { vendors[v.id] = v; });
+    const order = (COMPETITORS.vendors || []).map(v => v.id).filter(id => COMPETITORS.models.some(m => m.v === id));
+    if (!order.length) return;
     COMP = {
-      vendors,
-      models: COMPETITORS.models.map(c => Object.assign({}, c, {
-        _v: c.v, _key: 'x:' + c.id, _vname: vendors[c.v] ? vendors[c.v].name : c.v
-      }))
+      vendors, order,
+      models: COMPETITORS.models.map(c => Object.assign({}, c, { _v: c.v, _key: 'x:' + c.id, _vname: vendors[c.v] ? vendors[c.v].name : c.v }))
     };
-    const ids = (COMPETITORS.vendors || []).map(v => v.id).filter(id => COMP.models.some(m => m.v === id));
-    if (!ids.length) return;
     const box = document.getElementById('vendors');
-    box.insertAdjacentHTML('beforeend', ids.map(id =>
+    box.insertAdjacentHTML('beforeend', order.map(id =>
       '<label class="vchk"><input type="checkbox" value="' + esc(id) + '"> ' + esc(vendors[id].name) + '</label>').join(''));
-    // ?vendors=fortinet,cisco ouvre la page avec ces editeurs coches
-    // (lien partage, controle de contraste), sans toucher a la memoire.
     const forced = new URLSearchParams(location.search).get('vendors');
     const saved = forced ? forced.split(',') : store.get('pan-cmp-vendors', []);
-    saved.forEach(id => { if (ids.indexOf(id) !== -1) state.vendors.add(id); });
+    saved.forEach(id => { if (order.indexOf(id) !== -1) state.vendors.add(id); });
     box.querySelectorAll('input').forEach(inp => {
       inp.checked = state.vendors.has(inp.value);
       inp.addEventListener('change', () => {
         if (inp.checked) state.vendors.add(inp.value);
         else {
           state.vendors.delete(inp.value);
-          // un concurrent decoche sort aussi du bac
           selected = selected.filter(k => { const m = byKey(k); return !(m && m._v === inp.value); });
-          store.set('pan-cmp-sel', selected);
-          renderTray();
+          SEL.set(selected);
         }
         store.set('pan-cmp-vendors', Array.from(state.vendors));
-        syncVendorNote();
-        rebuild();
+        document.getElementById('vendor-note').hidden = state.vendors.size === 0;
+        renderExplorer();
+        if (G && inp.checked) G.from(plot.querySelectorAll('.xp-lane.is-comp, .xp-sep'), { opacity: 0, y: 14, duration: .5, stagger: .05, ease: 'power2.out' });
+        if (state.view === 'tbl') rebuild(); else buildTable();
+        if (state.view === 'cmp') { if (selected.length < 2) setView('xp'); else renderCompare(); }
+        syncPressed(); renderDock(); setUrl();
       });
     });
     box.hidden = false;
-    syncVendorNote();
-    restoreSelection();
-    if (state.vendors.size || selected.some(k => k.indexOf('x:') === 0)) buildTable();
-  }
-  function syncVendorNote() {
     document.getElementById('vendor-note').hidden = state.vendors.size === 0;
   }
-  function loadCompetitors() {
-    // Fichier facultatif : il est demande a l'execution, pas reference
-    // dans le HTML, pour que son absence ne casse ni la page ni le build.
-    const COMP_FILE = 'data/competitors.js';
+  function loadCompetitors(done) {
     const s = document.createElement('script');
-    s.setAttribute('src', COMP_FILE);
-    s.onload = initVendors;
-    s.onerror = () => {};
+    s.setAttribute('src', 'data/competitors.js');
+    s.onload = () => { initVendors(); done(); };
+    s.onerror = () => done();
     document.body.appendChild(s);
   }
 
-  /* ══ Selection retrouvee : lien partage, sinon derniere visite ══ */
-  let restored = false;
-  function restoreSelection() {
-    const p = new URLSearchParams(location.search).get('cmp');
-    let keys = [];
-    if (p) {
-      p.split(',').map(decodeURIComponent).forEach(id => {
-        if (MODELS.some(m => m.id === id)) keys.push(id);
-        else if (COMP) {
-          const c = COMP.models.find(x => x.id === id);
-          if (c) { keys.push(c._key); state.vendors.add(c.v); }
-        }
-      });
-    } else {
-      keys = store.get('pan-cmp-sel', []).filter(k => {
-        const m = byKey(k);
-        return m && (!m._v || state.vendors.has(m._v));
-      });
-    }
-    const before = selected.join();
-    selected = keys.slice(0, MAX_SEL);
-    if (COMP) document.querySelectorAll('#vendors input').forEach(i => { i.checked = state.vendors.has(i.value); });
-    if (selected.join() !== before || !restored) { buildTable(); renderTray(); }
-    if (p && selected.length >= 2 && !document.getElementById('cmp-overlay').classList.contains('open')) {
-      // un lien vers des concurrents n'est complet qu'une fois le fichier charge
-      if (!p.split(',').some(id => !byKey(id) && !(COMP && COMP.models.find(x => x.id === id))) || COMP) openCompare();
-    }
-    restored = true;
+  /* ══ Selection retrouvee et routage ══ */
+  function resolveIds(list) {
+    const keys = [];
+    list.forEach(id => {
+      if (MODELS.some(m => m.id === id)) keys.push(id);
+      else if (COMP) {
+        const c = COMP.models.find(x => x.id === id || x._key === id);
+        if (c) { keys.push(c._key); if (!state.vendors.has(c.v)) { state.vendors.add(c.v); const i = document.querySelector('#vendors input[value="' + CSS.escape(c.v) + '"]'); if (i) i.checked = true; document.getElementById('vendor-note').hidden = false; } }
+      }
+    });
+    return keys.filter((k, i) => keys.indexOf(k) === i).slice(0, MAX_SEL);
   }
+  function route(href, first) {
+    const p = new URLSearchParams((href || location.search).split('?')[1] || '');
+    const cmp = p.get('cmp');
+    const vendorsBefore = state.vendors.size;
+    selected = resolveIds(cmp ? cmp.split(',').map(decodeURIComponent) : SEL.get());
+    SEL.set(selected);
+    if (state.vendors.size !== vendorsBefore) renderExplorer();
+    syncPressed(); renderDock();
+    if (cmp && selected.length >= 2) { if (first) { renderCompare(); state.view = 'cmp'; showOnly('cmp'); animateRows(.1); setUrl(); } else setView('cmp'); return; }
+    if (p.get('view') === 'table') { if (first) { state.view = 'tbl'; showOnly('tbl'); buildTable(); } else setView('tbl'); return; }
+    if (!first && state.view !== 'xp') setView('xp');
+    const f = p.get('focus');
+    if (f) {
+      const el = plot.querySelector('.xp-tok[data-k="' + CSS.escape(f) + '"]');
+      if (el) { setRove(f); setTimeout(() => { el.focus({ preventScroll: false }); }, first && G ? 1300 : 50); }
+    }
+  }
+  window.CmpPage = { route: h => route(h, false) };
+  document.addEventListener('cmpsel', e => {
+    selected = resolveIds(e.detail || []);
+    syncPressed(); renderDock();
+    if (state.view === 'cmp') { if (selected.length < 2) setView('xp'); else renderCompare(); }
+  });
 
+  /* ══ Demarrage ══ */
   buildSeriesFilters();
   buildRanges();
   wireFilters();
-  wireSelection();
   wireScroll();
-  wireModal();
-  buildTable();
-  restoreSelection();
-  loadCompetitors();
+  wireExplorer();
+  wireDock();
+  wireViews();
+  loadCompetitors(() => {
+    renderExplorer();
+    buildTable();
+    route(location.search, true);
+    if (state.view === 'xp') introExplorer();
+  });
+
   </script>
 
   <footer class="site-footer">

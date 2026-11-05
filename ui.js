@@ -82,25 +82,37 @@
 
      Le comptage ne sert qu'aux chiffres d'inventaire de l'accueil.
      Les metriques de dimensionnement, elles, s'affichent d'emblee. */
+  /* v8 : compteur a rouleaux. Chaque chiffre est une colonne 0-9 qui
+     tourne jusqu'a sa valeur ; la valeur finale est celle de
+     data-count, posee d'office au bout de la duree si l'animation
+     n'a pas tourne. Le nombre est lu une seule fois par la synthese
+     vocale (aria-label), jamais pendant qu'il roule. */
   function countUp(el) {
     var target = parseFloat(el.getAttribute('data-count'));
     if (!isFinite(target)) return;
-    var dur = 1100, t0 = null;
-
-    function settle() { el.textContent = String(target); }
-    if (reduce) return settle();
-
-    function frame(t) {
-      if (t0 === null) t0 = t;
-      var k = Math.min((t - t0) / dur, 1);
-      // sortie douce : rapide au debut, pose a la fin
-      var eased = 1 - Math.pow(1 - k, 3);
-      el.textContent = String(Math.round(target * eased));
-      if (k < 1) requestAnimationFrame(frame);
-      else settle();
+    var str = String(target);
+    function settle() { el.textContent = str; }
+    if (reduce || !window.gsap) return settle();
+    el.setAttribute('aria-label', str);
+    var html = '<span class="odo" aria-hidden="true">';
+    for (var i = 0; i < str.length; i++) {
+      var d = str.charAt(i);
+      if (!/[0-9]/.test(d)) { html += '<span>' + d + '</span>'; continue; }
+      html += '<span class="odo-col"><span data-d="' + d + '">';
+      for (var k = 0; k < 20; k++) html += '<span>' + (k % 10) + '</span>';
+      html += '</span></span>';
     }
-    requestAnimationFrame(frame);
-    setTimeout(settle, dur + 220);
+    el.innerHTML = html + '</span>';
+    var reels = el.querySelectorAll('[data-d]');
+    var n = reels.length;
+    var tl = gsap.timeline({ onComplete: settle });
+    for (var j = 0; j < n; j++) {
+      var dd = +reels[j].getAttribute('data-d');
+      // les colonnes de droite tournent plus longtemps : effet de compteur
+      var stop = dd + (j === n - 1 ? 10 : 10 * ((n - j) % 2));
+      tl.fromTo(reels[j], { yPercent: 0 }, { yPercent: -100 * stop / 20, duration: 1.5 + (n - j) * .18, ease: 'power3.out' }, j * .06);
+    }
+    setTimeout(function () { if (tl.progress() < 1) { tl.progress(1); } }, 3200);
   }
 
   function wireCounters() {

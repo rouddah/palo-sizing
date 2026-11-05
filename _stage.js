@@ -25,9 +25,9 @@ const OUT = path.join(ROOT, '.deploy');
 
 /* Fichiers racine publies : les pages, plus les scripts et la
    feuille de style qu'elles chargent. */
-const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js', 'bg.js'];
+const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js'];
 /* Dossiers publies en entier */
-const DIRS = ['data', 'img', 'fonts'];
+const DIRS = ['data', 'img', 'fonts', 'vendor'];
 
 function rmrf(p) {
   if (fs.existsSync(p)) fs.rmSync(p, { recursive: true, force: true });

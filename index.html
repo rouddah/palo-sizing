@@ -12,332 +12,240 @@
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ── Ouverture ─────────────────────────────────────────── */
-    .lead {
-      position: relative;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 84px 24px 54px;
-      overflow: hidden;
-    }
+    /* ============================================================
+       Accueil v8 : un selecteur de modeles, la gamme qui se range
+       sur son axe, puis l'index des outils. Pas de cartes.
+       ============================================================ */
+    .home { max-width: 1440px; margin: 0 auto; padding: 0 var(--sp-6); }
 
-    .lead-kick {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 22px;
-    }
-    .lead-kick::before {
-      content: '';
-      width: 26px; height: 2px;
-      border-radius: var(--r-xs);
-      background: var(--accent);
-    }
+    /* ── Ouverture ── */
+    .hx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--sp-8); align-items: end; padding: 52px 0 28px; }
+    .hx h1 { font: 700 clamp(36px, 4.6vw, 64px)/1.02 var(--font); letter-spacing: -.03em; color: var(--text-bright); }
+    .hx h1 em { font-style: normal; color: var(--accent-txt); }
+    .hx .eyebrow { margin-bottom: var(--sp-5); }
+    .hx-side { padding-bottom: 6px; }
+    .hx-side p { font: 400 16px/1.55 var(--font); color: var(--text-dim); max-width: 52ch; }
 
-    .lead h1 {
-      font-size: clamp(38px, 6.4vw, 76px);
-      font-weight: 800;
-      line-height: 1.02;
-      letter-spacing: -2.6px;
-      color: var(--text-bright);
-      max-width: 17ch;
+    /* Selecteur : le premier geste de la page */
+    .pick { position: relative; margin-top: var(--sp-5); }
+    .pick-field {
+      display: flex; align-items: center; gap: var(--sp-3);
+      height: 58px; padding: 0 6px 0 var(--sp-4);
+      border: 1px solid var(--border2); border-radius: var(--r-md);
+      background: var(--surface); color: var(--text-muted);
+      transition: border-color var(--dur-fast) var(--ease);
     }
-    .lead p.intro {
-      margin-top: 20px;
-      font-size: clamp(15px, 1.5vw, 18px);
-      line-height: 1.62;
-      color: var(--text-muted);
-      max-width: 62ch;
+    .pick-field:focus-within { border-color: var(--accent); }
+    .pick-field input { flex: 1; min-width: 0; height: 100%; background: none; border: 0; outline: none; font: 400 17px/1 var(--font); color: var(--text-bright); }
+    .pick-field input::placeholder { color: var(--text-muted); }
+    .pick-field input:focus-visible { outline: none; }
+    .pick-go {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      height: 44px; padding: 0 var(--sp-5);
+      font: 700 14px/1 var(--font); color: var(--on-accent); background: var(--accent);
+      border: 0; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
     }
-    .lead-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .pick-go:hover { background: var(--accent-hover); }
+    .pick-go:active { transform: scale(.97); }
+    .pick-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 32px; margin-top: var(--sp-3); }
+    .pick-chips .k { font: 400 12.5px/1 var(--font); color: var(--text-muted); margin-right: 4px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: 700 12.5px/1 var(--mono); color: var(--text-bright);
+      padding: 7px 8px 7px 10px; border: 1px solid var(--accent-line); border-radius: var(--r-sm);
+      background: var(--accent-dim); cursor: pointer;
+    }
+    .chip .ic { color: var(--text-muted); }
+    .pick-try { font: 400 12.5px/1 var(--font); color: var(--text-muted); }
+    .pick-try button { font: 500 12.5px/1 var(--mono); color: var(--text-dim); background: none; border: 0; border-bottom: 1px dotted var(--text-muted); padding: 2px 0; margin: 0 4px; cursor: pointer; }
+    .pick-try button:hover { color: var(--text-bright); }
+    .sugg {
+      position: absolute; z-index: 40; left: 0; right: 0; top: 64px;
+      list-style: none; padding: 6px; max-height: 340px; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r-md);
+      box-shadow: 0 30px 60px -24px rgba(0,0,0,.7);
+    }
+    .sugg[hidden] { display: none; }
+    .sugg li { display: grid; grid-template-columns: 120px 1fr auto; gap: var(--sp-3); align-items: center; padding: 9px 10px; border-radius: var(--r-sm); cursor: pointer; }
+    .sugg li.on { background: var(--surface3); box-shadow: inset 2px 0 0 var(--accent); }
+    .sugg .nm { font: 700 13.5px/1 var(--mono); color: var(--text-bright); }
+    .sugg .mt { font: 400 12.5px/1.2 var(--font); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sugg .vl { font: 400 12px/1 var(--mono); color: var(--text-dim); white-space: nowrap; }
+    .sugg li.is-sel .nm::after { content: ' retenu'; font: 500 11px/1 var(--font); color: var(--accent-txt); }
+    .sugg .empty { display: block; color: var(--text-muted); font-size: 13px; cursor: default; }
+    .hx-links { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-6); margin-top: var(--sp-4); }
+    .tlink { display: inline-flex; align-items: center; gap: var(--sp-2); font: 600 14px/1 var(--font); color: var(--text-bright); text-decoration: none; padding: 6px 0; border-bottom: 1px solid var(--border2); transition: border-color var(--dur-fast) var(--ease); }
+    .tlink .ic { color: var(--accent); transition: transform var(--dur-fast) var(--ease); }
+    .tlink:hover { border-color: var(--accent); }
+    .tlink:hover .ic { transform: translateX(3px); }
 
-    /* ── Chiffres d'inventaire ─────────────────────────────
-       Quatre cartes cote a cote, separees par un filet de 1px plutot
-       que par du vide : la rangee se lit comme un bandeau de donnees,
-       pas comme quatre tuiles posees la. */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
-      gap: 1px;
-      margin-top: 52px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      max-width: 940px;
+    /* ── Scene : la gamme sur son axe ── */
+    .range { position: relative; margin-top: var(--sp-5); padding-top: var(--sp-4); border-top: 1px solid var(--border); }
+    .range-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--sp-2) var(--sp-4); flex-wrap: wrap; }
+    .range-head h2 { font: 700 22px/1.1 var(--font); letter-spacing: -.02em; color: var(--text-bright); }
+    .range-head h2 .num { color: var(--accent-txt); }
+    .range-head p { font: 400 12.5px/1.4 var(--font); color: var(--text-muted); }
+    .stage { position: relative; height: 330px; margin-top: var(--sp-3); }
+    .stage-grid { position: absolute; inset: 0 0 30px 0; pointer-events: none; }
+    .stage-grid i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
+    .stage-axis { position: absolute; left: 0; right: 0; bottom: 30px; height: 1px; background: var(--border2); }
+    .stage-tick { position: absolute; bottom: 8px; transform: translateX(-50%); font: 400 11px/1 var(--mono); color: var(--text-muted); white-space: nowrap; }
+    .stage-unit { position: absolute; right: 0; bottom: -14px; font: 400 11.5px/1 var(--font); color: var(--text-muted); }
+    .ser {
+      position: absolute; left: 0; top: 0;
+      display: block; text-decoration: none; color: var(--text);
+      will-change: transform;
     }
-    .stat {
-      background: var(--surface);
-      padding: var(--pad-card);
-      cursor: default;
-      outline: none;
-      --edge: var(--wire);
-    }
-    .stat:hover, .stat:focus-visible { background: var(--surface2); }
+    .ser .ph { display: flex; align-items: flex-end; height: 26px; margin-bottom: 11px; }
+    .ser .ph img { max-height: 24px; max-width: 150px; object-fit: contain; object-position: left bottom; }
+    .ser .ph .hw-ph { display: block; width: 70px; height: 18px; border: 1px solid var(--border2); border-radius: 3px; background: repeating-linear-gradient(90deg, transparent 0 7px, var(--border) 7px 8px) 6px 5px / calc(100% - 12px) 7px no-repeat; }
+    .ser b { display: block; font: 700 14px/1.1 var(--font); color: var(--text-bright); white-space: nowrap; transition: color var(--dur-fast) var(--ease); }
+    .ser b .eos { font: 700 10px/1 var(--mono); color: var(--warn); margin-left: 5px; }
+    .ser span.r { display: block; margin-top: 3px; font: 400 11.5px/1 var(--mono); color: var(--text-muted); white-space: nowrap; }
+    .ser:hover b, .ser:focus-visible b { color: var(--accent-txt); }
+    .ser:focus-visible { outline-offset: 4px; }
+    .ser-line { position: absolute; left: 0; top: 0; height: 2px; background: var(--accent); transform-origin: left center; pointer-events: none; }
+    .ser-line::before, .ser-line::after { content: ''; position: absolute; top: -3px; width: 2px; height: 8px; background: inherit; }
+    .ser-line::before { left: 0; } .ser-line::after { right: 0; }
+    .ser-line.is-eos { background: var(--border2); }
 
-    /* Le chiffre est une donnee : monospace, chiffres tabulaires pour
-       que la boite ne tremble pas pendant le comptage. */
-    .stat .stat-num {
-      font-family: var(--mono);
-      font-size: clamp(28px, 3.2vw, 38px);
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -.03em;
-      color: var(--text-bright);
-      line-height: 1;
-      transition: color var(--dur) var(--ease);
+    /* ── Index des outils ── */
+    .sec { margin-top: 72px; }
+    .sec-h { display: flex; align-items: baseline; gap: var(--sp-4); padding-bottom: var(--sp-3); border-bottom: 1px solid var(--border2); }
+    .sec-h .eyebrow { margin: 0; }
+    .idx { list-style: none; }
+    .idx a {
+      display: grid; grid-template-columns: 56px minmax(0, 300px) minmax(0, 1fr) auto; align-items: baseline; gap: var(--sp-5);
+      padding: 22px 0; border-bottom: 1px solid var(--border);
+      text-decoration: none; color: var(--text);
     }
-    .stat:hover .stat-num, .stat:focus-visible .stat-num { color: var(--wire); }
+    .idx .no { font: 400 12px/1 var(--mono); color: var(--text-muted); }
+    .idx .t { font: 700 clamp(22px, 2.3vw, 32px)/1.05 var(--font); letter-spacing: -.02em; color: var(--text-bright); transition: color var(--dur-fast) var(--ease); }
+    .idx .d { font: 400 14.5px/1.5 var(--font); color: var(--text-dim); }
+    .idx .d b { font-weight: 700; color: var(--text-bright); }
+    .idx .go { display: inline-flex; align-items: center; gap: var(--sp-3); color: var(--text-muted); }
+    .idx .go .ic { color: var(--accent); transition: transform var(--dur) var(--ease); }
+    .idx a:hover .t, .idx a:focus-visible .t { color: var(--accent-txt); }
+    .idx a:hover .go .ic { transform: translateX(6px); }
+    .idx a:focus-visible { outline-offset: -2px; }
 
-    .stat .lb {
-      margin-top: 9px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.35;
-    }
-    .stat .lb-sub {
-      margin-top: 3px;
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-    .lead h1 .accent { color: var(--accent-txt); }
+    /* ── Portefeuille ── */
+    .pf { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .pf a { display: block; padding: 22px var(--sp-5) 24px 0; border-bottom: 1px solid var(--border); text-decoration: none; }
+    .pf a + a { padding-left: var(--sp-5); border-left: 1px solid var(--border); }
+    .pf b { display: block; font: 700 clamp(26px, 2.8vw, 40px)/1 var(--font); letter-spacing: -.025em; color: var(--text-bright); transition: color var(--dur-fast) var(--ease); }
+    .pf span { display: block; margin-top: var(--sp-2); font: 400 13.5px/1.45 var(--font); color: var(--text-muted); }
+    .pf a:hover b, .pf a:focus-visible b { color: var(--accent-txt); }
 
-    /* ── Sections ──────────────────────────────────────────── */
-    .band { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
-    .band-head {
-      display: flex;
-      align-items: baseline;
-      gap: 14px;
-      margin: 58px 0 18px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .band-head h2 {
-      font-size: 13px;
-      font-family: var(--mono);
-      font-weight: 700;
-      letter-spacing: 1.9px;
-      text-transform: uppercase;
-      color: var(--text-bright);
-    }
-    .band-head span { font-size: 12px; color: var(--text-muted); }
+    /* ── Ressources : listes de liens ── */
+    .res { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--sp-6) var(--sp-8); padding-top: var(--sp-5); }
+    .res h3 { font: 700 13px/1.2 var(--font); color: var(--text-bright); margin-bottom: var(--sp-2); }
+    .res ul { list-style: none; }
+    .res li a { display: flex; align-items: center; gap: 6px; padding: 6px 0; font: 400 13.5px/1.35 var(--font); color: var(--text-dim); text-decoration: none; }
+    .res li a:hover { color: var(--text-bright); }
+    .res li a .ic { flex: none; color: var(--text-muted); }
 
-    /* ── Cartes outil ──────────────────────────────────────── */
-    .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-    /* cinq outils : sur une ligne des qu'il y a la place, plutot que
-       quatre et un orphelin */
-    @media (min-width: 1200px) { .tools { grid-template-columns: repeat(5, 1fr); } }
-    /* les ressources s'alignent sur les bandes de la page */
-    #app { max-width: 1400px; }
-    .tcard {
-      position: relative;
-      display: block;
-      text-decoration: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      padding: var(--pad-card);
-      overflow: hidden;
-      transition: transform var(--dur) var(--ease),
-                  border-color var(--dur-fast) var(--ease),
-                  background-color var(--dur-fast) var(--ease);
+    @media (max-width: 1000px) {
+      .hx { grid-template-columns: 1fr; gap: var(--sp-4); padding-top: 36px; }
+      .idx a { grid-template-columns: 40px minmax(0, 1fr) auto; }
+      .idx .d { grid-column: 2 / 4; }
+      .pf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pf a:nth-child(3) { padding-left: 0; border-left: 0; }
     }
-    /* La carte se souleve, son filet d'accent se trace, sa fleche part.
-       Trois signaux pour un seul geste : le survol devient lisible sans
-       qu'aucun texte ne bouge. */
-    .tcard:hover, .tcard:focus-visible {
-      transform: translate3d(0, -4px, 0);
-      border-color: var(--fx, var(--border2));
-      background: var(--surface2);
+    @media (max-width: 640px) {
+      .home { padding: 0 var(--sp-4); }
+      .pick-field { height: 52px; }
+      .pick-go span { display: none; }
+      .pick-go { padding: 0 var(--sp-3); }
+      .sugg li { grid-template-columns: 1fr auto; }
+      .sugg .mt { display: none; }
+      .ser .ph { display: none; }
+      .ser { display: flex; align-items: baseline; gap: 8px; }
+      .ser span.r { margin: 0; }
+      .idx a { grid-template-columns: minmax(0, 1fr) auto; padding: 18px 0; }
+      .idx .no { display: none; }
+      .idx .d { grid-column: 1 / -1; }
+      .pf { grid-template-columns: 1fr; }
+      .pf a + a, .pf a:nth-child(3) { padding-left: 0; border-left: 0; }
     }
-    .tcard::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; top: 0;
-      height: 1px;
-      background: var(--fx, var(--accent));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform var(--dur) var(--ease);
-    }
-    .tcard:hover::after, .tcard:focus-visible::after { transform: scaleX(1); }
-    .tcard .go { transition: transform var(--dur-fast) var(--ease); display: inline-block; }
-    .tcard:hover .go { transform: translate3d(4px, 0, 0); }
-    .tcard .card-ico { transition: transform var(--dur) var(--ease); }
-    .tcard:hover .card-ico { transform: scale(1.06); }
-    .tcard:hover {
-      transform: translateY(-5px);
-      border-color: color-mix(in srgb, var(--fx) 55%, var(--border));
-      box-shadow: 0 22px 44px -26px color-mix(in srgb, var(--fx) 85%, transparent);
-    }
-    .tcard .ic {
-      width: 38px; height: 38px;
-      border-radius: var(--r-md);
-      display: grid;
-      place-items: center;
-      background: color-mix(in srgb, var(--fx) 13%, transparent);
-      border: 1px solid color-mix(in srgb, var(--fx) 32%, transparent);
-      color: var(--fx);
-      margin-bottom: 16px;
-    }
-    .tcard .ic svg { width: 18px; height: 18px; }
-    .tcard h3 {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-bright);
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tcard h3 .go {
-      color: var(--fx);
-      opacity: 0;
-      transform: translateX(-5px);
-      transition: opacity .25s, transform .25s var(--ease-ui);
-    }
-    .tcard:hover h3 .go { opacity: 1; transform: none; }
-    .tcard p { margin-top: 7px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
-    .tcard .tag {
-      display: inline-block;
-      margin-top: 13px;
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .9px;
-      text-transform: uppercase;
-      /* la teinte de la carte habille le cadre, pas le texte : elle
-          est trop vive pour porter des caracteres de 10px sur clair */
-      color: var(--text);
-      background: color-mix(in srgb, var(--fx) 13%, transparent);
-      border: 1px solid color-mix(in srgb, var(--fx) 34%, transparent);
-      border-radius: var(--r-sm);
-      padding: 3px 8px;
-    }
-
-    /* ── Piliers ───────────────────────────────────────────── */
-    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-    .pcard2 {
-      position: relative;
-      display: block;
-      text-decoration: none;
-      border-radius: var(--r-lg);
-      padding: var(--pad-large);
-      background: linear-gradient(155deg,
-        color-mix(in srgb, var(--fx) 15%, var(--surface)), var(--surface) 62%);
-      border: 1px solid var(--border);
-      overflow: hidden;
-      transition: transform .3s var(--ease-ui), border-color .3s;
-    }
-    .pcard2 { transition: transform var(--dur) var(--ease), border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease); }
-    .pcard2:hover, .pcard2:focus-visible {
-      transform: translate3d(0, -4px, 0);
-      border-color: var(--fx);
-      background: var(--surface2);
-    }
-    .pcard2 .k {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.7px;
-      text-transform: uppercase;
-      color: var(--fx);
-    }
-    .pcard2 h3 {
-      margin-top: 9px;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-bright);
-      letter-spacing: -0.5px;
-    }
-    .pcard2 p { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--text-muted); }
-
-    @media (max-width: 760px) { .lead { padding-top: 54px; } }
   </style>
 </head>
 <body>
   <div id="header-root"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/CustomEase.min.js"></script>
   <script src="header.js"></script>
   <script src="ui.js"></script>
   <script src="icons.js"></script>
-  <script src="bg.js" defer></script>
+  <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
 
-  <!-- ── Ouverture ── -->
-  <section class="lead amb" data-rise>
-    <div class="lead-kick">Sizing Guide &middot; Palo Alto Networks</div>
-    <h1>Sizer du Palo <span class="accent">sans ouvrir de datasheets</span>.</h1>
-    <p class="intro">Contraintes de trafic en entr&eacute;e, mod&egrave;le PA-Series et subscriptions en sortie.</p>
-    <div class="lead-actions">
-      <a class="act primary" href="qualification.html">
-        Dimensionner un firewall<span data-ic="arrow" data-ic-size="14"></span>
-      </a>
-      <a class="act" href="pa-series.html">
-        Comparer les PA-Series<span data-ic="arrow" data-ic-size="14"></span>
-      </a>
-      <a class="act ghost" href="optiques.html">
-        Trouver un transceiver<span data-ic="arrow" data-ic-size="14"></span>
-      </a>
-    </div>
-
-    <!-- Chiffres d'inventaire. data-count porte la valeur de reference :
-         c'est elle qui est posee en fin d'animation, jamais le contenu
-         du noeud pendant qu'il defile. -->
-    <div class="stats">
-      <div class="stat lift lift-edge" tabindex="0"
-           data-tip="Mod&egrave;les PA-Series|De la PA-410 &agrave; la PA-7500 : d&eacute;bit Threat Prevention, sessions, CPS, ports, End of Sale. PA-1500, PA-3500, PA-5500 et PA-50R comprises.">
-        <div class="stat-num" data-count="59">0</div>
-        <div class="lb">Mod&egrave;les PA-Series</div>
-        <div class="lb-sub">PA-410 &rarr; PA-7500, 13 s&eacute;ries</div>
+  <main class="home">
+    <!-- ── Ouverture : le selecteur ── -->
+    <section class="hx">
+      <div>
+        <p class="eyebrow">Sizing Guide PANW</p>
+        <h1>Comparer et dimensionner les <em>PA-Series</em></h1>
       </div>
-      <div class="stat lift lift-edge" tabindex="0"
-           data-tip="Modules optiques|De 100 Mbps &agrave; 400 Gbps : monomode, multimode, cuivre, DAC/AOC, avec port&eacute;e et connecteur.">
-        <div class="stat-num" data-count="45">0</div>
-        <div class="lb">Modules optiques</div>
-        <div class="lb-sub">100 Mbps &rarr; 400 Gbps</div>
+      <div class="hx-side">
+        <p>Les chiffres des datasheets officielles, de la PA-410 à la PA-7500. Choisissez deux à quatre modèles, ou partez du besoin.</p>
+        <div class="pick" id="pick">
+          <div class="pick-field">
+            <svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input id="pick-in" type="text" role="combobox" aria-expanded="false" aria-controls="sugg" aria-autocomplete="list" autocomplete="off" spellcheck="false" aria-label="Ajouter un modèle à comparer : numéro, débit ou usage" placeholder="3420, 10 Gbps, campus, PoE">
+            <button type="button" class="pick-go" id="pick-go" aria-label="Ouvrir la comparaison"><span>Comparer</span><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <ul class="sugg" id="sugg" role="listbox" aria-label="Modèles proposés" hidden></ul>
+          <div class="pick-chips" id="pick-chips" aria-live="polite"></div>
+        </div>
+        <div class="hx-links">
+          <a class="tlink" href="qualification.html">Dimensionner à partir du besoin<svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="tlink" href="pa-series.html">Explorer toute la gamme<svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
       </div>
-      <div class="stat lift lift-edge" tabindex="0"
-           data-tip="Accessoires|Alimentations, rack, ventilation, stockage : filtr&eacute;s par plateforme, avec date de fin de vie.">
-        <div class="stat-num" data-count="207">0</div>
-        <div class="lb">Accessoires</div>
-        <div class="lb-sub">alimentation, rack, stockage</div>
+    </section>
+
+    <!-- ── Scene : la gamme se range sur son axe ── -->
+    <section class="range" aria-labelledby="range-h">
+      <div class="range-head">
+        <h2 id="range-h"><span class="num" data-count="59">59</span> modèles PA-Series, <span class="num" id="n-series">13</span> séries</h2>
+        <p>Plage Threat Prevention de chaque série, en Gbps, échelle logarithmique.</p>
       </div>
-      <div class="stat lift lift-edge" tabindex="0"
-           data-tip="Piliers couverts|NGFW, SASE, Cortex, Idira : chaque pilier a sa page produit et ses r&egrave;gles de dimensionnement.">
-        <div class="stat-num" data-count="4">0</div>
-        <div class="lb">Piliers couverts</div>
-        <div class="lb-sub">NGFW, SASE, Cortex, Idira</div>
-      </div>
-    </div>
-  </section>
+      <div class="stage" id="stage"></div>
+    </section>
 
-  <!-- ── Outils ── -->
-  <div class="band">
-    <div class="band-head"><h2>Les outils</h2><span>Tout ce qui se calcule ou se compare</span></div>
-    <div class="tools" id="tools"></div>
-  </div>
+    <!-- ── Outils ── -->
+    <section class="sec" aria-labelledby="tools-h">
+      <div class="sec-h"><p class="eyebrow" id="tools-h">Les outils</p></div>
+      <ol class="idx">
+        <li><a href="pa-series.html"><span class="no">01</span><span class="t">Comparer</span><span class="d">La gamme sur un axe de débit, jusqu'à quatre modèles côte à côte, concurrents en option.</span><span class="go"><kbd>C</kbd><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+        <li><a href="qualification.html"><span class="no">02</span><span class="t">Dimensionner</span><span class="d">Débit, utilisateurs, déchiffrement, sites : le modèle recommandé et sa charge.</span><span class="go"><kbd>D</kbd><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+        <li><a href="optiques.html"><span class="no">03</span><span class="t">Optiques</span><span class="d"><b data-count="45">45</b> modules, du 100 Mbps au 400 Gbps, avec portée et connecteur. Un clic copie la référence.</span><span class="go"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+        <li><a href="accessoires.html"><span class="no">04</span><span class="t">Accessoires</span><span class="d"><b data-count="207">207</b> références : alimentations, kits rack, ventilation, disques, par plateforme.</span><span class="go"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+        <li><a href="search.html"><span class="no">05</span><span class="t">Recherche</span><span class="d">Retrouver un firewall par débit cible, nombre d'utilisateurs ou interface.</span><span class="go"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+        <li><a href="wizard.html"><span class="no">06</span><span class="t">Mode guidé</span><span class="d">Sept questions métier pour orienter un client qui ne parle pas en Gbps.</span><span class="go"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a></li>
+      </ol>
+    </section>
 
-  <!-- ── Piliers ── -->
-  <div class="band">
-    <div class="band-head"><h2>Le portefeuille</h2><span>Quatre piliers, une page par pilier</span></div>
-    <div class="pillars" id="pillars"></div>
-  </div>
+    <!-- ── Portefeuille ── -->
+    <section class="sec" aria-labelledby="pf-h">
+      <div class="sec-h"><p class="eyebrow" id="pf-h">Le portefeuille</p></div>
+      <nav class="pf" aria-labelledby="pf-h">
+        <a href="panorama.html"><b>NGFW</b><span>PA-Series, Panorama et les abonnements de sécurité.</span></a>
+        <a href="prisma.html"><b>SASE</b><span>Prisma Access, Prisma SD-WAN, Prisma Browser.</span></a>
+        <a href="cortex.html"><b>Cortex</b><span>XDR, XSIAM, XSOAR, Xpanse, Cortex Cloud.</span></a>
+        <a href="idira.html"><b>Idira</b><span>Identités humaines, machine et agentiques.</span></a>
+      </nav>
+    </section>
 
-  <!-- ── Ressources ── -->
-  <div class="band">
-    <div class="band-head"><h2>Ressources &amp; liens</h2><span>Portails partenaires, datasheets, outils officiels</span></div>
-  </div>
-  <div id="app"><p class="status-msg">Chargement&hellip;</p></div>
+    <!-- ── Ressources ── -->
+    <section class="sec" aria-labelledby="res-h">
+      <div class="sec-h"><p class="eyebrow" id="res-h">Ressources et liens</p></div>
+      <div class="res" id="app"><p class="status-msg">Chargement&hellip;</p></div>
+    </section>
+  </main>
 
   <footer class="site-footer">
     <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
@@ -346,82 +254,228 @@
 
   <script src="links.js"></script>
   <script>
-  /* ══ Outils du guide ══ */
-  const I = {
-    table: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>',
-    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
-    optic: '<circle cx="12" cy="12" r="3"/><path d="M2 12h7M15 12h7M12 2v7M12 15v7"/>',
-    box: '<path d="M21 16V8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>',
-    wand: '<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M3 21l9-9"/>',
-    search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>'
-  };
+  (function () {
+    'use strict';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var G = (window.gsap && !reduce) ? window.gsap : null;
+    var SEL = window.CmpSel;
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+    function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    function gb(v) { return v == null ? 'non publié' : String(v).replace('.', ',') + ' Gbps'; }
+    var X = '<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    /* Deux visuels du stencil ne montrent pas le bon boitier : ecartes. */
+    var BAD_PHOTO = { 'PA-5445': 1, 'PA-7050': 1 };
+    function photo(m) {
+      if (!m || BAD_PHOTO[m.id]) return null;
+      var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[m.id.toLowerCase()];
+      return e ? e.img : null;
+    }
 
-  const TOOLS = [
-    ['pa-series.html', 'table', 'Comparateur PA-Series', 'Les 59 modèles côte à côte : débits appmix, sessions, interfaces, capacités et fin de commercialisation. Sélectionnez jusqu\'a quatre modèles pour un tableau comparatif.', '59 modèles', 'var(--pai-3)'],
-    ['qualification.html', 'target', 'Qualification NGFW', 'Cinq questions pour identifier la gamme adaptée, et un guide d\'entretien a derouler avec le client avant de recommander quoi que ce soit.', 'Avant-vente', 'var(--pai-2)'],
-    ['optiques.html', 'optic', 'Transceivers', 'La matrice des optiques par débit et par support. Cliquez une référence pour la copier, ou exportez d\'un coup tous les SKU filtrés.', '45 modules', 'var(--c-prisma)'],
-    ['accessoires.html', 'box', 'Alimentations & accessoires', 'Ce qu\'on oublie dans une commande : alimentation de rechange, kit rack, tiroir de ventilation, disque de logs. Filtrable par plateforme.', '207 références', 'var(--c-strata)'],
-    ['search.html', 'search', 'Recherche & sizing', 'Retrouver un firewall a partir d\'un debit cible, d\'un nombre d\'utilisateurs ou d\'un critère d\'interface.', 'Par critère', 'var(--c-cortex)']
-  ];
+    /* ══ Selecteur de modeles ══ */
+    var input = document.getElementById('pick-in');
+    var list = document.getElementById('sugg');
+    var chips = document.getElementById('pick-chips');
+    var items = [], idx = 0;
 
-  document.getElementById('tools').innerHTML = TOOLS.map(function (t) {
-    return '<a class="tcard" style="--fx:' + t[5] + '" href="' + t[0] + '" data-reveal>'
-      + '<div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + I[t[1]] + '</svg></div>'
-      + '<h3>' + t[2] + '<span class="go">&rarr;</span></h3>'
-      + '<p>' + t[3] + '</p>'
-      + '<span class="tag">' + t[4] + '</span></a>';
-  }).join('');
+    function find(q) {
+      q = norm(q.trim());
+      if (!q) return [];
+      var g = q.match(/(\d+(?:[.,]\d+)?)\s*(g|gb|gbps)\b/);
+      if (g) {
+        var v = parseFloat(g[1].replace(',', '.'));
+        return MODELS.filter(function (m) { return !m.eos && m.tp != null && m.tp >= v; })
+          .sort(function (a, b) { return a.tp - b.tp; }).slice(0, 6);
+      }
+      var toks = q.split(/\s+/);
+      var hits = MODELS.filter(function (m) {
+        var hay = norm(m.id + ' ' + m.id.replace('PA-', '') + ' ' + m.s + ' ' + m.target + ' ' + m.f + (m.poe ? ' poe' : ''));
+        return toks.every(function (t) { return hay.indexOf(t) !== -1; });
+      });
+      var rank = function (m) { return norm(m.id.replace('PA-', '')).indexOf(q) === 0 || norm(m.id).indexOf(q) === 0 ? 0 : 1; };
+      return hits.sort(function (a, b) { return rank(a) - rank(b); }).slice(0, 8);
+    }
+    function paintList() {
+      var s = SEL.get();
+      if (!input.value.trim()) { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); return; }
+      list.hidden = false; input.setAttribute('aria-expanded', 'true');
+      if (!items.length) { list.innerHTML = '<li class="empty" role="presentation">Aucun modèle. Essayez un numéro (3420), un débit (10 Gbps) ou un usage (campus).</li>'; return; }
+      list.innerHTML = items.map(function (m, i) {
+        return '<li role="option" id="sg-' + i + '" data-i="' + i + '" class="' + (i === idx ? 'on' : '') + (s.indexOf(m.id) !== -1 ? ' is-sel' : '') + '" aria-selected="' + (i === idx) + '">'
+          + '<span class="nm">' + esc(m.id) + '</span><span class="mt">' + esc(m.s + ' · ' + m.target) + '</span><span class="vl">' + gb(m.tp) + ' TP</span></li>';
+      }).join('');
+      input.setAttribute('aria-activedescendant', 'sg-' + idx);
+    }
+    function paintChips(added) {
+      var s = SEL.get();
+      if (!s.length) {
+        chips.innerHTML = '<span class="pick-try">Par exemple <button type="button" data-try="PA-1420">PA-1420</button><button type="button" data-try="PA-3420">PA-3420</button><button type="button" data-try="PA-3520">PA-3520</button></span>';
+        return;
+      }
+      chips.innerHTML = '<span class="k">À comparer</span>' + s.map(function (k) {
+        return '<button type="button" class="chip" data-rm="' + esc(k) + '" aria-label="Retirer ' + esc(k.replace(/^x:/, '')) + '">' + esc(k.replace(/^x:/, '')) + X + '</button>';
+      }).join('') + (s.length < 2 ? '<span class="pick-try">encore un modèle</span>' : '');
+      if (added && G) {
+        var c = chips.querySelector('[data-rm="' + CSS.escape(added) + '"]');
+        if (c) G.from(c, { y: -18, opacity: 0, scale: .9, duration: .45, ease: 'back.out(2)' });
+      }
+    }
+    function add(id) {
+      var s = SEL.get();
+      if (s.indexOf(id) === -1) { if (s.length >= 4) s.shift(); s.push(id); }
+      SEL.set(s);
+      input.value = ''; items = []; paintList(); paintChips(id);
+    }
+    input.addEventListener('input', function () { items = find(input.value); idx = 0; paintList(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(items.length - 1, idx + 1); paintList(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(0, idx - 1); paintList(); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (items[idx]) add(items[idx].id);
+        else if (!input.value.trim()) go();
+      } else if (e.key === 'Escape') { input.value = ''; items = []; paintList(); }
+    });
+    input.addEventListener('blur', function () { setTimeout(function () { list.hidden = true; input.setAttribute('aria-expanded', 'false'); }, 150); });
+    input.addEventListener('focus', paintList);
+    list.addEventListener('mousedown', function (e) { var li = e.target.closest('[data-i]'); if (li) { e.preventDefault(); add(items[+li.getAttribute('data-i')].id); input.focus(); } });
+    chips.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-try]'); if (t) { add(t.getAttribute('data-try')); return; }
+      var r = e.target.closest('[data-rm]'); if (!r) return;
+      var s = SEL.get().filter(function (k) { return k !== r.getAttribute('data-rm'); });
+      SEL.set(s); paintChips(); input.focus();
+    });
+    function go() {
+      var s = SEL.get();
+      location.href = s.length >= 2 ? 'pa-series.html?cmp=' + s.map(encodeURIComponent).join(',')
+        : s.length === 1 ? 'pa-series.html?focus=' + encodeURIComponent(s[0]) : 'pa-series.html';
+    }
+    document.getElementById('pick-go').addEventListener('click', go);
+    document.addEventListener('cmpsel', function () { paintChips(); });
+    paintChips();
 
-  /* ══ Piliers ══ */
-  const PILLARS = [
-    ['pa-series.html', 'Network Security', 'NGFW', 'PA-Series, Panorama et les abonnements Precision AI. Le socle matériel et sa gestion centralisée.', 'var(--c-strata)'],
-    ['prisma.html', 'SASE', 'Prisma', 'Prisma Access, Prisma SD-WAN et Prisma Browser, pilotés depuis Strata Cloud Manager.', 'var(--c-prisma)'],
-    ['cortex.html', 'SecOps', 'Cortex', 'XDR, XSIAM, XSOAR, AgentiX, Xpanse et Cortex Cloud : la plateforme d\'operations de securite.', 'var(--c-cortex)'],
-    ['idira.html', 'Identity', 'Idira', 'Le quatrième pilier, lancé en mai 2026 : identités humaines, agentiques et machine.', 'var(--identity)']
-  ];
+    /* ══ Scene : chaque serie se pose sur l'axe a sa plage de debit ══ */
+    var stage = document.getElementById('stage');
+    var SERIES = [];
+    MODELS.forEach(function (m) {
+      var S = SERIES.filter(function (x) { return x.id === m.s; })[0];
+      if (!S) { S = { id: m.s, ms: [] }; SERIES.push(S); }
+      S.ms.push(m);
+    });
+    SERIES.forEach(function (S) {
+      var v = S.ms.map(function (m) { return m.tp; }).filter(function (x) { return x != null; });
+      S.min = Math.min.apply(null, v); S.max = Math.max.apply(null, v);
+      S.eos = S.ms.every(function (m) { return m.eos; });
+      S.lead = S.ms.filter(photo).slice(-1)[0] || null;
+      S.top = S.ms.slice().sort(function (a, b) { return (b.tp || 0) - (a.tp || 0); })[0];
+    });
+    SERIES.sort(function (a, b) { return a.min - b.min; });
+    document.getElementById('n-series').textContent = SERIES.length;
 
-  document.getElementById('pillars').innerHTML = PILLARS.map(function (p) {
-    return '<a class="pcard2" style="--fx:' + p[4] + '" href="' + p[0] + '" data-reveal>'
-      + '<div class="k">' + p[1] + '</div><h3>' + p[2] + '</h3><p>' + p[3] + '</p></a>';
-  }).join('');
-
-  /* ══ Ressources (links.js) ══ */
-  function renderCard(item) {
-    const ext = item.type === 'external' ? 'target="_blank" rel="noopener noreferrer"' : '';
-    return '<a class="tool-card' + (item.highlight ? ' card-partner' : '') + '" href="' + item.href + '" ' + ext + '>'
-      + '<div class="card-icon">' + item.icon + '</div>'
-      + '<div class="card-title">' + item.title + '<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg></span></div>'
-      + '<div class="card-description">' + item.description + '</div></a>';
-  }
-
-  function renderApp(data) {
-    const app = document.getElementById('app');
-    // le rayon « Outils du guide » a sa propre section plus haut
-    const cats = data.categories.filter(function (c) { return c.id !== 'outils'; });
-    app.innerHTML = '<nav class="cat-nav" id="cat-nav">'
-      + cats.map(function (c, i) { return '<button data-index="' + i + '" class="' + (i === 0 ? 'active' : '') + '">' + c.title + '</button>'; }).join('')
-      + '</nav>'
-      + cats.map(function (c, i) {
-          return '<section class="category-section ' + (i === 0 ? 'visible' : '') + '" id="cat-' + i + '">'
-            + '<div class="tools-grid">' + c.items.map(renderCard).join('') + '</div></section>';
+    stage.innerHTML = '<div class="stage-grid" id="stage-grid"></div><div class="stage-axis"></div><div id="stage-ticks"></div>'
+      + SERIES.map(function (S) {
+          var ph = S.lead ? '<img src="' + photo(S.lead) + '" alt="" loading="lazy">' : '';
+          return '<span class="ser-line' + (S.eos ? ' is-eos' : '') + '" data-l="' + esc(S.id) + '"></span>'
+            + '<a class="ser" data-s="' + esc(S.id) + '" href="pa-series.html?focus=' + encodeURIComponent(S.top.id) + '" aria-label="' + esc(S.id) + ', ' + gb(S.min) + ' à ' + gb(S.max) + ' en Threat Prevention' + (S.eos ? ', fin de vente' : '') + '">'
+            + '<span class="ph">' + ph + '</span><b>' + esc(S.id) + (S.eos ? '<span class="eos">EoS</span>' : '') + '</b>'
+            + '<span class="r">' + (S.min === S.max ? gb(S.min) : String(S.min).replace('.', ',') + ' à ' + gb(S.max)) + '</span></a>';
         }).join('');
 
-    document.getElementById('cat-nav').addEventListener('click', function (e) {
-      const btn = e.target.closest('button');
-      if (!btn) return;
-      document.querySelectorAll('.cat-nav button').forEach(function (b) { b.classList.remove('active'); });
-      document.querySelectorAll('.category-section').forEach(function (s) { s.classList.remove('visible'); });
-      btn.classList.add('active');
-      const sec = document.getElementById('cat-' + btn.dataset.index);
-      sec.classList.add('visible');
-      if (window.Motion) Motion.enter(sec.querySelectorAll('.tool-card'));
-    });
-  }
+    function layout(animate) {
+      var W = stage.clientWidth;
+      var mobile = W < 640;
+      var lo = 0.4, hi = 2000;
+      var x = function (v) { return 8 + (Math.log(v) - Math.log(lo)) / (Math.log(hi) - Math.log(lo)) * (W - 16); };
+      var tk = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000].filter(function (v) { return W > 700 || [1, 10, 100, 1000].indexOf(v) !== -1; });
+      stage.style.height = mobile ? (SERIES.length * 40 + 60) + 'px' : '';
+      var H = stage.clientHeight;
+      document.getElementById('stage-grid').innerHTML = tk.map(function (v) { return '<i style="left:' + x(v).toFixed(1) + 'px"></i>'; }).join('');
+      document.getElementById('stage-ticks').innerHTML = tk.map(function (v) { return '<span class="stage-tick" style="left:' + x(v).toFixed(1) + 'px">' + String(v).replace('.', ',') + '</span>'; }).join('') + '<span class="stage-unit">Gbps, Threat Prevention</span>';
+      var axisY = H - 30;
+      var rows = [];
+      SERIES.forEach(function (S, i) {
+        var el = stage.querySelector('.ser[data-s="' + CSS.escape(S.id) + '"]');
+        var ln = stage.querySelector('.ser-line[data-l="' + CSS.escape(S.id) + '"]');
+        var w = el.offsetWidth || 120;
+        var x0 = x(S.min), x1 = x(S.max);
+        S.w = w; S.x0 = x0; S.x1 = x1;
+        if (mobile) {
+          var yy = 6 + i * 40;
+          S.pos = { x: Math.max(0, Math.min(W - w, x1 + 12)), y: yy, lx: x0, ly: yy + 9, lw: Math.max(4, x1 - x0) };
+          if (S.pos.x + w > W) S.pos.x = Math.max(0, x0 - w - 12);
+        } else {
+          /* le nom et la plage occupent la meme rangee : aucun des deux
+             ne doit chevaucher ceux d'une autre serie */
+          var left = Math.max(0, Math.min(W - w, (x0 + x1) / 2 - w / 2));
+          var a = Math.min(left, x0), b = Math.max(left + w, x1);
+          var r = 0;
+          for (;; r++) {
+            var row = rows[r] || (rows[r] = []);
+            if (row.every(function (iv) { return a > iv[1] + 18 || b < iv[0] - 18; })) { row.push([a, b]); break; }
+          }
+          S.row = r; S.left = left;
+        }
+      });
+      if (!mobile) {
+        var RH = 68;
+        stage.style.height = (rows.length * RH + 56) + 'px';
+        var axisY2 = stage.clientHeight - 30;
+        SERIES.forEach(function (S) {
+          var y = axisY2 - 12 - (S.row + 1) * RH;
+          S.pos = { x: S.left, y: y, lx: S.x0, ly: y + 30, lw: Math.max(4, S.x1 - S.x0) };
+        });
+      }
+      if (animate) return;
+      SERIES.forEach(function (S) {
+        var el = stage.querySelector('.ser[data-s="' + CSS.escape(S.id) + '"]');
+        var ln = stage.querySelector('.ser-line[data-l="' + CSS.escape(S.id) + '"]');
+        if (window.gsap) { gsap.set(el, { x: S.pos.x, y: S.pos.y }); gsap.set(ln, { x: S.pos.lx, y: S.pos.ly, width: S.pos.lw }); }
+        else {
+          el.style.transform = 'translate(' + S.pos.x + 'px,' + S.pos.y + 'px)';
+          ln.style.transform = 'translate(' + S.pos.lx + 'px,' + S.pos.ly + 'px)'; ln.style.width = S.pos.lw + 'px';
+        }
+      });
+    }
+    /* Au premier passage : les boitiers partent en pile a gauche de
+       l'axe et vont se poser chacun a son debit ; la plage se trace
+       ensuite sous le nom. */
+    function intro() {
+      layout(true);
+      var H = stage.clientHeight;
+      var tl = G.timeline({ delay: .2 });
+      tl.from('#stage-ticks > *, #stage-grid > i', { opacity: 0, duration: .6, stagger: .03 }, 0);
+      SERIES.forEach(function (S, i) {
+        var el = stage.querySelector('.ser[data-s="' + CSS.escape(S.id) + '"]');
+        var ln = stage.querySelector('.ser-line[data-l="' + CSS.escape(S.id) + '"]');
+        G.set(el, { x: 10 + i * 4, y: H - 120 - i * 6, rotation: (i % 2 ? 1 : -1) * 3, opacity: 0 });
+        G.set(ln, { x: S.pos.lx, y: S.pos.ly, width: S.pos.lw, scaleX: 0 });
+        tl.to(el, { opacity: 1, duration: .25 }, .1 + i * .025);
+        tl.to(el, { x: S.pos.x, y: S.pos.y, rotation: 0, duration: 1.25, ease: 'expo.inOut' }, .5 + i * .07);
+        tl.to(ln, { scaleX: 1, duration: .8, ease: 'power3.out' }, 1.35 + i * .07);
+      });
+      setTimeout(function () { if (tl.progress() < 1) tl.progress(1); }, 6000);
+    }
+    if (G) intro(); else layout(false);
+    var rz = 0;
+    window.addEventListener('resize', function () { cancelAnimationFrame(rz); rz = requestAnimationFrame(function () { layout(false); }); });
 
-  try { renderApp(LINKS_DATA); }
-  catch (err) {
-    document.getElementById('app').innerHTML = '<p class="status-msg">Erreur de chargement (' + err.message + ')</p>';
-  }
+    /* Arrivee de l'ouverture : titre, puis selecteur */
+    if (G) G.from('.hx .eyebrow, .hx h1, .hx-side > p, .pick-field, .hx-links', { y: 18, opacity: 0, duration: .8, stagger: .07, ease: 'power3.out' });
+
+    /* ══ Ressources (links.js) ══ */
+    var EXT = '<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>';
+    try {
+      var cats = LINKS_DATA.categories.filter(function (c) { return c.id !== 'outils'; });
+      document.getElementById('app').innerHTML = cats.map(function (c) {
+        return '<div><h3>' + esc(c.title) + '</h3><ul>' + c.items.map(function (it) {
+          var ext = it.type === 'external';
+          return '<li><a href="' + esc(it.href) + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + ' title="' + esc(String(it.description || '').replace(/<[^>]+>/g, '')) + '">'
+            + esc(it.title) + (ext ? EXT : '') + '</a></li>';
+        }).join('') + '</ul></div>';
+      }).join('');
+    } catch (err) {
+      document.getElementById('app').innerHTML = '<p class="status-msg">Erreur de chargement (' + esc(err.message) + ')</p>';
+    }
+  })();
   </script>
 </body>
 </html>
