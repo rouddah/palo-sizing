@@ -291,11 +291,22 @@ Contradictions des datasheets, notees dans le champ `psu` :
 - Cisco 4200 : ports fixes « SFP28 » dans le tableau, « SFP+ » dans la
   synthese (le site garde sfp10).
 
+Ports HA inclus dans le compte SFP28, corriges le 5 novembre 2026 (seconde
+lecture des PDF, `pdftotext -layout -enc UTF-8`) : la ligne « 25 GE SFP28 /
+10 GE SFP+ / GE SFP Slots » du tableau p.8 compte les 2 slots HA, que le
+schema p.7 et la commande p.10 isolent. Le site les retire, comme pour les PA
+et comme deja fait pour 1800F, 2600F, 3200F, 3700F et 4x00F. Source de chaque
+compte dans `hwSrc.ports`.
+
+| Modele | Revision | Tableau p.8 | Ports HA (source) | `sfp25` |
+|---|---|---|---|---|
+| 3000F | FG-3000F-DAT-R27-20260929 | 16 « (include 2x HA Slots) » | p.8 et p.10 « including 14x ports, 2x HA » | 16 -> 14 |
+| 3000G | FG-3000G-DAT-R04-20260929 | 16 | p.10 « including 14x ports, 2x HA ports », p.7 HA1/HA2 | 16 -> 14 |
+| 3500F | FG-3500F-DAT-R23-20260929 | 32 | p.7 « 2 x 25 GE SFP28 / 10 GE SFP+ HA Slots », « 30 x 25 GE SFP28 » | 32 -> 30 |
+| 3500G | FG-3500G-DAT-R03-20260929 | 30 | p.7 « 2x ... HA Slots », « 2x ... WAN Slots », « 26x ... Slots » ; p.10 « including 28x ports, 2x HA ports » | 30 -> 28 |
+
 Points ouverts, non modifies faute de seconde lecture :
 
-- FortiGate 3500F (32 SFP28) et 3500G (30 SFP28) : les 2 ports HA semblent
-  inclus dans le compte (schema p.7 du 3500F, commande p.10 du 3500G),
-  alors que la regle du site les exclut. A recompter au prochain releve.
 - Firepower 1120/1140/1150 et 1200 compacts : `psuR` false lu dans « single
   AC input » / « Single input, external power supply », la datasheet ne dit
   pas « non redondante » en toutes lettres.
