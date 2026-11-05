@@ -222,19 +222,37 @@ Releve du 21 aout 2026. Ces valeurs sont affichees sur les pages produit
 mais je n'ai pas trouve de document officiel qui les porte. A confirmer
 ou a retirer.
 
-| Page | Valeur | Etat |
+| Page | Valeur | Etat au 6 novembre 2026 |
 | --- | --- | --- |
-| prisma | 66 000+ apps SaaS, 25+ integrations API | non retrouve |
-| prisma | 600+ applications GenAI | non retrouve |
-| prisma | 1 000+ classificateurs DLP, 22 profils reglementaires | non retrouve |
-| prisma | 85+ categories PAN-DB | non retrouve |
-| prisma | 3 600+ attributs Device-ID | non retrouve |
-| prisma | SKU des add-ons Mobile Users et Remote Networks | non recontroles |
-| cortex | 15 PB/jour d'ingestion | non retrouve |
-| cortex | 1,2 milliard d'executions de playbooks | non retrouve |
-| cortex | MITRE ATT&CK Turla 2024, 100% bloque | non retrouve |
-| panorama | 16 500 / 25 000 / 36 500 logs/s en mode mixte | non retrouve |
-| panorama | 4 TB / 24 TB / 48 TB de stockage local | le catalogue donne 16 TB en configuration de base |
+| prisma | 66 000+ apps SaaS, 25+ integrations API | remplace par 85 000+ (webinaire public mai 2026) |
+| prisma | 600+ applications GenAI | remplace par 5 000+ (meme source) |
+| prisma | 1 000+ classificateurs, 22 profils reglementaires | 1 000+ identifiants confirme, 22 profils retire |
+| prisma | 85+ categories PAN-DB | retire |
+| prisma | 3 600+ attributs Device-ID | retire |
+| prisma | SKU des add-ons Mobile Users et Remote Networks | retires, grille alignee sur le guide de licences de juin 2026 |
+| cortex | 15 PB/jour d'ingestion | remplace par 17 PB/jour traites (presentation PAN, aout 2026) |
+| cortex | 1,2 milliard d'executions de playbooks | confirme (datasheet AgentiX), rattache a AgentiX |
+| cortex | MITRE ATT&CK Turla 2024, 100% bloque | retire (Turla = Round 5, 2023) |
+| panorama | 16 500 / 25 000 / 36 500 logs/s en mode mixte | toujours non retrouve |
+| panorama | 4 TB / 24 TB / 48 TB de stockage local | toujours en attente (16 TB au catalogue pour le M-300) |
+
+## Pages produit, audit du 6 novembre 2026
+
+Detail dans `AUDIT_PAGES_PRODUIT_2026-11.md`.
+
+- **vION Prisma SD-WAN** : la datasheet d'avril 2026 donne 100 / 200 / 350
+  Mbps pour les ION 3102V / 3104V / 3108V, une presentation Palo Alto Networks
+  de mai 2026 donne 0,7 / 1,1 / 1,8 Gbps. Le site garde la datasheet et
+  signale l'ecart.
+- **Colo-Connect** : 100 Gbps par region (datasheet Prisma Access, fevrier
+  2026) contre 20 Gbps (guide de licences, juin 2026). Aucun chiffre affiche.
+- **Cortex XDR Pro per GB** : la documentation ne nomme plus que « per GB » ;
+  le lien avec l'ancienne edition « per TB » n'est pas documente.
+- **Prisma Browser, Enterprise DLP** : le site l'affiche incluse dans les trois
+  editions (catalogue), la DLP etendue aux applications lourdes en Pro (guide
+  de licences). A confirmer edition par edition.
+- **Panorama** : tableau a 6 colonnes avec des lignes a 5 cellules (defaut
+  d'alignement anterieur), et `wizard.html` annonce encore « 100+ PoP ».
 
 **Confirme en revanche**, et laisse tel quel : les editions Prisma
 Browser Education, Core et Pro, dont les references figurent au
@@ -242,9 +260,9 @@ catalogue, Pro etant la seule a inclure l'acces aux applications privees.
 
 ## pa-series.html : CN-Series et AI Runtime Security
 
-La page mentionne peut-etre encore CN-Series sans signaler la transition
-vers AI Runtime Security (Prisma AIRS 2.0, oct. 2025). A verifier lors
-d'une prochaine passe sur la page.
+CN-Series est en End of Sale au 1er novembre 2026, remplace par AI Runtime
+Firewall (Prisma AIRS 3.0 depuis mars 2026). `resources.html` et `links.js`
+le disent depuis le 6 novembre 2026 ; `pa-series.html` reste a verifier.
 
 ## Jeu de pictogrammes officiel - resolu le 20 aout 2026
 

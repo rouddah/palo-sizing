@@ -25,6 +25,11 @@ blancs) assombris en theme clair. Piege de capture : une capture pleine
 page (`fullPage`) montre des blocs vides la ou le contenu apparait au
 defilement ; verifier dans la fenetre avant de conclure a un trou.
 
+Session 23 (meme branche) : pages produit (Cortex, Prisma, Browser, Idira,
+Panorama, Ressources) remises a jour au 6 novembre 2026, detail dans
+`AUDIT_PAGES_PRODUIT_2026-11.md`. Piege : `_check.js` lit tout « <nombre>
+modeles » comme un nombre de modeles PA ; ecrire « 3 600+ modeles ML ».
+
 Voir CHANGELOG session 19 et `AUDIT_EXHAUSTIF_2026-11.md`. A savoir avant
 d'editer `data/pa-models.js` :
 - `rj45` = cuivre 1G seulement ; le multi-gig va dans `mgig` (+ `mgigSp`),

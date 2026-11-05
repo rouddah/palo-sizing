@@ -1,5 +1,46 @@
 # Changelog
 
+## Session 23 - 6 novembre 2026 : pages produit remises a jour (branche audit-v9)
+
+Les pages Cortex, Prisma Browser, Idira, Panorama, Prisma (Access, SD-WAN,
+Browser) et Ressources dataient d'aout 2026. Relues contre la documentation
+officielle, la page End-of-Sale, les guides de licences et les presentations
+Palo Alto Networks de 2026. Detail affirmation par affirmation, avant/apres et
+source : `AUDIT_PAGES_PRODUIT_2026-11.md`. Captures avant/apres dans
+`~/Downloads/_palosizing_v12`.
+
+- Cortex : versions au 6 novembre (XSIAM 3.6, XDR 5.2, AgentiX 1.4, XSOAR 8.15,
+  Xpanse 2.14) ; Cortex XDR One et Agentic Endpoint Security (22 octobre 2026) ;
+  editions XDR selon le plan de licence (Pro per GB, XDR One), references XDR
+  non vues retirees ; retention reelle (31 j ingere, 186 j cas, et non 12 mois) ;
+  paliers XSIAM NG-SIEM / Enterprise / Premium ; data lake XDL ; matrice OS de
+  l'agent 9.3 (Windows 7 et 2008 R2 seulement via 7.9.103-CE) ; tableau XSOAR
+  Community / Essentials remplace par AgentiX Base / Enterprise (Community en
+  fin de vie depuis 2024) ; SKU de services XSOAR en EoS le 1er fevrier 2026 et
+  non en octobre 2025 ; chiffres Xpanse non sources remplaces par les cadences
+  de scan documentees ; Turla 2024 retire.
+- Prisma Access : add-ons alignes sur le guide de licences de juin 2026, sans
+  les 19 references jamais recontrolees ; Prisma Agent ; compteur par site ;
+  SASE Private Location ; compteurs CDSS sources (85 000+ SaaS, 5 000+ GenAI)
+  ou retires (Device-ID, PAN-DB, profils DLP).
+- Prisma SD-WAN : variantes 5G, ports des ION, ecart vION signale.
+- Prisma Browser : titre (plus « Access Browser »), 150+ PoP, RDP/SSH natif,
+  Pro (credentials Idira, DLP applications lourdes), Prisma Browser for
+  Business, PAN-OS 12.2, DLP inline incluse (contradiction interne levee).
+- Idira : lancee et disponible le 12 mai 2026, Secrets Hub et Certificate
+  Manager, transition des offres Certificate Manager SaaS vers NGTS (EoS 3 mai
+  2027), integrations sourcees ; accents.
+- Panorama : 20 000 logs/s et 24 TB de la VM rattaches au mode Panorama et non
+  Management Only, clouds supportes, M-600 en EoS depuis le 15 fevrier 2024,
+  PAN-OS 12.2 Ceres et Network Security Agents.
+- Ressources et `links.js` : 87 liens testes, 404 et redirections corriges,
+  CN-Series en EoS (1er novembre 2026), Prisma AIRS 3.0, nouvelles pages
+  Cortex et datasheets PA-1500 / 3500 / 5500.
+- Dates « mis a jour » : 6 novembre 2026. Commentaires HTML qui citaient des
+  documents fournis par l'utilisateur remplaces par des sources publiques.
+- `npm run build` vert ; recette Puppeteer des 8 vues a 1440 et 390 px sans
+  erreur console.
+
 ## Session 22 - 6 novembre 2026 : passe de finition et recette complete (branche audit-v9)
 
 - Vue Tableau : la ligne « Debits appmix · PAN-OS... · Source » ne
