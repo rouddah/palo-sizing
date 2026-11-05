@@ -1,5 +1,27 @@
 # Changelog
 
+## Session 17 ter - 5 novembre 2026 : les concurrents dans le comparateur
+
+Consigne : fournir le jeu de donnees des boitiers concurrents que le
+comparateur affiche sur option, chiffre par chiffre depuis les datasheets
+officielles, sans prix ni reference inventee.
+
+`data/competitors.js` couvre 69 boitiers en vente : 29 FortiGate (du 30G
+au chassis 7121F), 20 Check Point (Spark 2500 et Quantum Force 3900 a
+29200) et 20 Cisco (Firepower 1000, Secure Firewall 1200, 3100, 4200 et
+6100). Chaque modele porte l'URL de sa datasheet et sa revision.
+
+Le point delicat est la comparabilite. Fortinet mesure le firewall en UDP
+1518 octets, Check Point en UDP 1518 octets mais sa Threat Prevention
+inclut SandBlast, Cisco en FW + AVC sur 1024 octets sans antimalware. La
+definition exacte de chaque metrique est donc stockee par editeur et
+s'affiche sous la carte du modele ; l'en-tete du fichier le rappelle.
+
+Ecartes : le FortiGate 1200G (brochure aux chiffres « cibles », pas de
+datasheet), les 600F et 6000F (absents de la gamme publiee), les Cisco
+6120 et 6130 (chiffres ASA seulement). Detail par modele, valeurs non
+publiees et choix de colonnes dans `AUDIT_CONCURRENTS_2026-11.md`.
+
 ## Session 17 bis - 5 novembre 2026 : ergonomie, comparateur repense, mouvement v7
 
 Consigne : ameliorer l'usage du site et accompagner chaque changement
