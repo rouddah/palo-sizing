@@ -12,89 +12,229 @@
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* ============================================================
+       Comparateur PA-Series v7
+       ------------------------------------------------------------
+       La page occupe l'ecran sur poste fixe : filtres en haut, tableau
+       qui defile pour lui-meme, bac de comparaison en bas. La selection
+       est explicite (un bouton par colonne), le defilement horizontal
+       se fait colonne par colonne (boutons, fleches du clavier,
+       molette sur les en-tetes, aimantation par colonne).
+       ============================================================ */
     :root {
       --label-w: 220px;
       --col-w:   148px;
     }
 
-    /* ── Toolbars ── */
+    @media (min-width: 769px) {
+      body.cmp-page {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      body.cmp-page > .site-header,
+      body.cmp-page > .tb-wrap,
+      body.cmp-page > .nav-strip,
+      body.cmp-page > .vendor-note,
+      body.cmp-page > .site-footer { flex: none; }
+      body.cmp-page > .table-outer { flex: 1 1 auto; min-height: 0; height: auto; }
+      body.cmp-page > .site-footer { padding: var(--sp-2) var(--sp-4); }
+      /* sources et version deja dites dans le bandeau : le pied tient
+         sur une ligne et rend sa hauteur au tableau */
+      body.cmp-page > .site-footer > div + div { display: none; }
+    }
+
+    /* ── Barres de filtres ── */
     .tb-wrap {
       position: relative; z-index: 2;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
     }
-
     .toolbar {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 20px;
+      gap: var(--sp-2) var(--sp-3);
+      padding: var(--sp-2) var(--sp-5);
       flex-wrap: wrap;
     }
-
     .toolbar + .toolbar {
       background: var(--surface2);
       border-top: 1px solid var(--border);
     }
-
     .tb-label {
-      
-      font-size: 11px;
+      font-size: var(--text-2xs);
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
       white-space: nowrap;
     }
+    .tb-group { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+    .filter-group { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
 
-    .tb-sep {
-      width: 1px; height: 20px;
-      background: var(--border2);
-      flex-shrink: 0;
-    }
-
-    .filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
-
-    /* Le filtre glisse vers son etat actif au lieu d'y sauter. */
     .fb {
-      transition: background-color var(--dur-fast) var(--ease),
-                  border-color var(--dur-fast) var(--ease),
-                  color var(--dur-fast) var(--ease),
-                  transform var(--dur-fast) var(--ease);
-      
-      font-size: 11px;
-      padding: 4px 12px;
+      font: inherit;
+      font-size: var(--text-2xs);
+      padding: var(--sp-1) var(--sp-3);
       border-radius: var(--r-xs);
       border: 1px solid var(--border);
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
-      transition: all .15s;
       white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  color var(--dur-fast) var(--ease),
+                  transform var(--dur-fast) var(--ease);
     }
-    .fb:hover { border-color: var(--border2); color: var(--text-bright); }
+    .fb:hover { border-color: var(--border2); color: var(--text-bright); transform: translate3d(0,-1px,0); }
+    .fb:active { transform: none; transition-duration: 60ms; }
     .fb.on    { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
+    .fb .new  { font-size: var(--text-2xs); color: var(--ok); font-weight: 700; }
+    .fb .eos  { font-size: var(--text-2xs); color: var(--warn); }
 
-    .stats-bar {
-      padding: 5px 20px;
+    .tb-input {
+      font: inherit;
+      font-size: var(--text-xs);
+      padding: var(--sp-1) var(--sp-2);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xs);
+      color: var(--text-bright);
+      min-height: 28px;
+    }
+    #model-search { width: calc(var(--sp-8) * 6); }
+
+    /* ── Curseur de plage, deux poignees ──
+       Deux input range superposes : chacun garde son nom accessible et
+       son comportement clavier natif (fleches, Page, Debut, Fin).
+       L'echelle est logarithmique : de 0,08 a 300 Gbps, une echelle
+       lineaire ecraserait toute la gamme branche dans le premier pixel. */
+    .range { display: flex; align-items: center; gap: var(--sp-2); }
+    .range-box { display: grid; gap: 2px; }
+    .range-val {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      color: var(--text-dim);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .range-val.is-set { color: var(--accent-txt); }
+    .range-track { position: relative; width: calc(var(--sp-8) * 5); height: var(--sp-5); }
+    .range-rail, .range-fill {
+      position: absolute; top: 50%; height: 2px; margin-top: -1px;
+      border-radius: var(--r-xs); pointer-events: none;
+    }
+    .range-rail { left: 0; right: 0; background: var(--border2); }
+    .range-fill { background: var(--accent); }
+    .range input[type=range] {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; margin: 0;
+      background: none;
+      -webkit-appearance: none; appearance: none;
+      pointer-events: none;
+    }
+    .range input[type=range]::-webkit-slider-runnable-track { background: none; height: 100%; }
+    .range input[type=range]::-moz-range-track { background: none; }
+    .range input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      pointer-events: auto;
+      width: 14px; height: 14px; margin-top: 3px;
+      border-radius: var(--r-pill);
+      background: var(--accent);
+      border: 2px solid var(--surface2);
+      cursor: grab;
+      transition: transform var(--dur-fast) var(--ease);
+    }
+    .range input[type=range]::-moz-range-thumb {
+      pointer-events: auto;
+      width: 14px; height: 14px;
+      border-radius: var(--r-pill);
+      background: var(--accent);
+      border: 2px solid var(--surface2);
+      cursor: grab;
+    }
+    .range input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); cursor: grabbing; }
+    .range input[type=range]:focus-visible { outline: none; box-shadow: none; border-color: transparent; }
+    .range input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--accent-line); }
+    .range input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── Concurrents ── */
+    .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+    .vendors[hidden] { display: none; }
+    .vchk {
+      display: inline-flex; align-items: center; gap: var(--sp-1);
+      font-size: var(--text-xs); color: var(--text);
+      cursor: pointer; white-space: nowrap;
+    }
+    .vchk input { accent-color: var(--accent); width: 14px; height: 14px; margin: 0; }
+
+    .tb-reset {
+      font: inherit; font-size: var(--text-2xs);
+      margin-left: auto;
+      background: none; border: 0; padding: var(--sp-1) 0;
+      color: var(--accent-txt);
+      text-decoration: underline; text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .tb-reset[hidden] { display: none; }
+
+    /* ── Bandeau de navigation des colonnes ── */
+    .nav-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2) var(--sp-4);
+      flex-wrap: wrap;
+      padding: var(--sp-1) var(--sp-5);
       background: var(--bg2);
       border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 20px;
-      
-      font-size: 10px;
+      font-size: var(--text-2xs);
       color: var(--text-muted);
+      min-height: 36px;
     }
-    .stats-bar strong { color: var(--accent-txt); }
+    .ns-count strong { color: var(--accent-txt); font-family: var(--mono); }
+    .ns-nav { display: inline-flex; align-items: center; gap: var(--sp-1); }
+    .ns-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text-bright);
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .ns-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .ns-btn:active:not(:disabled) { transform: scale(.94); }
+    .ns-btn:disabled { opacity: .4; cursor: default; }
+    .ns-pos { font-family: var(--mono); color: var(--text-dim); min-width: 0; }
+    .ns-hint { color: var(--text-muted); }
+    .stats-note { margin-left: auto; font-style: italic; }
 
-    /* ── Table container ── */
+    .vendor-note {
+      display: flex; gap: var(--sp-2); align-items: flex-start;
+      padding: var(--sp-2) var(--sp-5);
+      background: var(--warn-dim);
+      border-bottom: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
+      font-size: var(--text-xs);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .vendor-note[hidden] { display: none; }
+    .vendor-note .ic { color: var(--warn); margin-top: 2px; }
+
+    /* ── Tableau ── */
     .table-outer {
       position: relative; z-index: 1;
-      overflow-x: scroll;
-      overflow-y: auto;
-      height: calc(100vh - var(--header-h) - 108px);
-      -webkit-overflow-scrolling: touch;
+      overflow: auto;
+      height: calc(100vh - var(--header-h) - 160px);
+      scroll-snap-type: x proximity;
+      scroll-padding-left: var(--label-w);
+      overscroll-behavior-x: contain;
     }
+    .table-outer:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    body.has-tray .table-outer { scroll-padding-bottom: 96px; }
+    body.has-tray .pa-table { margin-bottom: 96px; }
     .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
     .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
     .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: var(--r-sm); min-height: 40px; }
@@ -111,7 +251,6 @@
       min-width: max-content;
     }
 
-    /* ── Sticky label column ── */
     .th-corner,
     .spec-label-cell {
       position: sticky;
@@ -121,28 +260,31 @@
       max-width: var(--label-w);
       z-index: 20;
     }
-
     .th-corner {
       background: var(--bg);
       z-index: 62;
       top: 0;
+      vertical-align: bottom;
+      text-align: left;
+      padding: 0 var(--sp-3) var(--sp-2);
+      font-size: var(--text-2xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
     }
-
     .spec-label-cell {
       background: var(--surface);
-      padding: 8px 14px;
-      font-size: 12px;
+      padding: var(--sp-2) 14px;
+      font-size: var(--text-xs);
       color: var(--text);
       border-bottom: 1px solid var(--border);
       border-right: 2px solid var(--border2);
       white-space: normal;
       word-break: break-word;
       line-height: 1.35;
-      transition: background .1s, border-right-color .1s;
       box-shadow: 2px 0 6px rgba(0,0,0,0.15);
     }
 
-    /* ── Sticky header row ── */
     .col-header-row th {
       position: sticky;
       top: 0;
@@ -152,159 +294,164 @@
 
     .model-hw {
       background: linear-gradient(180deg, #f7f8fa, #e9ecf1);
-      padding: 7px 8px 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 7px var(--sp-2) 6px;
+      display: flex; align-items: center; justify-content: center;
       min-height: 34px;
       border-top: 1px solid rgba(0,0,0,.12);
     }
     .model-hw img {
-      max-width: 100%;
-      max-height: 26px;
-      width: auto;
+      max-width: 100%; max-height: 26px; width: auto;
       object-fit: contain;
-      transition: transform .3s var(--ease-ui);
+      transition: transform var(--dur) var(--ease);
     }
-    .model-th:hover .model-hw img { transform: scale(1.09); }
+    .model-th:hover .model-hw img { transform: scale(1.06); }
 
-    /* ── Model header card ── */
     .model-th {
       width: var(--col-w);
       min-width: var(--col-w);
       max-width: var(--col-w);
-      padding: 5px 4px 0;
+      padding: var(--sp-1) var(--sp-1) 0;
       vertical-align: bottom;
+      scroll-snap-align: start;
     }
-
-    .model-card-clip { overflow: hidden; border-radius: var(--r-md) var(--r-md) 0 0; }
+    .model-card-clip {
+      overflow: hidden;
+      border-radius: var(--r-md) var(--r-md) 0 0;
+      transition: transform var(--dur) var(--ease);
+    }
+    .model-th.selected .model-card-clip { transform: translate3d(0, -3px, 0); }
 
     .model-card-top {
-      padding: 10px 12px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      padding: 10px var(--sp-3) var(--sp-2);
+      display: flex; flex-direction: column; gap: 3px;
       position: relative;
       cursor: pointer;
-      transition: filter .15s;
     }
-    .model-card-top:hover { filter: brightness(1.15); }
-
     .model-card-top::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0);
-      transition: background .15s;
+      position: absolute; inset: 0;
+      background: #fff;
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease);
     }
-    .model-card-top:hover::before { background: rgba(255,255,255,0.08); }
-
+    .model-card-top:hover::before { opacity: .08; }
     .model-name {
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: var(--text-sm);
       font-weight: 700;
-      /* la couleur vient de .model-card-top, calculee d'apres le fond */
       color: inherit;
     }
-
     .model-target {
-      font-size: 10px;
-      /* meme encre que le nom, simplement adoucie : un blanc fixe ne
-         tenait pas sur les couleurs claires de la gamme */
+      font-size: var(--text-2xs);
       color: inherit;
-      opacity: .82;
+      opacity: .85;
       font-family: var(--mono);
       letter-spacing: 0.03em;
     }
+    .model-repl { display: block; margin-top: 2px; }
 
-    .model-card-bot {
-      padding: 5px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.1);
+    /* concurrent : fond neutre, l'editeur se lit dans son badge */
+    .model-th.is-comp .model-card-top { background: var(--surface3); color: var(--text-bright); }
+    .vendor-badge {
+      align-self: flex-start;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      color: var(--text-dim);
+      border-bottom: 1px dotted var(--text-muted);
+      cursor: help;
+      position: relative;
     }
 
+    /* Lien datasheet a gauche, case de selection a droite. Sur une
+       colonne de 148px les deux libelles complets ne tenaient pas : la
+       case garde son mot, le lien se reduit a son pictogramme. */
+    .model-card-bot {
+      padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-2);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--sp-1);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: var(--surface2);
+    }
     .model-ds-link {
-      
-      font-size: 10px;
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: var(--text-2xs);
       text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
+      color: var(--text-dim);
       text-decoration: none;
       letter-spacing: 0.05em;
-      transition: color .15s;
+      transition: color var(--dur-fast) var(--ease);
     }
-    .model-ds-link:hover { color: rgba(255,255,255,0.9); }
+    .model-ds-link:hover { color: var(--text-bright); }
+    .model-ds-link { font-size: 0; min-width: 24px; min-height: 24px; justify-content: center; }
+    .model-ds-link .ic { width: 13px; height: 13px; }
 
-    .sel-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.35);
-      transition: all .15s;
-      flex-shrink: 0;
+    /* Selection explicite : une case par colonne. */
+    .sel-btn {
+      display: inline-flex; align-items: center; gap: var(--sp-1);
+      font: inherit; font-size: var(--text-2xs); font-weight: 600;
+      padding: 3px var(--sp-2) 3px var(--sp-1);
+      min-height: 24px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
     }
-    .model-th.selected .sel-dot {
-      background: var(--accent);
-      border-color: var(--accent);
+    .sel-btn:hover { border-color: var(--accent); }
+    .sel-box {
+      width: 12px; height: 12px;
+      border: 1.5px solid var(--text-muted);
+      border-radius: var(--r-xs);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
     }
-    .model-th.selected .model-card-top { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .sel-box svg { width: 10px; height: 10px; opacity: 0; transform: scale(.5);
+      transition: opacity var(--dur-fast) var(--ease), transform var(--dur) var(--ease); }
+    .sel-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-dim); color: var(--accent-txt); }
+    .sel-btn[aria-pressed="true"] .sel-box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .sel-btn[aria-pressed="true"] .sel-box svg { opacity: 1; transform: none; }
 
-    /* ── Value cells ── */
+    /* colonne retenue : une teinte tres basse sur toute la hauteur */
+    .val-cell.is-sel, .cat-spacer.is-sel {
+      background-image: linear-gradient(var(--accent-dim), var(--accent-dim)) !important;
+    }
+
     .val-cell {
       width: var(--col-w);
-      /* Rythme serre : on tient plus de lignes a l'ecran, et un
-         comparateur se lit en balayant une colonne, pas en lisant. */
-      padding: 5px 12px;
-      /* Chiffres alignes a droite : les ordres de grandeur se comparent
-         alors a la position, sans avoir a lire la valeur. */
+      padding: 5px var(--sp-3);
       text-align: right;
       border-bottom: 1px solid var(--border);
       border-left: 2px solid transparent;
       font-family: var(--mono);
       font-variant-numeric: tabular-nums;
-      font-size: 12px;
+      font-size: var(--text-xs);
       color: var(--text);
-      transition: background var(--dur-fast) var(--ease);
       white-space: nowrap;
     }
+    .val-cell.is-comp { border-left-color: var(--border); }
 
-    /* Zebra */
     tr.data-row:nth-child(even) .val-cell,
-    tr.data-row:nth-child(even) .spec-label-cell { background: var(--surface2); }
+    tr.data-row:nth-child(even) .spec-label-cell { background-color: var(--surface2); }
 
     tr.data-row:hover .val-cell,
     tr.data-row:hover .spec-label-cell {
-      background: color-mix(in srgb, var(--accent) 7%, transparent) !important;
+      background-color: color-mix(in srgb, var(--accent) 7%, var(--surface)) !important;
     }
     tr.data-row:hover .spec-label-cell {
       border-right-color: var(--accent);
       color: var(--text-bright);
     }
 
-    /* Max highlight */
-    .val-max {
-      color: var(--green) !important;
-      font-weight: 700;
-    }
-    .val-max::after {
-      content: ' ↑';
-      font-size: 10px;
-      opacity: 0.7;
-    }
+    .val-max { color: var(--green) !important; font-weight: 700; }
+    .val-max::after { content: ' \2191'; font-size: var(--text-2xs); opacity: 0.7; }
+    .val-na { color: var(--text-muted); font-weight: 400; }
 
-    .val-na { color: var(--text-muted); opacity: 0.4; font-weight: 400; }
-
-    /* Metriques de dimensionnement : debits et sessions. Ce sont elles
-       qui tranchent le choix du modele, elles portent donc le poids. */
     tr[data-cat="perf"] .val-cell,
-    tr[data-cat="sess"] .val-cell {
-      font-weight: 700;
-      color: var(--text-bright);
-      font-size: 12px;
-    }
+    tr[data-cat="sess"] .val-cell { font-weight: 700; color: var(--text-bright); }
     tr[data-cat="perf"] .spec-label-cell,
     tr[data-cat="sess"] .spec-label-cell { color: var(--text-bright); font-weight: 600; }
-    /* une valeur absente reste en retrait, meme sur une ligne critique */
     tr[data-cat="perf"] .val-cell.val-na,
     tr[data-cat="sess"] .val-cell.val-na { font-weight: 400; color: var(--text-muted); }
 
@@ -312,21 +459,18 @@
       display: inline-block;
       padding: 1px 7px;
       border-radius: var(--r-xs);
-      font-size: 10px;
+      font-size: var(--text-2xs);
       background: var(--ok-dim);
       border: 1px solid rgba(34,197,94,0.25);
       color: var(--green);
     }
-
-    /* EoS model styling */
     .badge-eos-pa {
       display: inline-block;
       padding: 1px 7px;
       border-radius: var(--r-xs);
-      font-size: 10px;
+      font-size: var(--text-2xs);
       background: var(--warn-dim);
       border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
-      /* couleur figee avant : elle ne suivait pas le theme */
       color: var(--warn);
     }
     .model-th.eos-model .model-card-top::after {
@@ -336,23 +480,14 @@
       background: rgba(234,179,8,0.25);
       border: 1px solid rgba(234,179,8,0.6);
       color: #fbbf24;
-      font-size: 10px;
-      
+      font-size: var(--text-2xs);
       font-weight: 700;
       padding: 1px 5px;
       border-radius: var(--r-xs);
       letter-spacing: 0.07em;
     }
+    [data-theme="light"] .model-th.eos-model.is-comp .model-card-top::after { color: var(--warn); }
 
-    /* Measurement note in stats bar */
-    .stats-note {
-      margin-left: auto;
-      font-size: 10px;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* ── Category rows ── */
     .cat-row td {
       position: sticky;
       top: 0;
@@ -362,7 +497,6 @@
       border-bottom: 1px solid var(--border2);
       padding: 0;
     }
-
     .cat-row td.cat-label-cell {
       position: sticky;
       left: 0;
@@ -370,146 +504,205 @@
       background: var(--bg2);
       border-right: 2px solid var(--accent);
     }
-
-    .cat-inner {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-    }
-
+    .cat-inner { display: flex; align-items: center; gap: var(--sp-2); padding: 6px var(--sp-4); }
     .cat-inner-text {
-      
-      font-size: 11px;
+      font-size: var(--text-2xs);
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
       color: var(--text-bright);
     }
 
-    /* ── Row entrance animation ── */
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-8px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    tr.data-row { animation: slideIn .2s ease backwards; }
+    /* Les definitions passent par la bulle de ui.js (data-tip), qui
+       s'ouvre aussi au clavier. L'ancienne bulle CSS faisait doublon. */
+    .glossary-tip { cursor: help; border-bottom: 1px dotted var(--text-muted); }
 
-    /* ── Hidden modifier ── */
-    .col-hidden { display: none; }
-
-    /* ── Glossary tooltips ── */
-    .glossary-tip {
-      position: relative;
-      cursor: help;
-      border-bottom: 1px dotted var(--text-muted);
+    /* ── Etat vide ── */
+    .pa-empty {
+      position: sticky; left: 0;
+      max-width: 520px;
+      margin: var(--sp-8) var(--sp-5);
+      padding: var(--pad-large);
+      border: 1px dashed var(--border2);
+      border-radius: var(--r-md);
+      color: var(--text);
+      font-size: var(--text-sm);
+      line-height: 1.6;
     }
-    .glossary-tip::after {
-      content: attr(data-tip);
-      position: absolute;
-      bottom: calc(100% + 6px);
-      left: 0;
-      background: var(--surface3);
-      color: var(--text-bright);
-      font-family: var(--font);
-      font-size: 11px;
-      font-weight: 400;
-      font-style: normal;
-      line-height: 1.5;
-      padding: 8px 12px;
+    .pa-empty[hidden] { display: none; }
+    .pa-empty b { color: var(--text-bright); display: block; margin-bottom: var(--sp-1); }
+    .pa-empty button { margin-top: var(--sp-3); }
+
+    /* ── Bac de comparaison ──
+       Il monte du bas quand un premier modele est retenu et reste la
+       tant qu'il y en a un : la selection ne depend plus de l'endroit
+       ou l'on a defile. */
+    .tray {
+      position: fixed;
+      left: 50%;
+      bottom: var(--sp-4);
+      z-index: 200;
+      width: min(960px, calc(100vw - var(--sp-6)));
+      transform: translate3d(-50%, calc(100% + var(--sp-6)), 0);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform var(--dur) var(--ease),
+                  opacity var(--dur) var(--ease),
+                  visibility 0s linear var(--dur);
+    }
+    .tray.on {
+      transform: translate3d(-50%, 0, 0);
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
+    .tray-in {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      flex-wrap: wrap;
+      padding: var(--sp-2) var(--sp-3);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      box-shadow: 0 18px 44px -18px rgba(0,0,0,.65), 0 1px 2px rgba(0,0,0,.3);
+    }
+    [data-theme="light"] .tray-in { box-shadow: 0 18px 40px -20px rgba(11,15,20,.35), 0 1px 2px rgba(11,15,20,.08); }
+    .tray-title {
+      font-size: var(--text-2xs);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+    }
+    .tray-list { display: flex; gap: var(--sp-2); list-style: none; flex-wrap: wrap; min-width: 0; }
+    .tray-chip, .tray-slot {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      height: 32px;
+      padding: 0 var(--sp-1) 0 var(--sp-3);
+      border-radius: var(--r-sm);
+      font-family: var(--mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+    }
+    .tray-chip { background: var(--surface2); border: 1px solid var(--border2); color: var(--text-bright); }
+    .tray-chip .dot { width: 8px; height: 8px; border-radius: var(--r-pill); flex: none; }
+    .tray-slot { width: 104px; border: 1px dashed var(--border2); }
+    .chip-x {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px;
+      border: 0; border-radius: var(--r-xs);
+      background: none; color: var(--text-muted);
+      cursor: pointer;
+      transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+    }
+    .chip-x:hover { color: var(--text-bright); background: var(--surface3); }
+    .tray-msg { font-size: var(--text-xs); color: var(--warn); }
+    .tray-msg:empty { display: none; }
+    .tray-actions { display: flex; gap: var(--sp-2); margin-left: auto; }
+    .tray-btn {
+      font: inherit; font-size: var(--text-xs); font-weight: 600;
+      min-height: 32px;
+      padding: 0 var(--sp-3);
       border-radius: var(--r-sm);
       border: 1px solid var(--border2);
-      white-space: normal;
-      width: max-content;
-      max-width: 260px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .15s;
-      z-index: 200;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .glossary-tip:hover::after { opacity: 1; }
-
-    /* ── Compare button ── */
-    .cmp-fab {
-      position: fixed;
-      top: calc(var(--header-h) + 10px);
-      right: 20px;
-      z-index: 200;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
-      background: var(--accent);
-      border: none;
-      border-radius: var(--r-md);
-      color: var(--on-accent);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
+      background: transparent;
+      color: var(--text);
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(232,75,26,0.4);
-      transition: transform .15s, box-shadow .15s;
+      transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
     }
-    .cmp-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,75,26,0.5); }
-    .cmp-fab.visible { display: flex; }
+    .tray-btn:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-bright); }
+    .tray-btn:active:not(:disabled) { transform: scale(.97); }
+    .tray-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
+    .tray-btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .tray-btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+    .tray-btn:disabled { opacity: .45; cursor: default; }
 
-    /* ── Compare modal ── */
+    /* ── Fenetre de comparaison ── */
     .cmp-overlay {
-      display: none;
+      display: flex;
       position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.72);
       z-index: 300;
       align-items: flex-start;
       justify-content: center;
-      padding: 32px 16px;
+      padding: var(--sp-8) var(--sp-4);
       overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--dur) var(--ease), visibility 0s linear var(--dur);
     }
-    .cmp-overlay.open { display: flex; }
-
+    .cmp-overlay.open { opacity: 1; visibility: visible; transition-delay: 0s; }
     .cmp-modal {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 28px;
+      border-radius: var(--r-lg);
+      padding: var(--sp-6);
       width: 92vw;
       max-width: 1000px;
       position: relative;
+      transform: translate3d(0, calc(var(--shift) * 2), 0) scale(.985);
+      transition: transform var(--dur-slow) var(--ease);
     }
-
-    .cmp-title {
-      font-size: 16px; font-weight: 700;
-      color: var(--text-bright);
-      margin-bottom: 20px;
-    }
-
+    .cmp-overlay.open .cmp-modal { transform: none; }
+    .cmp-title { font-size: var(--text-lg); font-weight: 700; color: var(--text-bright); margin-bottom: var(--sp-2); }
+    .cmp-sub { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--sp-4); }
     .cmp-close {
-      position: absolute; top: 18px; right: 18px;
-      width: 30px; height: 30px;
+      position: absolute; top: var(--sp-4); right: var(--sp-4);
+      width: 32px; height: 32px;
       background: var(--surface2); border: 1px solid var(--border);
       border-radius: var(--r-sm); cursor: pointer;
-      color: var(--text-muted); font-size: 15px;
+      color: var(--text-muted);
       display: flex; align-items: center; justify-content: center;
     }
     .cmp-close:hover { color: var(--text-bright); }
-
-    .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font); overflow: auto; }
+    .cmp-diff { display: inline-flex; align-items: center; gap: var(--sp-1); font-size: var(--text-xs); color: var(--text-muted); cursor: pointer; font-weight: 500; }
+    .cmp-scroll { overflow-x: auto; }
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
     .cmp-table th, .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
-    .cmp-table thead th { background: var(--surface2); font-family: var(--font); font-size: 14px; font-weight: 700; position: sticky; top: 0; }
-    .cmp-table td:first-child { text-align: left; color: var(--text); font-family: var(--font); font-size: 13px; font-weight: 500; background: var(--surface); position: sticky; left: 0; }
-    .cmp-table tr:hover td { background: var(--surface2) !important; }
-    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); font-size: 13px; }
-    .ct-val { font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .cmp-table thead th { background: var(--surface2); font-size: var(--text-sm); font-weight: 700; position: sticky; top: 0; color: var(--text-bright); }
+    .cmp-table thead th .sw { display: inline-block; width: 8px; height: 8px; border-radius: var(--r-pill); margin-right: var(--sp-1); }
+    .cmp-table td:first-child, .cmp-table th:first-child { text-align: left; background: var(--surface); position: sticky; left: 0; }
+    .cmp-table td:first-child { color: var(--text); font-weight: 500; }
+    .cmp-table tr:hover td { background: var(--surface2); }
+    .ct-max { color: var(--green); font-weight: 700; font-family: var(--mono); }
+    .ct-val { font-family: var(--mono); color: var(--text); }
+    .cmp-actions { margin-top: var(--sp-3); display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 
-    .fb:hover { transform: translate3d(0,-1px,0); }
-    .fb:active { transform: none; transition-duration: 60ms; }
-    /* La colonne de modele se souleve legerement au survol : elle
-       indique la cible du clic sans decaler le tableau. */
-    .model-col, .model-card { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
-    .model-col:hover, .model-card:hover { transform: translate3d(0,-3px,0); }
+    /* ── Mobile ──
+       Les filtres tiennent chacun sur une ligne qui defile : les trois
+       barres prenaient plus de la moitie du premier ecran. */
+    @media (max-width: 768px) {
+      :root { --label-w: 128px; --col-w: 132px; }
+      .toolbar { flex-wrap: nowrap; overflow-x: auto; padding: var(--sp-2) var(--sp-3); scrollbar-width: none; }
+      .toolbar::-webkit-scrollbar { display: none; }
+      .filter-group { flex-wrap: nowrap; }
+      .tb-tools { flex-wrap: wrap; overflow: visible; }
+      #model-search { width: 100%; }
+      .tb-tools .tb-group:first-child { flex: 1 1 100%; }
+      .nav-strip { padding: var(--sp-1) var(--sp-3); }
+      .stats-note, .ns-hint { display: none; }
+      .table-outer { height: 72vh; }
+      .spec-label-cell { padding: 6px var(--sp-2); font-size: var(--text-2xs); }
+      .tray { bottom: var(--sp-2); width: calc(100vw - var(--sp-4)); }
+      .tray-in { gap: var(--sp-2); padding: var(--sp-2); }
+      .tray-title, .tray-slot { display: none; }
+      .tray-list { flex-wrap: nowrap; overflow-x: auto; width: 100%; scrollbar-width: none; }
+      .tray-chip { flex: none; }
+      .tray-actions { margin-left: 0; width: 100%; }
+      .tray-actions .primary { margin-left: auto; }
+      .tray-btn { padding: 0 var(--sp-2); }
+      .cmp-modal { padding: var(--sp-4); width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tray, .cmp-overlay, .cmp-modal, .model-card-clip, .sel-box svg { transition: none; }
+      .table-outer { scroll-behavior: auto; }
+    }
   </style>
 </head>
-<body data-bg="calme">
+<body data-bg="calme" class="cmp-page">
   <div id="header-root"></div>
   <script src="header.js"></script>
   <script src="ui.js"></script>
@@ -518,98 +711,126 @@
   <script src="data/pa-models.js"></script>
   <script src="data/pa-chassis.js"></script>
 
-  <!-- ── Toolbars ── -->
+  <!-- ── Filtres ── -->
   <div class="tb-wrap">
     <div class="toolbar">
-      <span class="tb-label">Catégories</span>
-      <div class="tb-sep"></div>
-      <div class="filter-group" id="cat-filters">
-        <button class="fb on" data-cat="all" onclick="filterCat(this)">Toutes</button>
-        <button class="fb" data-cat="perf"  onclick="filterCat(this)">Performances</button>
-        <button class="fb" data-cat="sess"  onclick="filterCat(this)">Sessions</button>
-        <button class="fb" data-cat="ports" onclick="filterCat(this)">Interfaces</button>
-        <button class="fb" data-cat="hw"    onclick="filterCat(this)">Hardware</button>
-        <button class="fb" data-cat="cap"   onclick="filterCat(this)">Capacités</button>
-        <button class="fb" data-cat="vpn"   onclick="filterCat(this)">VPN & SD-WAN</button>
-        <button class="fb" data-cat="feat"  onclick="filterCat(this)">Fonctionnalités</button>
+      <span class="tb-label" id="lb-cat">Catégories</span>
+      <div class="filter-group" id="cat-filters" role="group" aria-labelledby="lb-cat">
+        <button class="fb on" data-cat="all" aria-pressed="true">Toutes</button>
+        <button class="fb" data-cat="perf" aria-pressed="false">Performances</button>
+        <button class="fb" data-cat="sess" aria-pressed="false">Sessions</button>
+        <button class="fb" data-cat="ports" aria-pressed="false">Interfaces</button>
+        <button class="fb" data-cat="hw" aria-pressed="false">Hardware</button>
+        <button class="fb" data-cat="cap" aria-pressed="false">Capacités</button>
+        <button class="fb" data-cat="vpn" aria-pressed="false">VPN &amp; SD-WAN</button>
+        <button class="fb" data-cat="feat" aria-pressed="false">Fonctionnalités</button>
       </div>
     </div>
     <div class="toolbar">
-      <span class="tb-label">Série</span>
-      <div class="tb-sep"></div>
-      <!-- Les boutons de serie sont construits depuis MODELS au chargement :
-           une serie ajoutee aux donnees apparait ici sans toucher au HTML. -->
-      <div class="filter-group" id="series-filters"></div>
-      <div class="tb-sep"></div>
-      <span class="tb-label">Format</span>
-      <div class="filter-group" id="form-filters">
-        <button class="fb on" data-form="all"     onclick="filterForm(this)">Tous</button>
-        <button class="fb" data-form="Desktop"    onclick="filterForm(this)">Desktop</button>
-        <button class="fb" data-form="1U Rack"    onclick="filterForm(this)">1U Rack</button>
-        <button class="fb" data-form="2U Rack"    onclick="filterForm(this)">2U Rack</button>
-        <button class="fb" data-form="Chassis"    onclick="filterForm(this)">Chassis</button>
+      <span class="tb-label" id="lb-series">Série</span>
+      <!-- Construits depuis MODELS : une serie ajoutee aux donnees
+           apparait ici sans toucher au HTML. -->
+      <div class="filter-group" id="series-filters" role="group" aria-labelledby="lb-series"></div>
+      <span class="tb-label" id="lb-form">Format</span>
+      <div class="filter-group" id="form-filters" role="group" aria-labelledby="lb-form">
+        <button class="fb on" data-form="all" aria-pressed="true">Tous</button>
+        <button class="fb" data-form="Desktop" aria-pressed="false">Desktop</button>
+        <button class="fb" data-form="1U" aria-pressed="false">1U Rack</button>
+        <button class="fb" data-form="2U" aria-pressed="false">2U Rack</button>
+        <button class="fb" data-form="Chassis" aria-pressed="false">Chassis</button>
       </div>
     </div>
-    <div class="toolbar">
-      <span class="tb-label">Recherche</span>
-      <div class="tb-sep"></div>
-      <input type="text" id="model-search" placeholder="Filtrer par nom (ex: PA-3420)" style="padding:4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:12px;width:180px;outline:none" oninput="filterSearch(this.value)">
-      <div class="tb-sep"></div>
-      <span class="tb-label">Trier par</span>
-      <select id="sort-metric" style="padding:4px 8px;background:var(--bg2);border:1px solid var(--border);border-radius: var(--r-xs);color:var(--text-bright);font-size:11px;outline:none" onchange="sortModels(this.value)">
-        <option value="default">Ordre par défaut</option>
-        <option value="tp">Débit Threat Prevention</option>
-        <option value="fw">Débit App-ID</option>
-        <option value="sess">Sessions concurrentes</option>
-        <option value="cps">CPS</option>
-      </select>
-    </div>
-    <div class="stats-bar">
-      <span>Modèles affichés : <strong id="stat-models">25</strong></span>
-      <span>Cliquez sur un modèle pour le sélectionner · max 4 pour comparer</span>
-      <span class="stats-note"><span class="glossary-tip" data-tip="Mesure de performance en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP, etc.), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles PAN</span>
+    <div class="toolbar tb-tools">
+      <div class="tb-group">
+        <label class="tb-label" for="model-search">Recherche</label>
+        <input type="search" id="model-search" class="tb-input" placeholder="Nom ou usage (PA-3420, Branch...)" autocomplete="off">
+      </div>
+      <div class="tb-group">
+        <label class="tb-label" for="sort-metric">Trier par</label>
+        <select id="sort-metric" class="tb-input">
+          <option value="default">Ordre de la gamme</option>
+          <option value="tp">Débit Threat Prevention</option>
+          <option value="fw">Débit App-ID</option>
+          <option value="sess">Sessions concurrentes</option>
+          <option value="cps">CPS</option>
+        </select>
+      </div>
+      <div class="range" id="rg-tp"></div>
+      <div class="range" id="rg-sess"></div>
+      <div class="vendors" id="vendors" hidden role="group" aria-labelledby="lb-vendors">
+        <span class="tb-label" id="lb-vendors">Concurrents</span>
+      </div>
+      <button type="button" class="tb-reset" id="tb-reset" hidden>Tout réafficher</button>
     </div>
   </div>
 
-  <!-- ── Table ── -->
-  <div class="table-outer">
+  <!-- ── Navigation des colonnes ── -->
+  <div class="nav-strip">
+    <span class="ns-count"><strong id="stat-models"></strong> <span id="stat-label">modèles</span></span>
+    <span class="ns-nav">
+      <button type="button" class="ns-btn" id="ns-prev" aria-label="Colonnes précédentes" title="Colonnes précédentes (flèche gauche)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button type="button" class="ns-btn" id="ns-next" aria-label="Colonnes suivantes" title="Colonnes suivantes (flèche droite)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    </span>
+    <span class="ns-pos" id="ns-pos" aria-live="polite"></span>
+    <span class="ns-hint">Cochez « Comparer » sur les modèles à mettre côte à côte</span>
+    <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles</span>
+  </div>
+  <div class="vendor-note" id="vendor-note" hidden>
+    <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></svg>
+    <span>Chaque éditeur mesure ses débits à sa façon : un chiffre concurrent ne se compare pas un pour un à un débit appmix PA. La définition de l'éditeur s'affiche au survol de son nom. Un tiret signifie « non publié ».</span>
+  </div>
+
+  <!-- ── Tableau ── -->
+  <div class="table-outer" id="table-outer" tabindex="0" role="region" aria-label="Tableau comparatif. Flèches gauche et droite pour passer d'une colonne à l'autre.">
     <table class="pa-table" id="pa-table">
       <thead>
         <tr class="col-header-row" id="header-row">
           <th class="th-corner"></th>
-          <!-- model columns injected by JS -->
         </tr>
       </thead>
-      <tbody id="table-body">
-        <!-- rows injected by JS -->
-      </tbody>
+      <tbody id="table-body"></tbody>
     </table>
+    <div class="pa-empty" id="pa-empty" hidden>
+      <b>Aucun modèle ne correspond à ces filtres.</b>
+      <span id="pa-empty-why"></span>
+      <div><button type="button" class="tray-btn" id="pa-empty-reset">Tout réafficher</button></div>
+    </div>
   </div>
 
-  <!-- ── Compare FAB ── -->
-  <button class="cmp-fab" id="cmp-fab" onclick="openCompare()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    Comparer (<span id="cmp-count">0</span>)
-  </button>
+  <!-- ── Bac de comparaison ── -->
+  <section class="tray" id="tray" aria-label="Modèles retenus pour la comparaison">
+    <div class="tray-in">
+      <span class="tray-title">À comparer</span>
+      <ol class="tray-list" id="tray-list"></ol>
+      <span class="tray-msg" id="tray-msg" aria-live="polite"></span>
+      <div class="tray-actions">
+        <button type="button" class="tray-btn" id="tray-iso" aria-pressed="false">Isoler ces colonnes</button>
+        <button type="button" class="tray-btn" id="tray-clear">Vider</button>
+        <button type="button" class="tray-btn primary" id="tray-go" disabled>Comparer</button>
+      </div>
+    </div>
+  </section>
 
-  <!-- ── Compare modal ── -->
-  <div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompare()">
-    <div class="cmp-modal">
-      <div class="cmp-title">Comparaison</div>
-      <button class="cmp-close" onclick="closeCompare()"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <div style="overflow-x:auto"><table class="cmp-table" id="cmp-table"></table></div>
-      <div id="cmp-actions"></div>
+  <!-- ── Fenetre de comparaison ── -->
+  <div class="cmp-overlay" id="cmp-overlay">
+    <div class="cmp-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
+      <div class="cmp-title" id="cmp-title">Comparaison</div>
+      <div class="cmp-sub" id="cmp-sub"></div>
+      <button type="button" class="cmp-close" id="cmp-close"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Fermer"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="cmp-scroll"><table class="cmp-table" id="cmp-table"></table></div>
+      <div class="cmp-actions" id="cmp-actions"></div>
     </div>
   </div>
 
   <script>
+
   const ROWS = [
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
-    { cat:'perf',  label:'<span class="glossary-tip" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
     { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
-    { cat:'sess',  label:'<span class="glossary-tip" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
-    { cat:'cap',   label:'<span class="glossary-tip" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
+    { cat:'sess',  label:'<span class="glossary-tip" tabindex="0" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
+    { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
     { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
     { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
     { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
@@ -618,7 +839,7 @@
     { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
     { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
     { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
-    { cat:'cap',   label:'<span class="glossary-tip" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
+    { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
@@ -642,36 +863,81 @@
   ];
 
   const CATS = {
-    perf:  { label:'Performances',    icon:'▸' },
-    sess:  { label:'Sessions',        icon:'▸' },
-    cap:   { label:'Capacités',       icon:'▸' },
-    vpn:   { label:'VPN & SD-WAN',    icon:'▸' },
-    ports: { label:'Interfaces',      icon:'▸' },
-    hw:    { label:'Hardware',        icon:'▸' },
-    feat:  { label:'Fonctionnalités', icon:'▸' },
-    ref:   { label:'Références / SKU', icon:'▸' },
+    perf:  { label:'Performances' },
+    sess:  { label:'Sessions' },
+    cap:   { label:'Capacités' },
+    vpn:   { label:'VPN & SD-WAN' },
+    ports: { label:'Interfaces' },
+    hw:    { label:'Hardware' },
+    feat:  { label:'Fonctionnalités' },
+    ref:   { label:'Références / SKU' },
   };
 
-  /* ══ State ══ */
-  let activeCat    = 'all';
-  let activeSeries = 'all';
-  let activeForm   = 'all';
-  let selected     = new Set();
+  /* Lignes qui ont un sens pour un boitier concurrent : debits,
+     sessions, interfaces, format. Le reste (GlobalProtect, vsys,
+     WildFire...) est propre a PAN-OS et reste vide. */
+  const isComparable = row => ['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format';
+
+  /* Une valeur nulle veut dire « non publie », jamais zero. */
+  function cellRaw(row, m) {
+    if (m._v && !isComparable(row)) return '—';
+    if (row.num && row.num(m) == null) return '—';
+    if (row.label === 'Format') return m.f || '—';
+    return row.fn(m);
+  }
 
   const EOS_REPLACEMENTS = {
     'PA-820': 'PA-1410', 'PA-850': 'PA-1420',
     'PA-7050': 'PA-7500', 'PA-7080': 'PA-7500',
   };
 
-  /* ══ Build table ══ */
+  const DS_URLS = {
+    'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+    'PA-400R': 'https://www.paloaltonetworks.com/resources/datasheets/pa-400r-series',
+    'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
+    'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+    'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+    'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+    'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+    'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+    'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
+    'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
+    'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
+    'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
+    'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
+  };
 
-  /* Encre lisible sur une couleur donnee.
+  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
+  const SERIES_EOS_TITRE = { 'PA-800': 'End of Sale · août 2024',
+                             'PA-7000': 'End of Sale · décembre 2025' };
 
-     Les couleurs de gamme vont du bleu nuit au jaune vif : une encre
-     unique ne peut pas tenir sur les deux. On mesure la luminance
-     relative du fond, formule WCAG, et on choisit le charbon ou le
-     blanc selon celui qui contraste le plus. Le seuil de 0,45 place
-     la bascule la ou les deux se valent. */
+  const ICO = {
+    ext: '<svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+    x: '<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+  };
+
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+  /* ══ Etat ══ */
+  const state = {
+    cat: 'all', series: 'all', form: 'all', q: '', sort: 'default',
+    range: {},            // tp, sess : { lo, hi } en valeurs reelles
+    vendors: new Set(),   // editeurs concurrents affiches
+    isolate: false
+  };
+  let selected = [];      // cles des modeles retenus, dans l'ordre du clic
+  const MAX_SEL = 4;
+
+  /* Petite memoire locale : selection et editeurs. Un navigateur qui
+     refuse le stockage (navigation privee) garde un outil complet. */
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* Encre lisible sur une couleur de gamme : on calcule le contraste
+     du charbon et du blanc et on garde le meilleur. */
   function inkOn(hex) {
     var h = String(hex || '').replace('#', '');
     if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
@@ -681,278 +947,608 @@
       return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     });
     var lum = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
-    /* On ne devine pas avec un seuil : on calcule le contraste des deux
-       encres et on garde la meilleure. Un seuil fixe a 0,45 laissait
-       l'ambre #f59e0b en blanc, a 2,15:1, alors que le charbon y donne
-       8,6:1. Le seuil est le mauvais critere ; la comparaison est le
-       bon. */
     var withWhite = 1.05 / (lum + 0.05);
-    var withInk   = (lum + 0.05) / 0.06665;   // #10151c, luminance 0.01665
+    var withInk   = (lum + 0.05) / 0.06665;
     return withInk > withWhite ? '#10151c' : '#ffffff';
   }
-  /* Vignette officielle du boitier, decoupee dans le stencil Visio Palo Alto.
-     Absente pour quelques references : la colonne reste alors sans image. */
+
   function chassis(id) {
-    var k = id.toLowerCase();
-    var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[k];
+    var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[id.toLowerCase()];
     if (!e) return '';
     return '<div class="model-hw"><img src="' + e.img + '" alt="' + e.label + '" loading="lazy"></div>';
   }
 
-  function buildTable() {
-    let visible = MODELS.filter(m =>
-      (activeSeries === 'all' || m.s === activeSeries) &&
-      (activeForm   === 'all' || m.f.startsWith(activeForm)) &&
-      (searchQuery === '' || m.id.toLowerCase().includes(searchQuery) || m.target.toLowerCase().includes(searchQuery))
-    );
-    if (sortMetric !== 'default') {
-      const key = { tp:'tp', fw:'fw', sess:'sess', cps:'cps' }[sortMetric];
-      if (key) visible = [...visible].sort((a, b) => (b[key] || 0) - (a[key] || 0));
+  /* ══ Catalogue : PA, plus les concurrents coches ══ */
+  let COMP = null;   // { vendors: {id: vendor}, models: [...] } une fois charge
+
+  function paModels() {
+    return MODELS.map(m => { m._key = m.id; return m; });
+  }
+  function compModels() {
+    if (!COMP) return [];
+    return COMP.models.filter(c => state.vendors.has(c.v));
+  }
+  function allModels() { return paModels().concat(compModels()); }
+  function byKey(k) {
+    return MODELS.find(m => m.id === k) || (COMP && COMP.models.find(c => c._key === k)) || null;
+  }
+
+  /* ══ Curseurs de plage ══ */
+  const RANGES = [
+    { key: 'tp',   el: 'rg-tp',   label: 'Threat Prevention', unit: ' Gbps',
+      fmt: v => (v < 10 ? (Math.round(v * 10) / 10) : Math.round(v)).toLocaleString('fr-FR') },
+    { key: 'sess', el: 'rg-sess', label: 'Sessions', unit: '',
+      fmt: v => fmtN(v >= 1e6 ? Math.round(v / 1e5) * 1e5 : v >= 1e3 ? Math.round(v / 1e3) * 1e3 : Math.round(v)) }
+  ];
+  const STEPS = 200;
+  let rangeBounds = null;
+
+  /* Les bornes suivent les donnees, calculees au premier appel. */
+  function bounds() {
+    if (rangeBounds) return rangeBounds;
+    rangeBounds = {};
+    RANGES.forEach(R => {
+      const vals = MODELS.map(m => m[R.key]).filter(v => v != null && v > 0);
+      rangeBounds[R.key] = { min: Math.min.apply(null, vals), max: Math.max.apply(null, vals) };
+    });
+    return rangeBounds;
+  }
+  const toVal = (key, t) => { const b = bounds()[key]; return b.min * Math.pow(b.max / b.min, t / STEPS); };
+  const toPos = (key, v) => { const b = bounds()[key]; return Math.round(STEPS * Math.log(v / b.min) / Math.log(b.max / b.min)); };
+
+  function buildRanges() {
+    RANGES.forEach(R => {
+      const host = document.getElementById(R.el);
+      host.innerHTML =
+          '<span class="tb-label" id="' + R.el + '-l">' + R.label + '</span>'
+        + '<div class="range-box">'
+        +   '<div class="range-track">'
+        +     '<span class="range-rail"></span><span class="range-fill"></span>'
+        +     '<input type="range" min="0" max="' + STEPS + '" value="0" aria-label="' + R.label + ' minimum">'
+        +     '<input type="range" min="0" max="' + STEPS + '" value="' + STEPS + '" aria-label="' + R.label + ' maximum">'
+        +   '</div>'
+        +   '<span class="range-val" aria-hidden="true"></span>'
+        + '</div>';
+      const [lo, hi] = host.querySelectorAll('input');
+      const sync = (moved) => {
+        let a = +lo.value, b = +hi.value;
+        if (a > b) { if (moved === lo) lo.value = a = b; else hi.value = b = a; }
+        const full = a === 0 && b === STEPS;
+        state.range[R.key] = full ? null : { lo: a === 0 ? 0 : toVal(R.key, a), hi: b === STEPS ? Infinity : toVal(R.key, b) };
+        paintRange(host, R, a, b);
+      };
+      [lo, hi].forEach(inp => {
+        inp.addEventListener('input', () => { sync(inp); scheduleBuild(); });
+      });
+      paintRange(host, R, 0, STEPS);
+    });
+  }
+  function paintRange(host, R, a, b) {
+    const fill = host.querySelector('.range-fill');
+    fill.style.left = (a / STEPS * 100) + '%';
+    fill.style.right = (100 - b / STEPS * 100) + '%';
+    const out = host.querySelector('.range-val');
+    const lo = R.fmt(toVal(R.key, a)), hi = R.fmt(toVal(R.key, b));
+    out.textContent = lo + ' à ' + hi + R.unit;
+    out.classList.toggle('is-set', !(a === 0 && b === STEPS));
+    const [i1, i2] = host.querySelectorAll('input');
+    i1.setAttribute('aria-valuetext', lo + R.unit);
+    i2.setAttribute('aria-valuetext', hi + R.unit);
+  }
+  function resetRanges() {
+    RANGES.forEach(R => {
+      const host = document.getElementById(R.el);
+      const [lo, hi] = host.querySelectorAll('input');
+      lo.value = 0; hi.value = STEPS;
+      state.range[R.key] = null;
+      paintRange(host, R, 0, STEPS);
+    });
+  }
+
+  /* ══ Selection des modeles visibles ══ */
+  function visibleModels() {
+    if (state.isolate && selected.length) return selected.map(byKey).filter(Boolean);
+    const q = state.q;
+    let list = allModels().filter(m => {
+      if (!m._v && state.series !== 'all' && m.s !== state.series) return false;
+      if (state.form !== 'all' && !String(m.f || '').startsWith(state.form)) return false;
+      if (q) {
+        const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      for (const k in state.range) {
+        const r = state.range[k];
+        if (!r) continue;
+        const v = m[k];
+        if (v == null) continue;             // non publie : on ne cache pas en silence
+        if (v < r.lo || v > r.hi) return false;
+      }
+      return true;
+    });
+    if (state.sort !== 'default') {
+      const key = state.sort;
+      list = list.slice().sort((a, b) => (b[key] || 0) - (a[key] || 0));
     }
+    return list;
+  }
 
-    // Header
+  function filtersActive() {
+    return state.cat !== 'all' || state.series !== 'all' || state.form !== 'all' || !!state.q
+      || Object.keys(state.range).some(k => state.range[k]);
+  }
+
+  /* ══ Construction du tableau ══ */
+  function headCell(m) {
+    const k = m._key, on = selected.indexOf(k) !== -1;
+    let top, bot;
+    if (m._v) {
+      const V = COMP.vendors[m.v] || { name: m.v, metrics: {} };
+      const defs = ['fw', 'tp', 'vpn'].filter(x => V.metrics && V.metrics[x])
+        .map(x => '<b>' + ({ fw: 'Firewall', tp: 'Threat Prevention', vpn: 'VPN' })[x] + '</b> : ' + esc(V.metrics[x])).join('<br>');
+      top = '<div class="model-card-top" data-act="sel">'
+        + '<span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l\'éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span>'
+        + '<span class="model-name">' + esc(m.id) + '</span>'
+        + '<span class="model-target">' + esc(m.s || '') + '</span></div>';
+      bot = (m.ds ? '<a class="model-ds-link" href="' + esc(m.ds) + '" target="_blank" rel="noopener" aria-label="Datasheet officielle ' + esc(m.id) + '" title="Datasheet officielle ' + esc(V.name) + (m.dsRev ? ', ' + esc(m.dsRev) : '') + '">' + ICO.ext + 'Datasheet</a>' : '<span></span>');
+    } else {
+      const ink = inkOn(m.color);
+      const repl = m.eos && EOS_REPLACEMENTS[m.id]
+        ? '<span class="model-repl" style="color:' + ink + ';opacity:.82">&rarr; ' + EOS_REPLACEMENTS[m.id] + '</span>' : '';
+      top = '<div class="model-card-top" data-act="sel" style="background:' + m.color + ';color:' + ink + '">'
+        + '<span class="model-name">' + m.id + '</span>'
+        + '<span class="model-target">' + m.target + repl + '</span></div>' + chassis(m.id);
+      bot = '<a class="model-ds-link" href="' + (DS_URLS[m.s] || '#') + '" target="_blank" rel="noopener" aria-label="Datasheet officielle ' + m.s + '" title="Datasheet officielle ' + m.s + '">' + ICO.ext + 'Datasheet</a>';
+    }
+    return '<th class="model-th' + (on ? ' selected' : '') + (m.eos ? ' eos-model' : '') + (m._v ? ' is-comp' : '') + '" data-k="' + esc(k) + '" scope="col">'
+      + '<div class="model-card-clip">' + top
+      + '<div class="model-card-bot">' + bot
+      + '<button type="button" class="sel-btn" data-act="sel" aria-pressed="' + on + '" aria-label="Comparer ' + esc(m.id) + '">'
+      + '<span class="sel-box">' + ICO.check + '</span>Comparer</button></div>'
+      + '</div></th>';
+  }
+
+  function buildTable() {
+    const visible = visibleModels();
     const hRow = document.getElementById('header-row');
-    const DS_URLS = {
-      'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
-      'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
-      'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
-      'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
-      'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
-      'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
-      'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
-      'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
-      'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
-      'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
-      'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
-      'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
-    };
-    hRow.innerHTML = `<th class="th-corner"></th>` +
-      visible.map(m => {
-        const ink = inkOn(m.color);
-        // le rappel de remplacement vit sur la carte : il prend la meme
-        // encre, a opacite reduite, plutot qu'un jaune fixe illisible
-        const repl = m.eos && EOS_REPLACEMENTS[m.id]
-          ? `<span style="display:block;font-size:10px;margin-top:2px;color:${ink};opacity:.78">&rarr; ${EOS_REPLACEMENTS[m.id]}</span>`
-          : '';
-        return `
-        <th class="model-th ${selected.has(m.id)?'selected':''} ${m.eos?'eos-model':''}" id="mh-${m.id}" onclick="toggleSel('${m.id}')">
-          <div class="model-card-clip">
-            <div class="model-card-top" style="background:${m.color};color:${ink}">
-              <span class="model-name">${m.id}</span>
-              <span class="model-target">${m.target}${repl}</span>
-            </div>
-            ${chassis(m.id)}
-            <div class="model-card-bot" style="background:${m.color}22">
-              <a class="model-ds-link" href="${DS_URLS[m.s] || '#'}" target="_blank" rel="noopener"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> Datasheet</a>
-              <div class="sel-dot"></div>
-            </div>
-          </div>
-        </th>`;
-      }).join('');
+    hRow.innerHTML = '<th class="th-corner">' + (visible.some(m => m._v) ? 'Les concurrents sont en gris : survolez l\'éditeur pour sa définition des débits.' : '') + '</th>'
+      + visible.map(headCell).join('');
 
-    // Body
-    let seenCats = new Set();
-    let html     = '';
-    let delay    = 0;
-
-    ROWS.forEach(row => {
-      if (activeCat !== 'all' && row.cat !== activeCat) return;
-
-      // Category separator
-      const catKey = row.cat;
-      if (!seenCats.has(catKey) && CATS[catKey]) {
-        seenCats.add(catKey);
-        html += `<tr class="cat-row">
-          <td class="cat-label-cell">
-            <div class="cat-inner">
-              <span class="cat-inner-text">${CATS[catKey].label}</span>
-            </div>
-          </td>
-          ${visible.map(() => '<td class="cat-spacer"></td>').join('')}
-        </tr>`;
+    const seen = new Set();
+    let html = '';
+    ROWS.forEach((row, ri) => {
+      if (state.cat !== 'all' && row.cat !== state.cat) return;
+      if (!seen.has(row.cat) && CATS[row.cat]) {
+        seen.add(row.cat);
+        html += '<tr class="cat-row"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-inner-text">'
+          + CATS[row.cat].label + '</span></div></td>'
+          + visible.map(m => '<td class="cat-spacer' + (selected.indexOf(m._key) !== -1 ? ' is-sel' : '') + '" data-m="' + esc(m._key) + '"></td>').join('') + '</tr>';
       }
-
-      // Find max numeric value across visible models (for highlighting)
-      let maxVal = -Infinity;
-      if (row.num) {
-        visible.forEach(m => { const v = row.num(m); if(v > maxVal) maxVal = v; });
-      }
+      // Le maximum ne se cherche qu'entre PA : un debit Fortinet et un
+      // debit appmix ne mesurent pas la meme chose.
+      // Et seulement s'il y a un ecart : une ligne ou tous les PA se
+      // valent n'a pas de meilleur.
+      let maxVal = -Infinity, minVal = Infinity;
+      if (row.num) visible.forEach(m => { if (m._v) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
+      if (!(maxVal > minVal)) maxVal = -Infinity;
 
       const cells = visible.map(m => {
-        const raw = row.fn(m);
-        const num = row.num ? row.num(m) : null;
-        const isMax = num !== null && num === maxVal && maxVal > 0;
-        const isNa  = raw === '—';
+        const raw = cellRaw(row, m);
+        const num = (!m._v && row.num) ? row.num(m) : null;
         let cls = 'val-cell';
-        if (isMax) cls += ' val-max';
-        else if (isNa) cls += ' val-na';
-        return `<td class="${cls}" style="border-left-color:${m.color}22">${raw}</td>`;
+        if (num != null && num === maxVal && maxVal > 0) cls += ' val-max';
+        else if (raw === '—') cls += ' val-na';
+        if (m._v) cls += ' is-comp';
+        if (selected.indexOf(m._key) !== -1) cls += ' is-sel';
+        const style = m._v ? '' : ' style="border-left-color:' + m.color + '22"';
+        return '<td class="' + cls + '" data-m="' + esc(m._key) + '" data-k="' + esc(m._key) + '|' + ri + '"' + style + '>' + raw + '</td>';
       }).join('');
-
-      html += `<tr class="data-row" data-cat="${row.cat}" style="animation-delay:${delay}ms">
-        <td class="spec-label-cell">${row.label}</td>
-        ${cells}
-      </tr>`;
-      delay += 12;
+      html += '<tr class="data-row" data-cat="' + row.cat + '"><td class="spec-label-cell">' + row.label + '</td>' + cells + '</tr>';
     });
-
     document.getElementById('table-body').innerHTML = html;
+
+    const nPa = visible.filter(m => !m._v).length, nC = visible.length - nPa;
     document.getElementById('stat-models').textContent = visible.length;
+    document.getElementById('stat-label').textContent =
+      (visible.length > 1 ? 'modèles' : 'modèle') + (nC ? ' dont ' + nC + ' concurrent' + (nC > 1 ? 's' : '') : '')
+      + (state.isolate && selected.length ? ', sélection isolée' : '');
+
+    const empty = document.getElementById('pa-empty');
+    empty.hidden = visible.length > 0;
+    if (!visible.length) {
+      document.getElementById('pa-empty-why').textContent = state.q
+        ? 'Rien ne contient « ' + state.q + ' » avec les autres filtres actifs.'
+        : 'Les filtres de série, de format et de plage s\'excluent les uns les autres.';
+    }
+    document.getElementById('tb-reset').hidden = !filtersActive();
+    updateNav();
   }
 
-  /* ══ Filters ══ */
-  let searchQuery = '';
-  let sortMetric = 'default';
-
-  function filterCat(btn) {
-    document.querySelectorAll('#cat-filters .fb').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    activeCat = btn.dataset.cat;
-    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
-  buildTable();
+  /* Reconstruction animee : les colonnes qui restent glissent vers leur
+     nouvelle place, celles qui arrivent entrent en fondu. */
+  function rebuild() {
+    const outer = document.getElementById('table-outer');
+    if (window.Motion) Motion.flip(outer, 'th.model-th, td.val-cell', buildTable);
+    else buildTable();
+  }
+  let buildT = null;
+  function scheduleBuild() {
+    clearTimeout(buildT);
+    buildT = setTimeout(rebuild, 60);
   }
 
-  /* Les series affichees suivent les donnees, pas une liste ecrite a la
-     main : une serie ajoutee a MODELS apparait dans la barre de filtres
-     au rechargement. Le badge EoS se deduit des modeles eux-memes. */
-  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
-  const SERIES_EOS_TITRE = { 'PA-800': 'End of Sale · août 2024',
-                             'PA-7000': 'End of Sale · décembre 2025' };
+  /* ══ Filtres ══ */
+  function pressGroup(groupId, btn) {
+    document.querySelectorAll('#' + groupId + ' .fb').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
 
   function buildSeriesFilters() {
     const box = document.getElementById('series-filters');
-    if (!box) return;
     const series = [];
     MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
-    box.innerHTML = '<button class="fb on" data-series="all" onclick="filterSeries(this)">Toutes</button>'
+    box.innerHTML = '<button class="fb on" data-series="all" aria-pressed="true">Toutes</button>'
       + series.map(sid => {
           const eos = MODELS.filter(m => m.s === sid).every(m => m.eos);
-          const badge = eos
-            ? ' <span style="font-size:10px;color:var(--yellow)">EoS</span>'
-            : (SERIES_NEW.indexOf(sid) !== -1
-                ? ' <span style="font-size:10px;color:var(--ok);font-weight:700">New</span>' : '');
+          const badge = eos ? ' <span class="eos">EoS</span>'
+            : (SERIES_NEW.indexOf(sid) !== -1 ? ' <span class="new">New</span>' : '');
           const titre = SERIES_EOS_TITRE[sid] ? ' title="' + SERIES_EOS_TITRE[sid] + '"' : '';
-          return '<button class="fb" data-series="' + sid + '" onclick="filterSeries(this)"' + titre + '>'
-               + sid + badge + '</button>';
+          return '<button class="fb" data-series="' + sid + '" aria-pressed="false"' + titre + '>' + sid + badge + '</button>';
         }).join('');
   }
 
-  function filterSeries(btn) {
-    document.querySelectorAll('#series-filters .fb').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    activeSeries = btn.dataset.series;
-    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
-  buildTable();
+  function wireFilters() {
+    document.getElementById('cat-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('cat-filters', b); state.cat = b.dataset.cat; rebuild();
+    });
+    document.getElementById('series-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('series-filters', b); state.series = b.dataset.series; rebuild();
+    });
+    document.getElementById('form-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('form-filters', b); state.form = b.dataset.form; rebuild();
+    });
+    document.getElementById('model-search').addEventListener('input', e => {
+      state.q = e.target.value.trim().toLowerCase(); scheduleBuild();
+    });
+    document.getElementById('sort-metric').addEventListener('change', e => {
+      state.sort = e.target.value; rebuild();
+    });
+    const reset = () => {
+      state.cat = state.series = state.form = 'all'; state.q = ''; state.sort = 'default';
+      pressGroup('cat-filters', document.querySelector('#cat-filters .fb'));
+      pressGroup('series-filters', document.querySelector('#series-filters .fb'));
+      pressGroup('form-filters', document.querySelector('#form-filters .fb'));
+      document.getElementById('model-search').value = '';
+      document.getElementById('sort-metric').value = 'default';
+      resetRanges();
+      rebuild();
+    };
+    document.getElementById('tb-reset').addEventListener('click', reset);
+    document.getElementById('pa-empty-reset').addEventListener('click', reset);
   }
 
-  function filterForm(btn) {
-    document.querySelectorAll('#form-filters .fb').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    activeForm = btn.dataset.form;
-    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
-  buildTable();
+  /* ══ Selection et bac ══ */
+  function say(msg) {
+    const el = document.getElementById('tray-msg');
+    el.textContent = msg;
+    if (window.Motion) Motion.tick(el);
   }
 
-  function filterSearch(q) {
-    searchQuery = q.trim().toLowerCase();
-    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
-  buildTable();
-  }
-
-  function sortModels(metric) {
-    sortMetric = metric;
-    document.addEventListener('DOMContentLoaded', loadCompareFromURL);
-  buildTable();
-  }
-
-  /* ══ Selection ══ */
-  function toggleSel(id) {
-    if (selected.has(id)) {
-      selected.delete(id);
-    } else {
-      if (selected.size >= 4) return;
-      selected.add(id);
+  function toggleSel(k) {
+    const i = selected.indexOf(k);
+    if (i !== -1) selected.splice(i, 1);
+    else {
+      if (selected.length >= MAX_SEL) { say('Quatre modèles au plus : retirez-en un d\'abord.'); return; }
+      selected.push(k);
     }
-    document.querySelectorAll(`[id="mh-${id}"]`).forEach(el => el.classList.toggle('selected', selected.has(id)));
-    const fab   = document.getElementById('cmp-fab');
-    const count = document.getElementById('cmp-count');
-    count.textContent = selected.size;
-    fab.classList.toggle('visible', selected.size >= 2);
+    say('');
+    store.set('pan-cmp-sel', selected);
+    const on = selected.indexOf(k) !== -1;
+    document.querySelectorAll('th.model-th[data-k="' + CSS.escape(k) + '"]').forEach(th => {
+      th.classList.toggle('selected', on);
+      const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', String(on));
+    });
+    document.querySelectorAll('[data-m="' + CSS.escape(k) + '"]').forEach(td => td.classList.toggle('is-sel', on));
+    if (!selected.length && state.isolate) { state.isolate = false; rebuild(); }
+    else if (state.isolate) rebuild();
+    renderTray();
   }
 
-  /* ══ Compare ══ */
-  let cmpDiffOnly = false;
+  function renderTray() {
+    const tray = document.getElementById('tray');
+    const list = document.getElementById('tray-list');
+    const paint = () => {
+      let h = selected.map(k => {
+        const m = byKey(k); if (!m) return '';
+        const sw = m._v ? 'var(--text-muted)' : m.color;
+        return '<li class="tray-chip" data-k="' + esc(k) + '"><span class="dot" style="background:' + sw + '"></span>' + esc(m.id)
+          + '<button type="button" class="chip-x" data-k="' + esc(k) + '" aria-label="Retirer ' + esc(m.id) + '">' + ICO.x + '</button></li>';
+      }).join('');
+      for (let i = selected.length; i < MAX_SEL; i++) h += '<li class="tray-slot" aria-hidden="true"></li>';
+      list.innerHTML = h;
+    };
+    if (window.Motion && tray.classList.contains('on')) Motion.flip(list, '.tray-chip', paint);
+    else paint();
+    const on = selected.length > 0;
+    tray.classList.toggle('on', on);
+    document.body.classList.toggle('has-tray', on);
+    const go = document.getElementById('tray-go');
+    go.disabled = selected.length < 2;
+    go.textContent = selected.length >= 2 ? 'Comparer les ' + selected.length : 'Comparer';
+    const iso = document.getElementById('tray-iso');
+    iso.setAttribute('aria-pressed', String(state.isolate));
+    iso.textContent = state.isolate ? 'Revoir tous les modèles' : 'Isoler ces colonnes';
+  }
+
+  function wireSelection() {
+    document.getElementById('header-row').addEventListener('click', e => {
+      if (e.target.closest('a, .vendor-badge')) return;
+      const t = e.target.closest('[data-act="sel"]'); if (!t) return;
+      const th = t.closest('th.model-th'); if (th) toggleSel(th.dataset.k);
+    });
+    document.getElementById('tray-list').addEventListener('click', e => {
+      const x = e.target.closest('.chip-x'); if (!x) return;
+      const k = x.dataset.k;
+      const next = x.closest('li').nextElementSibling;
+      toggleSel(k);
+      // le focus ne doit pas tomber dans le vide apres un retrait
+      const target = document.querySelector('#tray-list .chip-x') || document.getElementById('tray-clear');
+      if (selected.length) target.focus(); else document.getElementById('table-outer').focus();
+    });
+    document.getElementById('tray-clear').addEventListener('click', () => {
+      const ks = selected.slice();
+      selected = []; store.set('pan-cmp-sel', selected);
+      ks.forEach(k => {
+        document.querySelectorAll('th.model-th[data-k="' + CSS.escape(k) + '"]').forEach(th => {
+          th.classList.remove('selected');
+          const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', 'false');
+        });
+        document.querySelectorAll('[data-m="' + CSS.escape(k) + '"]').forEach(td => td.classList.remove('is-sel'));
+      });
+      say('');
+      if (state.isolate) { state.isolate = false; rebuild(); }
+      renderTray();
+      document.getElementById('table-outer').focus();
+    });
+    document.getElementById('tray-iso').addEventListener('click', () => {
+      state.isolate = !state.isolate;
+      rebuild(); renderTray();
+      document.getElementById('table-outer').scrollTo({ left: 0 });
+    });
+    document.getElementById('tray-go').addEventListener('click', openCompare);
+  }
+
+  /* ══ Defilement horizontal maitrise ══ */
+  function colWidth() {
+    const th = document.querySelector('th.model-th');
+    return th ? th.getBoundingClientRect().width : 148;
+  }
+  function labelWidth() {
+    const c = document.querySelector('.th-corner');
+    return c ? c.getBoundingClientRect().width : 220;
+  }
+  function scrollCols(n) {
+    const outer = document.getElementById('table-outer');
+    const w = colWidth();
+    const target = (Math.round(outer.scrollLeft / w) + n) * w;
+    outer.scrollTo({ left: Math.max(0, target), behavior: (window.Motion && Motion.reduce) ? 'auto' : 'smooth' });
+  }
+  function pageCols() {
+    const outer = document.getElementById('table-outer');
+    return Math.max(1, Math.floor((outer.clientWidth - labelWidth()) / colWidth()));
+  }
+  function updateNav() {
+    const outer = document.getElementById('table-outer');
+    const ths = document.querySelectorAll('th.model-th');
+    const prev = document.getElementById('ns-prev'), next = document.getElementById('ns-next');
+    const pos = document.getElementById('ns-pos');
+    if (!ths.length) { pos.textContent = ''; prev.disabled = next.disabled = true; return; }
+    const w = colWidth();
+    const first = Math.min(ths.length - 1, Math.round(outer.scrollLeft / w));
+    const last = Math.min(ths.length - 1, first + pageCols() - 1);
+    prev.disabled = outer.scrollLeft <= 2;
+    next.disabled = outer.scrollLeft + outer.clientWidth >= outer.scrollWidth - 2;
+    pos.textContent = ths[first].dataset.k.replace(/^x:/, '')
+      + (last > first ? ' à ' + ths[last].dataset.k.replace(/^x:/, '') : '')
+      + '  ·  ' + (first + 1) + '-' + (last + 1) + ' sur ' + ths.length;
+  }
+
+  function wireScroll() {
+    const outer = document.getElementById('table-outer');
+    let raf = 0;
+    outer.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; updateNav(); });
+    }, { passive: true });
+    window.addEventListener('resize', updateNav);
+    document.getElementById('ns-prev').addEventListener('click', () => scrollCols(-pageCols()));
+    document.getElementById('ns-next').addEventListener('click', () => scrollCols(pageCols()));
+    outer.addEventListener('keydown', e => {
+      if (e.target !== outer) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollCols(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); scrollCols(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); outer.scrollTo({ left: 0 }); }
+      else if (e.key === 'End') { e.preventDefault(); outer.scrollTo({ left: outer.scrollWidth }); }
+    });
+    /* Molette verticale sur les en-tetes de modele : on defile les
+       colonnes. Ailleurs dans le tableau, la molette garde son sens. */
+    document.querySelector('#pa-table thead').addEventListener('wheel', e => {
+      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if (outer.scrollWidth <= outer.clientWidth) return;
+      e.preventDefault();
+      outer.scrollLeft += e.deltaY;
+    }, { passive: false });
+  }
+
+  /* ══ Fenetre de comparaison ══ */
+  let cmpDiffOnly = false, lastFocus = null;
 
   function openCompare() {
-    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
+    const models = selected.map(byKey).filter(Boolean);
+    if (models.length < 2) return;
     renderCompare(models);
+    lastFocus = document.activeElement;
     document.getElementById('cmp-overlay').classList.add('open');
-    const cmpUrl = window.location.origin + window.location.pathname + '?cmp=' + models.map(m => m.id).join(',');
-    history.replaceState(null, '', cmpUrl);
+    history.replaceState(null, '', location.pathname + '?cmp=' + models.map(m => encodeURIComponent(m.id)).join(','));
+    setTimeout(() => document.getElementById('cmp-close').focus(), 30);
   }
 
   function renderCompare(models) {
-    const head = `<thead><tr><th style="text-align:left">
-      <label style="font-size:10px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px">
-        <input type="checkbox" ${cmpDiffOnly?'checked':''} onchange="cmpDiffOnly=this.checked;renderCompare([${models.map(m=>`MODELS.find(x=>x.id==='${m.id}')`).join(',')}])"> Différences uniquement
-      </label>
-    </th>${models.map(m => `<th style="color:${m.color}">${m.id}</th>`).join('')}</tr></thead>`;
-
+    const comp = models.some(m => m._v);
+    document.getElementById('cmp-sub').textContent = comp
+      ? 'Les débits des concurrents suivent la définition de leur éditeur et ne se comparent pas un pour un aux débits appmix des PA. Le meilleur chiffre n\'est surligné qu\'entre PA.'
+      : 'Le meilleur chiffre de chaque ligne est surligné. Valeurs issues des datasheets officielles.';
+    const head = '<thead><tr><th><label class="cmp-diff"><input type="checkbox" id="cmp-diff"' + (cmpDiffOnly ? ' checked' : '') + '> Différences uniquement</label></th>'
+      + models.map(m => '<th><span class="sw" style="background:' + (m._v ? 'var(--text-muted)' : m.color) + '"></span>' + esc(m.id) + '</th>').join('') + '</tr></thead>';
     const body = ROWS.map(row => {
-      const vals = models.map(m => row.fn(m));
-      const nums = models.map(m => row.num ? row.num(m) : null);
-      if (cmpDiffOnly && row.num) {
-        const unique = new Set(nums.filter(n => n !== null));
-        if (unique.size <= 1) return '';
-      }
-      const maxN = Math.max(...nums.filter(n => n !== null));
-      const cells = vals.map((v, i) => {
-        const isBest = nums[i] !== null && nums[i] === maxN && maxN > 0;
-        return `<td class="${isBest ? 'ct-max' : 'ct-val'}">${v}</td>`;
-      }).join('');
-      return `<tr><td>${row.label}</td>${cells}</tr>`;
-    }).filter(Boolean).join('');
-
-    const actions = `<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="wiz-action-btn secondary" onclick="copyCompare()">Copier la comparaison</button>
-      <button class="wiz-action-btn secondary" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Lien copié !'">Partager le lien</button>
-    </div>`;
-
-    document.getElementById('cmp-table').innerHTML = head + `<tbody>${body}</tbody>`;
-    const actionsEl = document.getElementById('cmp-actions');
-    if (actionsEl) actionsEl.innerHTML = actions;
+      const vals = models.map(m => cellRaw(row, m));
+      if (cmpDiffOnly && new Set(vals.map(v => v.replace(/<[^>]+>/g, ''))).size <= 1) return '';
+      const nums = models.map(m => (!m._v && row.num) ? row.num(m) : null);
+      const pa = nums.filter(n => n != null);
+      const maxN = pa.length && Math.max.apply(null, pa) > Math.min.apply(null, pa) ? Math.max.apply(null, pa) : null;
+      return '<tr><td>' + row.label + '</td>' + vals.map((v, i) =>
+        '<td class="' + (nums[i] != null && nums[i] === maxN && maxN > 0 && pa.length > 1 ? 'ct-max' : 'ct-val') + '">' + v + '</td>').join('') + '</tr>';
+    }).join('');
+    document.getElementById('cmp-table').innerHTML = head + '<tbody>' + body + '</tbody>';
+    document.getElementById('cmp-diff').addEventListener('change', e => { cmpDiffOnly = e.target.checked; renderCompare(models); });
+    document.getElementById('cmp-actions').innerHTML =
+        '<button type="button" class="tray-btn" id="cmp-copy">Copier la comparaison</button>'
+      + '<button type="button" class="tray-btn" id="cmp-link">Copier le lien</button>';
+    document.getElementById('cmp-copy').addEventListener('click', function () { copyCompare(models, this); });
+    document.getElementById('cmp-link').addEventListener('click', function () {
+      const b = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject()).then(
+        () => { b.textContent = 'Lien copié'; setTimeout(() => { b.textContent = 'Copier le lien'; }, 1600); },
+        () => { b.textContent = 'Copie impossible ici'; });
+    });
   }
 
-  function copyCompare() {
-    const models = [...selected].map(id => MODELS.find(m => m.id === id)).filter(Boolean);
-    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n';
-    text += models.map(m => m.id).join(' | ') + '\n\n';
+  function copyCompare(models, btn) {
+    let text = 'COMPARAISON PA-SERIES\n' + '='.repeat(40) + '\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
     ROWS.forEach(row => {
-      const vals = models.map(m => row.fn(m).replace(/<[^>]+>/g, ''));
-      const label = row.label.replace(/<[^>]+>/g, '');
-      text += label + ' : ' + vals.join(' | ') + '\n';
+      text += row.label.replace(/<[^>]+>/g, '') + ' : ' + models.map(m => cellRaw(row, m).replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
     });
-    text += '\nEstimation indicative. Données issues des datasheets officielles Palo Alto Networks.';
-    navigator.clipboard.writeText(text);
+    if (models.some(m => m._v)) text += '\nDébits concurrents : définitions propres à chaque éditeur, non comparables un pour un.';
+    text += '\nEstimation indicative. Données issues des datasheets officielles.';
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      () => { btn.textContent = 'Copié'; setTimeout(() => { btn.textContent = 'Copier la comparaison'; }, 1600); },
+      () => { btn.textContent = 'Copie impossible ici'; });
   }
 
   function closeCompare() {
     document.getElementById('cmp-overlay').classList.remove('open');
-    history.replaceState(null, '', window.location.pathname);
+    history.replaceState(null, '', location.pathname);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  function loadCompareFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const cmp = params.get('cmp');
-    if (cmp) {
-      cmp.split(',').forEach(id => { if (MODELS.find(m => m.id === id)) selected.add(id); });
-      if (selected.size >= 2) openCompare();
+  function wireModal() {
+    const ov = document.getElementById('cmp-overlay');
+    ov.addEventListener('click', e => { if (e.target === ov) closeCompare(); });
+    document.getElementById('cmp-close').addEventListener('click', closeCompare);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && ov.classList.contains('open')) closeCompare();
+    });
+  }
+
+  /* ══ Concurrents : chargement facultatif ══
+     Le fichier est charge a la demande. S'il manque, la case reste
+     masquee et le comparateur reste strictement PA. */
+  function initVendors() {
+    if (typeof COMPETITORS === 'undefined' || !COMPETITORS || !Array.isArray(COMPETITORS.models)) return;
+    const vendors = {};
+    (COMPETITORS.vendors || []).forEach(v => { vendors[v.id] = v; });
+    COMP = {
+      vendors,
+      models: COMPETITORS.models.map(c => Object.assign({}, c, {
+        _v: c.v, _key: 'x:' + c.id, _vname: vendors[c.v] ? vendors[c.v].name : c.v
+      }))
+    };
+    const ids = (COMPETITORS.vendors || []).map(v => v.id).filter(id => COMP.models.some(m => m.v === id));
+    if (!ids.length) return;
+    const box = document.getElementById('vendors');
+    box.insertAdjacentHTML('beforeend', ids.map(id =>
+      '<label class="vchk"><input type="checkbox" value="' + esc(id) + '"> ' + esc(vendors[id].name) + '</label>').join(''));
+    const saved = store.get('pan-cmp-vendors', []);
+    saved.forEach(id => { if (ids.indexOf(id) !== -1) state.vendors.add(id); });
+    box.querySelectorAll('input').forEach(inp => {
+      inp.checked = state.vendors.has(inp.value);
+      inp.addEventListener('change', () => {
+        if (inp.checked) state.vendors.add(inp.value);
+        else {
+          state.vendors.delete(inp.value);
+          // un concurrent decoche sort aussi du bac
+          selected = selected.filter(k => { const m = byKey(k); return !(m && m._v === inp.value); });
+          store.set('pan-cmp-sel', selected);
+          renderTray();
+        }
+        store.set('pan-cmp-vendors', Array.from(state.vendors));
+        syncVendorNote();
+        rebuild();
+      });
+    });
+    box.hidden = false;
+    syncVendorNote();
+    restoreSelection();
+    if (state.vendors.size || selected.some(k => k.indexOf('x:') === 0)) buildTable();
+  }
+  function syncVendorNote() {
+    document.getElementById('vendor-note').hidden = state.vendors.size === 0;
+  }
+  function loadCompetitors() {
+    // Fichier facultatif : il est demande a l'execution, pas reference
+    // dans le HTML, pour que son absence ne casse ni la page ni le build.
+    const COMP_FILE = 'data/competitors.js';
+    const s = document.createElement('script');
+    s.setAttribute('src', COMP_FILE);
+    s.onload = initVendors;
+    s.onerror = () => {};
+    document.body.appendChild(s);
+  }
+
+  /* ══ Selection retrouvee : lien partage, sinon derniere visite ══ */
+  let restored = false;
+  function restoreSelection() {
+    const p = new URLSearchParams(location.search).get('cmp');
+    let keys = [];
+    if (p) {
+      p.split(',').map(decodeURIComponent).forEach(id => {
+        if (MODELS.some(m => m.id === id)) keys.push(id);
+        else if (COMP) {
+          const c = COMP.models.find(x => x.id === id);
+          if (c) { keys.push(c._key); state.vendors.add(c.v); }
+        }
+      });
+    } else {
+      keys = store.get('pan-cmp-sel', []).filter(k => {
+        const m = byKey(k);
+        return m && (!m._v || state.vendors.has(m._v));
+      });
     }
+    const before = selected.join();
+    selected = keys.slice(0, MAX_SEL);
+    if (COMP) document.querySelectorAll('#vendors input').forEach(i => { i.checked = state.vendors.has(i.value); });
+    if (selected.join() !== before || !restored) { buildTable(); renderTray(); }
+    if (p && selected.length >= 2 && !document.getElementById('cmp-overlay').classList.contains('open')) {
+      // un lien vers des concurrents n'est complet qu'une fois le fichier charge
+      if (!p.split(',').some(id => !byKey(id) && !(COMP && COMP.models.find(x => x.id === id))) || COMP) openCompare();
+    }
+    restored = true;
   }
 
-  document.addEventListener('DOMContentLoaded', loadCompareFromURL);
   buildSeriesFilters();
+  buildRanges();
+  wireFilters();
+  wireSelection();
+  wireScroll();
+  wireModal();
   buildTable();
+  restoreSelection();
+  loadCompetitors();
   </script>
 
   <footer class="site-footer">
