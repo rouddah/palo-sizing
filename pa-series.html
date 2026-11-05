@@ -175,6 +175,8 @@
     .ns-btn:active:not(:disabled) { transform: scale(.94); }
     .ns-btn:disabled { opacity: .4; cursor: default; }
     .ns-pos { font-family: var(--mono); color: var(--text-dim); min-width: 0; }
+    /* largeur fixe : la position change a chaque defilement, le bandeau ne doit pas changer de hauteur avec elle */
+    @media (min-width: 861px) { .ns-pos { min-width: 44ch; white-space: nowrap; } }
     .ns-hint { color: var(--text-muted); }
     .stats-note { margin-left: auto; font-style: italic; }
 
@@ -571,6 +573,10 @@
       body.cmp-page > .site-footer > div + div { display: none; }
       #view-tbl:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
       #view-tbl .table-outer { flex: 1 1 auto; min-height: 0; height: auto; }
+      /* Les bandeaux gardent leur hauteur : sans cela la colonne flex les
+         ecrase a leur min-height et la ligne de source, renvoyee a la ligne
+         quand la position est longue, debordait sur l'avertissement. */
+      #view-tbl > :not(.table-outer) { flex: none; }
     }
     .view[hidden] { display: none !important; }
 
@@ -1652,13 +1658,17 @@
     if (!outer.offsetParent || !colWidth()) return;   // vue tableau masquee
     if (!ths.length) { pos.textContent = ''; prev.disabled = next.disabled = true; return; }
     const w = colWidth();
-    const first = Math.min(ths.length - 1, Math.round(outer.scrollLeft / w));
-    const last = Math.min(ths.length - 1, first + pageCols() - 1);
+    const atEnd = outer.scrollLeft + outer.clientWidth >= outer.scrollWidth - 2;
+    let first = Math.min(ths.length - 1, Math.round(outer.scrollLeft / w));
+    let last = Math.min(ths.length - 1, first + pageCols() - 1);
+    /* au bout du defilement, la derniere colonne est visible meme si
+       l'arrondi la laisse hors de la fenetre calculee */
+    if (atEnd) { last = ths.length - 1; first = Math.max(0, last - pageCols() + 1); }
     prev.disabled = outer.scrollLeft <= 2;
-    next.disabled = outer.scrollLeft + outer.clientWidth >= outer.scrollWidth - 2;
+    next.disabled = atEnd;
     pos.textContent = ths[first].dataset.k.replace(/^x:/, '')
       + (last > first ? ' à ' + ths[last].dataset.k.replace(/^x:/, '') : '')
-      + '  ·  ' + (first + 1) + '-' + (last + 1) + ' sur ' + ths.length;
+      + '  ·  ' + (last > first ? (first + 1) + '-' + (last + 1) : (first + 1)) + ' sur ' + ths.length;
   }
 
   function wireScroll() {
