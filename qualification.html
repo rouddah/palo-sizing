@@ -178,6 +178,7 @@
   <script src="ui.js"></script>
   <script src="icons.js"></script>
   <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
 
   <!-- ── Barre de mode ── -->
   <div class="wb-bar" role="tablist" aria-label="Modes de l'outil de dimensionnement">
@@ -1305,6 +1306,22 @@
     const confClassWb = confidence === 'green' ? 'ok' : confidence === 'orange' ? 'warn' : 'crit';
     const confIcon = confidence === 'green' ? 'check' : 'alert';
 
+    /* Le boitier retenu en photo (fond CSS, la sortie ne porte aucune
+       balise img), et un passage direct vers le comparateur avec ses
+       voisins de serie. */
+    function verdictBridge(r) {
+      if (!r) return '';
+      var m = r.m;
+      var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[m.id.toLowerCase()];
+      var bad = { 'PA-5445': 1, 'PA-7050': 1 };
+      var ph = e && !bad[m.id] ? '<span class="wb-photo" role="img" aria-label="Face avant ' + m.id + '" style="background-image:url(&quot;' + e.img + '&quot;)"></span>' : '';
+      var ser = MODELS.filter(function (x) { return x.s === m.s && !x.eos; });
+      var i = ser.indexOf(m);
+      var ids = [ser[i - 1], m, ser[i + 1]].filter(Boolean).map(function (x) { return x.id; });
+      var link = ids.length > 1 ? '<a class="wb-bridge" href="pa-series.html?cmp=' + ids.map(encodeURIComponent).join(',') + '">Comparer ' + m.id + ' avec ses voisins de série' + ic('arrow', 14) + '</a>' : '';
+      return ph + link;
+    }
+
     let html = '';
 
     /* ── 1. Le verdict, en haut, toujours visible ── */
@@ -1320,6 +1337,7 @@
       +   '<span class="wb-conf ' + confClassWb + '">' + ic(confIcon, 12) + confLabel + '</span>'
       + '</div>'
       + '<div class="wb-verdict-models">Modèles candidats : ' + primary.modeles + '</div>'
+      + verdictBridge(retenu)
       + '</div>';
 
     /* ── 2. Jauge de charge ──

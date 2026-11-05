@@ -1,5 +1,37 @@
 # Changelog
 
+## Session 18 - 5 novembre 2026 : refonte v8, DA et ergonomie (branche refonte-v8)
+
+Retour de Rayan sur la v7 : DA inchangee, site statique, menus durs a
+atteindre, comparateur cache sous « NGFW ». La v8 change la structure,
+pas seulement le mouvement.
+
+- Coque commune (`header.js`) : barre d'outils persistante (Comparer,
+  Dimensionner, Optiques, Accessoires, Recherche), portefeuille en second
+  niveau, dock d'outils en bas d'ecran sous 860 px. Raccourcis : C
+  (comparateur), D (etabli), / ou Ctrl+K (palette).
+- Palette de commande : modeles (numero, usage, seuil « 10 gbps » ou
+  « 500k »), pages, actions ; Maj+Entree ajoute a la comparaison. La
+  selection est partagee entre pages (`pan-cmp-sel`).
+- Comparateur : trois vues sur une meme selection. Gamme = series en
+  couloirs sur un axe logarithmique (TP, App-ID, sessions, CPS), photo du
+  boitier posee au bout de la plage, loupe au survol ou au focus, fleches
+  du clavier. Le modele choisi vole vers le bac ; « Comparer » fait passer
+  les cartes du bac en tetes de colonne (GSAP Flip), lignes avec barres et
+  ecart a la valeur la plus haute. Tableau complet conserve. Concurrents :
+  couloirs separes, profil de mesure, jamais d'ecart calcule avec un PA.
+- Accueil : selecteur de modeles dans l'ouverture, series posees sur
+  l'axe de debit (assemblage anime), index des outils, compteurs a
+  rouleaux. Plus de cartes.
+- DA : Helvetica Neue / Arial, charbon neutre, un seul accent orange,
+  sur-titres hachures, cartes des autres pages converties en entrees sur
+  filet. `bg.js` supprime. GSAP 3.13 + Flip + CustomEase dans `vendor/`
+  (publie par `_stage.js`).
+- Etabli : verdict en typographie, photo du boitier retenu (fond CSS),
+  lien « Comparer avec ses voisins de serie ».
+- Visuels ecartes a l'affichage : PA-5445 (montre un PA-450R) et PA-7050
+  (fragment de facade). `data/pa-chassis.js` non modifie.
+
 ## Session 17 ter - 5 novembre 2026 : les concurrents dans le comparateur
 
 Consigne : fournir le jeu de donnees des boitiers concurrents que le

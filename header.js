@@ -284,7 +284,7 @@
       var items = [];
       var toks = q.split(/\s+/).filter(Boolean);
       /* Seuil chiffre : « 10 gbps », « 10g », « 500k » */
-      var mG = q.match(/(\d+(?:[.,]\d+)?)\s*(g|gb|gbps)\b/);
+      var mG = q.match(/(\d+(?:[.,]\d+)?)(?:\s*(?:gb|gbps|gbit)|\s+g)\b/);
       var mS = q.match(/(\d+(?:[.,]\d+)?)\s*(k|m)\b/);
       var thr = null;
       if (mG) thr = { key: 'tp', v: parseFloat(mG[1].replace(',', '.')) };

@@ -2,6 +2,18 @@
 
 > Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
+## Refonte v8 (branche refonte-v8, non fusionnee)
+
+Voir CHANGELOG session 18. Points a connaitre avant d'editer :
+- `header.js` porte toute la coque : barre d'outils, palette (Ctrl+K, /),
+  dock mobile, raccourcis C et D, `window.CmpSel` (selection partagee).
+- `pa-series.html` : `window.CmpPage.route(href)` re-route sans recharger ;
+  les vues sont `#view-xp`, `#view-tbl`, `#view-cmp` ; parametres d'URL
+  `?cmp=`, `?view=table`, `?focus=`, `?vendors=`.
+- Toutes les pages chargent `vendor/gsap.min.js`, `Flip`, `CustomEase`
+  avant `header.js`. Aucun CDN.
+- Le bloc « DA v8 » en fin de `styles.css` surcharge les couches v5 a v7.
+
 ## Contexte rapide
 
 Repo : `C:\Users\rayna\Documents\palo-sizing` - HTML/CSS/JS vanilla, **aucune compilation**.

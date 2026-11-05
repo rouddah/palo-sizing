@@ -280,7 +280,7 @@
     function find(q) {
       q = norm(q.trim());
       if (!q) return [];
-      var g = q.match(/(\d+(?:[.,]\d+)?)\s*(g|gb|gbps)\b/);
+      var g = q.match(/(\d+(?:[.,]\d+)?)(?:\s*(?:gb|gbps|gbit)|\s+g)\b/);
       if (g) {
         var v = parseFloat(g[1].replace(',', '.'));
         return MODELS.filter(function (m) { return !m.eos && m.tp != null && m.tp >= v; })

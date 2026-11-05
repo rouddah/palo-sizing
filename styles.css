@@ -2819,6 +2819,7 @@ html.cmdk-on, html.cmdk-on body { overflow: hidden; }
 }
 .cmdk-field input::placeholder { color: var(--text-muted); }
 .cmdk-field:focus-within { box-shadow: inset 0 -2px 0 var(--accent); }
+.cmdk-field input:focus-visible { outline: none; }
 .cmdk-x { font: 500 11px/1 var(--font); color: var(--text-muted); background: none; border: 1px solid var(--border2); border-radius: var(--r-sm); padding: 5px 7px; cursor: pointer; }
 .cmdk-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px var(--sp-4); border-bottom: 1px solid var(--border); background: var(--surface2); }
 .cmdk-sel[hidden] { display: none; }
@@ -2956,3 +2957,81 @@ html.cmdk-on, html.cmdk-on body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; }
 }
+
+/* ── Etabli v8 : verdict en typographie, titres en casse normale ── */
+.wb-pane-head { background: var(--bg); }
+.wb-pane-title { font: 700 14px/1 var(--font); letter-spacing: 0; text-transform: none; color: var(--text-bright); }
+.wb-group-title { font: 700 13px/1.2 var(--font); letter-spacing: 0; text-transform: none; color: var(--text-bright); border-bottom-color: var(--border2); }
+.wb-verdict {
+  position: relative;
+  border: 0; border-top: 2px solid var(--accent); border-radius: 0;
+  background: none; padding: var(--sp-5) 0 var(--sp-5);
+  box-shadow: none !important;
+}
+.wb-verdict::before { display: none; }
+.wb-verdict.amb::before { display: none; }
+.wb-verdict-family { font: 700 clamp(34px, 3.4vw, 52px)/1 var(--font); letter-spacing: -.03em; }
+.wb-verdict-pos { font-size: 14px; color: var(--text-dim); margin-top: var(--sp-2); }
+.wb-verdict-models { font: 400 12.5px/1.4 var(--mono); color: var(--text-muted); margin-top: var(--sp-3); }
+.wb-photo {
+  display: block; height: 44px; max-width: 420px; margin-top: var(--sp-4);
+  background-repeat: no-repeat; background-size: contain; background-position: left center;
+}
+.wb-bridge {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  margin-top: var(--sp-4); padding: 6px 0;
+  font: 600 14px/1 var(--font); color: var(--text-bright); text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+.wb-bridge .ic { color: var(--accent); transition: transform var(--dur-fast) var(--ease); }
+.wb-bridge:hover .ic { transform: translateX(4px); }
+.wb-bar { background: var(--bg); }
+.wb-tab { font-family: var(--font); }
+
+/* ── Bandeau d'outil (optiques, accessoires) : titre pose, pas d'etiquette ── */
+.tool-head { padding: var(--sp-4) var(--sp-6); }
+.tool-head .sub { font-size: 13px; color: var(--text-dim); }
+
+/* ── Pictogrammes des entrees d'index : sans cadre ── */
+.card-icon {
+  background: none !important; border: 0 !important; box-shadow: none !important;
+  width: auto !important; height: auto !important; padding: 0 !important;
+  justify-content: flex-start !important; color: var(--accent) !important;
+  margin-bottom: var(--sp-3) !important;
+}
+.card-title { font-size: 16px; letter-spacing: -.01em; }
+.info-note.green, .info-note.blue, .info-note.purple { --pillar: var(--accent); border-left-color: var(--accent); }
+
+/* ── Champs : rayons et filets de la DA ── */
+input, select, textarea { font-family: var(--font); }
+
+/* ── Pages outils v8 : libelles en casse normale, listes sur filets ── */
+body .flt-lab, body .filter-label, body .stat-name, body .tb-label, body .part .fam {
+  font: 500 12px/1.2 var(--font); letter-spacing: 0; text-transform: none; color: var(--text-muted);
+}
+body .flt-wrap, body .tb-wrap { background: color-mix(in srgb, var(--bg) 94%, transparent); }
+body .chip.on { box-shadow: none; }
+/* Accessoires : chaque reference est une entree d'index, plus une carte */
+body .parts { column-gap: var(--sp-8); row-gap: 0; }
+body .part {
+  background: none; border: 0; border-top: 1px solid var(--border2); border-radius: 0;
+  padding: var(--sp-4) 0 var(--sp-5); box-shadow: none; transform: none;
+}
+body .part:hover { transform: none; box-shadow: none; border-color: var(--accent); }
+body .part .pf span { background: none; border: 0; padding: 0; margin-right: var(--sp-2); color: var(--text-dim); }
+body .part .eol { background: none; border: 0; padding: 0; }
+body .bucket-head h2 { font-size: 20px; letter-spacing: -.02em; }
+body .bucket-head h2::before { width: 26px; height: 8px; border-radius: 0; box-shadow: none; background: var(--hatch); }
+/* Recherche : panneau de criteres a plat */
+body .filter-panel { background: none; border: 0; border-right: 1px solid var(--border); border-radius: 0; padding: 0 var(--sp-6) 0 0; }
+body .filter-panel h2 { font-size: 16px; }
+body .result-card { border-radius: var(--r-md); }
+/* Optiques : en-tete de colonne sans capitales espacees */
+body .mx thead th .ff { font: 500 11.5px/1.2 var(--font); letter-spacing: 0; text-transform: none; }
+.info-note[style*="border-left-color"] { border-left-color: var(--accent) !important; }
+/* Pages produit : pictogrammes et etiquettes en une seule couleur */
+body .product-icon { background: none !important; border: 0 !important; box-shadow: none !important; color: var(--accent) !important; width: auto !important; padding: 0 !important; }
+body .product-tag { background: none !important; border: 0 !important; padding: 0 !important; color: var(--text-dim) !important; font-family: var(--mono); }
+body .product-card-sub { font-family: var(--font); letter-spacing: 0; }
+/* Le comparateur est deja dans le dock mobile : le lien de l'etabli fait doublon */
+@media (max-width: 860px) { .wb-bar a.wb-tab[href="pa-series.html"] { display: none; } }
