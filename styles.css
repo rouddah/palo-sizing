@@ -2974,7 +2974,7 @@ html.cmdk-on, html.cmdk-on body { overflow: hidden; }
 .wb-verdict-pos { font-size: 14px; color: var(--text-dim); margin-top: var(--sp-2); }
 .wb-verdict-models { font: 400 12.5px/1.4 var(--mono); color: var(--text-muted); margin-top: var(--sp-3); }
 .wb-photo {
-  display: block; height: 44px; max-width: 420px; margin-top: var(--sp-4);
+  display: block; height: 64px; max-width: 420px; margin-top: var(--sp-4);
   background-repeat: no-repeat; background-size: contain; background-position: left center;
 }
 .wb-bridge {

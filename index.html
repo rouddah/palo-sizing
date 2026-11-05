@@ -263,10 +263,9 @@
     function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
     function gb(v) { return v == null ? 'non publié' : String(v).replace('.', ',') + ' Gbps'; }
     var X = '<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-    /* Deux visuels du stencil ne montrent pas le bon boitier : ecartes. */
-    var BAD_PHOTO = { 'PA-5445': 1, 'PA-7050': 1 };
+    /* Photos de facade des datasheets (data/pa-chassis.js). */
     function photo(m) {
-      if (!m || BAD_PHOTO[m.id]) return null;
+      if (!m) return null;
       var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[m.id.toLowerCase()];
       return e ? e.img : null;
     }

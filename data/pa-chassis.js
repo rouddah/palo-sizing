@@ -1,495 +1,468 @@
-/* Visuels de boitiers, decoupes dans le stencil Visio officiel Palo Alto
-   (panw-visio-index-sheet.pdf). Fichiers dans img/hw/.
+/* Photos de facade des PA-Series, extraites des datasheets officielles
+   Palo Alto (premiere page, photo legendee du modele). Genere par
+   tools/photos.js : ne pas editer a la main. Provenance de chaque
+   image : img/SOURCES.md.
 
-   Fond blanc rendu transparent et recadrage sur l'appareil : voir
-   tools/detour.js et tools/recadre.js.
-
-   Cinq references ont ete retirees le 20 aout 2026 : leurs fichiers ne
-   contenaient pas d'appareil mais un fragment de legende decale d'une
-   position (pa-5410.png montrait le texte « PA-3440 », pa-5420.png
-   « PA-5410 », etc.). Le comparateur affiche ces colonnes sans
-   vignette, ce que chassis() prevoit. A regenerer depuis la planche
-   Visio si les visuels redeviennent disponibles. */
+   w / h : taille du WebP en pixels. view : face, ou trois-quarts quand
+   la datasheet ne montre le boitier qu en perspective (chassis,
+   boitiers durcis). ds : datasheet source. Un modele absent n a pas
+   de photo de facade publiee : l interface dessine un plastron. */
 
 const PA_CHASSIS = {
-"pa-410r": {
-"label": "PA-410R",
-"img": "img/hw/pa-410r.png",
-"page": 1
-},
-"pa-410r-5g": {
-"label": "PA-410R-5G",
-"img": "img/hw/pa-410r-5g.png",
-"page": 1
-},
-"pa-450r-5g": {
-"label": "PA-450R-5G",
-"img": "img/hw/pa-450r-5g.png",
-"page": 1
-},
-"pa-455-5g": {
-"label": "PA-455-5G",
-"img": "img/hw/pa-455-5g.png",
-"page": 1
-},
-"pa-455r-5g": {
-"label": "PA-455R-5G",
-"img": "img/hw/pa-455r-5g.png",
-"page": 1
-},
-"pa-505": {
-"label": "PA-505",
-"img": "img/hw/pa-505.png",
-"page": 1
-},
-"pa-510": {
-"label": "PA-510",
-"img": "img/hw/pa-510.png",
-"page": 1
-},
-"pa-520": {
-"label": "PA-520",
-"img": "img/hw/pa-520.png",
-"page": 1
-},
-"pa-540": {
-"label": "PA-540",
-"img": "img/hw/pa-540.png",
-"page": 1
-},
-"pa-545-poe": {
-"label": "PA-545-POE",
-"img": "img/hw/pa-545-poe.png",
-"page": 1
-},
-"pa-550": {
-"label": "PA-550",
-"img": "img/hw/pa-550.png",
-"page": 1
-},
-"pa-5540": {
-"label": "PA-5540",
-"img": "img/hw/pa-5540.png",
-"page": 1
-},
-"pa-5550": {
-"label": "PA-5550",
-"img": "img/hw/pa-5550.png",
-"page": 1
-},
-"pa-555-poe": {
-"label": "PA-555-POE",
-"img": "img/hw/pa-555-poe.png",
-"page": 1
-},
-"pa-5560": {
-"label": "PA-5560",
-"img": "img/hw/pa-5560.png",
-"page": 1
-},
-"pa-5570": {
-"label": "PA-5570",
-"img": "img/hw/pa-5570.png",
-"page": 1
-},
-"pa-5580": {
-"label": "PA-5580",
-"img": "img/hw/pa-5580.png",
-"page": 1
-},
-"pa-560": {
-"label": "PA-560",
-"img": "img/hw/pa-560.png",
-"page": 1
-},
-"pa-415-5g": {
-"label": "PA-415-5G",
-"img": "img/hw/pa-415-5g.png",
-"page": 3
-},
-"pa-450r": {
-"label": "PA-450R",
-"img": "img/hw/pa-450r.png",
-"page": 3
-},
-"pa-455": {
-"label": "PA-455",
-"img": "img/hw/pa-455.png",
-"page": 3
-},
-"pa-5445": {
-"label": "PA-5445",
-"img": "img/hw/pa-5445.png",
-"page": 3
-},
-"pa-7500": {
-"label": "PA-7500",
-"img": "img/hw/pa-7500.png",
-"page": 3
-},
-"pa-7500-sfc-a": {
-"label": "PA-7500-SFC-A",
-"img": "img/hw/pa-7500-sfc-a.png",
-"page": 3
-},
-"pa-7500-dpc-a": {
-"label": "PA-7500-DPC-A",
-"img": "img/hw/pa-7500-dpc-a.png",
-"page": 3
-},
-"pa-7500-mpc-a": {
-"label": "PA-7500-MPC-A",
-"img": "img/hw/pa-7500-mpc-a.png",
-"page": 3
-},
-"pa-7500-npc-a": {
-"label": "PA-7500-NPC-A",
-"img": "img/hw/pa-7500-npc-a.png",
-"page": 3
-},
-"pa-1410": {
-"label": "PA-1410",
-"img": "img/hw/pa-1410.png",
-"page": 4
-},
-"pa-1420": {
-"label": "PA-1420",
-"img": "img/hw/pa-1420.png",
-"page": 4
-},
-"pa-415": {
-"label": "PA-415",
-"img": "img/hw/pa-415.png",
-"page": 4
-},
-"pa-445": {
-"label": "PA-445",
-"img": "img/hw/pa-445.png",
-"page": 4
-},
-"m-300": {
-"label": "M-300",
-"img": "img/hw/m-300.png",
-"page": 5
-},
-"m-700": {
-"label": "M-700",
-"img": "img/hw/m-700.png",
-"page": 5
-},
-"pa-3410": {
-"label": "PA-3410",
-"img": "img/hw/pa-3410.png",
-"page": 5
-},
-"pa-3420": {
-"label": "PA-3420",
-"img": "img/hw/pa-3420.png",
-"page": 5
-},
-"pa-3430": {
-"label": "PA-3430",
-"img": "img/hw/pa-3430.png",
-"page": 5
-},
-"pa-3440": {
-"label": "PA-3440",
-"img": "img/hw/pa-3440.png",
-"page": 5
-},
-"pa-5450-ac-ps": {
-"label": "PA-5450 AC PS",
-"img": "img/hw/pa-5450-ac-ps.png",
-"page": 6
-},
-"pa-5450-dc-ps": {
-"label": "PA-5450 DC PS",
-"img": "img/hw/pa-5450-dc-ps.png",
-"page": 6
-},
-"pa-440": {
-"label": "PA-440",
-"img": "img/hw/pa-440.png",
-"page": 7
-},
-"pa-450": {
-"label": "PA-450",
-"img": "img/hw/pa-450.png",
-"page": 7
-},
-"pa-460": {
-"label": "PA-460",
-"img": "img/hw/pa-460.png",
-"page": 7
-},
-"pa-5400-blank": {
-"label": "PA-5400 BLANK",
-"img": "img/hw/pa-5400-blank.png",
-"page": 7
-},
-"pa-5450": {
-"label": "PA-5450",
-"img": "img/hw/pa-5450.png",
-"page": 7
-},
-"pan-pa-5400-dpc-a": {
-"label": "PAN-PA-5400-DPC-A",
-"img": "img/hw/pan-pa-5400-dpc-a.png",
-"page": 7
-},
-"pan-pa-5400-mpc-a": {
-"label": "PAN-PA-5400-MPC-A",
-"img": "img/hw/pan-pa-5400-mpc-a.png",
-"page": 7
-},
-"pan-pa-5400-nc-a": {
-"label": "PAN-PA-5400-NC-A",
-"img": "img/hw/pan-pa-5400-nc-a.png",
-"page": 7
-},
-"pa-410": {
-"label": "PA-410",
-"img": "img/hw/pa-410.png",
-"page": 7
-},
-"pan-pa-7000-100g-npc-a": {
-"label": "PAN-PA-7000-100G-NPC-A",
-"img": "img/hw/pan-pa-7000-100g-npc-a.png",
-"page": 8
-},
-"pan-pa-7000-lfc-a": {
-"label": "PAN-PA-7000-LFC-A",
-"img": "img/hw/pan-pa-7000-lfc-a.png",
-"page": 8
-},
-"pan-pa-7050-smc-b": {
-"label": "PAN-PA-7050-SMC-B",
-"img": "img/hw/pan-pa-7050-smc-b.png",
-"page": 8
-},
-"pan-pa-7080-smc-b": {
-"label": "PAN-PA-7080-SMC-B",
-"img": "img/hw/pan-pa-7080-smc-b.png",
-"page": 8
-},
-"pan-pa-7000-dpc-a": {
-"label": "PAN-PA-7000-DPC-A",
-"img": "img/hw/pan-pa-7000-dpc-a.png",
-"page": 8
-},
-"m-200": {
-"label": "M-200",
-"img": "img/hw/m-200.png",
-"page": 9
-},
-"m-600": {
-"label": "M-600",
-"img": "img/hw/m-600.png",
-"page": 9
-},
-"pa-220r": {
-"label": "PA-220R",
-"img": "img/hw/pa-220r.png",
-"page": 9
-},
-"pa-3220": {
-"label": "PA-3220",
-"img": "img/hw/pa-3220.png",
-"page": 9
-},
-"pa-3250": {
-"label": "PA-3250",
-"img": "img/hw/pa-3250.png",
-"page": 9
-},
-"pa-3260": {
-"label": "PA-3260",
-"img": "img/hw/pa-3260.png",
-"page": 9
-},
-"pa-5280": {
-"label": "PA-5280",
-"img": "img/hw/pa-5280.png",
-"page": 9
-},
-"gp-100": {
-"label": "GP-100",
-"img": "img/hw/gp-100.png",
-"page": 10
-},
-"m-100": {
-"label": "M-100",
-"img": "img/hw/m-100.png",
-"page": 10
-},
-"m-500": {
-"label": "M-500",
-"img": "img/hw/m-500.png",
-"page": 10
-},
-"pa-200": {
-"label": "PA-200",
-"img": "img/hw/pa-200.png",
-"page": 10
-},
-"pa-2020": {
-"label": "PA-2020",
-"img": "img/hw/pa-2020.png",
-"page": 10
-},
-"pa-2050": {
-"label": "PA-2050",
-"img": "img/hw/pa-2050.png",
-"page": 10
-},
-"pa-3020": {
-"label": "PA-3020",
-"img": "img/hw/pa-3020.png",
-"page": 10
-},
-"pa-3050": {
-"label": "PA-3050",
-"img": "img/hw/pa-3050.png",
-"page": 10
-},
-"pa-3060": {
-"label": "PA-3060",
-"img": "img/hw/pa-3060.png",
-"page": 10
-},
-"pa-4020": {
-"label": "PA-4020",
-"img": "img/hw/pa-4020.png",
-"page": 10
-},
-"pa-4050": {
-"label": "PA-4050",
-"img": "img/hw/pa-4050.png",
-"page": 10
-},
-"pa-4060": {
-"label": "PA-4060",
-"img": "img/hw/pa-4060.png",
-"page": 10
-},
-"pa-500": {
-"label": "PA-500",
-"img": "img/hw/pa-500.png",
-"page": 10
-},
-"pa-5020": {
-"label": "PA-5020",
-"img": "img/hw/pa-5020.png",
-"page": 10
-},
-"pa-5050": {
-"label": "PA-5050",
-"img": "img/hw/pa-5050.png",
-"page": 10
-},
-"pa-5060": {
-"label": "PA-5060",
-"img": "img/hw/pa-5060.png",
-"page": 10
-},
-"pa-7000-20g-npc": {
-"label": "PA-7000-20G-NPC",
-"img": "img/hw/pa-7000-20g-npc.png",
-"page": 10
-},
-"pa-7000-2ogq-npc": {
-"label": "PA-7000-2OGQ-NPC",
-"img": "img/hw/pa-7000-2ogq-npc.png",
-"page": 10
-},
-"pa-7000-20gq-npc": {
-"label": "PA-7000-20GQ-NPC",
-"img": "img/hw/pa-7000-20gq-npc.png",
-"page": 10
-},
-"pa-7000-lpc": {
-"label": "PA-7000-LPC",
-"img": "img/hw/pa-7000-lpc.png",
-"page": 10
-},
-"pa-7050": {
-"label": "PA-7050",
-"img": "img/hw/pa-7050.png",
-"page": 10
-},
-"pa-7000-smc": {
-"label": "PA-7000-SMC",
-"img": "img/hw/pa-7000-smc.png",
-"page": 10
-},
-"pa-7050-smc": {
-"label": "PA-7050-SMC",
-"img": "img/hw/pa-7050-smc.png",
-"page": 10
-},
-"pa-7080-smc": {
-"label": "PA-7080-SMC",
-"img": "img/hw/pa-7080-smc.png",
-"page": 10
-},
-"pan-airduct": {
-"label": "PAN-AIRDUCT",
-"img": "img/hw/pan-airduct.png",
-"page": 10
-},
-"wf-500": {
-"label": "WF-500",
-"img": "img/hw/wf-500.png",
-"page": 10
-},
-"pa-7000-blnk": {
-"label": "PA-7000-BLNK",
-"img": "img/hw/pa-7000-blnk.png",
-"page": 10
-},
-"pa-7000-blank": {
-"label": "PA-7000-Blank",
-"img": "img/hw/pa-7000-blank.png",
-"page": 10
-},
-"pa-220": {
-"label": "PA-220",
-"img": "img/hw/pa-220.png",
-"page": 11
-},
-"pa-5220": {
-"label": "PA-5220",
-"img": "img/hw/pa-5220.png",
-"page": 11
-},
-"pa-5250": {
-"label": "PA-5250",
-"img": "img/hw/pa-5250.png",
-"page": 11
-},
-"pa-5260": {
-"label": "PA-5260",
-"img": "img/hw/pa-5260.png",
-"page": 11
-},
-"pa-820": {
-"label": "PA-820",
-"img": "img/hw/pa-820.png",
-"page": 11
-},
-"pa-850": {
-"label": "PA-850",
-"img": "img/hw/pa-850.png",
-"page": 11
-},
-"pa-7050-ac-power-supply": {
-"label": "PA-7050 AC Power Supply",
-"img": "img/hw/pa-7050-ac-power-supply.png",
-"page": 12
-},
-"pa-7050-dc-power-supply": {
-"label": "PA-7050 DC Power Supply",
-"img": "img/hw/pa-7050-dc-power-supply.png",
-"page": 12
-}
+ "pa-410": {
+  "label": "PA-410",
+  "img": "img/front/pa-410.webp",
+  "w": 720,
+  "h": 147,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-415": {
+  "label": "PA-415",
+  "img": "img/front/pa-415.webp",
+  "w": 703,
+  "h": 106,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-415-5g": {
+  "label": "PA-415-5G",
+  "img": "img/front/pa-415-5g.webp",
+  "w": 588,
+  "h": 400,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-440": {
+  "label": "PA-440",
+  "img": "img/front/pa-440.webp",
+  "w": 476,
+  "h": 111,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-445": {
+  "label": "PA-445",
+  "img": "img/front/pa-445.webp",
+  "w": 720,
+  "h": 100,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-450": {
+  "label": "PA-450",
+  "img": "img/front/pa-450.webp",
+  "w": 475,
+  "h": 110,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-455": {
+  "label": "PA-455",
+  "img": "img/front/pa-455.webp",
+  "w": 720,
+  "h": 94,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-455-5g": {
+  "label": "PA-455-5G",
+  "img": "img/front/pa-455-5g.webp",
+  "w": 650,
+  "h": 102,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-460": {
+  "label": "PA-460",
+  "img": "img/front/pa-460.webp",
+  "w": 474,
+  "h": 110,
+  "view": "face",
+  "ds": "pa-400-series"
+ },
+ "pa-501": {
+  "label": "PA-501",
+  "img": "img/front/pa-501.webp",
+  "w": 417,
+  "h": 86,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-505": {
+  "label": "PA-505",
+  "img": "img/front/pa-505.webp",
+  "w": 433,
+  "h": 89,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-510": {
+  "label": "PA-510",
+  "img": "img/front/pa-510.webp",
+  "w": 427,
+  "h": 101,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-520": {
+  "label": "PA-520",
+  "img": "img/front/pa-520.webp",
+  "w": 431,
+  "h": 100,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-520-5g": {
+  "label": "PA-520-5G",
+  "img": "img/front/pa-520-5g.webp",
+  "w": 291,
+  "h": 331,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-540": {
+  "label": "PA-540",
+  "img": "img/front/pa-540.webp",
+  "w": 421,
+  "h": 99,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-545-poe": {
+  "label": "PA-545-POE",
+  "img": "img/front/pa-545-poe.webp",
+  "w": 659,
+  "h": 77,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-550": {
+  "label": "PA-550",
+  "img": "img/front/pa-550.webp",
+  "w": 661,
+  "h": 95,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-555-poe": {
+  "label": "PA-555-POE",
+  "img": "img/front/pa-555-poe.webp",
+  "w": 659,
+  "h": 77,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-560": {
+  "label": "PA-560",
+  "img": "img/front/pa-560.webp",
+  "w": 661,
+  "h": 93,
+  "view": "face",
+  "ds": "pa-500-series"
+ },
+ "pa-850": {
+  "label": "PA-850",
+  "img": "img/front/pa-850.webp",
+  "w": 720,
+  "h": 121,
+  "view": "face",
+  "ds": "pa-800-series-datasheet"
+ },
+ "pa-1410": {
+  "label": "PA-1410",
+  "img": "img/front/pa-1410.webp",
+  "w": 720,
+  "h": 114,
+  "view": "face",
+  "ds": "pa-1400-series"
+ },
+ "pa-1420": {
+  "label": "PA-1420",
+  "img": "img/front/pa-1420.webp",
+  "w": 720,
+  "h": 114,
+  "view": "face",
+  "ds": "pa-1400-series"
+ },
+ "pa-1510-poe": {
+  "label": "PA-1510-POE",
+  "img": "img/front/pa-1510-poe.webp",
+  "w": 720,
+  "h": 110,
+  "view": "face",
+  "ds": "pa-1500-series"
+ },
+ "pa-1520-poe": {
+  "label": "PA-1520-POE",
+  "img": "img/front/pa-1520-poe.webp",
+  "w": 720,
+  "h": 110,
+  "view": "face",
+  "ds": "pa-1500-series"
+ },
+ "pa-1530-poe": {
+  "label": "PA-1530-POE",
+  "img": "img/front/pa-1530-poe.webp",
+  "w": 720,
+  "h": 110,
+  "view": "face",
+  "ds": "pa-1500-series"
+ },
+ "pa-3410": {
+  "label": "PA-3410",
+  "img": "img/front/pa-3410.webp",
+  "w": 720,
+  "h": 113,
+  "view": "face",
+  "ds": "pa-3400-series"
+ },
+ "pa-3420": {
+  "label": "PA-3420",
+  "img": "img/front/pa-3420.webp",
+  "w": 720,
+  "h": 113,
+  "view": "face",
+  "ds": "pa-3400-series"
+ },
+ "pa-3430": {
+  "label": "PA-3430",
+  "img": "img/front/pa-3430.webp",
+  "w": 720,
+  "h": 112,
+  "view": "face",
+  "ds": "pa-3400-series"
+ },
+ "pa-3440": {
+  "label": "PA-3440",
+  "img": "img/front/pa-3440.webp",
+  "w": 720,
+  "h": 112,
+  "view": "face",
+  "ds": "pa-3400-series"
+ },
+ "pa-3510": {
+  "label": "PA-3510",
+  "img": "img/front/pa-3510.webp",
+  "w": 720,
+  "h": 108,
+  "view": "face",
+  "ds": "pa-3500-series"
+ },
+ "pa-3520": {
+  "label": "PA-3520",
+  "img": "img/front/pa-3520.webp",
+  "w": 720,
+  "h": 108,
+  "view": "face",
+  "ds": "pa-3500-series"
+ },
+ "pa-3530": {
+  "label": "PA-3530",
+  "img": "img/front/pa-3530.webp",
+  "w": 720,
+  "h": 182,
+  "view": "face",
+  "ds": "pa-3500-series"
+ },
+ "pa-3540": {
+  "label": "PA-3540",
+  "img": "img/front/pa-3540.webp",
+  "w": 720,
+  "h": 182,
+  "view": "face",
+  "ds": "pa-3500-series"
+ },
+ "pa-5410": {
+  "label": "PA-5410",
+  "img": "img/front/pa-5410.webp",
+  "w": 717,
+  "h": 192,
+  "view": "face",
+  "ds": "pa-5400-series"
+ },
+ "pa-5420": {
+  "label": "PA-5420",
+  "img": "img/front/pa-5420.webp",
+  "w": 717,
+  "h": 192,
+  "view": "face",
+  "ds": "pa-5400-series"
+ },
+ "pa-5430": {
+  "label": "PA-5430",
+  "img": "img/front/pa-5430.webp",
+  "w": 717,
+  "h": 192,
+  "view": "face",
+  "ds": "pa-5400-series"
+ },
+ "pa-5440": {
+  "label": "PA-5440",
+  "img": "img/front/pa-5440.webp",
+  "w": 717,
+  "h": 192,
+  "view": "face",
+  "ds": "pa-5400-series"
+ },
+ "pa-5445": {
+  "label": "PA-5445",
+  "img": "img/front/pa-5445.webp",
+  "w": 717,
+  "h": 192,
+  "view": "face",
+  "ds": "pa-5400-series"
+ },
+ "pa-5510": {
+  "label": "PA-5510",
+  "img": "img/front/pa-5510.webp",
+  "w": 665,
+  "h": 144,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5520": {
+  "label": "PA-5520",
+  "img": "img/front/pa-5520.webp",
+  "w": 664,
+  "h": 144,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5530": {
+  "label": "PA-5530",
+  "img": "img/front/pa-5530.webp",
+  "w": 670,
+  "h": 145,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5540": {
+  "label": "PA-5540",
+  "img": "img/front/pa-5540.webp",
+  "w": 663,
+  "h": 208,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5550": {
+  "label": "PA-5550",
+  "img": "img/front/pa-5550.webp",
+  "w": 661,
+  "h": 207,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5560": {
+  "label": "PA-5560",
+  "img": "img/front/pa-5560.webp",
+  "w": 667,
+  "h": 210,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5570": {
+  "label": "PA-5570",
+  "img": "img/front/pa-5570.webp",
+  "w": 658,
+  "h": 208,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-5580": {
+  "label": "PA-5580",
+  "img": "img/front/pa-5580.webp",
+  "w": 658,
+  "h": 208,
+  "view": "face",
+  "ds": "pa-5500-series"
+ },
+ "pa-7050": {
+  "label": "PA-7050",
+  "img": "img/front/pa-7050.webp",
+  "w": 439,
+  "h": 400,
+  "view": "trois-quarts",
+  "ds": "pa-7000-series"
+ },
+ "pa-7080": {
+  "label": "PA-7080",
+  "img": "img/front/pa-7080.webp",
+  "w": 223,
+  "h": 400,
+  "view": "trois-quarts",
+  "ds": "pa-7000-series"
+ },
+ "pa-7500": {
+  "label": "PA-7500",
+  "img": "img/front/pa-7500.webp",
+  "w": 312,
+  "h": 400,
+  "view": "trois-quarts",
+  "ds": "pa-7500"
+ },
+ "pa-410r": {
+  "label": "PA-410R",
+  "img": "img/front/pa-410r.webp",
+  "w": 343,
+  "h": 176,
+  "view": "trois-quarts",
+  "ds": "pa-400r-series"
+ },
+ "pa-410r-5g": {
+  "label": "PA-410R-5G",
+  "img": "img/front/pa-410r-5g.webp",
+  "w": 720,
+  "h": 213,
+  "view": "trois-quarts",
+  "ds": "pa-400r-series"
+ },
+ "pa-450r": {
+  "label": "PA-450R",
+  "img": "img/front/pa-450r.webp",
+  "w": 705,
+  "h": 92,
+  "view": "face",
+  "ds": "pa-400r-series"
+ },
+ "pa-450r-5g": {
+  "label": "PA-450R-5G",
+  "img": "img/front/pa-450r-5g.webp",
+  "w": 680,
+  "h": 400,
+  "view": "face",
+  "ds": "pa-400r-series"
+ },
+ "pa-455r-5g": {
+  "label": "PA-455R-5G",
+  "img": "img/front/pa-455r-5g.webp",
+  "w": 493,
+  "h": 291,
+  "view": "trois-quarts",
+  "ds": "pa-400r-series"
+ },
+ "pa-52r-5g": {
+  "label": "PA-52R-5G",
+  "img": "img/front/pa-52r-5g.webp",
+  "w": 653,
+  "h": 189,
+  "view": "face",
+  "ds": "pa-50r-series"
+ },
+ "pa-54r-poe-d-5g": {
+  "label": "PA-54R-POE-D-5G",
+  "img": "img/front/pa-54r-poe-d-5g.webp",
+  "w": 460,
+  "h": 400,
+  "view": "face",
+  "ds": "pa-50r-series"
+ },
+ "pa-56r-poe-5g": {
+  "label": "PA-56R-POE-5G",
+  "img": "img/front/pa-56r-poe-5g.webp",
+  "w": 720,
+  "h": 175,
+  "view": "face",
+  "ds": "pa-50r-series"
+ }
 };

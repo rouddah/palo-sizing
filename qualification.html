@@ -1330,8 +1330,7 @@
       if (!r) return '';
       var m = r.m;
       var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[m.id.toLowerCase()];
-      var bad = { 'PA-5445': 1, 'PA-7050': 1 };
-      var ph = e && !bad[m.id] ? '<span class="wb-photo" role="img" aria-label="Face avant ' + m.id + '" style="background-image:url(&quot;' + e.img + '&quot;)"></span>' : '';
+      var ph = e ? '<span class="wb-photo" role="img" aria-label="Face avant ' + m.id + '" style="background-image:url(&quot;' + e.img + '&quot;)"></span>' : '';
       var ser = MODELS.filter(function (x) { return x.s === m.s && !x.eos; });
       var i = ser.indexOf(m);
       var ids = [ser[i - 1], m, ser[i + 1]].filter(Boolean).map(function (x) { return x.id; });
