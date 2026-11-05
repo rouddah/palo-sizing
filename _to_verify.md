@@ -5,46 +5,76 @@
 > document officiel, un arbitrage editorial non tranche. Une valeur
 > fausse ne se met pas ici, elle se corrige.
 >
-> Releve du 21 aout 2026, apres relecture des douze datasheets PA-Series.
+> Releve du 5 novembre 2026, apres relecture des onze datasheets
+> PA-Series (detail dans `AUDIT_DATASHEETS_2026-11.md`).
 
-## Valeurs portees TBD par les datasheets d'aout 2026
+## Valeurs TBD d'aout 2026 - resolu le 5 novembre 2026
 
-Ces champs sont **nuls** dans `data/pa-models.js` et s'affichent en tiret
-sur tout le site. Ils ne sont pas estimes : sur un outil de
-dimensionnement, un chiffre invente est pire qu'un trou.
+Les editions de septembre (PA-5500) et d'octobre 2026 (PA-3500) publient
+enfin le VPN IPsec et le CPS. Les huit champs nuls sont renseignes :
 
-| Serie | Champ | Etat |
+| Modele | VPN IPsec | CPS |
 | --- | --- | --- |
-| PA-3500, les quatre modeles | debit VPN IPsec | TBD dans la datasheet |
-| PA-3500, les quatre modeles | nouvelles sessions/s (CPS) | TBD dans la datasheet |
-| PA-5510, PA-5520, PA-5530 | debit VPN IPsec | TBD dans la datasheet |
-| PA-5510, PA-5520, PA-5530 | nouvelles sessions/s (CPS) | TBD dans la datasheet |
+| PA-3510 / 3520 / 3530 / 3540 | 13 / 15 / 22 / 36 Gbps | 325K / 350K / 500K / 550K |
+| PA-5510 / 5520 / 5530 | 34 / 36 / 38 Gbps | 600K / 971K / 1,01M |
 
-Consequence dans l'etabli de dimensionnement : une metrique non publiee
-ne peut ni valider ni disqualifier un modele. Elle sort du calcul, et le
-volet de recommandation affiche un encart qui nomme le trou. A reprendre
-des que Palo Alto publie les chiffres.
+Plus aucun modele du site n'a de VPN ou de CPS nul. Le mecanisme de
+l'etabli (une metrique nulle sort du calcul et un encart le dit) reste en
+place pour la prochaine serie annoncee.
 
-## References chassis : quinze modeles sans SKU
+**Texte d'interface a mettre a jour** (hors donnees, non modifie dans
+cette passe) : dans `qualification.html`, les descriptions de serie
+PA-3500 (« La datasheet ne publie pas encore le VPN IPsec ni le CPS ») et
+PA-5500 (« Le CPS des trois premiers modeles n'est pas encore publie »)
+sont devenues fausses.
 
-Controle fait contre le catalogue courant, le 21 aout 2026. Le champ
-`sku` est nul partout ou la reference n'existe pas encore.
+## References chassis : six modeles sans SKU
 
-**Confirme au catalogue** : PA-501 porte bien `PAN-PA-501`, et les
-PA-5540 a PA-5580 leurs references `-AC` / `-DC`.
+Le 21 aout 2026, quinze modeles n'avaient pas de reference. Les
+datasheets de septembre et octobre 2026 publient desormais, en Table 4 :
 
-**Annonce mais pas encore commandable**, donc `sku` nul : les trois
-PA-1500, les quatre PA-3500, les PA-5510 a PA-5530, le PA-520-5G et les
-quatre PA-50R. Ces references avaient d'abord ete deduites du motif des
-series precedentes ; c'est exactement ce que la regle interdit, elles ont
-ete retirees.
+- PA-1500 : `PAN-PA-1510-POE`, `PAN-PA-1520-POE`, `PAN-PA-1530-POE`
+- PA-3500 : `PAN-PA-3510` a `PAN-PA-3540`
+- PA-5510 a PA-5530 : `PAN-PA-55x0-AC` et `-DC` (le champ porte la
+  reference AC, comme les PA-5540 a PA-5580)
+- PA-400R : `PAN-PA-410R`, `PAN-PA-410R-5G`, `PAN-PA-450R`,
+  `PAN-PA-450R-5G`
 
-A reprendre a chaque nouveau catalogue : un modele qui obtient sa
-reference doit la voir apparaitre ici.
+**Toujours sans reference publiee**, donc `sku` nul : PA-520-5G (la
+datasheet PA-500 ne liste que des accessoires), PA-455R-5G (la Table 4 le
+nomme sans prefixe `PAN-`) et les quatre PA-50R (accessoires seulement).
+
+**Non publiees par la datasheet mais conservees** : les references des
+PA-400, PA-500, PA-1400, PA-3400, PA-5400 et du PA-7500. Ces datasheets
+n'ont pas de table de commande ; les references viennent du catalogue et
+n'ont pas ete recontrolees dans cette passe.
+
+## PA-400 : End of Sale annonce
+
+La page End of Life officielle annonce l'End of Sale des PA-410, PA-415,
+PA-440, PA-445, PA-450, PA-455 et PA-460 au **22 mars 2027**, End of
+Life au 21 mars 2032, remplacement recommande : PA-500 Series. Les
+PA-415-5G et PA-455-5G ne figurent pas dans l'annonce.
+
+A arbitrer : la date n'est pas atteinte, les modeles restent commandables
+et `eos` reste `false`. Poser le drapeau maintenant les retirerait de
+l'etabli de dimensionnement quatre mois trop tot.
+
+## 5G / GTP / SCTP Security : deux affirmations sans source
+
+Le champ `m5g` alimente la ligne « 5G / GTP / SCTP Security » du
+comparateur. Il est passe a **nul** (non publie, tiret a l'ecran) sur :
+
+- **PA-520-5G** : la datasheet PA-500 n'a pas de section Mobile Network
+  Infrastructure. Le modem 5G integre n'est pas la fonction de securite
+  5G ; PA-415-5G et PA-455-5G etaient deja a `false` pour la meme raison.
+- **PA-7500** : la datasheet de mars 2026 n'en parle pas non plus.
+
+A confirmer aupres de Palo Alto avant de les remettre a `true`.
 
 ## PA-50R : nom du troisieme modele
 
-La datasheet se contredit d'une table a l'autre :
+L'edition de septembre 2026 garde la contradiction :
 
 - Table 1, performances : le modele est nomme **PA-54R-POE-5G**
 - Table 4, materiel : il est nomme **PA-54R-POE** et porte « N/A » dans
@@ -54,26 +84,50 @@ Le site retient **PA-54R-POE**, sans 5G : c'est la table materielle qui
 decrit les interfaces, et elle est explicite sur l'absence de modem. A
 confirmer aupres de Palo Alto.
 
-## PA-400R : serie absente du site
+## Budgets PoE non publies
 
-Le catalogue courant contient PA-410R, PA-450R, PA-410R-5G, PA-450R-5G et
-PA-455R-5G, la gamme durcie de generation precedente. Le site ne les
-porte pas, et la datasheet PA-400 ne publie pas leurs performances. A
-arbitrer : les ajouter demande une source chiffree.
+- **PA-50R** : trois des quatre modeles annoncent PoE. La datasheet donne
+  la consommation maximale du boitier (225,1 W) mais pas le budget PoE
+  disponible.
+- **PA-455R-5G** : quatre ports RJ45 PoE, consommation maximale 185 W,
+  aucun budget PoE publie.
 
-## PA-50R : budget PoE
+Le champ `poeW` reste nul.
 
-Trois des quatre modeles annoncent PoE. La datasheet donne la
-consommation maximale du boitier (225,1 W) mais pas le budget PoE
-disponible. Le champ `poeW` reste nul.
+## Budgets PoE : contradictions internes
 
-## PA-1400 : statut de commercialisation
+- **PA-455-5G** : le bloc PoE de la datasheet PA-400 donne « Total PoE
+  Budget: 91 W » pour une liste qui inclut le PA-455-5G, mais la table
+  d'alimentation ecrit « with 151 W PoE output » pour ce modele. Le site
+  garde 151 W.
+- **PA-555-POE** : budget PoE 330 W dans le bloc PoE, « 332W PoE
+  output » dans la table d'alimentation. Le site garde 330 W, la valeur
+  annoncee comme budget.
 
-La page End of Life de Palo Alto comporte une entree PA-1400, mais elle
-voisine des lignes ION (Prisma SD-WAN) et les dates lues ne collent pas
-avec une serie encore mise en avant. La serie est donc laissee **active**
-sur le site. A verifier sur la matrice EoL officielle avant d'y poser un
-drapeau EoS.
+## PA-400R : hors du moteur de recommandation
+
+La serie est ajoutee le 5 novembre 2026 (datasheet PA-400R de fevrier
+2026). Comme la PA-50R, elle figure au comparateur et a la recherche mais
+pas dans les series que l'etabli peut recommander.
+
+Les pages `pa-series.html` et `search.html` portent chacune une table
+`DS_URLS` serie vers datasheet, qui n'a pas d'entree `PA-400R` : le lien
+datasheet de ces cinq colonnes retombe sur `#` tant qu'elle n'est pas
+ajoutee (`https://www.paloaltonetworks.com/resources/datasheets/pa-400r-series`).
+
+## PA-500 : format « 1U Rack »
+
+La datasheet PA-500 ne qualifie pas le format. Elle donne des dimensions
+de boitier de bureau (1,63 a 1,75 pouce de haut) et vend le montage en
+baie comme accessoire (`PAN-1RU-4POST-RACK-10` a `-16`). Le site affiche
+« 1U Rack », la PA-400 aux dimensions identiques est en « Desktop ».
+Arbitrage editorial, le filtre de format en depend.
+
+## PA-1400 : statut de commercialisation - resolu
+
+L'entree PA-1400 de la page End of Life est la colonne « remplacement
+recommande » de l'ION 9000 : la PA-1400 n'est pas en fin de vente. La
+serie reste active.
 
 ## Capacites de configuration
 

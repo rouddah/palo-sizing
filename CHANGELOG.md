@@ -1,5 +1,56 @@
 # Changelog
 
+## Session 17 - 5 novembre 2026 : les PA-Series recontrolees a la datasheet
+
+Consigne : reverifier chaque boitier contre sa datasheet officielle
+actuelle. Onze datasheets relues table par table, plus la page End of
+Life. Detail modele par modele dans `AUDIT_DATASHEETS_2026-11.md`.
+
+### Les trous TBD sont combles
+
+Les editions de septembre (PA-5500) et d'octobre 2026 (PA-3500)
+publient le VPN IPsec et le CPS qui manquaient :
+
+| Modele | VPN IPsec | CPS |
+| --- | --- | --- |
+| PA-3510 / 3520 / 3530 / 3540 | 13 / 15 / 22 / 36 Gbps | 325K / 350K / 500K / 550K |
+| PA-5510 / 5520 / 5530 | 34 / 36 / 38 Gbps | 600K / 971K / 1,01M |
+
+Plus aucun modele n'a de VPN ou de CPS nul. Elles publient aussi leurs
+references, comme la PA-1500 : treize SKU passent de nul a la valeur de
+la Table 4.
+
+### Ce qui etait faux
+
+- **SFP28 des PA-3530 et PA-3540** : 8 ports, pas 6.
+- **HA active/active** : affiche « non » sur les PA-400, PA-1400 et
+  PA-50R, alors que les trois datasheets la publient. Quinze modeles
+  corriges.
+- **5G Security** : le PA-54R-POE la porte (section commune a toute la
+  PA-50R). En sens inverse, le PA-520-5G et le PA-7500 l'affichaient sans
+  qu'aucune datasheet ne le dise : le champ passe a nul. Pour le PA-520-5G,
+  c'etait le modem 5G pris pour la fonction de securite.
+
+Les debits firewall et Threat Prevention, les sessions et les systemes
+virtuels des 54 modeles etaient tous justes.
+
+### PA-400R ajoutee
+
+La datasheet PA-400R existe et donne tous les chiffres : PA-410R,
+PA-410R-5G, PA-450R, PA-450R-5G, PA-455R-5G. **54 modeles, 12 series
+deviennent 59 modeles, 13 series** ; compteurs de l'accueil et meta du
+comparateur ajustes. Comme la PA-50R, la serie reste hors de l'etabli de
+dimensionnement.
+
+### Laisse en attente
+
+Dans `_to_verify.md` : l'End of Sale annonce de sept PA-400 au 22 mars
+2027 (drapeau non pose, date non atteinte), six references toujours non
+publiees, les budgets PoE PA-50R et PA-455R-5G, deux contradictions
+internes de budget PoE, et deux textes de `qualification.html` qui disent
+encore le VPN et le CPS non publies. Les tables `DS_URLS` de
+`pa-series.html` et `search.html` n'ont pas d'entree PA-400R.
+
 ## Session 16 - 21 aout 2026 : les pages produit repassees a la source
 
 Consigne : verifier toutes les informations de tous les produits
