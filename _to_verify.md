@@ -38,7 +38,12 @@ PA-850, PA-7050 et PA-7080 : la Compatibility Matrix commence a 10.1.
 tunnels, SSL, objets, NAT, SD-WAN, profils) des PA-400, PA-500, PA-800,
 PA-1400, PA-3400, PA-5400, PA-7000 et PA-7500 : reprises d'editions
 anterieures des datasheets, absentes des editions courantes. A confirmer
-ou a retirer. Le site les affiche toujours.
+ou a retirer. Depuis le 5 novembre 2026 le site les affiche attenuees, en
+italique, avec la mention « edition anterieure de la datasheet » sous le
+libelle de ligne et au survol de chaque valeur (`LEGACY_CAPS` dans
+`data/pa-models.js`). Elles ne comptent plus dans les ecarts, barres et
+maxima du comparateur, et `_smoke.js` / `_wizard.js` verifient qu elles ne
+changent aucune recommandation.
 
 **GlobalProtect sur PA-400 et PA-400R, SD-WAN sur PA-7500** : les
 datasheets courantes n'en parlent pas. Ligne affichee « non publie ».

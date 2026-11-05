@@ -195,6 +195,17 @@ const MODELS = [
       mgig:0, mgigSp:null, combo:0, sfpdd:0, poeP:null, haAP:true, haCl:'NGFW clustering actif/actif, nombre de membres non publié', haNote:'Datasheet Table 3 : NGFW clustering with active/active, HA active/passive. A/A hors clustering non publié', haPorts:'Aucun port HA dédié', panosMin:'12.2.2', panosMax:null, eosD:null, eolD:null, dsOs:'12.2', disk:'128 GB (écrit 128 Gb)', psu:'12-48 VDC, AC 100-240 VAC en option (modules basse tension, haute tension, ou adaptateur AC)', cool:'Passive (sans ventilateur)', io:'Cellular: Dual SIM, Single Modem, RJ-45: 16 x 1G, SFP: 2 x 1G, Digital I/O: 6', mgmt:'Out-of-band management: 1G/10G SFP+ (2), Console: RJ-45 console port (1), USB-C, Bootstrap: USB 3.2 Gen1 Type A, Log: 10G SFP+ (2)' },
 ];
 
+/* Capacites de configuration reprises d'editions anterieures des
+   datasheets (tunnels GlobalProtect, zones, politiques, tunnels IPsec,
+   sessions SSL, objets adresses, NAT, SD-WAN, profils). Aucune edition
+   courante ne les publie plus (verifie le 5 novembre 2026 sur les 13
+   PDF) : elles restent affichees, attenuees et signalees comme telles,
+   et n'entrent dans aucun calcul (etabli, mode guide, ecarts et barres
+   du comparateur). _smoke.js et _wizard.js le verifient en les
+   faisant varier. Voir _to_verify.md. */
+const LEGACY_CAPS = ['gp', 'zones', 'policies', 'ipsec', 'ssl', 'addr', 'nat', 'sdwanT', 'sdwanR', 'secProf'];
+const LEGACY_NOTE = 'Édition antérieure de la datasheet : valeur absente de l’édition courante, à confirmer';
+
   /* ══ Utils ══ */
 /* Abrege un entier en K / M. La decimale n'est posee que si l'arrondi
    ferait perdre de l'information : 64000 -> 64K, mais 2500 -> 2,5K et non

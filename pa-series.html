@@ -809,6 +809,10 @@
     .cv-cat { padding: var(--sp-6) 0 var(--sp-2); font: 700 15px/1 var(--font); color: var(--text-bright); border-bottom: 1px solid var(--border2); }
     .cv-lab { padding: 10px 0; font: 400 13px/1.35 var(--font); color: var(--text); }
     .cv-lab .spec-sub { display: block; font-size: 11px; color: var(--text-muted); }
+    .spec-legacy { font-style: italic; }
+    .val-legacy { color: var(--text-muted); font-style: italic; font-weight: 400; cursor: help;
+      text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .val-cell.is-legacy { font-weight: 400; }
     .cv-c { position: relative; padding: 10px 0 12px; min-width: 0; }
     .cv-v { font: 400 14px/1.2 var(--mono); color: var(--text-bright); white-space: nowrap; }
     .cv-c.is-top .cv-v { font-weight: 700; }
@@ -1345,8 +1349,15 @@
     sfp25:  ['25G SFP28', 'Concurrents : SFP28 et SFP56 (50G) regroupés'],
     sfp100: ['100G QSFP28', 'Concurrents : QSFP28 et QSFP56 (200G) regroupés']
   };
+  /* Capacites reprises d'une edition anterieure de la datasheet
+     (LEGACY_CAPS, data/pa-models.js) : affichees, attenuees, jamais
+     comptees dans un ecart, une barre ou un maximum. */
+  const isLegacy = row => typeof LEGACY_CAPS !== 'undefined' && LEGACY_CAPS.indexOf(fieldOf(row)) !== -1;
+  const LEG_TIP = typeof LEGACY_NOTE !== 'undefined' ? LEGACY_NOTE : 'Édition antérieure de la datasheet';
+  const legacyVal = html => '<span class="val-legacy" title="' + esc(LEG_TIP) + '">' + html + '</span>';
   function rowLabel(row, withComp) {
     const f = fieldOf(row);
+    if (isLegacy(row)) return row.label + '<span class="spec-sub spec-legacy">édition antérieure de la datasheet</span>';
     if (!withComp || !NEUTRAL[f]) return row.label;
     return NEUTRAL[f][0] + '<span class="spec-sub">' + NEUTRAL[f][1] + '</span>';
   }
@@ -1436,8 +1447,9 @@
       // a un ecart : une ligne ou tous les PA se valent n'a pas de meilleur.
       let maxVal = -Infinity, minVal = Infinity;
       if (row.num) visible.forEach(m => { if (m._v) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
-      if (!(maxVal > minVal)) maxVal = -Infinity;
+      if (!(maxVal > minVal) || isLegacy(row)) maxVal = -Infinity;
       const field = fieldOf(row);
+      const legacy = isLegacy(row);
 
       const cells = visible.map(m => {
         let raw = cellRaw(row, m);
@@ -1445,6 +1457,7 @@
         let cls = 'val-cell';
         if (num != null && num === maxVal && maxVal > 0) cls += ' val-max';
         else if (raw === '—') cls += ' val-na';
+        if (legacy && !m._v && raw !== '—') { cls += ' is-legacy'; raw = legacyVal(raw); }
         if (m._v) {
           cls += ' is-comp';
           if (raw !== '—' && (field === 'fw' || field === 'tp' || field === 'vpn')) {
@@ -2222,6 +2235,7 @@
         return NP;
       }
       if (row.cat === 'ports') return { html: n ? cellRaw(row, m) : '0', n };
+      if (isLegacy(row)) return { html: legacyVal(cellRaw(row, m)), n: null, legacy: true };
       return { html: cellRaw(row, m), n };
     }
     if (row.label === 'Format') return m.f ? { html: esc(m.f), n: null } : NP;
@@ -2302,7 +2316,7 @@
     const models = selected.map(byKey).filter(Boolean);
     let text = 'COMPARAISON\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
     ROWS.forEach(row => {
-      text += row.label.replace(/<[^>]+>/g, '') + ' : ' + models.map(m => cvCell(row, m).html.replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
+      text += row.label.replace(/<[^>]+>/g, '') + (isLegacy(row) ? ' (édition antérieure de la datasheet)' : '') + ' : ' + models.map(m => cvCell(row, m).html.replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
     });
     if (models.some(m => m._v)) text += '\nDébits concurrents : définitions propres à chaque éditeur, non comparables un pour un.';
     text += '\nDonnées issues des datasheets officielles.';

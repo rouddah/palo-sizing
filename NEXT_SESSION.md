@@ -4,6 +4,13 @@
 
 ## Audit v9 (branche audit-v9, non fusionnee, non deployee)
 
+Session 20 (meme branche) : photos de facade des datasheets dans
+`img/front/` (provenance `img/SOURCES.md`, regenerer par
+`tools/photos-extract.py` puis `node tools/photos.js <images>`, ne jamais
+editer `data/pa-chassis.js` a la main) ; mode guide calcule sur les
+donnees, teste par `_wizard.js` ; capacites d editions anterieures
+listees dans `LEGACY_CAPS`, hors de tout calcul.
+
 Voir CHANGELOG session 19 et `AUDIT_EXHAUSTIF_2026-11.md`. A savoir avant
 d'editer `data/pa-models.js` :
 - `rj45` = cuivre 1G seulement ; le multi-gig va dans `mgig` (+ `mgigSp`),
@@ -51,7 +58,7 @@ npm run deploy       # check + smoke + stage + wrangler
 | --- | --- |
 | `npm run data` | `_data-audit.js` : coherence interne des 54 modeles. Une valeur non publiee par la datasheet sort en avertissement, pas en erreur |
 | `npm run check` | `_check.js` : syntaxe JS, accolades CSS, assets manquants, appels CDN, cibles `getElementById`, compteurs de l'accueil et nombres de modeles ecrits dans les pages adosses aux donnees, emojis (entites HTML comprises), em-dash dans le contenu |
-| `npm test` | `_smoke.js` : charge `qualification.html` dans jsdom, joue 5 cas de dimensionnement, controle l'etiquetage des champs et l'echappement |
+| `npm test` | `_smoke.js` : charge `qualification.html` dans jsdom, joue 5 cas de dimensionnement, controle l'etiquetage des champs et l'echappement ; `_wizard.js` : recommandation du mode guide sur toute la gamme en vente |
 | `npm run responsive` | `_responsive.js` : 8 pages a 6 largeurs, refuse tout debordement horizontal |
 | `npm run contrast` | `_contrast.js` : 13 pages x 2 themes, contraste AA, en composant les fonds translucides |
 | `npm run keyboard` | `_keyboard.js` : 371 cibles interactives, noms accessibles et marque de focus reellement testee |
@@ -150,7 +157,6 @@ sur le troisieme PA-50R, le statut de commercialisation de la PA-1400.
 ## Chantiers non traites
 
 - audit de la microcopie sur les pages produit (prisma, cortex, browser)
-- `wizard.html` n'a recu que le nettoyage des emojis
 - la PA-50R est volontairement hors du moteur de recommandation de
   l'etabli : un profil de bureau ne se dimensionne pas sur un boitier OT
 

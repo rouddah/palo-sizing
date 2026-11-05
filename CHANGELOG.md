@@ -1,5 +1,34 @@
 # Changelog
 
+## Session 20 - 5 novembre 2026 : photos de facade, mode guide, capacites anterieures (branche audit-v9)
+
+- Photos : 57 modeles sur 59 ont la photo de leur datasheet officielle
+  (premiere page, photo legendee du modele), extraite telle quelle avec
+  PyMuPDF, detouree quand le fond est blanc, recadree, en WebP de 720 x 400
+  au plus, jamais agrandie (`img/front/`). Remplace les vignettes du stencil :
+  faces arriere (PA-440/450/460, PA-820/850), PA-5445 qui montrait un
+  PA-450R, PA-7050 en fragment, une vingtaine de modeles sans image.
+  PA-820 et PA-54R-POE restent sans photo, aucune n est publiee.
+  Provenance image par image : `img/SOURCES.md`. Chaine reproductible :
+  `tools/photos-extract.py` puis `node tools/photos.js`, qui regenere
+  `data/pa-chassis.js`. Exclusions BAD_PHOTO retirees ; photos agrandies
+  dans les tetes de comparaison, la loupe et l etabli. `img/hw/`,
+  `tools/detour.js` et `tools/recadre.js` supprimes.
+- Mode guide : plus de paliers en dur. La recommandation PA-Series se
+  calcule sur `data/pa-models.js` (5 Mbps et 10 sessions par utilisateur sur
+  site ; entree = plus petit modele qui tient le besoin a 65 % de sa
+  datasheet, confort a 50 %). Candidats en vente seulement : ni fin de vente
+  effective ni annoncee (PA-400 ecartee), ni boitier durci, ni variante 5G.
+  Couvre PA-500, PA-1400, PA-1500, PA-3400, PA-3500, PA-5400, PA-5500 et
+  PA-7500. Nouveau test `_wizard.js` (dans `npm test`, build et deploy).
+- Capacites de configuration d editions anterieures (GlobalProtect, zones,
+  politiques, IPsec, SSL, objets, NAT, SD-WAN, profils) : declarees dans
+  `LEGACY_CAPS` (`data/pa-models.js`), affichees attenuees avec « edition
+  anterieure de la datasheet » sous le libelle et au survol, sorties des
+  ecarts, barres et maxima du comparateur. `_smoke.js` et `_wizard.js` les
+  font varier de 0 a l infini et verifient qu aucune recommandation ne change.
+- `_stage.js` ne publie plus les fichiers .md des dossiers d assets.
+
 ## Session 19 - 5 novembre 2026 : audit exhaustif v9, champ par champ (branche audit-v9)
 
 Les 59 modeles relus valeur par valeur contre la datasheet de leur serie,

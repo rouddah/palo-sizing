@@ -124,6 +124,20 @@ const CASES = [
   log(huge.beyond && huge.entry === 'PA-7500', 'au-dela de la PA-7500 : signale comme etude dediee');
   log(W.ngfwModel(0) === null, '0 utilisateur sur site : pas de recommandation NGFW');
 
+  console.log('Capacites d edition anterieure hors calcul');
+  const legacy = win.eval('typeof LEGACY_CAPS !== "undefined" ? LEGACY_CAPS : null');
+  log(Array.isArray(legacy) && legacy.length > 0, 'LEGACY_CAPS declare dans data/pa-models.js');
+  if (Array.isArray(legacy)) {
+    const ladder = () => { const a = []; for (let u = 1; u <= 250000; u = Math.ceil(u * 1.04)) { const r = W.ngfwModel(u); a.push(r.entry + '/' + r.comfort); } return a.join(' '); };
+    const ref = ladder();
+    const saved = MODELS.map(m => legacy.map(k => m[k]));
+    [0, 1e12, null].forEach(v => {
+      MODELS.forEach(m => legacy.forEach(k => { m[k] = v; }));
+      log(ladder() === ref, 'capacites a ' + v + ' : recommandations inchangees');
+    });
+    MODELS.forEach((m, i) => legacy.forEach((k, j) => { m[k] = saved[i][j]; }));
+  }
+
   console.log('Parcours complet (7 questions)');
   try { win.sessionStorage.clear(); } catch (e) {}
   const answers = [

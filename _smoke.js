@@ -171,6 +171,33 @@ function log(ok, msg) {
     }
   }
 
+  /* Les capacites reprises d'editions anterieures des datasheets
+     (LEGACY_CAPS) ne doivent jamais peser dans le dimensionnement : on
+     les fait varier de zero a l'infini et la sortie doit rester
+     identique, cas par cas. */
+  console.log('\nCapacites d edition anterieure hors calcul');
+  const legacy = win.eval('typeof LEGACY_CAPS !== "undefined" ? LEGACY_CAPS : null');
+  log(Array.isArray(legacy) && legacy.length > 0, 'LEGACY_CAPS declare dans data/pa-models.js');
+  if (Array.isArray(legacy)) {
+    const MODELS = win.eval('MODELS');
+    const saved = MODELS.map(m => legacy.map(k => m[k]));
+    const outputs = () => CASES.map(c => {
+      doc.querySelectorAll('#wb-form input').forEach(el => { el.value = ''; });
+      doc.querySelectorAll('#wb-form select').forEach(el => { el.selectedIndex = 0; });
+      Object.entries(c.set).forEach(([id, v]) => { doc.getElementById(id).value = v; });
+      win.eval('runCommercialWizard()');
+      return doc.getElementById('wb-out').textContent;
+    });
+    const ref = outputs();
+    [0, 1e12, null].forEach(v => {
+      MODELS.forEach(m => legacy.forEach(k => { m[k] = v; }));
+      const got = outputs();
+      const diff = CASES.filter((c, i) => got[i] !== ref[i]).map(c => c.name);
+      log(diff.length === 0, 'capacites a ' + v + ' : sortie inchangee sur les ' + CASES.length + ' cas' + (diff.length ? ' sauf ' + diff.join(', ') : ''));
+    });
+    MODELS.forEach((m, i) => legacy.forEach((k, j) => { m[k] = saved[i][j]; }));
+  }
+
   console.log('\nContenu du volet de sortie');
   const out = doc.getElementById('wb-out');
   log(!!out.querySelector('.wb-gauge-fill'), 'jauge de charge presente');
