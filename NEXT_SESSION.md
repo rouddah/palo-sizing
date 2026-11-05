@@ -46,6 +46,24 @@ clair : elles sont faites pour la projection sur fond sombre.
 les ecarts de contraste trouves : elle habille un cadre ou un aplat, elle ne
 porte pas de caracteres de 10px.
 
+**Mouvement (v7)** : une seule courbe `--ease` (`--ease-ui` en est un
+alias), trois durees `--dur-fast` / `--dur` / `--dur-slow`, une course
+`--shift` et un decalage `--stagger`. Uniquement `transform` et
+`opacity`, rien sous `prefers-reduced-motion`. Pour animer un
+changement de contenu, passer par `window.Motion` (`ui.js`) :
+`flip(racine, selecteur, fonctionQuiModifieLeDom, {key})` pour un
+reordonnancement, `enter(elements, sens)` pour une arrivee, `tick(el)`
+pour une valeur recalculee, `ink(liste)` pour un soulignement d'onglet.
+Les pages changent par View Transitions (l'en-tete est nomme
+`site-header` et ne bouge pas). Jamais `opacity: 0` en base avec
+`fill-mode: forwards`.
+
+**Comparateur** : selection par la case « Comparer » de chaque colonne,
+bac en bas d'ecran (`#tray`), curseurs de plage log, concurrents charges
+a l'execution depuis `data/competitors.js` (facultatif : absent, la case
+est masquee). Cles de selection : l'id pour un PA, `x:` + id pour un
+concurrent. Les concurrents n'entrent jamais dans l'etabli.
+
 Le deploiement passe par `.deploy/`, **jamais par la racine** : Pages n'honore
 ni `.gitignore` ni `.assetsignore`, et deployer `.` publiait le CHANGELOG, les
 scripts de verification et `package.json`.
@@ -103,7 +121,6 @@ sur le troisieme PA-50R, le statut de commercialisation de la PA-1400.
 
 ## Chantiers non traites
 
-- passe de densite sur `pa-series.html`, le comparateur
 - audit de la microcopie sur les pages produit (prisma, cortex, browser)
 - `wizard.html` n'a recu que le nettoyage des emojis
 - la PA-50R est volontairement hors du moteur de recommandation de

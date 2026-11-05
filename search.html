@@ -544,7 +544,7 @@
   <script src="bg.js" defer></script>
 
   <div style="background:var(--surface2);border-bottom:1px solid var(--border);padding:10px 24px;text-align:center;font-size:12px;color:var(--text-muted)">
-    Pas à l'aise avec les filtres techniques ? <a href="wizard.html" style="color: var(--accent-txt);font-weight:600">Essayez le mode guidé <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+    Pas à l'aise avec les filtres techniques ? <a href="wizard.html" style="color: var(--accent-txt);font-weight:600;display:inline-flex;align-items:center;gap:var(--sp-1)">Essayez le mode guidé <svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
   </div>
 
   <div style="position:relative;z-index:1;padding:32px 24px 0;max-width:1200px;margin:0 auto">
@@ -722,6 +722,7 @@
   /* ══ Datasheet URLs par série ══ */
   const DS_URLS = {
     'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+    'PA-400R': 'https://www.paloaltonetworks.com/resources/datasheets/pa-400r-series',
     'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
     'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
     'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
@@ -899,7 +900,11 @@
       });
 
     selected.clear();
-    renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
+    /* Les cartes qui restent glissent vers leur nouveau rang, les
+       nouvelles entrent en fondu : on suit un modele d'un tri a l'autre. */
+    const paint = () => renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
+    if (window.Motion) Motion.flip(document.getElementById('result-grid'), '.result-card', paint, { key: 'id' });
+    else paint();
   }
 
   /* ── Render results ── */

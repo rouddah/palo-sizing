@@ -1,5 +1,100 @@
 # Changelog
 
+## Session 17 bis - 5 novembre 2026 : ergonomie, comparateur repense, mouvement v7
+
+Consigne : ameliorer l'usage du site et accompagner chaque changement
+d'etat d'un mouvement sobre. Toutes les pages ont ete ouvertes a 1440 et
+390 px avant de toucher quoi que ce soit (captures avant/apres hors
+depot).
+
+### Le comparateur PA-Series
+
+Le gros du travail. On selectionnait en cliquant une carte de colonne,
+et la seule facon de parcourir 59 colonnes etait la barre de defilement.
+
+- **Selection explicite** : une case « Comparer » par colonne (bouton
+  `aria-pressed`, atteignable au clavier). Clic sur la carte possible
+  aussi.
+- **Bac de comparaison** en bas d'ecran : il monte au premier modele
+  retenu, liste les modeles avec un bouton de retrait chacun, montre les
+  places libres, et propose « Isoler ces colonnes », « Vider »,
+  « Comparer ». Au-dela de quatre, il le dit au lieu d'ignorer le clic.
+  La selection survit au rechargement (localStorage, sous try/catch) ; un
+  lien `?cmp=` reste prioritaire.
+- **Defilement maitrise** : boutons precedent/suivant par page de
+  colonnes, position lisible (« PA-410 a PA-455-5G, 1-8 sur 59 »),
+  aimantation par colonne (`scroll-snap`), fleches du clavier quand le
+  tableau a le focus, molette verticale sur les en-tetes = defilement
+  horizontal.
+- **Curseurs de plage** Threat Prevention et sessions, a deux poignees,
+  en echelle logarithmique (de 0,5 a 1 440 Gbps une echelle lineaire
+  ecrase toute la gamme branche). Une valeur non publiee n'est jamais
+  cachee par un curseur.
+- **Etat vide** : « Aucun modele ne correspond » avec la raison et un
+  bouton pour tout reafficher, au lieu d'un tableau sans colonne.
+- Sur poste fixe la page occupe l'ecran et seul le tableau defile ; sur
+  mobile chaque barre de filtres tient sur une ligne qui defile.
+- Le surlignage du meilleur chiffre ne s'allume plus quand tous les
+  modeles se valent.
+- Les definitions du glossaire passent par la bulle commune (clavier
+  compris) ; l'ancienne bulle CSS faisait doublon.
+
+### Concurrents facultatifs
+
+Une case par editeur (Fortinet, Check Point, Cisco) ajoute leurs
+boitiers au tableau, decochee par defaut. Colonnes en gris neutre, nom de
+l'editeur en badge dont la bulle donne sa definition des debits, lien
+vers la datasheet officielle du modele, encart qui rappelle que les
+methodes de mesure different. Le meilleur chiffre n'est surligne
+qu'entre PA, les lignes propres a PAN-OS restent vides pour un
+concurrent. Les donnees viennent de `data/competitors.js`, charge a
+l'execution par la seule page comparateur : si le fichier manque, la
+case n'apparait pas et le build passe. L'etabli de qualification ne le
+charge pas.
+
+### Autres pages
+
+- **Etabli (mobile)** : une pastille fixe fait l'aller-retour entre la
+  recommandation et la saisie, et porte le modele retenu, qui change
+  sous les yeux pendant la saisie. Le volet ne fond plus a chaque
+  frappe : il fond quand la gamme change, sinon seules les valeurs
+  modifiees s'eclairent une fois.
+- **Recherche** : la fleche du lien « mode guide » passait a la ligne
+  (pictogramme en `display: block`). Les cartes de resultat glissent
+  vers leur nouveau rang au tri.
+- **Optiques, accessoires** : filtrer deplace les references au lieu de
+  redessiner la grille. Les cartes copiables sont atteignables au
+  clavier (Tab puis Entree), elles ne l'etaient qu'a la souris.
+- **Prisma** : repere d'onglet qui glisse, fleches du clavier,
+  l'onglet ouvert est garde dans l'adresse (`#sdwan`, `#browser`).
+- **Wizard** : la question suivante arrive de la droite, la precedente
+  de la gauche ; le focus suit ; Entree vaut « Suivant » ; la barre de
+  progression avance par `transform`.
+- **Accueil** : les cinq outils sur une ligne au lieu de quatre et un
+  orphelin, ressources alignees sur les autres bandes, pictogrammes des
+  ressources visibles (ils prenaient le bleu de lien par defaut).
+
+### Mouvement v7
+
+- Une seule courbe : `--ease-ui` devient un alias de `--ease`.
+- Jetons ajoutes : `--shift` (8px, course d'une entree) et `--stagger`
+  (24ms entre voisins).
+- **View Transitions entre pages** : l'en-tete reste en place, le
+  contenu sort en fondu et entre en glissant de `--shift`.
+- **`window.Motion`** dans `ui.js` : `flip()` (reordonnancement FLIP,
+  limite aux elements a l'ecran), `enter()` (entree en cascade, avec un
+  sens), `tick()` (valeur recalculee), `ink()` (soulignement d'onglet
+  qui glisse). Durees et courbe lues dans les jetons CSS.
+- La revelation au defilement passe par une animation : la transition
+  de survol des cartes ecrasait la sienne, elles apparaissaient d'un
+  coup. Le masquage n'existe que si `ui.js` tourne (`html.rv`).
+- Tout est coupe sous `prefers-reduced-motion`, View Transitions
+  comprises.
+
+Corrections de texte demandees par l'audit datasheets : les phrases « VPN
+et CPS non publies » des PA-3500 et PA-5500 sont retirees de l'etabli,
+la PA-400R a son lien de datasheet dans le comparateur et la recherche.
+
 ## Session 17 - 5 novembre 2026 : les PA-Series recontrolees a la datasheet
 
 Consigne : reverifier chaque boitier contre sa datasheet officielle

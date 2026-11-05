@@ -227,7 +227,19 @@
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   }
 
+  /* Filtrer deplace les references au lieu de les redessiner : celles
+     qui restent glissent a leur nouvelle place, les autres entrent en
+     fondu (Motion.flip, ui.js). Le premier rendu n'est pas anime. */
   function render() {
+    const host = document.getElementById('list');
+    if (window.Motion && host && host.querySelector('.part')) {
+      Motion.flip(host.parentNode, '.part', renderNow, { key: 'data-copy' });
+      return;
+    }
+    renderNow();
+  }
+
+  function renderNow() {
     const shown = ACCESSORIES.filter(keep);
     document.getElementById('cnt').textContent = shown.length;
     const host = document.getElementById('list');

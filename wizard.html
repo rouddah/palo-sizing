@@ -28,12 +28,16 @@
       border-radius: var(--r-xs);
       overflow: hidden;
     }
+    /* La barre avance par transform (scaleX), pas par sa largeur. */
     .wiz-bar-fill {
       height: 100%;
+      width: 100%;
       background: var(--accent);
       border-radius: var(--r-xs);
-      transition: width 0.3s ease;
+      transform-origin: left center;
+      transition: transform var(--dur) var(--ease);
     }
+    @media (prefers-reduced-motion: reduce) { .wiz-bar-fill { transition: none; } }
     .wiz-bar-label {
       font-family: var(--mono);
       font-size: 11px;
@@ -354,7 +358,7 @@
       <div class="wiz-progress">
         <span class="wiz-bar-label" id="wiz-bar-label">Question 1 / 7</span>
         <div class="wiz-bar-track">
-          <div class="wiz-bar-fill" id="wiz-bar-fill" style="width:14%"></div>
+          <div class="wiz-bar-fill" id="wiz-bar-fill" style="transform:scaleX(.14)"></div>
         </div>
       </div>
       <div class="wiz-q-block" id="wiz-q-block">
@@ -440,10 +444,10 @@
     ];
 
     /* ── Render a question step ── */
-    function renderStep() {
+    function renderStep(dir) {
       var pct = Math.round((step / TOTAL) * 100);
       document.getElementById('wiz-bar-label').textContent = 'Question ' + step + ' / ' + TOTAL;
-      document.getElementById('wiz-bar-fill').style.width = pct + '%';
+      document.getElementById('wiz-bar-fill').style.transform = 'scaleX(' + (pct / 100) + ')';
       var q = QUESTIONS[step - 1];
       var block = document.getElementById('wiz-q-block');
       var h = '';
@@ -489,11 +493,25 @@
       }
 
       var backBtn = document.getElementById('wiz-back');
-      if (backBtn) backBtn.addEventListener('click', function() { step--; renderStep(); });
+      if (backBtn) backBtn.addEventListener('click', function() { step--; renderStep(-1); });
       document.getElementById('wiz-next').addEventListener('click', function() {
         if (!collectStep(q)) return;
-        if (step < TOTAL) { step++; renderStep(); } else { showResult(); }
+        if (step < TOTAL) { step++; renderStep(1); } else { showResult(); }
       });
+      // Entree dans un champ vaut « Suivant »
+      block.querySelectorAll('input').forEach(function (inp) {
+        inp.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); document.getElementById('wiz-next').click(); }
+        });
+      });
+      /* La question suivante arrive de la droite, la precedente de la
+         gauche : le sens du parcours se lit sans y penser. Le focus
+         suit, pour enchainer au clavier. */
+      if (dir) {
+        if (window.Motion) Motion.enter(block.children, dir);
+        var first = block.querySelector('input, select, .wiz-choice');
+        if (first) first.focus({ preventScroll: true });
+      }
     }
 
     function collectStep(q) {

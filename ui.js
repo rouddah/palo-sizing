@@ -15,6 +15,12 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Le masquage des elements a reveler n'existe que si ce script
+     tourne : sans lui, aucune regle ne cache quoi que ce soit. */
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('rv');
+  }
+
   /* ── 1. Revelation au defilement ────────────────────────── */
   var REVEAL = [
     '.page-wrap > .info-note',
@@ -45,7 +51,7 @@
         // leger decalage entre voisins : la grille se remplit en cascade
         var sibs = e.target.parentNode ? e.target.parentNode.children : [];
         var pos = Array.prototype.indexOf.call(sibs, e.target);
-        e.target.style.transitionDelay = Math.min(pos, 6) * 55 + 'ms';
+        e.target.style.animationDelay = Math.min(pos, 6) * 2 * tok('--stagger', 24) + 'ms';
         e.target.classList.add('is-in');
         io.unobserve(e.target);
       });
@@ -247,10 +253,150 @@
     window.addEventListener('scroll', hideTip, { passive: true });
   }
 
+  /* ── 6. Mouvement d'etat (window.Motion) ──────────────────
+     Les pages appellent ces fonctions quand leur contenu change :
+     filtre, tri, onglet, recalcul. Les durees et la courbe sont lues
+     dans les jetons CSS (--dur, --ease...) : une seule source.
+     Sous `prefers-reduced-motion`, chaque fonction applique le
+     changement sans l'animer. */
+  function tok(name, fallback) {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    if (!v) return fallback;
+    if (typeof fallback === 'number') {
+      var n = parseFloat(v);
+      return isFinite(n) ? n : fallback;
+    }
+    return v;
+  }
+
+  function inView(r) {
+    return r.bottom > -40 && r.top < window.innerHeight + 40
+        && r.right > -40 && r.left < window.innerWidth + 40;
+  }
+
+  /* FLIP : on mesure, on change le DOM, on remesure, et chaque element
+     qui a bouge part de son ancienne place pour rejoindre la nouvelle.
+     Les elements sont reconnus par un attribut (data-k par defaut).
+     Seuls ceux qui sont a l'ecran sont animes : un tableau de deux
+     mille cellules ne doit pas ralentir un filtre. */
+  function flip(root, selector, mutate, opts) {
+    opts = opts || {};
+    var key = opts.key || 'data-k';
+    if (reduce || !root || !root.animate) { mutate(); return; }
+    var before = {};
+    var olds = root.querySelectorAll(selector);
+    for (var i = 0; i < olds.length; i++) {
+      var k = olds[i].getAttribute(key);
+      if (k != null) before[k] = olds[i].getBoundingClientRect();
+    }
+    mutate();
+    var dur = tok('--dur-slow', 480), ease = tok('--ease', 'ease-out');
+    var step = tok('--stagger', 24), shift = tok('--shift', 8);
+    var news = root.querySelectorAll(selector), entering = 0;
+    for (var j = 0; j < news.length; j++) {
+      var el = news[j], kk = el.getAttribute(key);
+      var r = el.getBoundingClientRect();
+      var b = kk != null ? before[kk] : null;
+      if (b) {
+        var dx = b.left - r.left, dy = b.top - r.top;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+        if (!inView(r) && !inView(b)) continue;
+        el.animate([
+          { transform: 'translate(' + dx + 'px,' + dy + 'px)' },
+          { transform: 'none' }
+        ], { duration: dur, easing: ease });
+      } else if (inView(r) && opts.enter !== false) {
+        el.animate([
+          { opacity: 0, transform: 'translate3d(0,' + shift + 'px,0)' },
+          { opacity: 1, transform: 'none' }
+        ], { duration: tok('--dur', 300), easing: ease,
+             delay: Math.min(entering++, 8) * step, fill: 'backwards' });
+      }
+    }
+  }
+
+  /* Entree d'elements fraichement injectes, en cascade courte.
+     dir : 0 vers le haut (defaut), 1 depuis la droite, -1 depuis la gauche. */
+  function enter(els, dir) {
+    if (reduce || !els) return;
+    if (els.nodeType === 1) els = [els];
+    var ease = tok('--ease', 'ease-out'), shift = tok('--shift', 8), step = tok('--stagger', 24);
+    var n = 0;
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!el.animate || !inView(el.getBoundingClientRect())) continue;
+      var from = dir ? 'translate3d(' + (dir * shift * 2) + 'px,0,0)' : 'translate3d(0,' + shift + 'px,0)';
+      el.animate([{ opacity: 0, transform: from }, { opacity: 1, transform: 'none' }],
+        { duration: tok('--dur', 300), easing: ease, delay: Math.min(n++, 8) * step, fill: 'backwards' });
+    }
+  }
+
+  /* Une valeur qui vient de changer s'eclaire une fois. */
+  function tick(el) {
+    if (reduce || !el) return;
+    el.classList.remove('m-tick');
+    void el.offsetWidth;
+    el.classList.add('m-tick');
+  }
+
+  /* Soulignement d'onglets qui glisse d'un onglet a l'autre. La liste
+     doit etre en position relative ; l'onglet actif porte
+     aria-selected="true" ou la classe .active. */
+  function ink(list) {
+    if (!list) return function () {};
+    var bar = list.querySelector('.tab-ink');
+    if (!bar) {
+      bar = document.createElement('span');
+      bar.className = 'tab-ink';
+      bar.setAttribute('aria-hidden', 'true');
+      list.appendChild(bar);
+    }
+    function place() {
+      var on = list.querySelector('[aria-selected="true"], .active');
+      if (!on) { bar.style.opacity = '0'; return; }
+      bar.style.opacity = '1';
+      bar.style.transform = 'translateX(' + on.offsetLeft + 'px) scaleX(' + on.offsetWidth + ')';
+    }
+    place();
+    window.addEventListener('resize', place);
+    return place;
+  }
+
+  window.Motion = { reduce: reduce, tok: tok, flip: flip, enter: enter, tick: tick, ink: ink };
+
+  /* Les cartes copiables (optiques, accessoires) n'etaient atteignables
+     qu'a la souris. Elles deviennent des boutons : Tab les atteint,
+     Entree ou Espace copie. */
+  function wireCopyKeys() {
+    function arm(root) {
+      var els = (root || document).querySelectorAll('[data-copy]:not(a):not(button)');
+      for (var i = 0; i < els.length; i++) {
+        if (els[i].hasAttribute('tabindex')) continue;
+        els[i].setAttribute('tabindex', '0');
+        els[i].setAttribute('role', 'button');
+        if (!els[i].getAttribute('aria-label')) {
+          els[i].setAttribute('aria-label', 'Copier ' + els[i].getAttribute('data-copy'));
+        }
+      }
+    }
+    arm();
+    new MutationObserver(function () { arm(); })
+      .observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var el = e.target;
+      if (!el || !el.hasAttribute || !el.hasAttribute('data-copy')) return;
+      if (el.tagName === 'A' || el.tagName === 'BUTTON') return;
+      e.preventDefault();
+      el.click();
+    });
+  }
+
   function init() {
     observe(tagTargets());
     wireCounters();
     wireCopy();
+    wireCopyKeys();
     wireTips();
   }
 

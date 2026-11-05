@@ -394,6 +394,16 @@
     </div>
   </div>
 
+  <!-- ── Saut entre les volets, sous 1080px ──
+       Les volets s'empilent : le resultat en haut, la saisie dessous.
+       Ce bouton fait l'aller-retour et porte le modele retenu, pour
+       voir la recommandation changer pendant qu'on saisit. -->
+  <button type="button" class="wb-jump" id="wb-jump" hidden>
+    <span class="wb-jump-k" id="wb-jump-k">Recommandation</span>
+    <span class="wb-jump-v" id="wb-jump-v"></span>
+    <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+  </button>
+
   <!-- ── Guide de qualification ── -->
   <div class="guide-view" id="view-guide" style="display:none">
     <div class="guide-wrap">
@@ -759,6 +769,61 @@
       const tab = document.getElementById('mode-' + key);
       if (tab) tab.setAttribute('aria-selected', String(on));
     }
+    const v = document.getElementById(VIEWS[mode]);
+    if (window.Motion && v) Motion.enter(v);
+    jumpMode = mode;
+    syncJump();
+  }
+
+  /* ══ Aller-retour entre les volets empiles ══ */
+  let jumpMode = 'commercial', jumpTo = 'in';
+  function syncJump() {
+    const btn = document.getElementById('wb-jump');
+    if (!btn) return;
+    const fam = document.querySelector('#wb-out .wb-verdict-family');
+    const val = document.getElementById('wb-jump-v');
+    const name = fam ? fam.textContent.trim() : '';
+    if (val.textContent !== name) {
+      val.textContent = name;
+      if (window.Motion) Motion.tick(val);
+    }
+    btn.hidden = jumpMode !== 'commercial' || !(window.matchMedia && window.matchMedia('(max-width: 1080px)').matches);
+    btn.classList.toggle('up', jumpTo === 'out');
+    document.getElementById('wb-jump-k').textContent = jumpTo === 'out' ? 'Voir la recommandation' : 'Modifier les contraintes';
+    btn.setAttribute('aria-label', jumpTo === 'out'
+      ? 'Remonter à la recommandation' + (name ? ', ' + name : '')
+      : 'Descendre aux contraintes');
+  }
+  function wireJump() {
+    const btn = document.getElementById('wb-jump');
+    const out = document.querySelector('.wb-pane.out');
+    const inn = document.querySelector('.wb-pane.in');
+    if (!btn || !out || !inn) return;
+    if ('IntersectionObserver' in window) {
+      // on pointe vers le volet qui n'occupe pas l'ecran
+      const io = new IntersectionObserver(() => {
+        const r = inn.getBoundingClientRect();
+        jumpTo = r.top < window.innerHeight * 0.5 ? 'out' : 'in';
+        syncJump();
+      }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+      io.observe(inn); io.observe(out);
+    }
+    window.addEventListener('scroll', () => {
+      const r = inn.getBoundingClientRect();
+      const t = r.top < window.innerHeight * 0.5 ? 'out' : 'in';
+      if (t !== jumpTo) { jumpTo = t; syncJump(); }
+    }, { passive: true });
+    window.addEventListener('resize', syncJump);
+    btn.addEventListener('click', () => {
+      const smooth = window.Motion && !Motion.reduce ? 'smooth' : 'auto';
+      if (jumpTo === 'in') {
+        inn.scrollIntoView({ behavior: smooth, block: 'start' });
+        const f = document.getElementById('wiz-bw');
+        if (f) setTimeout(() => f.focus({ preventScroll: true }), smooth === 'smooth' ? 450 : 0);
+      } else {
+        out.scrollIntoView({ behavior: smooth, block: 'start' });
+      }
+    });
   }
 
   /* ══ Recalcul continu ══
@@ -793,6 +858,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    wireJump();
     setMode('commercial');
     wireWorkbench();
     loadFromURL();
@@ -929,9 +995,9 @@
     { id:'PA-1400', form:'1U Rack',      pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
     { id:'PA-1500', form:'1U Rack',      pos:'Grandes agences et campus', desc:'Gamme quantum-optimized annoncée en 2026. 16 ports PoE++ 90 W, commutation de niveau 2 intégrée et déchiffrement des flux post-quantiques, pour consolider le réseau du site sur le firewall.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series' },
     { id:'PA-3400', form:'1U Rack',      pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
-    { id:'PA-3500', form:'1U / 2U Rack', pos:'Périmètre, campus et petits datacenters', desc:'Gamme quantum-optimized annoncée en 2026, avec ports 100G en façade et clustering NGFW actif/actif. La datasheet ne publie pas encore le VPN IPsec ni le CPS.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series' },
+    { id:'PA-3500', form:'1U / 2U Rack', pos:'Périmètre, campus et petits datacenters', desc:'Gamme quantum-optimized annoncée en 2026, avec ports 100G en façade et clustering NGFW actif/actif.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series' },
     { id:'PA-5400', form:'2U Rack',      pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
-    { id:'PA-5500', form:'2U / 3U Rack', pos:'Datacenters et grands campus', desc:'Gamme quantum-optimized annoncée en 2026, jusqu’à 300 Gbps Threat Prevention et des ports QSFP-DD 400G. Le CPS des trois premiers modèles n’est pas encore publié.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series' },
+    { id:'PA-5500', form:'2U / 3U Rack', pos:'Datacenters et grands campus', desc:'Gamme quantum-optimized annoncée en 2026, jusqu’à 300 Gbps Threat Prevention et des ports QSFP-DD 400G.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series' },
     { id:'PA-7500', form:'Chassis',      pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500' },
   ];
 
@@ -1577,14 +1643,30 @@ Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
       + 'Débits appmix des datasheets Palo Alto Networks, PAN-OS 12.1.</div></div>';
 
     var changed = box.getAttribute('data-family') !== primary.id;
+    var first = !box.hasAttribute('data-family');
+    // valeurs affichees avant le recalcul, pour reperer celles qui bougent
+    var VALS = 'td, .wb-gauge-pct, .wb-verdict-family, .wb-pane-sub';
+    var before = Array.prototype.map.call(box.querySelectorAll(VALS), function (n) { return n.textContent; });
     box.innerHTML = html;
     box.setAttribute('data-family', primary.id);
     if (window.icons) window.icons.hydrate(box);
 
-    // fondu court sur l'ensemble du volet a chaque recalcul
-    box.classList.remove('swap');
-    void box.offsetWidth;              // force la reprise de l'animation
-    box.classList.add('swap');
+    /* Le volet entier ne fond que lorsque la gamme retenue change. A
+       chaque frappe, seules les valeurs qui ont bouge s'eclairent : un
+       volet qui clignote a chaque caractere empeche de lire. */
+    if (changed || first) {
+      box.classList.remove('swap');
+      void box.offsetWidth;            // force la reprise de l'animation
+      box.classList.add('swap');
+    } else if (window.Motion) {
+      var after = box.querySelectorAll(VALS);
+      if (after.length === before.length) {
+        for (var vi = 0; vi < after.length; vi++) {
+          if (after[vi].textContent !== before[vi]) Motion.tick(after[vi]);
+        }
+      }
+    }
+    syncJump();
 
     // liseré sur le verdict, uniquement quand la gamme retenue change
     if (changed) {

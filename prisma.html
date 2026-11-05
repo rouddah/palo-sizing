@@ -16,8 +16,10 @@
 
     /* ── Tab navigation ── */
     .sase-tabs {
+      position: relative;
       display: flex;
       gap: 0;
+
       margin-bottom: 28px;
       border-bottom: 2px solid var(--border);
     }
@@ -40,6 +42,9 @@
       color: var(--accent-txt);
       border-bottom-color: var(--accent);
     }
+    @media (max-width: 480px) { .sase-tab { padding: 11px var(--sp-3); } }
+    /* quand le repere glissant est en place, il remplace la bordure */
+    .sase-tabs.has-ink .sase-tab.active { border-bottom-color: transparent; }
     .sase-panel { display: none; }
     .sase-panel.active { display: block; }
 
@@ -748,21 +753,63 @@
   </footer>
 
   <script>
-    document.querySelectorAll('.sase-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        var target = tab.dataset.tab;
-        document.querySelectorAll('.sase-tab').forEach(function(t) {
-          t.classList.remove('active');
-          t.setAttribute('aria-selected', 'false');
-        });
-        document.querySelectorAll('.sase-panel').forEach(function(p) {
-          p.classList.remove('active');
-        });
-        tab.classList.add('active');
-        tab.setAttribute('aria-selected', 'true');
-        document.getElementById('panel-' + target).classList.add('active');
+    /* Onglets : clic, fleches gauche/droite, Debut/Fin, et l'adresse
+       garde l'onglet ouvert (#sdwan, #browser) pour le partager ou
+       revenir en arriere. Le repere sous l'onglet glisse d'un onglet
+       a l'autre, le panneau entre en fondu. */
+    (function () {
+      var list = document.querySelector('.sase-tabs');
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.sase-tab'));
+      var place = window.Motion ? Motion.ink(list) : function () {};
+      if (window.Motion) list.classList.add('has-ink');
+      tabs.forEach(function (t) {
+        t.setAttribute('aria-controls', 'panel-' + t.dataset.tab);
+        t.id = t.id || 'tab-' + t.dataset.tab;
+        var p = document.getElementById('panel-' + t.dataset.tab);
+        if (p) p.setAttribute('aria-labelledby', t.id);
       });
-    });
+
+      function show(target, opts) {
+        opts = opts || {};
+        tabs.forEach(function (t) {
+          var on = t.dataset.tab === target;
+          t.classList.toggle('active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+        });
+        var panel;
+        document.querySelectorAll('.sase-panel').forEach(function (p) {
+          var on = p.id === 'panel-' + target;
+          p.classList.toggle('active', on);
+          if (on) panel = p;
+        });
+        place();
+        if (opts.animate && panel && window.Motion) Motion.enter(panel.children);
+        if (opts.push) history.replaceState(null, '', '#' + target);
+      }
+
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () { show(tab.dataset.tab, { animate: true, push: true }); });
+        tab.addEventListener('keydown', function (e) {
+          var n = null;
+          if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') n = 0;
+          else if (e.key === 'End') n = tabs.length - 1;
+          if (n === null) return;
+          e.preventDefault();
+          tabs[n].focus();
+          show(tabs[n].dataset.tab, { animate: true, push: true });
+        });
+      });
+
+      var start = location.hash.replace('#', '');
+      show(tabs.some(function (t) { return t.dataset.tab === start; }) ? start : tabs[0].dataset.tab);
+      window.addEventListener('hashchange', function () {
+        var h = location.hash.replace('#', '');
+        if (tabs.some(function (t) { return t.dataset.tab === h; })) show(h, { animate: true });
+      });
+    })();
   </script>
 </body>
 </html>

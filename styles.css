@@ -541,9 +541,14 @@ body {
   justify-content: center;
   font-size: 18px;
   margin-bottom: 12px;
-  transition: background .2s;
+  /* les pictogrammes de links.js sont en currentColor : sans couleur
+     posee, ils prenaient le bleu de lien par defaut, invisible sur fond
+     sombre */
+  color: var(--text-dim);
+  transition: background .2s, color .2s;
 }
 
+.tool-card:hover .card-icon { color: var(--accent-txt); }
 .tool-card:hover .card-icon {
   background: var(--accent-dim);
   border-color: rgba(250,88,45,0.3);
@@ -1085,7 +1090,9 @@ body {
    du logo, la lueur radiale, le degrade Precision AI.
    ============================================================ */
 
-:root { --ease-ui: cubic-bezier(.2,.8,.2,1); }
+/* --ease-ui est desormais un alias de --ease : une seule courbe pour
+   tout le site (voir « Couche de mouvement »). */
+:root { --ease-ui: var(--ease); }
 
 /* Accent par pilier — pose sur <body data-pillar="..."> */
 /* Repli des pages sans pilier. --pillar sert de couleur de texte :
@@ -1531,13 +1538,25 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 }
 
 /* ── Revelation au defilement ──────────────────────────────
-   Opacite seule : pas de flou, pas de translation verticale.
-   Le contenu d'un tableau technique ne doit jamais arriver flou. */
-[data-reveal] {
-  opacity: 0;
-  transition: opacity .28s ease-out;
+   Opacite et glissement court de --shift. Pas de flou : le contenu
+   d'un tableau technique ne doit jamais arriver flou.
+   v7 : la revelation passe par une animation et non plus par une
+   transition. Les cartes declarent leur propre `transition` (survol)
+   qui ecrasait celle-ci : elles apparaissaient d'un coup. Une
+   animation ne se dispute pas la propriete avec le survol.
+   Rien n'est cache si le script ne tourne pas : seul ui.js pose
+   `html.rv`, et le filet de securite de ui.js revele tout ce qui
+   est a l'ecran au bout d'une seconde. */
+html.rv [data-reveal]:not(.is-in) { opacity: 0; }
+@keyframes reveal {
+  from { opacity: 0; transform: translate3d(0, var(--shift), 0); }
+  to   { opacity: 1; transform: none; }
 }
-[data-reveal].is-in { opacity: 1; }
+[data-reveal].is-in { animation: reveal var(--dur-slow) var(--ease) backwards; }
+/* un tableau technique arrive en fondu seul, sans glisser */
+.table-wrapper[data-reveal].is-in,
+.arch-diagram[data-reveal].is-in { animation-name: fadeIn; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ── Boutons d'action ──────────────────────────────────────
    Aplat plein, pas de degrade, pas de levitation au survol. */
@@ -1579,7 +1598,7 @@ body[data-pillar="identity"] { --pillar: var(--identity); --pillar-bg: var(--ide
 :focus:not(:focus-visible) { outline: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1 !important; transition: none; }
+  [data-reveal] { opacity: 1 !important; transition: none; animation: none !important; }
   * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
 
@@ -2082,11 +2101,13 @@ body.wb-page .guide-view { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
    `prefers-reduced-motion` neutralise l'ensemble en fin de fichier.
    ============================================================ */
 :root {
-  --ease:      cubic-bezier(.25, 1, .5, 1);   /* sortie douce */
-  --ease-in:   cubic-bezier(.4, 0, .6, 1);
-  --dur-fast:  150ms;
-  --dur:       300ms;
-  --dur-slow:  480ms;
+  --ease:      cubic-bezier(.25, 1, .5, 1);   /* sortie douce, la courbe du site */
+  --ease-in:   cubic-bezier(.4, 0, .6, 1);    /* reservee aux sorties d'ecran */
+  --dur-fast:  150ms;   /* retour d'une commande : survol, appui, focus */
+  --dur:       300ms;   /* changement d'etat : filtre, onglet, volet */
+  --dur-slow:  480ms;   /* deplacement : reordonnancement, arrivee */
+  --shift:     8px;     /* course d'une entree : assez pour lire un sens */
+  --stagger:   24ms;    /* decalage entre voisins, plafonne a 8 voisins */
 
   /* Accents d'etat. L'orange reste la couleur de marque et sert aux
      reperes « votre besoin » ; ces deux-la ne servent qu'a signaler
@@ -2503,4 +2524,112 @@ textarea:focus-visible,
   outline-offset: 1px;
   box-shadow: 0 0 0 3px var(--accent-line);
   border-color: var(--accent);
+}
+
+/* ============================================================
+   Mouvement v7 : transitions de page et changements d'etat
+   ------------------------------------------------------------
+   Meme contrat que la couche de mouvement : une seule courbe
+   (--ease), trois durees, transform et opacity uniquement, rien
+   sous `prefers-reduced-motion`.
+   ============================================================ */
+
+/* ── Passage d'une page a l'autre ──────────────────────────
+   View Transitions entre documents (meme origine). L'en-tete est
+   nomme : il reste en place pendant que le contenu change sous lui,
+   ce qui dit « on est toujours dans le meme outil ». Le contenu sort
+   en fondu court et entre en glissant de --shift. Un navigateur qui
+   ne connait pas la regle navigue normalement. */
+@view-transition { navigation: auto; }
+.site-header { view-transition-name: site-header; }
+::view-transition-group(site-header) { animation: none; }
+::view-transition-old(site-header),
+::view-transition-new(site-header) { animation: none; }
+::view-transition-old(root) {
+  animation: vt-out var(--dur-fast) var(--ease-in) both;
+}
+::view-transition-new(root) {
+  animation: vt-in var(--dur) var(--ease) both;
+}
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in {
+  from { opacity: 0; transform: translate3d(0, var(--shift), 0); }
+}
+
+/* ── Entree d'un element injecte (Motion.enter dans ui.js) ──
+   Etat de depart porte par l'animation, jamais par la regle de base :
+   si l'animation ne part pas, l'element est visible. */
+@keyframes m-enter {
+  from { opacity: 0; transform: translate3d(0, var(--shift), 0); }
+}
+.m-enter { animation: m-enter var(--dur) var(--ease) backwards; }
+
+/* ── Valeur recalculee ──────────────────────────────────────
+   La valeur est juste tout de suite ; seul son trace s'eclaire une
+   fois pour signaler qu'elle vient de changer. */
+@keyframes m-tick { from { opacity: .35; } }
+.m-tick { animation: m-tick var(--dur-slow) var(--ease); }
+
+/* ── Onglets : un repere qui glisse ─────────────────────────
+   Le soulignement actif est un seul element deplace d'onglet en
+   onglet (transform), au lieu d'une bordure qui saute. */
+.tab-ink {
+  position: absolute;
+  left: 0; bottom: -2px;
+  height: 2px;
+  width: 1px;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+/* ── Carte copiable atteignable au clavier ──────────────── */
+.copy-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+  .m-enter, .m-tick { animation: none; }
+  .tab-ink { transition: none; }
+}
+
+/* ── Etabli : aller-retour entre les volets empiles ─────────
+   Sous 1080px seulement (le script le masque au-dela). Pastille
+   fixe en bas a droite ; la fleche se retourne selon le sens. */
+.wb-jump {
+  position: fixed;
+  right: var(--sp-3);
+  bottom: var(--sp-3);
+  z-index: 150;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--tap);
+  padding: 0 var(--sp-4);
+  border: 1px solid var(--accent);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--text-bright);
+  font: 600 var(--text-sm)/1 var(--font);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .6);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.wb-jump[hidden] { display: none; }
+.wb-jump:active { transform: scale(.97); }
+.wb-jump-k { color: var(--text-dim); font-weight: 500; }
+.wb-jump-v { font-family: var(--mono); color: var(--accent-txt); }
+.wb-jump-v:empty { display: none; }
+.wb-jump .ic { transition: transform var(--dur) var(--ease); }
+.wb-jump.up .ic { transform: rotate(180deg); }
+[data-theme="light"] .wb-jump { box-shadow: 0 12px 30px -14px rgba(11, 15, 20, .3); }
+@media (max-width: 1080px) {
+  /* le dernier champ ne doit pas finir sous la pastille */
+  .wb-pane.in .wb-pane-in { padding-bottom: calc(var(--tap) + var(--sp-8)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-jump, .wb-jump .ic { transition: none; }
 }
