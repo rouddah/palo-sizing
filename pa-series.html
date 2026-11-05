@@ -887,6 +887,51 @@
       .xp-tok .d, .btn { transition: none; }
     }
 
+
+    /* ── Fiche de comparaison imprimable (A4, noir et blanc) ──
+       Construite a la demande dans #print-sheet ; a l'ecran elle reste
+       masquee, a l'impression elle remplace toute la page. */
+    #print-sheet { display: none; }
+    @page { size: A4 portrait; margin: 11mm 11mm 12mm; }
+    @media print {
+      html, body.ps-on { background: #fff !important; color: #000 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; display: block !important; padding: 0 !important; margin: 0 !important; }
+      body.ps-on > *:not(#print-sheet) { display: none !important; }
+      body.ps-on #print-sheet { display: block !important; }
+    }
+    .ps { font: 400 8.2pt/1.25 Helvetica, Arial, sans-serif; color: #000; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ps-hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 6mm; padding-bottom: 2.5mm; border-bottom: 1.4pt solid #000; }
+    .ps-brand { font: 700 8pt/1 Helvetica, Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+    .ps-hd h1 { margin: 1.2mm 0 0; font: 700 14pt/1.1 Helvetica, Arial, sans-serif; letter-spacing: -.01em; }
+    .ps-date { font: 400 8pt/1.35 Helvetica, Arial, sans-serif; text-align: right; }
+    .ps-t { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 2mm; }
+    .ps-t thead { display: table-header-group; }
+    .ps-t tr { break-inside: avoid; page-break-inside: avoid; }
+    .ps-t th, .ps-t td { padding: .55mm 1.6mm; border-bottom: .5pt solid #8c8c8c; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+    .ps-t col.lab { width: 27%; }
+    .ps-t th.lab, .ps-t td.lab { font-weight: 400; color: #000; padding-left: 0; }
+    .ps-t .lab small { display: block; font-size: 6.4pt; color: #333; }
+    .ps-m { vertical-align: bottom !important; border-bottom: 1pt solid #000 !important; padding-top: 0 !important; }
+    .ps-m .ph { height: 11mm; display: flex; align-items: flex-end; margin-bottom: 1.5mm; }
+    .ps-m .ph img { max-height: 11mm; max-width: 100%; width: auto; height: auto; object-fit: contain; object-position: left bottom; filter: grayscale(1); }
+    .ps-m .ph .nophoto { display: block; font: italic 400 7pt/1.2 Helvetica, Arial, sans-serif; color: #333; border: .5pt dashed #666; padding: 1.5mm 2mm; }
+    .ps-m .nm { display: block; font: 700 11.5pt/1.05 Helvetica, Arial, sans-serif; }
+    .ps-m .sb { display: block; margin-top: .8mm; font-size: 7.4pt; color: #222; }
+    .ps-m .tag { display: inline-block; margin-top: 1mm; padding: .2mm 1.2mm; border: .6pt solid #000; font: 700 6.6pt/1.3 Helvetica, Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+    .ps-m.is-comp .tag { border-style: dashed; }
+    .ps-cat td { padding-top: 1.8mm; border-bottom: .9pt solid #000; font: 700 8.4pt/1.2 Helvetica, Arial, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+    .ps-t td.v { font-variant-numeric: tabular-nums; }
+    .ps-t td.v b { font-weight: 700; }
+    .ps-t td.v .val-prof, .ps-t td.v .pf { display: block; font-size: 6.8pt; color: #333; font-weight: 400; }
+    .ps-t td.v .np { font-style: italic; color: #333; }
+    .ps-t td.v .badge-yes svg { width: 9pt; height: 9pt; vertical-align: -1pt; }
+    .ps-t td.v .val-txt { display: block; font-size: 7.2pt; white-space: normal; min-width: 0; max-width: none; }
+    .ps, .ps * { color: #000 !important; }
+    .ps .val-prof, .ps .pf, .ps .np, .ps small, .ps-m .sb { color: #333 !important; }
+    .ps-ft { margin-top: 2mm; padding-top: 1.4mm; border-top: 1pt solid #000; font-size: 6.6pt; line-height: 1.3; break-inside: avoid; page-break-inside: avoid; }
+    .ps-ft p { margin: 0 0 1mm; }
+    .ps-ft ol { margin: 0 0 1.6mm; padding-left: 4mm; }
+    .ps-ft li { margin: 0; overflow-wrap: anywhere; }
+    .ps-ft b { font-weight: 700; }
   </style>
 </head>
 <body data-bg="calme" class="cmp-page" data-view="xp">
@@ -1035,11 +1080,15 @@
         <label class="tgl"><input type="checkbox" id="cv-diff"> Écarts seulement</label>
         <button type="button" class="btn" id="cv-copy">Copier le texte</button>
         <button type="button" class="btn" id="cv-link">Copier le lien</button>
+        <button type="button" class="btn" id="cv-print">Imprimer / PDF</button>
       </div>
       <div class="cv" id="cv"></div>
       <p class="cv-note" id="cv-note"></p>
     </section>
   </main>
+
+  <!-- Fiche imprimable, remplie au clic sur « Imprimer / PDF » -->
+  <div class="ps" id="print-sheet" aria-hidden="true"></div>
 
   <!-- ── Bac de selection ── -->
   <section class="sel" id="sel" aria-label="Modèles retenus pour la comparaison">
@@ -1079,7 +1128,7 @@
     { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'Cuivre RJ45 1G',                  fn: m => m.rj45  || '—',    num: m => m.rj45  },
-    { cat:'ports', label:'<span class="glossary-tip" tabindex="0" data-tip="Ports cuivre multi-gig (2,5GBASE-T, 5GBASE-T, 10GBASE-T), qui négocient aussi 1G. Vitesses exactes de la datasheet sous le nombre.">Cuivre multi-gig (mGig)</span>', fn: m => m.mgig ? m.mgig + '<span class="val-prof">' + esc(m.mgigSp) + '</span>' : '—', num: m => m.mgig, vx: false },
+    { cat:'ports', label:'<span class="glossary-tip" tabindex="0" data-tip="Ports cuivre multi-gig (2,5GBASE-T, 5GBASE-T, 10GBASE-T), qui négocient aussi 1G. Vitesses exactes de la datasheet sous le nombre.">Cuivre multi-gig (mGig)</span>', fn: m => m.mgig ? m.mgig + '<span class="val-prof">' + esc(m.mgigSp) + '</span>' : '—', num: m => m.mgig, vx: true },
     { cat:'ports', label:'Combo SFP/RJ45 1G',               fn: m => m.combo || '—',    num: m => m.combo, vx: false },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
     { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
@@ -1087,7 +1136,7 @@
     { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
     { cat:'ports', label:'100G SFP-DD',                     fn: m => m.sfpdd || '—',    num: m => m.sfpdd, vx: false },
     { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
-    { cat:'ports', label:'Ports PoE',                       fn: m => m.poeP  || '—',    num: m => m.poeP, vx: false },
+    { cat:'ports', label:'Ports PoE',                       fn: m => m.poeP  || '—',    num: m => m.poeP, vx: true },
     { cat:'ports', label:'Interfaces, libellé datasheet',   fn: m => m.io ? '<span class="val-txt">' + esc(m.io) + '</span>' : '—', num: null, vx: false, np: m => !m.io },
     { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
     { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
@@ -1095,15 +1144,16 @@
     { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
     { cat:'hw',    label:'Ports de gestion, libellé datasheet', fn: m => m.mgmt ? '<span class="val-txt">' + esc(m.mgmt) + '</span>' : '—', num: null, np: m => !m.mgmt },
     { cat:'hw',    label:'Stockage',                        fn: m => m.disk ? esc(m.disk) : '—', num: null, np: m => !m.disk },
-    { cat:'hw',    label:'Alimentation',                    fn: m => m.psu ? '<span class="val-txt">' + esc(m.psu) + '</span>' : '—', num: null, np: m => !m.psu },
+    { cat:'hw',    label:'Alimentation',                    fn: m => m.psu ? '<span class="val-txt">' + esc(m.psu) + '</span>' + (m._v ? psuRLab(m.psuR) : '') : '—', num: null, np: m => !m.psu, vx: true },
     { cat:'hw',    label:'Refroidissement',                 fn: m => m.cool ? esc(m.cool) : '—', num: null, np: m => !m.cool },
     { cat:'hw',    label:'PAN-OS minimal',                  fn: m => m.panosMin ? esc(m.panosMin) : '—', num: null, np: m => !m.panosMin },
     { cat:'hw',    label:'PAN-OS des mesures datasheet',    fn: m => m.dsOs ? esc(m.dsOs) : '—', num: null, np: m => !m.dsOs },
-    { cat:'feat',  label:'HA actif/passif',                 fn: m => yesNo(m.haAP), num: null, np: m => m.haAP == null },
-    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Paire HA classique dont les deux membres traitent du trafic. Non supporté : exclu par la documentation Palo Alto. Tiret : non publié. L’actif/actif par NGFW clustering figure sur la ligne Clustering.">HA actif/actif</span>', fn: m => m.haAA === false ? 'Non supporté' : yesNo(m.haAA), num: null, np: m => m.haAA == null },
-    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="HA clustering (jusqu’à 16 pare-feu, synchronisation de sessions) ou NGFW clustering (deux nœuds, plan de données double actif, MC-LAG). Nombre de membres publié par la documentation Palo Alto.">Clustering</span>', fn: m => m.haCl ? '<span class="val-txt">' + esc(m.haCl) + '</span>' : '—', num: null, np: m => !m.haCl },
+    { cat:'feat',  label:'HA actif/passif',                 fn: m => yesNo(m.haAP), num: null, np: m => m.haAP == null, vx: true },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Paire HA classique dont les deux membres traitent du trafic. Non supporté : exclu par la documentation de l’éditeur. Tiret : non publié. L’actif/actif par clustering figure sur la ligne Clustering.">HA actif/actif</span>', fn: m => m.haAA === false ? 'Non supporté' : yesNo(m.haAA), num: null, np: m => m.haAA == null, vx: true },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="HA clustering (jusqu’à 16 pare-feu, synchronisation de sessions) ou NGFW clustering (deux nœuds, plan de données double actif, MC-LAG). Nombre de membres publié par la documentation Palo Alto. Concurrents : clustering tel que le décrit la datasheet de l’éditeur.">Clustering</span>', fn: m => m.haCl ? '<span class="val-txt">' + esc(m.haCl) + '</span>' : '—', num: null, np: m => !m.haCl, vx: true },
     { cat:'feat',  label:'Ports HA dédiés',                 fn: m => m.haPorts ? '<span class="val-txt">' + esc(m.haPorts) + '</span>' : '—', num: null, np: m => !m.haPorts },
-    { cat:'feat',  label:'HA : source et réserves',         fn: m => m.haNote ? '<span class="val-txt">' + esc(m.haNote) + '</span>' : '—', num: null, np: m => !m.haNote },
+    { cat:'feat',  label:'HA : source et réserves',         fn: m => m.haNote ? '<span class="val-txt">' + esc(m.haNote) + '</span>' : '—', num: null, np: m => !m.haNote, vx: true },
+    { cat:'feat',  label:'Matériel concurrent : sources datasheet', fn: m => m.hwSrc ? '<span class="val-txt">' + esc(hwSrcText(m.hwSrc)) + '</span>' : '—', num: null, np: m => !m.hwSrc, vx: true, xOnly: true },
     { cat:'feat',  label:'GlobalProtect VPN',               fn: m => NO_GP.has(m.s) ? '—' : YES, num: null, np: m => NO_GP.has(m.s) },
     { cat:'feat',  label:'SD-WAN',                          fn: m => NO_SDWAN.has(m.s) ? '—' : YES, num: null, np: m => NO_SDWAN.has(m.s) },
     { cat:'feat',  label:'WildFire',                        fn: () => YES, num: null },
@@ -1129,10 +1179,17 @@
   /* Lignes qui ont un sens pour un boitier concurrent : debits,
      sessions, interfaces, format. Le reste (GlobalProtect, vsys,
      WildFire...) est propre a PAN-OS et reste vide. */
-  const isComparable = row => row.vx !== false && (['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format');
+  const isComparable = row => row.vx === true || row.vx !== false && (['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format');
+
+  /* Sources par valeur des champs materiels concurrents (hwSrc). */
+  const HWSRC_LAB = { ports: 'Ports', poe: 'PoE', ha: 'HA', psu: 'Alimentation' };
+  const PSUR = { true: 'redondance de série', option: 'redondance en option', false: 'non redondante' };
+  const psuRLab = r => r == null ? '' : '<span class="val-prof">' + PSUR[String(r)] + '</span>';
+  const hwSrcText = o => Object.keys(HWSRC_LAB).filter(k => o && o[k]).map(k => HWSRC_LAB[k] + ' : ' + o[k]).join(' · ');
 
   /* Une valeur nulle veut dire « non publie », jamais zero. */
   function cellRaw(row, m) {
+    if (row.xOnly && !m._v) return '—';
     if (m._v && !isComparable(row)) return '—';
     if (row.num && row.num(m) == null) return '—';
     if (row.np && row.np(m)) return '—';
@@ -1345,7 +1402,6 @@
     fw:  ['Débit firewall', 'PA : App-ID appmix · concurrents : définition de l’éditeur'],
     tp:  ['Débit avec protection complète', 'PA : Threat Prevention appmix · concurrents : définition de l’éditeur'],
     vpn: ['IPsec VPN', 'PA : HTTP 64 KB · concurrents : définition de l’éditeur'],
-    rj45:   ['Ports RJ45 cuivre', 'PA : 1G · concurrents : toutes vitesses cuivre'],
     sfp25:  ['25G SFP28', 'Concurrents : SFP28 et SFP56 (50G) regroupés'],
     sfp100: ['100G QSFP28', 'Concurrents : QSFP28 et QSFP56 (200G) regroupés']
   };
@@ -1426,6 +1482,7 @@
     const hiddenByCat = {};
     ROWS.forEach((row, ri) => {
       if (state.cat !== 'all' && row.cat !== state.cat) return;
+      if (row.xOnly && !withComp) return;
       if (withComp && visible.length && visible.every(m => cellRaw(row, m) === '—')) {
         hiddenByCat[row.cat] = (hiddenByCat[row.cat] || 0) + 1;
         return;
@@ -1671,7 +1728,7 @@
   }
   function portsLine(m) {
     const p = [['rj45', 'RJ45 1G'], ['mgig', 'mGig'], ['combo', 'combo SFP/RJ45'], ['sfp1', 'SFP'], ['sfp10', 'SFP+'], ['sfp25', 'SFP28'], ['sfp100', 'QSFP28'], ['sfpdd', 'SFP-DD'], ['sfp400', 'QSFP-DD']]
-      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + (m._v && x[0] === 'rj45' ? 'RJ45' : x[1]));
+      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + x[1]);
     return p.length ? p.join(' · ') : 'non publié';
   }
   /* Resume HA de la loupe : A/P, A/A, clustering, dans l'ordre de la doc. */
@@ -2215,6 +2272,7 @@
     });
     document.getElementById('cv-diff').addEventListener('change', e => { cmpDiffOnly = e.target.checked; renderCompare(); animateRows(0); });
     document.getElementById('cv-copy').addEventListener('click', function () { copyCompare(this); });
+    document.getElementById('cv-print').addEventListener('click', printCompare);
     document.getElementById('cv-link').addEventListener('click', function () {
       const b = this;
       (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject()).then(
@@ -2227,7 +2285,7 @@
   let cmpDiffOnly = false;
   function cvCell(row, m) {
     const NP = { html: '<span class="np">non publié</span>', n: null, na: true };
-    if (m._v && !isComparable(row)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
+    if ((m._v && !isComparable(row)) || (row.xOnly && !m._v)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
     if (row.num) {
       const n = row.num(m);
       if (n == null) {
@@ -2270,6 +2328,7 @@
       const same = plain.every(p => p === plain[0]);
       if (cmpDiffOnly && same) return;
       if (comp && models.every(m => m._v) && !isComparable(row)) return;
+      if (row.xOnly && !comp) return;
       if (row.cat !== lastCat) { lastCat = row.cat; h += '<div class="cv-cat">' + CATS[row.cat].label + '</div>'; }
       /* Un port absent (0) n'est pas un ecart de capacite : pas de barre. */
       const pa = models.map((m, i) => (!m._v && cells[i].n != null && !(row.cat === 'ports' && cells[i].n === 0)) ? cells[i].n : null);
@@ -2315,7 +2374,9 @@
   function copyCompare(btn) {
     const models = selected.map(byKey).filter(Boolean);
     let text = 'COMPARAISON\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
+    const withC = models.some(m => m._v);
     ROWS.forEach(row => {
+      if (row.xOnly && !withC) return;
       text += row.label.replace(/<[^>]+>/g, '') + (isLegacy(row) ? ' (édition antérieure de la datasheet)' : '') + ' : ' + models.map(m => cvCell(row, m).html.replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
     });
     if (models.some(m => m._v)) text += '\nDébits concurrents : définitions propres à chaque éditeur, non comparables un pour un.';
@@ -2324,6 +2385,97 @@
       () => { btn.textContent = 'Copié'; setTimeout(() => { btn.textContent = 'Copier le texte'; }, 1600); },
       () => { btn.textContent = 'Copie impossible ici'; });
   }
+
+  /* ══ Fiche de comparaison imprimable ══
+     Une page A4 en noir et blanc, construite a partir des memes lignes
+     (ROWS) et des memes cellules (cvCell) que la vue Comparaison :
+     rien n'y est recalcule, aucun ecart n'y figure, aucun prix. */
+  const PS_ROWS = [
+    ['Débits', r => ['fw', 'tp', 'vpn'].indexOf(fieldOf(r)) !== -1],
+    ['Sessions', r => ['sess', 'cps'].indexOf(fieldOf(r)) !== -1],
+    ['Interfaces', r => ['rj45', 'mgig', 'combo', 'sfp1', 'sfp10', 'sfp25', 'sfp100', 'sfpdd', 'sfp400', 'poeP'].indexOf(fieldOf(r)) !== -1, true],
+    ['Haute disponibilité', r => /HA actif\/passif|>HA actif\/actif<|>Clustering</.test(r.label)],
+    ['Matériel et cycle de vie', r => r.label === 'Format' || r.label === 'Alimentation' || r.label === 'End of Sale']
+  ];
+  const psText = h => String(h == null ? '' : h).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  function psPhoto(m) {
+    const e = photoEntry(m);
+    return e ? '<img src="' + e.img + '" width="' + e.w + '" height="' + e.h + '" alt="">'
+      : '<span class="nophoto">' + (m._v ? 'Photo non reprise (concurrent)' : 'Pas de photo publiée') + '</span>';
+  }
+  function psCell(row, m) {
+    const f = fieldOf(row);
+    if (m._v && row.label === 'End of Sale') return '<span class="np">aucun avis trouvé au relevé</span>';
+    const c = cvCell(row, m);
+    let h = c.html;
+    if (/badge-yes/.test(h)) h = 'Oui';
+    if (m._v && !c.na && (f === 'fw' || f === 'tp' || f === 'vpn')) {
+      const V = COMP.vendors[m.v];
+      h += '<span class="pf">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[f]) || 'définition de l’éditeur') + '</span>';
+    }
+    return h;
+  }
+  function psLabel(row, comp) {
+    const f = fieldOf(row);
+    if (comp && NEUTRAL[f]) return esc(NEUTRAL[f][0]) + '<small>' + esc(NEUTRAL[f][1]) + '</small>';
+    return esc(psText(row.label));
+  }
+  function psDsLine(m) {
+    if (m._v) return '<b>' + esc(m.id) + '</b> : datasheet ' + esc(m._vname) + (m.dsRev ? ' (' + esc(m.dsRev) + ')' : '') + ', ' + esc(m.ds || '');
+    return '<b>' + esc(m.id) + '</b> : datasheet ' + esc(m.s) + ' Series, ' + esc(DS_URLS[m.s] || '');
+  }
+  function buildPrintSheet() {
+    const models = selected.map(byKey).filter(Boolean);
+    const box = document.getElementById('print-sheet');
+    if (models.length < 2) { box.innerHTML = ''; return false; }
+    const comp = models.some(m => m._v);
+    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    let h = '<header class="ps-hd"><div><div class="ps-brand">Sizing Guide PANW</div>'
+      + '<h1>Fiche de comparaison</h1></div>'
+      + '<div class="ps-date">Édition du ' + esc(date) + '<br>' + models.length + ' modèles' + (comp ? ', dont concurrents' : '') + '</div></header>';
+    h += '<table class="ps-t"><colgroup><col class="lab">' + models.map(() => '<col>').join('') + '</colgroup>'
+      + '<thead><tr><th class="lab ps-m" scope="col"></th>'
+      + models.map(m => '<th class="ps-m' + (m._v ? ' is-comp' : '') + '" scope="col"><div class="ph">' + psPhoto(m) + '</div>'
+        + '<span class="nm">' + esc(m.id) + '</span>'
+        + '<span class="sb">' + esc(m._v ? m._vname + ' · ' + (m.s || '') : m.s + ' Series · ' + m.target) + '</span>'
+        + '<span class="tag">' + (m._v ? 'Concurrent' : 'Palo Alto Networks') + '</span></th>').join('')
+      + '</tr></thead><tbody>';
+    PS_ROWS.forEach(([title, pick, skipEmpty]) => {
+      const rows = ROWS.filter(pick).filter(row => {
+        if (!skipEmpty) return true;
+        return models.some(m => { const c = cvCell(row, m); return c.n != null && c.n > 0; });
+      });
+      if (!rows.length) return;
+      h += '<tr class="ps-cat"><td colspan="' + (models.length + 1) + '">' + title + '</td></tr>';
+      rows.forEach(row => {
+        h += '<tr><td class="lab">' + psLabel(row, comp) + '</td>'
+          + models.map(m => '<td class="v">' + psCell(row, m) + '</td>').join('') + '</tr>';
+      });
+    });
+    h += '</tbody></table>';
+    h += '<footer class="ps-ft">'
+      + (comp ? '<p><b>Concurrents.</b> Leurs valeurs suivent la méthode de mesure de leur éditeur (profil rappelé sous chaque débit) : elles ne se comparent pas une pour une aux débits App-ID appmix et Threat Prevention des PA-Series, et ne remplacent ni un test ni le dimensionnement de l’éditeur.</p>' : '')
+      + '<p>Une valeur « non publié » n’est pas un zéro : la datasheet ne la donne pas. Aucune donnée commerciale.</p>'
+      + '<p><b>Sources</b></p><ol>' + models.map(m => '<li>' + psDsLine(m) + '</li>').join('') + '</ol>'
+      + '<p>Haute disponibilité et fin de vie des PA-Series : documentation technique et page officielle des fins de vie Palo Alto Networks. Fiche éditée le ' + esc(date) + ' depuis Sizing Guide PANW.</p>'
+      + '</footer>';
+    box.innerHTML = h;
+    return true;
+  }
+  function printCompare() {
+    if (!buildPrintSheet()) { say('Choisissez au moins deux modèles.'); return; }
+    document.body.classList.add('ps-on');
+    const imgs = Array.from(document.querySelectorAll('#print-sheet img'));
+    const ready = imgs.map(i => i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; }));
+    Promise.race([Promise.all(ready), new Promise(r => setTimeout(r, 1500))]).then(() => window.print());
+  }
+  /* Ctrl+P depuis la vue Comparaison imprime aussi la fiche ; ailleurs,
+     la page s'imprime comme avant. */
+  window.addEventListener('beforeprint', () => {
+    if (state.view === 'cmp' && buildPrintSheet()) document.body.classList.add('ps-on');
+  });
+  window.addEventListener('afterprint', () => { document.body.classList.remove('ps-on'); });
+  window.PrintSheet = { build: buildPrintSheet };
 
   /* ══ Concurrents (fichier facultatif) ══ */
   function initVendors() {

@@ -1,5 +1,35 @@
 # Changelog
 
+## Session 21 - 5 novembre 2026 : concurrents au niveau des PA, fiche de comparaison imprimable (branche audit-v9)
+
+- Concurrents : les 69 boitiers releves dans leur datasheet officielle pour
+  le multi-gig (`mgig`, `mgigSp`), le nombre de ports PoE (`poeP`), les
+  modes HA publies (`haAP`, `haAA`, `haCl`, texte et page dans `haNote`) et
+  l'alimentation (`psu`, redondance `psuR`). Source par valeur dans
+  `hwSrc`. Non publie = null : 318 valeurs publiees, 96 non publiees
+  (detail par editeur et par modele dans `AUDIT_CONCURRENTS_2026-11.md`).
+  `rj45` ne compte plus que le cuivre 1G, comme pour les PA (FortiGate
+  200G a 3000G, Force 3950 a 9800, Spark 2580/2590, Cisco 1250).
+  Cisco lu en Threat Defense : un actif/actif publie pour ASA seulement
+  reste non publie.
+- Comparateur : ces lignes s'affichent pour les concurrents en vues Tableau
+  et Comparaison (multi-gig, ports PoE, HA actif/passif, actif/actif,
+  clustering, HA source, alimentation avec sa redondance, et une ligne
+  « sources datasheet » propre aux concurrents). Toujours hors des ecarts,
+  barres, maxima et de l'etabli.
+- Fiche de comparaison : bouton « Imprimer / PDF » dans la vue Comparaison
+  (et Ctrl+P depuis cette vue). Fiche A4 noir et blanc, CSS print dedie,
+  sans bibliotheque : en-tete Sizing Guide, photos, debits (profil de
+  mesure sous chaque valeur concurrente), sessions, CPS, ports detailles,
+  PoE, HA, format, alimentation, End of Sale, sources datasheet avec
+  revision, mention de methode de mesure des concurrents, date d'edition.
+  Aucun prix. Ailleurs, l'impression de la page reste inchangee.
+- Tests : `_competitors.js` (champs presents, valeur publiee = source,
+  coherence mgig/mgigSp, psuR) et `_print.js` (fiche rendue par Chrome :
+  lignes cles, sources, mention, ni prix ni em-dash ni couleur, une page A4
+  pour quatre modeles, impression hors comparaison non detournee). Les deux
+  dans `npm run build` ; `_competitors.js` aussi dans `npm run deploy`.
+
 ## Session 20 - 5 novembre 2026 : photos de facade, mode guide, capacites anterieures (branche audit-v9)
 
 - Photos : 57 modeles sur 59 ont la photo de leur datasheet officielle

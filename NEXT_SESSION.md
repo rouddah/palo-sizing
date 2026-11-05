@@ -11,6 +11,13 @@ editer `data/pa-chassis.js` a la main) ; mode guide calcule sur les
 donnees, teste par `_wizard.js` ; capacites d editions anterieures
 listees dans `LEGACY_CAPS`, hors de tout calcul.
 
+Session 21 (meme branche) : concurrents releves en multi-gig, PoE, HA et
+alimentation (`data/competitors.js`, source par valeur dans `hwSrc`,
+`rj45` = cuivre 1G comme les PA ; regles dans l'en-tete du fichier,
+controle `_competitors.js`) ; fiche A4 imprimable depuis la vue
+Comparaison (`#print-sheet`, `buildPrintSheet()`, test `_print.js`).
+Datasheets Check Point : lisibles seulement dans un navigateur.
+
 Voir CHANGELOG session 19 et `AUDIT_EXHAUSTIF_2026-11.md`. A savoir avant
 d'editer `data/pa-models.js` :
 - `rj45` = cuivre 1G seulement ; le multi-gig va dans `mgig` (+ `mgigSp`),
