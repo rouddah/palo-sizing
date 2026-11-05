@@ -296,7 +296,7 @@
           .forEach(function (m) { items.push({ t: 'model', m: m }); });
       } else if (toks.length) {
         var hits = MS.filter(function (m) {
-          var hay = norm(m.id + ' ' + m.id.replace('PA-', '') + ' ' + m.s + ' ' + (m.target || '') + ' ' + m.f + (m.poe ? ' poe' : '') + (m.eos ? ' eos end of sale' : ''));
+          var hay = norm(m.id + ' ' + m.id.replace('PA-', '') + ' ' + m.s + ' ' + (m.target || '') + ' ' + m.f + (m.poe ? ' poe' : '') + (m.mgig ? ' mgig multi-gig multigig' : '') + (m.haCl ? ' cluster clustering' : '') + (m.eos ? ' eos end of sale' : ''));
           return toks.every(function (t) { return hay.indexOf(t) !== -1; });
         });
         // les correspondances par le debut du numero passent devant

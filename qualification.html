@@ -385,7 +385,7 @@
       <section class="wb-pane out" aria-label="Recommandation">
         <div class="wb-pane-head">
           <h2 class="wb-pane-title">Recommandation</h2>
-          <span class="wb-pane-sub">Datasheets PAN-OS 12.1</span>
+          <span class="wb-pane-sub">Datasheets PAN-OS 11.1 à 12.2</span>
         </div>
         <div class="wb-pane-in">
           <!-- Region live : tout changement de contrainte est annonce
@@ -692,7 +692,7 @@
             </div>
             <div class="guide-q-block matters">
               <div class="guide-q-block-label">Pourquoi ça compte</div>
-              <div class="guide-q-block-text">Certains modèles ont du PoE intégré (PA-415, PA-445, PA-455, PA-545-POE, PA-555-POE, PA-1410, PA-1420), du 5G (PA-415-5G, PA-455-5G), ou un format compact sans ventilateur (PA-400).</div>
+              <div class="guide-q-block-text">Certains modèles ont du PoE intégré (PA-415, PA-415-5G, PA-445, PA-455, PA-455-5G, PA-545-POE, PA-555-POE, PA-1410, PA-1420, toute la PA-1500), un modem 5G (PA-415-5G, PA-455-5G, PA-520-5G), ou un format sans ventilateur (PA-400, PA-500 hors PA-560). Les gammes durcies PA-400R et PA-50R couvrent l'industriel.</div>
             </div>
             <div class="guide-q-block fallback" style="grid-column:1/-1">
               <div class="guide-q-block-label">Si le client ne sait pas</div>
@@ -994,13 +994,13 @@
      de bureau. Elle reste comparable dans le comparateur. */
   const FAMILY_META = [
     { id:'PA-400',  form:'Desktop',      pos:'PME et agences distantes', desc:'Firewall compact sans ventilateur, idéal pour les petits bureaux et sites distants avec un besoin de sécurité avancé sans complexité.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series' },
-    { id:'PA-500',  form:'1U Rack',      pos:'Agences et sites mid-market', desc:'Gamme 1U rack avec PoE intégré, pensée pour les sites distants nécessitant plus de capacité que la PA-400 et une haute disponibilité active/active.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
+    { id:'PA-500',  form:'Desktop, rack 1U en option', pos:'Agences et sites mid-market', desc:'Gamme quantum-optimized de bureau (kit rack 1U en option), PoE 2,5G sur les PA-545-POE et PA-555-POE. Succède à la PA-400 et publie la haute disponibilité active/active et active/passive.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series' },
     { id:'PA-1400', form:'1U Rack',      pos:'Sièges PME et campus mid-market', desc:'Firewall 1U performant avec PoE, adapté aux sièges de PME et aux campus de taille moyenne nécessitant déchiffrement SSL et SD-WAN.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series' },
     { id:'PA-1500', form:'1U Rack',      pos:'Grandes agences et campus', desc:'Gamme quantum-optimized annoncée en 2026. 16 ports PoE++ 90 W, commutation de niveau 2 intégrée et déchiffrement des flux post-quantiques, pour consolider le réseau du site sur le firewall.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series' },
     { id:'PA-3400', form:'1U Rack',      pos:'Sièges enterprise et internet gateways', desc:'Gamme enterprise 1U haute performance pour les sièges de grandes entreprises, les passerelles Internet et les environnements multi-sites.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series' },
-    { id:'PA-3500', form:'1U / 2U Rack', pos:'Périmètre, campus et petits datacenters', desc:'Gamme quantum-optimized annoncée en 2026, avec ports 100G en façade et clustering NGFW actif/actif.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series' },
+    { id:'PA-3500', form:'1U / 2U Rack', pos:'Périmètre, campus et petits datacenters', desc:'Gamme quantum-optimized annoncée en 2026, ports cuivre 10G mGig et 100G en façade. HA actif/passif ; le clustering NGFW actif/actif est annoncé pour une version future.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series' },
     { id:'PA-5400', form:'2U Rack',      pos:'Grands campus, datacenters et opérateurs', desc:'Plateforme 2U pour les datacenters, les grandes passerelles Internet et les fournisseurs de services nécessitant une capacité extrême.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series' },
-    { id:'PA-5500', form:'2U / 3U Rack', pos:'Datacenters et grands campus', desc:'Gamme quantum-optimized annoncée en 2026, jusqu’à 300 Gbps Threat Prevention et des ports QSFP-DD 400G.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series' },
+    { id:'PA-5500', form:'2U / 3U Rack', pos:'Datacenters et grands campus', desc:'Gamme quantum-optimized annoncée en 2026, jusqu’à 300 Gbps Threat Prevention et des ports QSFP-DD 400G. HA actif/passif ou NGFW clustering à deux nœuds, sans actif/actif classique.', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series' },
     { id:'PA-7500', form:'Chassis',      pos:'Hyperscale, datacenters critiques', desc:'Chassis modulaire de dernière génération pour les environnements hyperscale. Remplace la PA-7000 (End of Sale déc. 2025).', dsUrl:'https://www.paloaltonetworks.com/resources/datasheets/pa-7500' },
   ];
 
@@ -1133,12 +1133,29 @@
   function fmtInterfaces(m) {
     const parts = [];
     if (m.rj45)   parts.push(m.rj45   + ' x RJ45 1G');
+    if (m.mgig)   parts.push(m.mgig   + ' x RJ45 multi-gig ' + m.mgigSp);
+    if (m.combo)  parts.push(m.combo  + ' x combo SFP/RJ45 1G');
     if (m.sfp1)   parts.push(m.sfp1   + ' x SFP 1G');
     if (m.sfp10)  parts.push(m.sfp10  + ' x SFP+ 10G');
     if (m.sfp25)  parts.push(m.sfp25  + ' x SFP28 25G');
     if (m.sfp100) parts.push(m.sfp100 + ' x QSFP28 100G');
+    if (m.sfpdd)  parts.push(m.sfpdd  + ' x SFP-DD 100G');
     if (m.sfp400) parts.push(m.sfp400 + ' x QSFP-DD 400G');
+    if (m.poeP)   parts.push('dont ' + m.poeP + ' PoE');
     return parts.length ? parts.join(' · ') : 'voir datasheet';
+  }
+
+  /* Modes HA publies pour le modele : la doc exclut l'actif/actif classique
+     sur PA-5500 et PA-7500, et ne le publie pas sur PA-3500 et PA-50R. */
+  function fmtHa(m) {
+    const p = [];
+    if (m.haAP) p.push('actif/passif');
+    if (m.haAA === true) p.push('actif/actif');
+    if (m.haCl) p.push(m.haCl);
+    let t = p.length ? p.join(', ') : 'modes non publiés';
+    if (m.haAA === false) t += ' ; actif/actif classique non supporté';
+    else if (m.haAA == null) t += ' ; actif/actif classique non publié';
+    return t;
   }
 
   function runCommercialWizard() {
@@ -1468,7 +1485,7 @@
         +   '<span><b>' + total + ' appliance' + (total > 1 ? 's' : '') + '</b> &middot; '
         +   nbSites + ' site' + (nbSites > 1 ? 's' : '')
         +   (parPaire === 2
-              ? ', en paire HA : chaque membre doit tenir 100% de la charge'
+              ? ', en paire HA : chaque membre doit tenir 100% de la charge. Modes publiés pour ' + retenu.m.id + ' : ' + fmtHa(retenu.m)
               : rawHa === 'no'
                 ? ', appliance seule, sans redondance'
                 : ', haute disponibilité non renseignée : doubler si une paire HA est retenue')
@@ -1633,7 +1650,7 @@ ${openQuestions.length ? '\nÀ CONFIRMER\n  ' + openQuestions.join('\n  ') : ''}
 
 Estimation de première qualification. Dimensionnement définitif à valider par
 un ingénieur avant-vente, sur SLR ou trafic réel.
-Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
+Source : datasheets Palo Alto Networks, mesures sous PAN-OS ${retenu && retenu.m.dsOs ? retenu.m.dsOs : '11.1 à 12.2 selon la série'}.`;
 
     const shareUrl = encodeSession();
     const mailSubject = encodeURIComponent('Qualification firewall Palo Alto Networks' + (clientName ? ' - ' + clientName : ''));
@@ -1660,7 +1677,7 @@ Source : datasheets Palo Alto Networks, PAN-OS 12.1.`;
     html += '<div class="wb-note" style="margin-top:16px">' + ic('alert', 15)
       + '<div><b>Estimation de première qualification.</b> Dimensionnement définitif '
       + 'à valider par un ingénieur avant-vente, sur SLR ou trafic réel. '
-      + 'Débits appmix des datasheets Palo Alto Networks, PAN-OS 12.1.</div></div>';
+      + 'Débits appmix des datasheets Palo Alto Networks, mesures sous PAN-OS 11.1 à 12.2 selon la série.</div></div>';
 
     var changed = box.getAttribute('data-family') !== primary.id;
     var first = !box.hasAttribute('data-family');
@@ -1827,7 +1844,7 @@ ${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à pose
 
 <div class="footer">
   Estimation indicative de première qualification. Le dimensionnement définitif doit être validé par un ingénieur avant-vente.<br>
-  Données issues des datasheets officielles Palo Alto Networks · PAN-OS 12.1 / 11.1 · ${d.date}<br>
+  Données issues des datasheets officielles Palo Alto Networks · mesures sous PAN-OS 11.1 à 12.2 selon la série · ${d.date}<br>
   Généré par Sizing Guide PANW · Exclusive Networks
 </div>
 </body></html>`;

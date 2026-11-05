@@ -639,8 +639,12 @@
         <span class="filter-label">Interfaces minimum requises</span>
         <div class="iface-grid">
           <div class="iface-field">
-            <label for="i_rj45">1G RJ45</label>
+            <label for="i_rj45">RJ45 cuivre (1G et plus)</label>
             <input type="number" id="i_rj45" min="0" value="0" />
+          </div>
+          <div class="iface-field">
+            <label for="i_mgig">dont multi-gig (2,5G et plus)</label>
+            <input type="number" id="i_mgig" min="0" value="0" />
           </div>
           <div class="iface-field">
             <label for="i_sfp">1G SFP</label>
@@ -655,7 +659,7 @@
             <input type="number" id="i_25g" min="0" value="0" />
           </div>
           <div class="iface-field">
-            <label for="i_100g">100G QSFP28</label>
+            <label for="i_100g">100G (QSFP28 ou SFP-DD)</label>
             <input type="number" id="i_100g" min="0" value="0" />
           </div>
           <div class="iface-field">
@@ -835,7 +839,7 @@
 
   document.getElementById('userCount').addEventListener('input', () => { updateComputedTP(); liveSearch(); });
   document.getElementById('sessMin').addEventListener('input', liveSearch);
-  ['i_rj45','i_sfp','i_10g','i_25g','i_100g'].forEach(id =>
+  ['i_rj45','i_mgig','i_sfp','i_10g','i_25g','i_100g'].forEach(id =>
     document.getElementById(id).addEventListener('input', liveSearch)
   );
   document.getElementById('i_poe').addEventListener('change', liveSearch);
@@ -853,6 +857,7 @@
     const users    = parseInt(document.getElementById('userCount').value) || 0;
     const reqGbps  = users * state.bw / 1000;
     const reqRj45  = parseInt(document.getElementById('i_rj45').value)  || 0;
+    const reqMgig  = parseInt(document.getElementById('i_mgig').value)  || 0;
     const reqSfp1  = parseInt(document.getElementById('i_sfp').value)   || 0;
     const reqSfp10 = parseInt(document.getElementById('i_10g').value)   || 0;
     const reqSfp25 = parseInt(document.getElementById('i_25g').value)   || 0;
@@ -876,11 +881,15 @@
         if (ff !== 'all' && !m.form.startsWith(ff)) return false;
         if (series !== 'all' && m.series !== series) return false;
         if (reqPoe && !m.poe) return false;
-        if (m.rj45  < reqRj45)   return false;
-        if (m.sfp1  < reqSfp1)   return false;
+        /* Cuivre : ports 1G, multi-gig et combo comptent tous ; un port combo
+           sert soit en RJ45 soit en SFP, jamais les deux. */
+        if ((m.mgig || 0) < reqMgig) return false;
+        const manqueCu  = Math.max(0, reqRj45 - (m.rj45 || 0) - (m.mgig || 0));
+        const manqueSfp = Math.max(0, reqSfp1 - (m.sfp1 || 0));
+        if (manqueCu + manqueSfp > (m.combo || 0)) return false;
         if (m.sfp10 < reqSfp10)  return false;
         if (m.sfp25 < reqSfp25)  return false;
-        if (m.sfp100< reqSfp100) return false;
+        if ((m.sfp100 || 0) + (m.sfpdd || 0) < reqSfp100) return false;
         const thr = throughput(m);
         if (users > 0 && thr != null && thr < reqGbps) return false;
         if (reqSess > 0 && m.sess < reqSess) return false;
@@ -903,7 +912,7 @@
     selected.clear();
     /* Les cartes qui restent glissent vers leur nouveau rang, les
        nouvelles entrent en fondu : on suit un modele d'un tri a l'autre. */
-    const paint = () => renderResults(candidates, reqGbps, { reqRj45, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
+    const paint = () => renderResults(candidates, reqGbps, { reqRj45, reqMgig, reqSfp1, reqSfp10, reqSfp25, reqSfp100 });
     if (window.Motion) Motion.flip(document.getElementById('result-grid'), '.result-card', paint, { key: 'id' });
     else paint();
   }
@@ -932,12 +941,16 @@
       const isOversize= pct < 40;
 
       const portChips = [
-        m.rj45   ? `<span class="port-chip ${m.rj45   >= ifaces.reqRj45   ? 'ok' : 'short'}">${m.rj45} × 1G RJ45</span>` : '',
-        m.sfp1   ? `<span class="port-chip ${m.sfp1   >= ifaces.reqSfp1   ? 'ok' : 'short'}">${m.sfp1} × 1G SFP</span>`  : '',
+        m.rj45   ? `<span class="port-chip ok">${m.rj45} × RJ45 1G</span>` : '',
+        m.mgig   ? `<span class="port-chip ${m.mgig >= ifaces.reqMgig ? 'ok' : 'short'}">${m.mgig} × RJ45 mGig ${m.mgigSp}</span>` : '',
+        m.combo  ? `<span class="port-chip ok">${m.combo} × combo SFP/RJ45 1G</span>` : '',
+        m.sfp1   ? `<span class="port-chip ok">${m.sfp1} × 1G SFP</span>`  : '',
         m.sfp10  ? `<span class="port-chip ${m.sfp10  >= ifaces.reqSfp10  ? 'ok' : 'short'}">${m.sfp10} × 10G SFP+</span>` : '',
         m.sfp25  ? `<span class="port-chip ${m.sfp25  >= ifaces.reqSfp25  ? 'ok' : 'short'}">${m.sfp25} × 25G SFP28</span>` : '',
-        m.sfp100 ? `<span class="port-chip ${m.sfp100 >= ifaces.reqSfp100 ? 'ok' : 'short'}">${m.sfp100} × 100G QSFP28</span>` : '',
-        m.poe    ? `<span class="port-chip ok">PoE</span>` : '',
+        m.sfp100 ? `<span class="port-chip ok">${m.sfp100} × 100G QSFP28</span>` : '',
+        m.sfpdd  ? `<span class="port-chip ok">${m.sfpdd} × 100G SFP-DD</span>` : '',
+        m.sfp400 ? `<span class="port-chip ok">${m.sfp400} × 400G QSFP-DD</span>` : '',
+        m.poe    ? `<span class="port-chip ok">PoE${m.poeP ? ' × ' + m.poeP : ''}</span>` : '',
       ].filter(Boolean).join('');
 
       const tpLabel = state.mode === 'fw' ? 'App-ID FW' : state.mode === 'tp' ? 'Threat Prev.' : 'IPsec VPN';
@@ -1022,14 +1035,22 @@
       ['IPsec VPN',       m => m.vpn != null ? m.vpn + ' Gbps' : '—'],
       ['Sessions max',    m => fmtNum(m.sess)],
       ['Nouvelles sess/s',m => m.cps != null ? fmtNum(m.cps) : '—'],
-      ['1G RJ45',         m => m.rj45  || '—'],
+      ['RJ45 1G',         m => m.rj45  || '—'],
+      ['RJ45 multi-gig',  m => m.mgig ? m.mgig + ' (' + m.mgigSp + ')' : '—'],
+      ['Combo SFP/RJ45 1G', m => m.combo || '—'],
       ['1G SFP',          m => m.sfp1  || '—'],
       ['10G SFP+',        m => m.sfp10 || '—'],
       ['25G SFP28',       m => m.sfp25 || '—'],
       ['100G QSFP28',     m => m.sfp100|| '—'],
+      ['100G SFP-DD',     m => m.sfpdd || '—'],
       ['400G QSFP-DD',    m => m.sfp400|| '—'],
+      ['Ports PoE',       m => m.poeP  || (m.poe ? 'non publié' : '—')],
       ['Format',          m => m.form],
       ['PoE',             m => m.poe ? 'Oui' : '—'],
+      ['HA actif/passif', m => m.haAP ? 'Oui' : 'non publié'],
+      ['HA actif/actif',  m => m.haAA === true ? 'Oui' : m.haAA === false ? 'Non supporté' : 'non publié'],
+      ['Clustering',      m => m.haCl || 'non publié'],
+      ['End of Sale',     m => m.eosD ? m.eosD.split('-').reverse().join('/') + (m.eos ? '' : ' (annoncée)') : 'Non annoncée'],
     ];
 
     // Find best (numeric max) per row
@@ -1066,6 +1087,7 @@
     document.getElementById('userCount').value = '';
     document.getElementById('sessMin').value   = '';
     document.getElementById('i_rj45').value  = 0;
+    document.getElementById('i_mgig').value  = 0;
     document.getElementById('i_sfp').value   = 0;
     document.getElementById('i_10g').value   = 0;
     document.getElementById('i_25g').value   = 0;

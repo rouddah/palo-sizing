@@ -384,6 +384,21 @@
       color: var(--text-muted);
       line-height: 1.2;
     }
+    /* Libelles longs de datasheet (I/O, alimentation, HA) : texte courant,
+       pas de chiffre en chasse fixe, retour a la ligne autorise. */
+    .val-txt {
+      display: block;
+      min-width: 14em;
+      max-width: 22em;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      line-height: 1.35;
+      white-space: normal;
+      text-align: left;
+      color: var(--text);
+    }
+    .cv-c .val-txt { min-width: 0; max-width: none; }
     .cat-folded {
       font-size: var(--text-2xs);
       color: var(--text-muted);
@@ -982,7 +997,7 @@
     </span>
     <span class="ns-pos" id="ns-pos" aria-live="polite"></span>
     <span class="ns-hint">Cochez « Comparer » sur les modèles à mettre côte à côte</span>
-    <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 12.1 (PA-7000 : 11.2 · PA-7500 : 11.1) · Source : datasheets officielles</span>
+    <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 11.0 à 12.2 selon la série (ligne « PAN-OS des mesures datasheet ») · Source : datasheets officielles</span>
   </div>
   <div class="vendor-note" id="vendor-note" hidden>
     <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></svg>
@@ -1034,6 +1049,14 @@
   </section>
 
   <script>
+  const YES = '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>';
+  /* Vrai : coche. Faux : non. Nul : tiret, rendu « non publié » en comparaison. */
+  const yesNo = v => v === true ? YES : v === false ? 'Non' : '—';
+  const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  const frDate = iso => { const p = String(iso).split('-'); return (+p[2]) + ' ' + MOIS[+p[1] - 1] + ' ' + p[0]; };
+  /* Fonctions que la datasheet de la serie ne publie pas (voir AUDIT_EXHAUSTIF_2026-11.md). */
+  const NO_GP = new Set(['PA-400', 'PA-400R']);
+  const NO_SDWAN = new Set(['PA-7500']);
   const ROWS = [
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
@@ -1051,24 +1074,40 @@
     { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
     { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
-    { cat:'ports', label:'1G RJ45 (copper)',                fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'Cuivre RJ45 1G',                  fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'<span class="glossary-tip" tabindex="0" data-tip="Ports cuivre multi-gig (2,5GBASE-T, 5GBASE-T, 10GBASE-T), qui négocient aussi 1G. Vitesses exactes de la datasheet sous le nombre.">Cuivre multi-gig (mGig)</span>', fn: m => m.mgig ? m.mgig + '<span class="val-prof">' + esc(m.mgigSp) + '</span>' : '—', num: m => m.mgig, vx: false },
+    { cat:'ports', label:'Combo SFP/RJ45 1G',               fn: m => m.combo || '—',    num: m => m.combo, vx: false },
     { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
     { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
     { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
     { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'ports', label:'100G SFP-DD',                     fn: m => m.sfpdd || '—',    num: m => m.sfpdd, vx: false },
     { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
+    { cat:'ports', label:'Ports PoE',                       fn: m => m.poeP  || '—',    num: m => m.poeP, vx: false },
+    { cat:'ports', label:'Interfaces, libellé datasheet',   fn: m => m.io ? '<span class="val-txt">' + esc(m.io) + '</span>' : '—', num: null, vx: false, np: m => !m.io },
     { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
     { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
     { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
     { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
-    { cat:'feat',  label:'HA Active/Passive',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
-    { cat:'feat',  label:'HA Active/Active',                fn: m => m.haAA ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
-    { cat:'feat',  label:'GlobalProtect VPN',               fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
-    { cat:'feat',  label:'SD-WAN',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
-    { cat:'feat',  label:'WildFire ML',                     fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
-    { cat:'feat',  label:'App-ID',                          fn: () => '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>',  num: null },
-    { cat:'feat',  label:'5G / GTP / SCTP Security',        fn: m => m.m5g ? '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>' : '—', num: null },
-    { cat:'feat',  label:'End of Sale (EoS)',               fn: m => m.eos ? '<span class="badge-eos-pa">EoS</span>' : '—', num: null },
+    { cat:'hw',    label:'Ports de gestion, libellé datasheet', fn: m => m.mgmt ? '<span class="val-txt">' + esc(m.mgmt) + '</span>' : '—', num: null, np: m => !m.mgmt },
+    { cat:'hw',    label:'Stockage',                        fn: m => m.disk ? esc(m.disk) : '—', num: null, np: m => !m.disk },
+    { cat:'hw',    label:'Alimentation',                    fn: m => m.psu ? '<span class="val-txt">' + esc(m.psu) + '</span>' : '—', num: null, np: m => !m.psu },
+    { cat:'hw',    label:'Refroidissement',                 fn: m => m.cool ? esc(m.cool) : '—', num: null, np: m => !m.cool },
+    { cat:'hw',    label:'PAN-OS minimal',                  fn: m => m.panosMin ? esc(m.panosMin) : '—', num: null, np: m => !m.panosMin },
+    { cat:'hw',    label:'PAN-OS des mesures datasheet',    fn: m => m.dsOs ? esc(m.dsOs) : '—', num: null, np: m => !m.dsOs },
+    { cat:'feat',  label:'HA actif/passif',                 fn: m => yesNo(m.haAP), num: null, np: m => m.haAP == null },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Paire HA classique dont les deux membres traitent du trafic. Non supporté : exclu par la documentation Palo Alto. Tiret : non publié. L’actif/actif par NGFW clustering figure sur la ligne Clustering.">HA actif/actif</span>', fn: m => m.haAA === false ? 'Non supporté' : yesNo(m.haAA), num: null, np: m => m.haAA == null },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="HA clustering (jusqu’à 16 pare-feu, synchronisation de sessions) ou NGFW clustering (deux nœuds, plan de données double actif, MC-LAG). Nombre de membres publié par la documentation Palo Alto.">Clustering</span>', fn: m => m.haCl ? '<span class="val-txt">' + esc(m.haCl) + '</span>' : '—', num: null, np: m => !m.haCl },
+    { cat:'feat',  label:'Ports HA dédiés',                 fn: m => m.haPorts ? '<span class="val-txt">' + esc(m.haPorts) + '</span>' : '—', num: null, np: m => !m.haPorts },
+    { cat:'feat',  label:'HA : source et réserves',         fn: m => m.haNote ? '<span class="val-txt">' + esc(m.haNote) + '</span>' : '—', num: null, np: m => !m.haNote },
+    { cat:'feat',  label:'GlobalProtect VPN',               fn: m => NO_GP.has(m.s) ? '—' : YES, num: null, np: m => NO_GP.has(m.s) },
+    { cat:'feat',  label:'SD-WAN',                          fn: m => NO_SDWAN.has(m.s) ? '—' : YES, num: null, np: m => NO_SDWAN.has(m.s) },
+    { cat:'feat',  label:'WildFire',                        fn: () => YES, num: null },
+    { cat:'feat',  label:'App-ID',                          fn: () => YES, num: null },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Section Mobile Network Infrastructure de la datasheet. PA-3400, PA-5400 et PA-7000 y ajoutent GTP et SCTP Security. Tiret : la datasheet n’en parle pas.">5G Security</span>', fn: m => m.m5g ? YES : m.m5g === false ? 'Non (modèle exclu)' : '—', num: null, np: m => m.m5g == null },
+    { cat:'feat',  label:'End of Sale',                     fn: m => m.eosD ? frDate(m.eosD) + (m.eos ? '' : '<span class="val-prof">annoncée</span>') : (m.eos ? '<span class="badge-eos-pa">EoS</span>' : 'Non annoncée'), num: null },
+    { cat:'feat',  label:'End of Life',                     fn: m => m.eolD ? frDate(m.eolD) : 'Non annoncée', num: null },
+    { cat:'feat',  label:'Dernière version PAN-OS',         fn: m => m.panosMax ? esc(m.panosMax) : (m.eosD ? '—' : 'Non annoncée'), num: null, np: m => !m.panosMax && !!m.eosD },
     { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
   ];
 
@@ -1086,12 +1125,13 @@
   /* Lignes qui ont un sens pour un boitier concurrent : debits,
      sessions, interfaces, format. Le reste (GlobalProtect, vsys,
      WildFire...) est propre a PAN-OS et reste vide. */
-  const isComparable = row => ['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format';
+  const isComparable = row => row.vx !== false && (['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format');
 
   /* Une valeur nulle veut dire « non publie », jamais zero. */
   function cellRaw(row, m) {
     if (m._v && !isComparable(row)) return '—';
     if (row.num && row.num(m) == null) return '—';
+    if (row.np && row.np(m)) return '—';
     if (row.label === 'Format') return m.f || '—';
     return row.fn(m);
   }
@@ -1618,8 +1658,17 @@
     return '<span class="hw-ph ' + k + '" role="img" aria-label="Visuel non disponible' + (f ? ', format ' + esc(f) : '') + '"></span>';
   }
   function portsLine(m) {
-    const p = [['rj45', 'RJ45'], ['sfp1', 'SFP'], ['sfp10', 'SFP+'], ['sfp25', 'SFP28'], ['sfp100', 'QSFP28'], ['sfp400', 'QSFP-DD']]
-      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + x[1]);
+    const p = [['rj45', 'RJ45 1G'], ['mgig', 'mGig'], ['combo', 'combo SFP/RJ45'], ['sfp1', 'SFP'], ['sfp10', 'SFP+'], ['sfp25', 'SFP28'], ['sfp100', 'QSFP28'], ['sfpdd', 'SFP-DD'], ['sfp400', 'QSFP-DD']]
+      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + (m._v && x[0] === 'rj45' ? 'RJ45' : x[1]));
+    return p.length ? p.join(' · ') : 'non publié';
+  }
+  /* Resume HA de la loupe : A/P, A/A, clustering, dans l'ordre de la doc. */
+  function haLine(m) {
+    const p = [];
+    if (m.haAP) p.push('A/P');
+    if (m.haAA === true) p.push('A/A');
+    if (m.haCl) p.push(/NGFW/.test(m.haCl) ? 'NGFW clustering' : 'HA clustering');
+    if (m.haAA === false) p.push('sans A/A classique');
     return p.length ? p.join(' · ') : 'non publié';
   }
   const SEL = window.CmpSel || { get: () => store.get('pan-cmp-sel', []), set: a => store.set('pan-cmp-sel', a) };
@@ -1678,7 +1727,7 @@
 
   function matchQ(m) {
     if (!state.q) return true;
-    const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '') + ' ' + (m.f || '') + (m.poe ? ' poe' : '')).toLowerCase();
+    const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '') + ' ' + (m.f || '') + (m.poe ? ' poe' : '') + (m.mgig ? ' mgig multi-gig' : '') + (m.haCl ? ' cluster clustering' : '')).toLowerCase();
     return state.q.split(/\s+/).every(t => hay.indexOf(t) !== -1);
   }
   function laneShown(L) { return !(state.hideEos && L.eos); }
@@ -1884,8 +1933,10 @@
       + row('Sessions', m.sess == null ? 'non publié' : fmtN(m.sess), m.sess == null)
       + row('CPS', m.cps == null ? 'non publié' : fmtN(m.cps), m.cps == null)
       + row('Ports', esc(portsLine(m)), false)
+      + (m._v ? '' : row('HA', esc(haLine(m)), false))
       + '</dl>'
-      + (m.eos ? '<p class="prof">End of Sale' + (EOS_REPLACEMENTS[m.id] ? ', remplacé par ' + EOS_REPLACEMENTS[m.id] : '') + '</p>' : '')
+      + (m.eos ? '<p class="prof">End of Sale' + (m.eosD ? ' le ' + frDate(m.eosD) : '') + (EOS_REPLACEMENTS[m.id] ? ', remplacé par ' + EOS_REPLACEMENTS[m.id] : '') + '</p>'
+        : m.eosD ? '<p class="prof">End of Sale annoncée le ' + frDate(m.eosD) + '</p>' : '')
       + (V ? '<p class="prof">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[state.metric]) || 'définition de l’éditeur') + '</p>' : '')
       + '<p class="hint">' + (selected.indexOf(m._key) !== -1 ? '<b>Retenu.</b> Clic ou Entrée pour le retirer.' : 'Clic ou <b>Entrée</b> : ajouter à la comparaison') + '</p>';
     const host = document.getElementById('view-xp');
@@ -2171,10 +2222,11 @@
         if (/Budget PoE/.test(row.label) && !m.poe) return { html: 'Sans PoE', n: null };
         return NP;
       }
-      if (row.cat === 'ports') return { html: String(n), n };
+      if (row.cat === 'ports') return { html: n ? cellRaw(row, m) : '0', n };
       return { html: cellRaw(row, m), n };
     }
     if (row.label === 'Format') return m.f ? { html: esc(m.f), n: null } : NP;
+    if (row.np && row.np(m)) return NP;
     if (/5G/.test(row.label) && m.m5g == null) return NP;
     if (/base \/ max/.test(row.label) && !m.vsys) return NP;
     if (row.cat === 'ref' && !m.sku) return NP;
@@ -2206,7 +2258,8 @@
       if (cmpDiffOnly && same) return;
       if (comp && models.every(m => m._v) && !isComparable(row)) return;
       if (row.cat !== lastCat) { lastCat = row.cat; h += '<div class="cv-cat">' + CATS[row.cat].label + '</div>'; }
-      const pa = models.map((m, i) => (!m._v && cells[i].n != null) ? cells[i].n : null);
+      /* Un port absent (0) n'est pas un ecart de capacite : pas de barre. */
+      const pa = models.map((m, i) => (!m._v && cells[i].n != null && !(row.cat === 'ports' && cells[i].n === 0)) ? cells[i].n : null);
       const nums = pa.filter(v => v != null);
       const max = nums.length > 1 ? Math.max.apply(null, nums) : null;
       const hasGap = max != null && Math.min.apply(null, nums) < max && max > 0;
