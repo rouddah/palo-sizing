@@ -27,7 +27,8 @@
   2580 du parc en place alignes sur `data/competitors.js` (1,85 / 2,5 / 3,2).
 - Mode guide : plus de boite `alert()` sur une reponse manquante, message
   dans la question (`role="alert"`, champ marque `aria-invalid`), libelles
-  relies a leur champ (`for`).
+  relies a leur champ (`for`). Resultat date « novembre 2026 » (il disait
+  « juin 2026 ») et « 5 sites » au lieu de « 5 site(s) ».
 - Theme clair : les pictogrammes officiels (traits blancs) disparaissaient
   sur les pages Cortex, Prisma Browser et Panorama ; ils passent a l'encre
   du texte. Palette : plus d'anneau de focus parasite dans le champ.
