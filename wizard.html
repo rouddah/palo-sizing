@@ -349,6 +349,7 @@
   <script src="header.js"></script>
   <script src="ui.js"></script>
   <script src="icons.js"></script>
+  <script src="data/pa-models.js"></script>
 
   <div class="wiz-wrap">
     <div class="page-header" style="margin-bottom:28px">
@@ -542,28 +543,80 @@
       return { mu: mu, mbps_rn: mbps_rn, total: mu + mbps_rn };
     }
 
+    /* ── Recommandation PA-Series, derivee de data/pa-models.js ──
+       Plus aucun palier ecrit a la main : les anciens ignoraient
+       PA-500, PA-1500, PA-3500 et PA-5500, et vieillissaient a chaque
+       annonce. Le besoin se calcule par utilisateur sur site, puis on
+       prend le plus petit modele qui le tient dans la marge.
+
+       Hypotheses (affichees dans le resultat) : 5 Mbps soutenus et
+       10 sessions concurrentes par utilisateur (profil standard de
+       l'etabli). Modele d'entree : besoin <= 65 % du debit Threat
+       Prevention et des sessions de la datasheet (marge de l'etabli).
+       Modele confort : besoin <= 50 %, et plus large que l'entree.
+
+       Modeles candidats : ceux qu'on peut proposer a un bureau, en
+       vente, sans option dediee que le mode guide ne demande pas.
+       Sont ecartes : fin de vente effective (eos) ou annoncee (eosD),
+       boitiers durcis OT (format « durci »), variantes 5G, et
+       variantes PoE quand la serie a un modele sans PoE. Une metrique
+       nulle (non publiee) ne valide ni ne disqualifie : elle sort du
+       calcul. La liste est calculee au premier appel, pas au
+       chargement : l'ordre des scripts differe entre navigateur et
+       DOM de test. */
+    var MBPS_PER_USER = 5, SESS_PER_USER = 10, MARGE_ENTRY = 0.65, MARGE_COMFORT = 0.5;
+    var _cands = null;
+    function candidates() {
+      if (_cands) return _cands;
+      if (typeof MODELS === 'undefined') return [];
+      var withPlain = {};
+      MODELS.forEach(function (m) { if (!/-POE/.test(m.id)) withPlain[m.s] = true; });
+      _cands = MODELS.filter(function (m) {
+        if (m.eos || m.eosD) return false;
+        if (/durci/i.test(m.f || '')) return false;
+        if (/-5G$/.test(m.id)) return false;
+        if (/-POE/.test(m.id) && withPlain[m.s]) return false;
+        return m.tp != null || m.sess != null;
+      }).sort(function (a, b) { return (a.tp || 0) - (b.tp || 0) || (a.sess || 0) - (b.sess || 0); });
+      return _cands;
+    }
+    function fits(m, needTp, needSess, marge) {
+      var okTp = m.tp == null || needTp <= m.tp * marge;
+      var okSess = m.sess == null || needSess <= m.sess * marge;
+      return okTp && okSess;
+    }
     function ngfwModel(users) {
       if (!users || users <= 0) return null;
-      var tiers = [
-        { max: 10,       entry: 'PA-410',              comfort: 'PA-415',             family: 'PA-400' },
-        { max: 30,       entry: 'PA-415 ou PA-440',    comfort: 'PA-445',             family: 'PA-400' },
-        { max: 75,       entry: 'PA-440',              comfort: 'PA-450',             family: 'PA-400' },
-        { max: 150,      entry: 'PA-450',              comfort: 'PA-455 ou PA-460',   family: 'PA-400' },
-        { max: 300,      entry: 'PA-460',              comfort: 'PA-1410',            family: 'PA-400 / PA-1400' },
-        { max: 700,      entry: 'PA-1410',             comfort: 'PA-1420',            family: 'PA-1400' },
-        { max: 1500,     entry: 'PA-1420',             comfort: 'PA-3410',            family: 'PA-1400 / PA-3400' },
-        { max: 3000,     entry: 'PA-3410',             comfort: 'PA-3420',            family: 'PA-3400' },
-        { max: 6000,     entry: 'PA-3420 ou PA-3430',  comfort: 'PA-3440 ou PA-5410', family: 'PA-3400 / PA-5400' },
-        { max: 15000,    entry: 'PA-5410',             comfort: 'PA-5420',            family: 'PA-5400' },
-        { max: 30000,    entry: 'PA-5430',             comfort: 'PA-5440',            family: 'PA-5400' },
-        { max: 50000,    entry: 'PA-5445',             comfort: 'PA-5560',            family: 'PA-5400 / PA-5500' },
-        { max: Infinity, entry: 'PA-5560',             comfort: 'PA-7500',            family: 'PA-5500 / PA-7500' }
-      ];
-      for (var i = 0; i < tiers.length; i++) {
-        if (users <= tiers[i].max) return tiers[i];
+      var list = candidates();
+      if (!list.length) return null;
+      var needTp = users * MBPS_PER_USER / 1000;
+      var needSess = users * SESS_PER_USER;
+      var entry = null, comfort = null, i;
+      for (i = 0; i < list.length; i++) if (fits(list[i], needTp, needSess, MARGE_ENTRY)) { entry = list[i]; break; }
+      var beyond = !entry;
+      if (beyond) entry = list[list.length - 1];
+      for (i = list.indexOf(entry) + 1; i < list.length; i++) {
+        if (fits(list[i], needTp, needSess, MARGE_COMFORT) && (list[i].tp || 0) > (entry.tp || 0)) { comfort = list[i]; break; }
       }
-      return tiers[tiers.length - 1];
+      var fam = [entry.s];
+      if (comfort && comfort.s !== entry.s) fam.push(comfort.s);
+      return {
+        entry: entry.id, comfort: comfort ? comfort.id : null,
+        entryM: entry, comfortM: comfort,
+        family: fam.join(' / '), beyond: beyond,
+        needTp: needTp, needSess: needSess,
+        loadEntry: entry.tp ? needTp / entry.tp : null
+      };
     }
+    function fmtGbps(v) { return v == null ? 'débit non publié' : String(v).replace('.', ',') + ' Gbps'; }
+    function sizingBasis() {
+      return 'Sizing indicatif : ' + MBPS_PER_USER + ' Mbps soutenus et ' + SESS_PER_USER + ' sessions par utilisateur sur site. '
+        + 'Entrée : besoin à ' + Math.round(MARGE_ENTRY * 100) + ' % au plus du débit Threat Prevention et des sessions de la datasheet ; confort : ' + Math.round(MARGE_COMFORT * 100) + ' %. '
+        + 'Modèles en vente uniquement, hors boîtiers durcis et variantes 5G.';
+    }
+    /* Expose pour le test (_wizard.js) et la console. */
+    window.WizReco = { ngfwModel: ngfwModel, candidates: candidates,
+      hyp: { mbps: MBPS_PER_USER, sess: SESS_PER_USER, entry: MARGE_ENTRY, comfort: MARGE_COMFORT } };
 
     function prismaEdition() {
       var web = state.internet_filtering;
@@ -727,10 +780,11 @@
       }
       if (onsite > 0 && ngfw) {
         lines.push('## PA-Series - NGFW');
-        lines.push('- Modèle entry : ' + ngfw.entry + ' (famille ' + ngfw.family + ')');
-        lines.push('- Modèle confort : ' + ngfw.comfort);
+        lines.push('- Modèle d’entrée : ' + ngfw.entry + ' (série ' + ngfw.entryM.s + ')');
+        lines.push('- Modèle confort : ' + (ngfw.comfort ? ngfw.comfort + ' (série ' + ngfw.comfortM.s + ')' : 'aucun modèle plus large en vente'));
+        if (ngfw.beyond) lines.push('- Besoin au-delà de la marge du plus grand modèle en vente : étude dédiée (plusieurs boîtiers, clustering)');
         lines.push('- Bundle recommandé : Precision AI Pro Bundle');
-        lines.push('- Sizing basé sur ~5 Mbps soutenu/user actif, marge 50% sur débit Threat Prevention');
+        lines.push('- ' + sizingBasis());
         if (nb >= 3) lines.push('- Management centralisé recommandé : Strata Cloud Manager ou Panorama');
         lines.push('- HA : doubler les appliances');
         lines.push('');
@@ -829,15 +883,16 @@
       if (hasNGFW) {
         h += '<div class="wiz-result-block">';
         h += '<div class="wiz-result-title">Firewalls PA-Series - NGFW</div>';
-        h += '<div class="wiz-result-line"><strong>Modèle entry :</strong> <span class="wiz-tag">' + ngfw.entry + '</span> <span style="font-size:11px;color:var(--text-muted)">famille ' + ngfw.family + '</span></div>';
-        h += '<div class="wiz-result-line"><strong>Modèle confort :</strong> <span class="wiz-tag">' + ngfw.comfort + '</span></div>';
-        h += '<div class="wiz-result-line" style="font-size:11px;color:var(--text-muted);margin-top:2px">Sizing indicatif basé sur ~5 Mbps soutenu par user actif, marge 50% sur le débit Threat Prevention.</div>';
+        h += '<div class="wiz-result-line"><strong>Modèle d’entrée :</strong> <span class="wiz-tag" id="wiz-ngfw-entry">' + ngfw.entry + '</span> <span style="font-size:11px;color:var(--text-muted)">série ' + ngfw.entryM.s + ', ' + fmtGbps(ngfw.entryM.tp) + ' Threat Prevention</span></div>';
+        h += '<div class="wiz-result-line"><strong>Modèle confort :</strong> ' + (ngfw.comfort ? '<span class="wiz-tag" id="wiz-ngfw-comfort">' + ngfw.comfort + '</span> <span style="font-size:11px;color:var(--text-muted)">série ' + ngfw.comfortM.s + ', ' + fmtGbps(ngfw.comfortM.tp) + ' Threat Prevention</span>' : '<span style="font-size:12px;color:var(--text-muted)">aucun modèle plus large en vente</span>') + '</div>';
+        if (ngfw.beyond) h += '<div class="wiz-result-line" style="font-size:12px;color:var(--yellow)">Le besoin dépasse la marge du plus grand modèle en vente : étude dédiée (plusieurs boîtiers, clustering).</div>';
+        h += '<div class="wiz-result-line" style="font-size:11px;color:var(--text-muted);margin-top:2px">' + sizingBasis() + '</div>';
         h += '<div class="wiz-result-line" style="margin-top:12px"><strong>Bundle :</strong> <span class="wiz-tag green">Precision AI Pro Bundle</span> <span style="font-size:11px;color:var(--text-muted)">(couvre threat + URL + DNS + SD-WAN + Device Security)</span></div>';
         if (nb >= 3) {
           h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Management centralisé recommandé :</strong> Strata Cloud Manager (cloud) ou Panorama (on-prem).</div>';
         }
         h += '<div class="wiz-result-line" style="margin-top:8px;font-size:12px;color:var(--yellow)">HA : doubler les appliances.</div>';
-        h += '<a class="wiz-detail-link" href="pa-series.html#PA-400">Voir le détail PA-Series</a>';
+        h += '<a class="wiz-detail-link" href="pa-series.html?cmp=' + [ngfw.entry, ngfw.comfort].filter(Boolean).map(encodeURIComponent).join(',') + '">' + (ngfw.comfort ? 'Comparer ' + ngfw.entry + ' et ' + ngfw.comfort : 'Voir ' + ngfw.entry + ' dans le comparateur') + '</a>';
         h += '</div>';
       }
 

@@ -52,10 +52,13 @@ par PA-520, PA-540, PA-545-POE, PA-550, PA-555-POE, PA-560, PA-520-5G ;
 un seul pour PA-501, PA-505, PA-510) le laissent deviner : non repris,
 c'est une deduction.
 
-**Mode guide (`wizard.html`)** : les paliers par nombre d'utilisateurs
-ignorent PA-500, PA-1500, PA-3500 et PA-5500 (sauf le dernier palier,
-corrige pour retirer PA-5450 et PA-7000 en fin de vente). Arbitrage
-editorial a faire.
+**Mode guide (`wizard.html`)** : resolu le 5 novembre 2026. Les paliers en
+dur sont remplaces par un calcul sur `data/pa-models.js` (5 Mbps et 10
+sessions par utilisateur, entree a 65 % de la datasheet, confort a 50 %),
+qui couvre PA-500, PA-1400, PA-1500, PA-3400, PA-3500, PA-5400, PA-5500 et
+PA-7500. Arbitrage pris : la PA-400 (End of Sale annonce au 22 mars 2027)
+n y est plus proposee, l etabli la garde tant que la date n est pas
+atteinte. Teste par `_wizard.js`.
 
 ## Valeurs TBD d'aout 2026 - resolu le 5 novembre 2026
 

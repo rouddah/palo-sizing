@@ -39,6 +39,7 @@ function copyDir(src, dst) {
   for (const e of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, e.name), d = path.join(dst, e.name);
     if (e.isDirectory()) n += copyDir(s, d);
+    else if (/\.md$/i.test(e.name)) continue;   // notes de depot (img/SOURCES.md), pas du site
     else { fs.copyFileSync(s, d); n++; }
   }
   return n;
