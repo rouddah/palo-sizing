@@ -57,6 +57,7 @@
       margin-bottom: 8px;
       line-height: 1.4;
     }
+    .wiz-err { margin: var(--sp-3) 0 0; font-size: var(--text-sm); font-weight: 600; color: var(--crit); }
     .wiz-helper {
       color: var(--text-muted);
       font-size: 13px;
@@ -458,12 +459,12 @@
       h += '<p class="wiz-helper">' + q.tip + '</p>';
 
       if (q.type === 'number') {
-        h += '<label class="wiz-input-label">Nombre</label>';
+        h += '<label class="wiz-input-label" for="wiz-num">Nombre</label>';
         h += '<input class="wiz-input" id="wiz-num" type="number" min="0" placeholder="' + q.ph + '" value="' + (state[q.key] !== undefined ? state[q.key] : '') + '" />';
       } else if (q.type === 'sites') {
-        h += '<label class="wiz-input-label">Nombre de sites</label>';
+        h += '<label class="wiz-input-label" for="wiz-nb-sites">Nombre de sites</label>';
         h += '<input class="wiz-input" id="wiz-nb-sites" type="number" min="0" placeholder="ex : 5" value="' + (state.nb_sites !== undefined ? state.nb_sites : '') + '" />';
-        h += '<label class="wiz-input-label">Taille typique d’un site</label>';
+        h += '<label class="wiz-input-label" for="wiz-site-size">Taille typique d’un site</label>';
         h += '<select class="wiz-select" id="wiz-site-size"><option value="">-- Sélectionner --</option>';
         SITE_SIZES.forEach(function(sz) {
           h += '<option value="' + sz.val + '"' + (state.site_size === sz.val ? ' selected' : '') + '>' + sz.label + '</option>';
@@ -517,20 +518,37 @@
       }
     }
 
+    /* Message d'erreur dans la question, lu par les lecteurs d'ecran,
+       au lieu d'une boite alert() qui bloque la page. */
+    function stepError(msg, id) {
+      var block = document.getElementById('wiz-q-block');
+      var el = id ? document.getElementById(id) : block.querySelector('.wiz-choice');
+      var p = block.querySelector('.wiz-err');
+      if (!p) {
+        p = document.createElement('p'); p.className = 'wiz-err'; p.setAttribute('role', 'alert');
+        /* sous le champ ou sous les reponses, pas sous le bouton */
+        var anchor = id ? el : (el && el.parentNode);
+        if (anchor && anchor !== block) anchor.insertAdjacentElement('afterend', p); else block.appendChild(p);
+      }
+      p.textContent = msg;
+      if (el) { if (id) el.setAttribute('aria-invalid', 'true'); el.focus(); }
+      return false;
+    }
+
     function collectStep(q) {
       if (q.type === 'number') {
         var v = document.getElementById('wiz-num').value.trim();
-        if (v === '' || isNaN(parseInt(v, 10))) { alert('Veuillez saisir un nombre.'); return false; }
+        if (v === '' || isNaN(parseInt(v, 10))) return stepError('Saisissez un nombre pour continuer.', 'wiz-num');
         state[q.key] = parseInt(v, 10);
         save();
       } else if (q.type === 'sites') {
         var nb = document.getElementById('wiz-nb-sites').value.trim();
-        if (nb === '' || isNaN(parseInt(nb, 10))) { alert('Veuillez indiquer le nombre de sites.'); return false; }
+        if (nb === '' || isNaN(parseInt(nb, 10))) return stepError('Indiquez le nombre de sites pour continuer.', 'wiz-nb-sites');
         state.nb_sites = parseInt(nb, 10);
         state.site_size = document.getElementById('wiz-site-size').value || 'Moyen';
         save();
       } else if (q.type === 'choices') {
-        if (!state[q.key]) { alert('Veuillez sélectionner une réponse.'); return false; }
+        if (!state[q.key]) return stepError('Choisissez une réponse pour continuer.', null);
       }
       return true;
     }
@@ -830,7 +848,7 @@
       var h = '';
       h += '<div style="margin-bottom:20px">';
       h += '<h2 style="font-size:20px;font-weight:700;color:var(--text-bright);margin-bottom:6px">Votre recommandation de premier niveau</h2>';
-      h += '<p style="font-size:12px;color:var(--text-muted)">Basée sur vos réponses - Indicatif - Mis à jour juin 2026</p>';
+      h += '<p style="font-size:12px;color:var(--text-muted)">Basée sur vos réponses - Indicatif - Données de novembre 2026</p>';
       h += '</div>';
 
       /* === Pitch copy-paste === */
@@ -866,7 +884,7 @@
           h += '<div class="wiz-result-line" style="margin-top:10px"><strong>Mobile Users :</strong> ' + units.mu + '</div>';
           if (nb > 0) {
             var bw = SITE_BW[sz] || 100;
-            h += '<div class="wiz-result-line"><strong>Remote Networks :</strong> ' + nb + ' site(s) - ' + units.mbps_rn + ' Mbps (' + bw + ' Mbps/site ' + sz.toLowerCase() + ')</div>';
+            h += '<div class="wiz-result-line"><strong>Remote Networks :</strong> ' + nb + (nb > 1 ? ' sites - ' : ' site - ') + units.mbps_rn + ' Mbps (' + bw + ' Mbps/site ' + sz.toLowerCase() + ')</div>';
           }
           h += '<div class="wiz-result-line"><strong>Total unités SASE :</strong> ' + units.total + '</div>';
           var addons = [];

@@ -95,7 +95,7 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6\"/><polyline points=\"15 3 21 3 21 9\"/><line x1=\"10\" y1=\"14\" x2=\"21\" y2=\"3\"/></svg>",
           "title": "PA-Series Datasheets",
-          "description": "Fiches techniques officielles de tous les firewalls PA-Series (PA-400 → PA-7500) — performances appmix, interfaces, alimentation",
+          "description": "Fiches techniques officielles de tous les firewalls PA-Series (PA-400 → PA-7500) : performances appmix, interfaces, alimentation",
           "href": "https://www.paloaltonetworks.com/network-security/next-generation-firewall",
           "type": "external"
         },
@@ -108,8 +108,8 @@ const LINKS_DATA = {
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"/><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"/></svg>",
-          "title": "Panorama — Gestion centralisée",
-          "description": "M-300, M-600, M-700, Panorama VM et Strata Cloud Manager — comparatif et sizing",
+          "title": "Panorama · Gestion centralisée",
+          "description": "M-300, M-600, M-700, Panorama VM et Strata Cloud Manager : comparatif et sizing",
           "href": "panorama.html",
           "type": "internal"
         },
@@ -150,7 +150,7 @@ const LINKS_DATA = {
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\" ry=\"2\"/><rect x=\"9\" y=\"9\" width=\"6\" height=\"6\"/><line x1=\"9\" y1=\"1\" x2=\"9\" y2=\"4\"/><line x1=\"15\" y1=\"1\" x2=\"15\" y2=\"4\"/><line x1=\"9\" y1=\"20\" x2=\"9\" y2=\"23\"/><line x1=\"15\" y1=\"20\" x2=\"15\" y2=\"23\"/><line x1=\"20\" y1=\"9\" x2=\"23\" y2=\"9\"/><line x1=\"20\" y1=\"14\" x2=\"23\" y2=\"14\"/><line x1=\"1\" y1=\"9\" x2=\"4\" y2=\"9\"/><line x1=\"1\" y1=\"14\" x2=\"4\" y2=\"14\"/></svg>",
-          "title": "Cortex — XDR · XSIAM · XSOAR · Xpanse",
+          "title": "Cortex · XDR · XSIAM · XSOAR · Xpanse",
           "description": "Plateforme Cortex complète : EDR/XDR, SOC IA (XSIAM), orchestration (XSOAR/AgentiX), Attack Surface Management (Xpanse)",
           "href": "cortex.html",
           "type": "internal",
@@ -185,7 +185,7 @@ const LINKS_DATA = {
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"16 18 22 12 16 6\"/><polyline points=\"8 6 2 12 8 18\"/></svg>",
-          "title": "PAN.dev — APIs & Automation",
+          "title": "PAN.dev · APIs & Automation",
           "description": "Documentation des APIs PAN-OS XML/REST, Terraform provider, modules Ansible, SDK Python",
           "href": "https://pan.dev/",
           "type": "external"
@@ -200,7 +200,7 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>",
           "title": "Best Practice Assessment",
-          "description": "Évaluation automatique des bonnes pratiques PAN-OS (BPA) — identifier les gaps de sécurité",
+          "description": "Évaluation automatique des bonnes pratiques PAN-OS (BPA) : identifier les gaps de sécurité",
           "href": "https://docs.paloaltonetworks.com/best-practices",
           "type": "external"
         },
@@ -233,7 +233,7 @@ const LINKS_DATA = {
       "items": [
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z\"/></svg>",
-          "title": "Prisma Access — SASE",
+          "title": "Prisma Access · SASE",
           "description": "Architecture SASE cloud-delivered : GlobalProtect ZTNA 2.0, Remote Networks, Service Connections, SaaS Security",
           "href": "prisma.html",
           "type": "internal",
@@ -242,20 +242,20 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"/><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"/></svg>",
           "title": "Prisma Access Browser",
-          "description": "Enterprise browser Zero Trust basé sur Chromium (ex-Talon, acquis nov. 2023) — DLP, threat prevention, contrôle BYOD sans agent VPN",
+          "description": "Enterprise browser Zero Trust basé sur Chromium (ex-Talon, acquis nov. 2023) : DLP, threat prevention, contrôle BYOD sans agent VPN",
           "href": "browser.html",
           "type": "internal"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4\"/></svg>",
-          "title": "Prisma Access — Documentation",
+          "title": "Prisma Access · Documentation",
           "description": "Documentation officielle Prisma Access : activation, onboarding, configuration GlobalProtect et Remote Networks",
           "href": "https://docs.paloaltonetworks.com/prisma-access",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>",
-          "title": "Prisma Access — Localisation PoP",
+          "title": "Prisma Access · Localisation PoP",
           "description": "Liste des 100+ Points of Presence Prisma Access mondiaux et leur disponibilite par region",
           "href": "https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-overview/list-of-prisma-access-locations",
           "type": "external"
@@ -263,28 +263,28 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/></svg>",
           "title": "AI Runtime Security (AIRS)",
-          "description": "Securite des workloads IA et conteneurs cloud — Prisma AIRS 2.0 disponible depuis oct. 2025 (remplace CN-Series).",
+          "description": "Sécurité des workloads IA et conteneurs cloud : Prisma AIRS 2.0 disponible depuis oct. 2025 (remplace CN-Series).",
           "href": "https://www.paloaltonetworks.com/prisma/prisma-ai-runtime-security",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/></svg>",
           "title": "Cloud NGFW",
-          "description": "Next-Generation Firewall as a Service sur AWS et Azure — déploiement natif cloud sans infrastructure",
+          "description": "Next-Generation Firewall as a Service sur AWS et Azure : déploiement natif cloud sans infrastructure",
           "href": "https://www.paloaltonetworks.com/network-security/cloud-ngfw",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"12\" y1=\"20\" x2=\"12\" y2=\"10\"/><line x1=\"18\" y1=\"20\" x2=\"18\" y2=\"4\"/><line x1=\"6\" y1=\"20\" x2=\"6\" y2=\"16\"/></svg>",
           "title": "SaaS Security (CASB)",
-          "description": "Visibilité et contrôle des applications SaaS — SaaS Security inline, API et SSPM",
+          "description": "Visibilité et contrôle des applications SaaS : SaaS Security inline, API et SSPM",
           "href": "https://www.paloaltonetworks.com/sase/saas-security",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/></svg>",
           "title": "Enterprise DLP",
-          "description": "Data Loss Prevention cloud-delivered - protection des donnees sensibles sur tous les canaux",
+          "description": "Data Loss Prevention cloud-delivered - protection des données sensibles sur tous les canaux",
           "href": "https://www.paloaltonetworks.com/sase/enterprise-data-loss-prevention",
           "type": "external"
         }
@@ -292,12 +292,12 @@ const LINKS_DATA = {
     },
     {
       "id": "identite",
-      "title": "Identite",
+      "title": "Identité",
       "items": [
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>",
-          "title": "Idira — Identity Security Platform",
-          "description": "Nouveau pilier identite Palo Alto (mai 2026) : PAM, IAM, EPM, Identity Governance, Agentic Identities, Secrets Management.",
+          "title": "Idira · Identity Security Platform",
+          "description": "Nouveau pilier identité Palo Alto (mai 2026) : PAM, IAM, EPM, Identity Governance, Agentic Identities, Secrets Management.",
           "href": "idira.html",
           "type": "internal",
           "highlight": true
@@ -305,28 +305,28 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>",
           "title": "Privileged Access Management",
-          "description": "Gestion des acces privilegies : coffre-fort de mots de passe, session recording, just-in-time access.",
+          "description": "Gestion des accès privilégiés : coffre-fort de mots de passe, session recording, just-in-time access.",
           "href": "https://www.paloaltonetworks.com/idira/human/privileged-access-management",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"/><path d=\"M16 3.13a4 4 0 0 1 0 7.75\"/></svg>",
           "title": "Identity and Access Management",
-          "description": "Gouvernance des identites, cycle de vie des comptes, SSO et authentification adaptative.",
+          "description": "Gouvernance des identités, cycle de vie des comptes, SSO et authentification adaptative.",
           "href": "https://www.paloaltonetworks.com/idira/human/identity-and-access-management",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/><path d=\"M9 12l2 2 4-4\"/></svg>",
           "title": "Endpoint Privilege Manager",
-          "description": "Controle des privileges sur les endpoints Windows et macOS - least privilege, application control.",
+          "description": "Contrôle des privilèges sur les endpoints Windows et macOS - least privilege, application control.",
           "href": "https://www.paloaltonetworks.com/idira/human/endpoint-privilege-manager",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83\"/></svg>",
           "title": "Agentic Identities",
-          "description": "Securite et gouvernance des identites non-humaines (agents IA, service accounts, API keys, workloads).",
+          "description": "Sécurité et gouvernance des identités non humaines (agents IA, service accounts, API keys, workloads).",
           "href": "https://www.paloaltonetworks.com/idira/agentic",
           "type": "external"
         }

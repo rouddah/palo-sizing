@@ -203,10 +203,13 @@ htmlFiles.concat(jsFiles).forEach(f => {
      - le marqueur d absence dans une cellule de tableau, ou le
        tiret cadratin est une convention typographique ;
      - les commentaires de code, que la regle ne vise pas. */
-htmlFiles.forEach(f => {
+/* links.js porte les libelles de la page Ressources et du pied de
+   l'accueil : 14 tirets cadratins y etaient passes inapercus. */
+htmlFiles.concat(['links.js']).forEach(f => {
   const txt = fs.readFileSync(path.join(ROOT, f), 'utf8');
   txt.split('\n').forEach((line, i) => {
     if (!/\u2014|&mdash;/.test(line)) return;
+    if (f === 'links.js' && !/"(title|description)"\s*:/.test(line)) return;
     const t = line.trim();
     if (/^\/\/|^\/\*|^\*|^<!--/.test(t)) return;              // commentaire
     if (/['"`\u0060]\u2014['"`\u0060]|>\u2014</.test(line)) return;   // marqueur d absence

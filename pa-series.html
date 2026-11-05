@@ -1193,9 +1193,15 @@
   const psuRLab = r => r == null ? '' : '<span class="val-prof">' + PSUR[String(r)] + '</span>';
   const hwSrcText = o => Object.keys(HWSRC_LAB).filter(k => o && o[k]).map(k => HWSRC_LAB[k] + ' : ' + o[k]).join(' · ');
 
+  /* Fin de vente d'un concurrent : la meme mention dans le tableau, la
+     comparaison et la fiche imprimable (elle lisait « sans objet » ici et
+     « aucun avis trouve » sur la fiche). */
+  const EOS_X = '<span class="np">aucun avis trouvé au relevé</span>';
+
   /* Une valeur nulle veut dire « non publie », jamais zero. */
   function cellRaw(row, m) {
     if (row.xOnly && !m._v) return '—';
+    if (m._v && row.label === 'End of Sale') return EOS_X;
     if (m._v && !isComparable(row)) return '—';
     if (row.num && row.num(m) == null) return '—';
     if (row.np && row.np(m)) return '—';
@@ -2295,6 +2301,7 @@
   let cmpDiffOnly = false;
   function cvCell(row, m) {
     const NP = { html: '<span class="np">non publié</span>', n: null, na: true };
+    if (m._v && row.label === 'End of Sale') return { html: EOS_X, n: null, na: true };
     if ((m._v && !isComparable(row)) || (row.xOnly && !m._v)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
     if (row.num) {
       const n = row.num(m);
@@ -2415,7 +2422,7 @@
   }
   function psCell(row, m) {
     const f = fieldOf(row);
-    if (m._v && row.label === 'End of Sale') return '<span class="np">aucun avis trouvé au relevé</span>';
+    if (m._v && row.label === 'End of Sale') return EOS_X;
     const c = cvCell(row, m);
     let h = c.html;
     if (/badge-yes/.test(h)) h = 'Oui';

@@ -1,5 +1,47 @@
 # Changelog
 
+## Session 22 - 6 novembre 2026 : passe de finition et recette complete (branche audit-v9)
+
+- Vue Tableau : la ligne « Debits appmix · PAN-OS... · Source » ne
+  chevauche plus l'avertissement concurrents. Cause : `#view-tbl` est une
+  colonne flex, et le bandeau de navigation, renvoye a la ligne quand la
+  position des colonnes s'allonge, etait ecrase a sa hauteur minimale.
+  Les bandeaux gardent leur hauteur (`flex: none`), la position a une
+  largeur fixe (le bandeau ne change plus de hauteur pendant le
+  defilement), et au bout du defilement elle annonce bien la derniere
+  colonne (« 124-128 sur 128 », plus « 124-127 » ni « 128-128 »).
+  Verifie a 1440, 1280, 1024 et 390 px, clair et sombre.
+- FortiGate 3000F, 3000G, 3500F et 3500G : les 2 ports HA etaient comptes
+  dans `sfp25`. Seconde lecture des PDF (schema p.7, tableau p.8, commande
+  p.10) : 14, 14, 30 et 28 ports SFP28 de donnees. Source dans `hwSrc.ports`
+  et tableau dans `AUDIT_CONCURRENTS_2026-11.md` (point ouvert ferme).
+- Fin de vente d'un concurrent : « aucun avis trouve au releve » partout ;
+  la vue Comparaison et le tableau disaient « sans objet », la fiche
+  imprimable non.
+- Etabli : la colonne de capacite porte le modele retenu (PA-410, 0,8 Gbps)
+  et non plus la plage de la serie sous le nom de la serie, alors que les
+  sessions et le CPS etaient deja ceux du modele ; bulle de la jauge
+  corrigee (elle annoncait le modele le plus capable de la serie) ;
+  decimales a la francaise ; « reference », « selon modele » accentues ;
+  pluriels ecrits (« 4 criteres manquants »). Debits Spark 2560, 2570,
+  2580 du parc en place alignes sur `data/competitors.js` (1,85 / 2,5 / 3,2).
+- Mode guide : plus de boite `alert()` sur une reponse manquante, message
+  dans la question (`role="alert"`, champ marque `aria-invalid`), libelles
+  relies a leur champ (`for`).
+- Theme clair : les pictogrammes officiels (traits blancs) disparaissaient
+  sur les pages Cortex, Prisma Browser et Panorama ; ils passent a l'encre
+  du texte. Palette : plus d'anneau de focus parasite dans le champ.
+- Libelles : accents des usages (Perimetre, Campus etendu, site expose,
+  haute densite) et des pieds de page produit ; date de la recherche
+  (juin -> novembre 2026) ; 14 tirets cadratins et 7 mots sans accent dans
+  `links.js` (page Ressources, pied de l'accueil). `_check.js` controle
+  desormais aussi les titres et descriptions de `links.js`.
+- Recette Puppeteer : 14 pages a 1440 et 390 px en clair et sombre, vues
+  Gamme / Tableau (avec concurrents, defile au bout) / Comparaison, palette
+  Ctrl+K, mode guide jusqu'au resultat, etabli, fiche imprimable. Aucune
+  erreur console, aucune requete en echec, aucun debordement horizontal.
+  Captures dans `~/Downloads/_palosizing_v11`.
+
 ## Session 21 - 5 novembre 2026 : concurrents au niveau des PA, fiche de comparaison imprimable (branche audit-v9)
 
 - Concurrents : les 69 boitiers releves dans leur datasheet officielle pour

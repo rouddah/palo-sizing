@@ -18,6 +18,13 @@ controle `_competitors.js`) ; fiche A4 imprimable depuis la vue
 Comparaison (`#print-sheet`, `buildPrintSheet()`, test `_print.js`).
 Datasheets Check Point : lisibles seulement dans un navigateur.
 
+Session 22 (meme branche) : passe de finition et recette Puppeteer
+complete (voir CHANGELOG). Ports HA FortiGate hors `sfp25` ; libelles de
+`links.js` controles par `_check.js` ; pictogrammes `.ic-pan` (traits
+blancs) assombris en theme clair. Piege de capture : une capture pleine
+page (`fullPage`) montre des blocs vides la ou le contenu apparait au
+defilement ; verifier dans la fenetre avant de conclure a un trou.
+
 Voir CHANGELOG session 19 et `AUDIT_EXHAUSTIF_2026-11.md`. A savoir avant
 d'editer `data/pa-models.js` :
 - `rj45` = cuivre 1G seulement ; le multi-gig va dans `mgig` (+ `mgigSp`),

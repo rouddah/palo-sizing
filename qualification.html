@@ -1221,9 +1221,9 @@
     if (unknownCount === 0) {
       confidence = 'green'; confClass = 'confidence-green'; confLabel = 'Qualification complète, ' + (5 - unknownCount) + '/5 critères renseignés';
     } else if (unknownCount <= 2) {
-      confidence = 'orange'; confClass = 'confidence-orange'; confLabel = 'Qualification partielle, ' + assumptions.length + ' hypothèse(s) à confirmer';
+      confidence = 'orange'; confClass = 'confidence-orange'; confLabel = 'Qualification partielle, ' + assumptions.length + (assumptions.length > 1 ? ' hypothèses' : ' hypothèse') + ' à confirmer';
     } else {
-      confidence = 'red'; confClass = 'confidence-red'; confLabel = 'Qualification insuffisante, ' + unknownCount + ' critère(s) manquant(s) sur 5';
+      confidence = 'red'; confClass = 'confidence-red'; confLabel = 'Qualification insuffisante, ' + unknownCount + (unknownCount > 1 ? ' critères manquants' : ' critère manquant') + ' sur 5';
     }
 
     const reco = [];
@@ -1310,6 +1310,8 @@
       .sort((a, b) => b.tp - a.tp)[0];
     const topLabel = topModel ? topModel.id : primary.id;
     const needRate = fmtRate(needTp);
+    /* decimales a la francaise, comme le reste du site (0,8 Gbps) */
+    const dec = v => String(v).replace('.', ',');
     /* Charge sur le modele retenu, en pourcentage de sa capacite
        datasheet. C'est le seul chiffre qui corresponde a la
        recommandation affichee. */
@@ -1362,7 +1364,7 @@
     html += '<div class="wb-gauge">'
       + '<div class="wb-gauge-head">'
       +   '<span>Charge sur ' + (retenu ? retenu.m.id : topLabel) + ', '
-      +     (retenu ? retenu.m.tp : primary.tpMax) + ' Gbps TP ' + '<button type="button" class="wb-help" data-tip="Charge estimée|Calculée sur le modèle le plus capable de la série. Un modèle inférieur peut suffire si le débit réel est confirmé.">?</button></span>'
+      +     dec(retenu ? retenu.m.tp : primary.tpMax) + ' Gbps TP ' + '<button type="button" class="wb-help" data-tip="Charge estimée|' + (retenu ? 'Calculée sur le modèle retenu, sur la plus contraignante de ses métriques datasheet (débit Threat Prevention, sessions, CPS publié).' : 'Calculée sur le modèle le plus capable de la série. Un modèle inférieur peut suffire si le débit réel est confirmé.') + '">?</button></span>'
       +   '<span class="wb-gauge-pct" style="color:var(--' + utilClass + ')">' + chargePct + '%</span>'
       + '</div>'
       + '<div class="wb-gauge-track" role="img" aria-label="Charge estimée ' + primary.utilPct + ' pour cent de la capacité Threat Prevention">'
@@ -1385,11 +1387,11 @@
     html += '<div class="wb-metrics-wrap"><table class="wb-metrics">'
       + '<caption>Besoin estimé / capacité datasheet</caption>'
       + '<thead><tr><th scope="col">Métrique</th><th scope="col" style="text-align:right">Besoin</th>'
-      + '<th scope="col" style="text-align:right">' + primary.id + '</th></tr></thead><tbody>'
+      + '<th scope="col" style="text-align:right">' + (retenu ? retenu.m.id : primary.id + ' Series') + '</th></tr></thead><tbody>'
 
       + '<tr><th scope="row">Débit Threat Prevention</th>'
       +   '<td class="num need"><span class="val">' + needRate.val + '</span><span class="u">' + needRate.unit + '</span></td>'
-      +   num(primary.tpMin + '&ndash;' + primary.tpMax, 'Gbps') + '</tr>'
+      +   (retenu ? num(dec(retenu.m.tp), 'Gbps') : num(dec(primary.tpMin) + '&ndash;' + dec(primary.tpMax), 'Gbps')) + '</tr>'
 
       + '<tr><th scope="row">Sessions concurrentes</th>'
       +   '<td class="num need"><span class="val">' + fmtN(needSess) + '</span></td>'
@@ -1401,11 +1403,11 @@
       +   (retenu
             ? (retenu.m.cps ? num(fmtN(retenu.m.cps), 'CPS')
                             : '<td class="num"><span class="u">non publi&eacute;</span></td>')
-            : '<td class="num"><span class="u">selon modele</span></td>') + '</tr>'
+            : '<td class="num"><span class="u">selon modèle</span></td>') + '</tr>'
 
       + '<tr><th scope="row">Débit du lien</th>'
       +   '<td class="num need"><span class="val">' + fmtExact(bwMbps) + '</span><span class="u">Mbps</span></td>'
-      +   '<td class="num"><span class="u">reference</span></td></tr>'
+      +   '<td class="num"><span class="u">référence</span></td></tr>'
 
       + '<tr><th scope="row">Facteur SSL appliqué</th>'
       +   '<td class="num need"><span class="val">x' + sslFactor.toFixed(1).replace('.', ',') + '</span></td>'

@@ -1661,6 +1661,11 @@ html.rv [data-reveal]:not(.is-in) { opacity: 0; }
 .card-icon .ic-pan { width: 19px; height: 19px; vertical-align: middle; }
 .use-case-icon .ic-pan { width: 17px; height: 17px; vertical-align: middle; }
 .xsiam-module-name .ic-pan { width: 17px; height: 17px; vertical-align: -0.24em; }
+.xsiam-module-name svg.ic { display: inline-block; width: 17px; height: 17px; vertical-align: -0.24em; }
+/* Les pictogrammes sont des traits blancs, dessines pour le fond sombre :
+   en theme clair ils disparaissaient (cartes Cortex, Prisma Browser,
+   Panorama). On les passe a l'encre du texte. */
+[data-theme="light"] .ic-pan { filter: brightness(0); opacity: .78; }
 
 /* ============================================================
    Pictogrammes en ligne (icons.js)
@@ -2819,7 +2824,7 @@ html.cmdk-on, html.cmdk-on body { overflow: hidden; }
 }
 .cmdk-field input::placeholder { color: var(--text-muted); }
 .cmdk-field:focus-within { box-shadow: inset 0 -2px 0 var(--accent); }
-.cmdk-field input:focus-visible { outline: none; }
+.cmdk-field input:focus-visible { outline: none; box-shadow: none; }
 .cmdk-x { font: 500 11px/1 var(--font); color: var(--text-muted); background: none; border: 1px solid var(--border2); border-radius: var(--r-sm); padding: 5px 7px; cursor: pointer; }
 .cmdk-sel { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px var(--sp-4); border-bottom: 1px solid var(--border); background: var(--surface2); }
 .cmdk-sel[hidden] { display: none; }
