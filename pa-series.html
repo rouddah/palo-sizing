@@ -608,6 +608,7 @@
       background: var(--bg);
       border-bottom: 1px solid var(--border2);
     }
+    .xp-axis::before { content: ''; position: absolute; right: 100%; top: 0; bottom: -1px; width: calc(var(--lane-lab) + 2px); background: var(--bg); }
     .xp-tick { position: absolute; bottom: 0; transform: translateX(-50%); font: 400 11px/1 var(--mono); color: var(--text-muted); padding-bottom: 8px; white-space: nowrap; }
     .xp-tick::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 5px; background: var(--border2); }
     .xp-unit { position: absolute; left: 0; top: 10px; font: 700 12px/1 var(--font); color: var(--text-bright); white-space: nowrap; }
