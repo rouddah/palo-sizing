@@ -383,8 +383,46 @@
       transition: color var(--dur-fast) var(--ease);
     }
     .model-ds-link:hover { color: var(--text-bright); }
-    .model-ds-link { font-size: 0; min-width: 24px; min-height: 24px; justify-content: center; }
-    .model-ds-link .ic { width: 13px; height: 13px; }
+    /* Le lien datasheet vit dans la carte, sous le nom : en mot entier,
+       souligne, dans l'encre de la carte. */
+    .model-card-top .model-ds-link {
+      position: relative; z-index: 1;
+      align-self: flex-start;
+      margin-top: var(--sp-1);
+      color: inherit;
+      opacity: .9;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 600;
+    }
+    .model-card-top .model-ds-link:hover { opacity: 1; color: inherit; }
+    .model-card-top .model-ds-link .ic { width: 10px; height: 10px; }
+    .model-card-bot { justify-content: center; }
+    .model-card-bot .sel-btn { flex: 1; justify-content: center; }
+    .spec-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .val-prof {
+      display: block;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+    .cat-folded {
+      font-size: var(--text-2xs);
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.4;
+    }
 
     /* Selection explicite : une case par colonne. */
     .sel-btn {
@@ -1078,30 +1116,73 @@
   }
 
   /* ══ Construction du tableau ══ */
+
+  /* Cle de donnee d'une ligne (fw, tp, rj45...), lue en faisant tourner
+     sa fonction num sur un objet qui renvoie le nom du champ demande. */
+  const FIELD_PROBE = new Proxy({}, { get: (t, p) => p });
+  const fieldOf = row => { try { return row.num ? row.num(FIELD_PROBE) : null; } catch (e) { return null; } };
+
+  /* Quand un concurrent est visible, les libelles « appmix » deviennent
+     faux pour sa colonne : on passe a des intitules neutres, et chaque
+     ligne dit ce que mesure chacun. */
+  const NEUTRAL = {
+    fw:  ['Débit firewall', 'PA : App-ID appmix · concurrents : définition de l’éditeur'],
+    tp:  ['Débit avec protection complète', 'PA : Threat Prevention appmix · concurrents : définition de l’éditeur'],
+    vpn: ['IPsec VPN', 'PA : HTTP 64 KB · concurrents : définition de l’éditeur'],
+    rj45:   ['Ports RJ45 cuivre', 'PA : 1G · concurrents : toutes vitesses cuivre'],
+    sfp25:  ['25G SFP28', 'Concurrents : SFP28 et SFP56 (50G) regroupés'],
+    sfp100: ['100G QSFP28', 'Concurrents : QSFP28 et QSFP56 (200G) regroupés']
+  };
+  function rowLabel(row, withComp) {
+    const f = fieldOf(row);
+    if (!withComp || !NEUTRAL[f]) return row.label;
+    return NEUTRAL[f][0] + '<span class="spec-sub">' + NEUTRAL[f][1] + '</span>';
+  }
+
+  /* Profil de mesure court d'un editeur, tire de sa definition
+     (vendors[].metrics) : « UDP 1518 o », « Ent. Traffic Mix »... */
+  function shortProfile(def) {
+    if (!def) return '';
+    if (/UDP 1518|1518 ?B UDP|1518 octets/i.test(def) && /UDP/i.test(def)) return 'UDP 1518 o';
+    if (/Enterprise Traffic Mix/i.test(def)) return 'Ent. Traffic Mix';
+    if (/Enterprise Test Conditions/i.test(def)) return 'Ent. Test Cond.';
+    const o = def.match(/(\d{3,4}) ?octets/i);
+    if (o) return o[1] + ' o';
+    return '';
+  }
+
+  function dsLink(href, name, title) {
+    return '<a class="model-ds-link" href="' + esc(href) + '" target="_blank" rel="noopener"'
+      + ' aria-label="Datasheet officielle ' + esc(name) + '" title="' + esc(title) + '">Datasheet' + ICO.ext + '</a>';
+  }
+
   function headCell(m) {
     const k = m._key, on = selected.indexOf(k) !== -1;
-    let top, bot;
+    let top;
     if (m._v) {
       const V = COMP.vendors[m.v] || { name: m.v, metrics: {} };
       const defs = ['fw', 'tp', 'vpn'].filter(x => V.metrics && V.metrics[x])
-        .map(x => '<b>' + ({ fw: 'Firewall', tp: 'Threat Prevention', vpn: 'VPN' })[x] + '</b> : ' + esc(V.metrics[x])).join('<br>');
+        .map(x => '<b>' + ({ fw: 'Firewall', tp: 'Protection complète', vpn: 'VPN' })[x] + '</b> : ' + esc(V.metrics[x])).join('<br>');
+      const file = m.ds ? decodeURIComponent(String(m.ds).split('/').pop().split('?')[0]) : '';
       top = '<div class="model-card-top" data-act="sel">'
-        + '<span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l\'éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span>'
+        + '<span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l’éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span>'
         + '<span class="model-name">' + esc(m.id) + '</span>'
-        + '<span class="model-target">' + esc(m.s || '') + '</span></div>';
-      bot = (m.ds ? '<a class="model-ds-link" href="' + esc(m.ds) + '" target="_blank" rel="noopener" aria-label="Datasheet officielle ' + esc(m.id) + '" title="Datasheet officielle ' + esc(V.name) + (m.dsRev ? ', ' + esc(m.dsRev) : '') + '">' + ICO.ext + 'Datasheet</a>' : '<span></span>');
+        + '<span class="model-target">' + esc(m.s || '') + '</span>'
+        + (m.ds ? dsLink(m.ds, m.id, 'Datasheet ' + V.name + (file ? ' : ' + file : '') + (m.dsRev ? ' (' + m.dsRev + ')' : '')) : '')
+        + '</div>';
     } else {
       const ink = inkOn(m.color);
       const repl = m.eos && EOS_REPLACEMENTS[m.id]
         ? '<span class="model-repl" style="color:' + ink + ';opacity:.82">&rarr; ' + EOS_REPLACEMENTS[m.id] + '</span>' : '';
       top = '<div class="model-card-top" data-act="sel" style="background:' + m.color + ';color:' + ink + '">'
         + '<span class="model-name">' + m.id + '</span>'
-        + '<span class="model-target">' + m.target + repl + '</span></div>' + chassis(m.id);
-      bot = '<a class="model-ds-link" href="' + (DS_URLS[m.s] || '#') + '" target="_blank" rel="noopener" aria-label="Datasheet officielle ' + m.s + '" title="Datasheet officielle ' + m.s + '">' + ICO.ext + 'Datasheet</a>';
+        + '<span class="model-target">' + m.target + repl + '</span>'
+        + dsLink(DS_URLS[m.s] || '#', m.s, 'Datasheet officielle ' + m.s + ' (paloaltonetworks.com)')
+        + '</div>' + chassis(m.id);
     }
     return '<th class="model-th' + (on ? ' selected' : '') + (m.eos ? ' eos-model' : '') + (m._v ? ' is-comp' : '') + '" data-k="' + esc(k) + '" scope="col">'
       + '<div class="model-card-clip">' + top
-      + '<div class="model-card-bot">' + bot
+      + '<div class="model-card-bot">'
       + '<button type="button" class="sel-btn" data-act="sel" aria-pressed="' + on + '" aria-label="Comparer ' + esc(m.id) + '">'
       + '<span class="sel-box">' + ICO.check + '</span>Comparer</button></div>'
       + '</div></th>';
@@ -1109,41 +1190,71 @@
 
   function buildTable() {
     const visible = visibleModels();
+    const withComp = visible.some(m => m._v);
     const hRow = document.getElementById('header-row');
-    hRow.innerHTML = '<th class="th-corner">' + (visible.some(m => m._v) ? 'Les concurrents sont en gris : survolez l\'éditeur pour sa définition des débits.' : '') + '</th>'
+    hRow.innerHTML = '<th class="th-corner">' + (withComp ? 'Les concurrents sont en gris : survolez l’éditeur pour sa définition des débits.' : '') + '</th>'
       + visible.map(headCell).join('');
 
-    const seen = new Set();
-    let html = '';
+    /* Lignes a afficher. Avec des concurrents, une ligne vide pour tous
+       les modeles visibles (capacites propres a PAN-OS quand on ne voit
+       que des concurrents) est retiree et comptee dans une ligne de
+       synthese, au lieu d'aligner des tirets. */
+    const shown = [];
+    const hiddenByCat = {};
     ROWS.forEach((row, ri) => {
       if (state.cat !== 'all' && row.cat !== state.cat) return;
+      if (withComp && visible.length && visible.every(m => cellRaw(row, m) === '—')) {
+        hiddenByCat[row.cat] = (hiddenByCat[row.cat] || 0) + 1;
+        return;
+      }
+      shown.push([row, ri]);
+    });
+
+    const seen = new Set();
+    const span = visible.map(m => '<td class="cat-spacer' + (selected.indexOf(m._key) !== -1 ? ' is-sel' : '') + '" data-m="' + esc(m._key) + '"></td>').join('');
+    let html = '';
+    shown.forEach(([row, ri]) => {
       if (!seen.has(row.cat) && CATS[row.cat]) {
         seen.add(row.cat);
         html += '<tr class="cat-row"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-inner-text">'
-          + CATS[row.cat].label + '</span></div></td>'
-          + visible.map(m => '<td class="cat-spacer' + (selected.indexOf(m._key) !== -1 ? ' is-sel' : '') + '" data-m="' + esc(m._key) + '"></td>').join('') + '</tr>';
+          + CATS[row.cat].label + '</span></div></td>' + span + '</tr>';
       }
       // Le maximum ne se cherche qu'entre PA : un debit Fortinet et un
-      // debit appmix ne mesurent pas la meme chose.
-      // Et seulement s'il y a un ecart : une ligne ou tous les PA se
-      // valent n'a pas de meilleur.
+      // debit appmix ne mesurent pas la meme chose. Et seulement s'il y
+      // a un ecart : une ligne ou tous les PA se valent n'a pas de meilleur.
       let maxVal = -Infinity, minVal = Infinity;
       if (row.num) visible.forEach(m => { if (m._v) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
       if (!(maxVal > minVal)) maxVal = -Infinity;
+      const field = fieldOf(row);
 
       const cells = visible.map(m => {
-        const raw = cellRaw(row, m);
+        let raw = cellRaw(row, m);
         const num = (!m._v && row.num) ? row.num(m) : null;
         let cls = 'val-cell';
         if (num != null && num === maxVal && maxVal > 0) cls += ' val-max';
         else if (raw === '—') cls += ' val-na';
-        if (m._v) cls += ' is-comp';
+        if (m._v) {
+          cls += ' is-comp';
+          if (raw !== '—' && (field === 'fw' || field === 'tp' || field === 'vpn')) {
+            const V = COMP.vendors[m.v];
+            const prof = shortProfile(V && V.metrics && V.metrics[field]);
+            if (prof) raw += '<span class="val-prof">' + prof + '</span>';
+          }
+        }
         if (selected.indexOf(m._key) !== -1) cls += ' is-sel';
         const style = m._v ? '' : ' style="border-left-color:' + m.color + '22"';
         return '<td class="' + cls + '" data-m="' + esc(m._key) + '" data-k="' + esc(m._key) + '|' + ri + '"' + style + '>' + raw + '</td>';
       }).join('');
-      html += '<tr class="data-row" data-cat="' + row.cat + '"><td class="spec-label-cell">' + row.label + '</td>' + cells + '</tr>';
+      html += '<tr class="data-row" data-cat="' + row.cat + '"><td class="spec-label-cell">' + rowLabel(row, withComp) + '</td>' + cells + '</tr>';
     });
+
+    const nHidden = Object.keys(hiddenByCat).reduce((a, c) => a + hiddenByCat[c], 0);
+    if (nHidden) {
+      const cats = Object.keys(hiddenByCat).map(c => CATS[c] ? CATS[c].label : c).join(', ');
+      html += '<tr class="cat-row row-folded"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-folded">'
+        + nHidden + ' ligne' + (nHidden > 1 ? 's' : '') + ' sans objet pour ces modèles (' + cats + ' : capacités propres à PAN-OS)'
+        + '</span></div></td>' + span + '</tr>';
+    }
     document.getElementById('table-body').innerHTML = html;
 
     const nPa = visible.filter(m => !m._v).length, nC = visible.length - nPa;
@@ -1411,7 +1522,7 @@
       const nums = models.map(m => (!m._v && row.num) ? row.num(m) : null);
       const pa = nums.filter(n => n != null);
       const maxN = pa.length && Math.max.apply(null, pa) > Math.min.apply(null, pa) ? Math.max.apply(null, pa) : null;
-      return '<tr><td>' + row.label + '</td>' + vals.map((v, i) =>
+      return '<tr><td>' + rowLabel(row, comp) + '</td>' + vals.map((v, i) =>
         '<td class="' + (nums[i] != null && nums[i] === maxN && maxN > 0 && pa.length > 1 ? 'ct-max' : 'ct-val') + '">' + v + '</td>').join('') + '</tr>';
     }).join('');
     document.getElementById('cmp-table').innerHTML = head + '<tbody>' + body + '</tbody>';
@@ -1473,7 +1584,10 @@
     const box = document.getElementById('vendors');
     box.insertAdjacentHTML('beforeend', ids.map(id =>
       '<label class="vchk"><input type="checkbox" value="' + esc(id) + '"> ' + esc(vendors[id].name) + '</label>').join(''));
-    const saved = store.get('pan-cmp-vendors', []);
+    // ?vendors=fortinet,cisco ouvre la page avec ces editeurs coches
+    // (lien partage, controle de contraste), sans toucher a la memoire.
+    const forced = new URLSearchParams(location.search).get('vendors');
+    const saved = forced ? forced.split(',') : store.get('pan-cmp-vendors', []);
     saved.forEach(id => { if (ids.indexOf(id) !== -1) state.vendors.add(id); });
     box.querySelectorAll('input').forEach(inp => {
       inp.checked = state.vendors.has(inp.value);

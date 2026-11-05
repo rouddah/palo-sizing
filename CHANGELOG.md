@@ -74,6 +74,19 @@ l'execution par la seule page comparateur : si le fichier manque, la
 case n'apparait pas et le build passe. L'etabli de qualification ne le
 charge pas.
 
+Relecture avec les vraies donnees concurrentes : des qu'un concurrent
+est visible, les lignes de debit perdent la mention « appmix » au profit
+d'intitules neutres (« Debit firewall », « Debit avec protection
+complete », « IPsec VPN ») avec une sous-ligne qui dit ce que mesure
+chacun, et chaque valeur concurrente porte son profil de mesure court
+(« UDP 1518 o », « Ent. Traffic Mix », « 1024 o ») tire des definitions
+de l'editeur. Les lignes de ports disent leurs regroupements (cuivre
+toutes vitesses, SFP56 avec SFP28, QSFP56 avec QSFP28). Les lignes vides
+pour tous les modeles affiches sont repliees en une ligne « sans objet ».
+Le lien datasheet est ecrit en toutes lettres dans la carte, avec le nom
+du PDF en infobulle. `?vendors=fortinet,cisco` ouvre la page avec ces
+editeurs coches ; `npm run contrast` controle desormais cette vue.
+
 ### Autres pages
 
 - **Etabli (mobile)** : une pastille fixe fait l'aller-retour entre la

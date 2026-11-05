@@ -37,6 +37,7 @@ const PAGES = [
   ['qualification.html?bw=800&users=600&type=campus&ssl=yes&sites=3', 'etabli'],
   ['index.html', 'accueil'],
   ['pa-series.html', 'comparateur'],
+  ['pa-series.html?vendors=fortinet,checkpoint,cisco', 'concurrents'],
   ['optiques.html', 'optiques'],
   ['accessoires.html', 'accessoires'],
   ['search.html', 'recherche'],
