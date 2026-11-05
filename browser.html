@@ -154,13 +154,17 @@
   <div class="page-wrap" data-rise>
     <div class="page-header">
       <div class="hero-kicker">SASE &middot; Navigateur d'entreprise</div>
-      <h1>Prisma <em>Access Browser</em></h1>
-      <p>Enterprise Browser Zero Trust · Chromium-based · Acquis via Talon (nov. 2023)</p>
-      <div class="hero-meta"><span>Chromium</span><span>Zero Trust</span><span>Acquis via Talon &middot; nov. 2023</span></div>
+      <h1>Prisma <em>Browser</em></h1>
+      <p>Navigateur d'entreprise Zero Trust · base Chromium · issu du rachat de Talon (annoncé en nov. 2023) · nom officiel Prisma Browser (ex-Prisma Access Browser)</p>
+      <div class="hero-meta"><span>Chromium</span><span>Zero Trust</span><span>Windows &middot; macOS &middot; Linux &middot; ChromeOS &middot; iOS &middot; Android</span></div>
     </div>
 
     <div class="info-note">
       <strong>Qu'est-ce que le Prisma Browser ?</strong> Un navigateur d'entreprise basé sur Chromium, intégrant nativement le Zero Trust, la DLP, la prévention des menaces et les contrôles de sécurité · directement dans la couche navigateur. Il remplace le besoin d'agent VPN pour les accès web, permet de sécuriser les appareils non-gérés (BYOD, contractants) et s'intègre nativement avec Prisma Access et le Strata Cloud Manager.
+    </div>
+
+    <div class="info-note" style="margin-top:12px">
+      <strong>Nouveautés 2026 :</strong> connexion RDP et SSH native dans le navigateur, via Prisma Access ou le Prisma Browser Connector, comprise dans la licence (présentation Palo Alto Networks, mai 2026) ; avec PAN-OS 12.2 « Ceres » (juillet 2026), le NGFW voit l'activité du navigateur sans déchiffrement et réutilise ses politiques ; intégration native à Cortex depuis Cortex XDR 5.2 (juillet 2026) ; Prisma Browser for Business pour les PME (mars 2026).
     </div>
 
     <!-- Architecture flow -->
@@ -170,7 +174,7 @@
       <div class="arch-arrow"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
       <div class="arch-node accent">Prisma Browser<br><small style="font-weight:400;font-size:10px">Chromium + Zero Trust</small></div>
       <div class="arch-arrow"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
-      <div class="arch-node">Prisma Access PoP<br><small style="font-weight:400;color:var(--text-muted)">100+ mondiaux</small></div>
+      <div class="arch-node">Prisma Access PoP<br><small style="font-weight:400;color:var(--text-muted)">150+ mondiaux</small></div>
       <div class="arch-arrow"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
       <div class="arch-node">SaaS / Apps privées<br><small style="font-weight:400;color:var(--text-muted)">M365, Salesforce, etc.</small></div>
     </div>
@@ -197,7 +201,7 @@
           <div class="use-case-icon"><img class="ic-pan" src="img/ic/servers.webp" alt="" loading="lazy"></div>
           VDI / Sessions distantes
         </div>
-        <div class="use-case-desc">Alternative légère aux VDI coûteux pour les travailleurs remotels ne nécessitant qu'un accès web/SaaS. Réduit significativement les coûts d'infrastructure.</div>
+        <div class="use-case-desc">Alternative légère aux VDI coûteux pour les travailleurs à distance ne nécessitant qu'un accès web/SaaS. Réduit significativement les coûts d'infrastructure.</div>
       </div>
       <div class="use-case-card">
         <div class="use-case-card-title">
@@ -211,7 +215,7 @@
           <div class="use-case-icon"><img class="ic-pan" src="img/ic/globe.webp" alt="" loading="lazy"></div>
           Remplacement VPN Web
         </div>
-        <div class="use-case-desc">Pour les utilisateurs n'accédant qu'à des ressources web : le PAB remplace le client VPN et offre une expérience utilisateur supérieure avec une sécurité plus granulaire.</div>
+        <div class="use-case-desc">Pour les utilisateurs n'accédant qu'à des ressources web : Prisma Browser remplace le client VPN et offre une expérience utilisateur supérieure avec une sécurité plus granulaire.</div>
       </div>
       <div class="use-case-card">
         <div class="use-case-card-title">
@@ -253,7 +257,7 @@
           <tr>
             <td>URL Filtering (PAN-DB)</td>
             <td class="val-high"><span class="cap-badge">Inclus</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Catégorisation et filtrage des URLs via la base PAN-DB (85+ catégories)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Catégorisation et filtrage des URLs via la base PAN-DB (Advanced URL Filtering)</td>
           </tr>
           <tr>
             <td>Isolation web (Remote Browser Isolation)</td>
@@ -289,8 +293,8 @@
           </tr>
           <tr>
             <td>Enterprise DLP inline</td>
-            <td class="val-med"><span class="cap-badge yellow">Add-on</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Inspection avancée du contenu : regex, classificateurs ML, empreintes digitales</td>
+            <td class="val-high"><span class="cap-badge">Inclus</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Inspection avancée du contenu : regex, classificateurs ML, empreintes. Incluse dans les trois éditions ; l'extension aux applications lourdes (Outlook, Teams…) relève de l'édition Pro</td>
           </tr>
 
           <tr class="section-row"><td colspan="3">Visibilité & Contrôle</td></tr>
@@ -442,10 +446,10 @@
     </div>
 
     <!-- Editions : Education / Core / Pro -->
-    <!-- Source : deck de licensing Prisma Browser fourni par l'utilisateur, juin 2026 -->
-    <div class="section-title">Editions · Education / Core / Pro</div>
+    <!-- Source : guide de licences Prisma Access (juin 2026), catalogue officiel, presentation Palo Alto Networks (RDP/SSH natif, mai 2026) -->
+    <div class="section-title">Éditions · Education / Core / Pro</div>
     <div class="info-note">
-      <strong>Modele de licence :</strong> Abonnement annuel par utilisateur. Trois editions, toutes incluant le navigateur securise Chromium et le Standard Support Plan. L'integration Strata Cloud Manager est incluse dans chaque edition. Pour un devis, contacter Exclusive Networks.
+      <strong>Modèle de licence :</strong> abonnement annuel par utilisateur. Trois éditions, toutes avec le navigateur sécurisé et le Standard Support Plan, administrées depuis Strata Cloud Manager. Prisma Browser se souscrit seul ou en add-on de Prisma Access (Core ou Pro) ; l'édition Enterprise de Prisma Access inclut Prisma Browser Core. Selon le guide de licences Prisma Access de juin 2026, l'édition Pro ajoute une DLP avancée étendue aux applications lourdes, la gestion des credentials Idira, l'accès natif aux applications privées et le RUM d'ADEM. Depuis mars 2026, Prisma Browser for Business vise les PME, sans prérequis d'autre produit Palo Alto Networks. Pour un devis, contacter Exclusive Networks.
     </div>
     <div class="table-wrapper">
       <table class="comparison-table">
@@ -470,11 +474,12 @@
           <tr><td>Acces ZTNA aux apps privees (RDP, SSH, web) sans VPN</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
           <tr><td>Prisma Browser Connector (region cloud optimale)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
           <tr><td>NGFW Connector (via PAN-OS >= 12.1.5 / Panorama)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
+          <tr><td>Connexion RDP / SSH native dans le navigateur (sans traduction HTML, sans add-on)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
 
           <tr class="section-row"><td colspan="4">Protection avancee (PRO uniquement)</td></tr>
           <tr><td>Advanced Web Protection (AWP / AXS / ABP)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
           <tr><td>Advanced Data Protection (Prisma Browser Beyond)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
-          <tr><td>Advanced Identity Protection (Account Protection / Web PAM)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
+          <tr><td>Advanced Identity Protection (Account Protection / Web PAM, credentials Idira)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
           <tr><td>ADEM RUM (Real User Monitoring)</td><td class="val-na">—</td><td class="val-na">—</td><td class="val-check"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></td></tr>
 
           <tr class="section-row"><td colspan="4">Connectivite supplementaire (options PRO)</td></tr>
@@ -510,8 +515,8 @@
     <div class="section-title">Points clés à retenir</div>
     <div class="policy-grid">
       <div class="policy-card">
-        <div class="policy-card-name">Acquisition Talon (nov. 2023)</div>
-        <div class="policy-card-desc">Palo Alto Networks a acquis Talon Cyber Security pour ~625 M$. La technologie est maintenant intégrée dans la plateforme PAN sous le nom "Prisma Browser".</div>
+        <div class="policy-card-name">Origine : Talon (2023)</div>
+        <div class="policy-card-desc">Palo Alto Networks a racheté Talon Cyber Security (annonce de novembre 2023, environ 625 M$ selon la presse). La technologie est devenue Prisma Access Browser, puis Prisma Browser.</div>
       </div>
       <div class="policy-card">
         <div class="policy-card-name">Chromium · pas Chrome</div>
@@ -523,7 +528,7 @@
       </div>
       <div class="policy-card">
         <div class="policy-card-name">Intégration native PAN</div>
-        <div class="policy-card-desc">Logs natifs dans SCM et Cortex XDR. Politiques partagées avec Prisma Access. Authentication unifiée avec l'IdP existant. Pas de stack sécurité séparé.</div>
+        <div class="policy-card-desc">Logs natifs dans SCM ; intégration native à la plateforme Cortex depuis Cortex XDR 5.2 (juillet 2026). Politiques partagées avec Prisma Access. Authentication unifiée avec l'IdP existant. Pas de stack sécurité séparé.</div>
       </div>
       <div class="policy-card">
         <div class="policy-card-name">Vérification device continue</div>
@@ -531,19 +536,19 @@
       </div>
       <div class="policy-card">
         <div class="policy-card-name">Prisma Browser vs GlobalProtect</div>
-        <div class="policy-card-desc">GP = accès réseau complet (network-centric VPN). PAB = accès web/SaaS uniquement (browser-centric Zero Trust). Les deux sont complémentaires selon les profils utilisateurs.</div>
+        <div class="policy-card-desc">GP = accès réseau complet (network-centric VPN). Prisma Browser = accès centré navigateur : web, SaaS et, en édition Pro, applications privées dont RDP et SSH (browser-centric Zero Trust). Les deux sont complémentaires selon les profils utilisateurs.</div>
       </div>
     </div>
 
     <!-- Resources -->
     <div class="section-title">Ressources</div>
     <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <a class="tool-card" href="https://www.paloaltonetworks.com/sase/prisma-access-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
+      <a class="tool-card" href="https://www.paloaltonetworks.com/sase/prisma-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
         <div class="card-icon"><img class="ic-pan" src="img/ic/globe.webp" alt="" loading="lazy"></div>
         <div class="card-title">Page produit officielle<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Présentation produit Prisma Browser sur paloaltonetworks.com</div>
       </a>
-      <a class="tool-card" href="https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
+      <a class="tool-card" href="https://docs.paloaltonetworks.com/prisma-browser" target="_blank" rel="noopener" style="min-width:220px;max-width:300px">
         <div class="card-icon"><img class="ic-pan" src="img/ic/doc.webp" alt="" loading="lazy"></div>
         <div class="card-title">Documentation<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Documentation officielle d'administration et de déploiement</div>
@@ -561,7 +566,7 @@
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Données issues de la documentation officielle Palo Alto Networks · Dernière mise à jour : août 2026</div>
+    <div style="margin-top:4px;font-size:10px">Données issues de la documentation officielle Palo Alto Networks · Dernière mise à jour : 6 novembre 2026</div>
   </footer>
 </body>
 </html>

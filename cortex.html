@@ -6,9 +6,9 @@
   <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sizing Guide · Cortex</title>
-  <meta name="description" content="Plateforme Cortex : XDR (Prevent, Pro), XSIAM, XSOAR, Xpanse. Editions, modeles de licence et perimetre fonctionnel." />
+  <meta name="description" content="Plateforme Cortex : XDR (Prevent, Pro, XDR One), XSIAM (NG-SIEM, Enterprise, Premium), AgentiX, Xpanse, Exposure Management, Cortex Cloud. Éditions et périmètre fonctionnel." />
   <meta property="og:title" content="Sizing Guide · Cortex XDR / XSIAM" />
-  <meta property="og:description" content="Cortex XDR, XSIAM, XSOAR et Xpanse : editions et perimetre fonctionnel." />
+  <meta property="og:description" content="Cortex XDR et XDR One, XSIAM, AgentiX et Xpanse : éditions et périmètre fonctionnel." />
   <meta property="og:type" content="website" />
   <link rel="stylesheet" href="styles.css" />
   <style>
@@ -166,22 +166,16 @@
     <div class="page-header">
       <div class="hero-kicker">SecOps &middot; Plateforme Cortex</div>
       <h1>Cortex · <em>Security Operations</em></h1>
-      <p>Cortex XDR · XSIAM · XSOAR · AgentiX · Xpanse · Cortex Cloud</p>
-      <div class="hero-meta"><span>XDR</span><span>XSIAM</span><span>XSOAR</span><span>AgentiX</span><span>Xpanse</span><span>Cortex Cloud</span></div>
+      <p>Cortex XDR et XDR One · XSIAM · AgentiX (ex-XSOAR) · Xpanse et Exposure Management · Cortex Cloud</p>
+      <div class="hero-meta"><span>XDR 5.2</span><span>XSIAM 3.6</span><span>AgentiX 1.4</span><span>Xpanse 2.14</span><span>Cortex Cloud</span><span>XDR One (oct. 2026)</span></div>
     </div>
 
-    <!-- Note : aucun deck de licensing Cortex fourni par l'utilisateur.
-         Tout le contenu ci-dessous provient exclusivement des sources officielles Palo Alto Networks :
-         - https://www.paloaltonetworks.com/cortex/cortex-xdr (consulte juin 2026)
-         - https://www.paloaltonetworks.com/cortex/cortex-xsiam (consulte juin 2026)
-         - https://docs.paloaltonetworks.com/cortex/cortex-xdr (agent, OS support)
-         - https://xsoar.pan.dev/ (XSOAR marketplace)
-         - https://attackevals.mitre-engenuity.org/ (MITRE ATT&CK Evaluations)
-         Pour une page vraiment fiable sur les editions et le licensing Cortex,
-         un deck equivalent a celui de Prisma Browser serait necessaire. -->
+    <!-- Sources : documentation Cortex (cortex-docs.paloaltonetworks.com : plans de licence XDR, XSIAM, AgentiX,
+         matrice de compatibilite de l'agent), blog Palo Alto Networks « What's New in Cortex » (mai et juillet 2026),
+         annonce Cortex XDR One (22 octobre 2026), page End-of-Sale, presentations Palo Alto Networks (2026). -->
 
     <div class="info-note" style="border-left-color:var(--yellow)">
-      <strong>Source des donnees :</strong> cette page est construite a partir des informations publiques officielles de Palo Alto Networks (pages produit, documentation, MITRE ATT&CK Evaluations). Aucun deck de licensing specifique n'a ete fourni pour Cortex. Les details d'editions et d'inclusions doivent etre confirmes avec votre contact Palo Alto ou Exclusive Networks.
+      <strong>Source des données :</strong> documentation officielle Cortex (plans de licence XDR, XSIAM et AgentiX, matrice de compatibilité de l'agent), blog Palo Alto Networks « What's New in Cortex » de mai et juillet 2026, annonce de Cortex XDR One du 22 octobre 2026 et présentations Palo Alto Networks. Versions au 6 novembre 2026 : XSIAM 3.6, XDR 5.2, AgentiX 1.4, XSOAR 8.15, Xpanse 2.14 (juillet 2026). Chiffres attribués à Palo Alto Networks quand ils viennent de ses supports.
     </div>
 
     <!-- Product overview -->
@@ -195,7 +189,7 @@
             <div class="product-card-sub">Extended Detection &amp; Response</div>
           </div>
         </div>
-        <div class="product-card-desc">Plateforme EDR/XDR unifiée : protection des endpoints, analyse comportementale, corrélation des alertes réseau/cloud/endpoint, investigation forensique et réponse automatisée. MITRE ATT&amp;CK framework natif.</div>
+        <div class="product-card-desc">Plateforme EDR/XDR : protection des endpoints, analyse comportementale, corrélation endpoint, réseau, cloud et identité, investigation et réponse. Depuis le 22 octobre 2026, <strong>Cortex XDR One</strong> ajoute dans le même agent Agentic Endpoint Security (AES) : visibilité et contrôle des agents IA, serveurs MCP, extensions et paquets sur le poste.</div>
         <span class="product-tag">Par endpoint / an</span>
       </div>
       <div class="product-card">
@@ -206,19 +200,19 @@
             <div class="product-card-sub">AI-driven SOC Platform</div>
           </div>
         </div>
-        <div class="product-card-desc">Plateforme SOC IA native : remplace SIEM + SOAR + EDR + Threat Intel en une seule plateforme. Cortex Analytics Engine réduit le volume d'alertes de 75%+ via la corrélation ML. Inclut XDR, AgentiX et Strata Logging Service.</div>
+        <div class="product-card-desc">Plateforme SOC : SIEM, automatisation, EDR et threat intel sur un même socle de données. Trois paliers de licence : NG-SIEM, Enterprise (ajoute l'agent XDR) et Premium (ajoute la sécurité cloud et la threat intel). Le regroupement des alertes en cas réduit le backlog de 75 % selon Palo Alto Networks.</div>
         <span class="product-tag" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:var(--purple)">Par Go/jour ingéré</span>
       </div>
       <div class="product-card">
         <div class="product-card-header">
           <div class="product-icon" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25)"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="configuration"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"/></svg></div>
           <div>
-            <div class="product-card-name">Cortex XSOAR</div>
-            <div class="product-card-sub">Orchestration &amp; Automation</div>
+            <div class="product-card-name">Cortex AgentiX (ex-XSOAR)</div>
+            <div class="product-card-sub">Agentic Automation &amp; SOAR</div>
           </div>
         </div>
-        <div class="product-card-desc">Plateforme SOAR : orchestration des réponses aux incidents, 1 100+ intégrations prêtes à l'emploi, playbooks visuels drag &amp; drop, war room collaboratif et case management. Inclus dans XSIAM ou vendu séparément.</div>
-        <span class="product-tag" style="background:var(--green-dim);border-color:rgba(34,197,94,0.3);color:var(--green)">Par analyste / use case</span>
+        <div class="product-card-desc">Génération suivante de XSOAR : playbooks, agents IA et serveur MCP natif, plus de 1 100 intégrations selon Palo Alto Networks. Intégré à XSIAM, XDR et Cortex Cloud, ou vendu seul en éditions Base et Enterprise. XSOAR 8 (SaaS) et XSOAR 6.14 (on-prem) restent supportés.</div>
+        <span class="product-tag" style="background:var(--green-dim);border-color:rgba(34,197,94,0.3);color:var(--green)">Par utilisateur / an</span>
       </div>
       <div class="product-card">
         <div class="product-card-header">
@@ -228,7 +222,7 @@
             <div class="product-card-sub">Attack Surface Management</div>
           </div>
         </div>
-        <div class="product-card-desc">Découverte continue de la surface d'attaque exposée sur internet : assets inconnus, misconfigurés ou vulnérables · cloud, on-prem, supply chain tierce. Inventaire automatique et scoring de risque.</div>
+        <div class="product-card-desc">Découverte continue de la surface d'attaque exposée sur internet : assets inconnus, mal configurés ou vulnérables, cloud, on-prem, tiers. Également module Attack Surface Management de XSIAM et XDR. Cortex Exposure Management (add-on de XSIAM et XDR) y ajoute la priorisation des vulnérabilités internes.</div>
         <span class="product-tag" style="background:var(--yellow-dim);border-color:rgba(245,158,11,0.3);color:var(--yellow)">SaaS · Sur devis</span>
       </div>
       <div class="product-card">
@@ -239,7 +233,7 @@
             <div class="product-card-sub">Cloud Native Application Protection + Cloud Detection &amp; Response</div>
           </div>
         </div>
-        <div class="product-card-desc">Plateforme cloud unifiée CNAPP + CDR. Remplace Prisma Cloud (transition automatique). Couvre cloud posture (CSPM/CIEM/DSPM/AI-SPM), runtime (workloads, containers, serverless) et SOC cloud (CDR) sur la plateforme Cortex. Cortex Cloud 2.0 disponible depuis oct. 2025.</div>
+        <div class="product-card-desc">CNAPP et CDR sur la plateforme Cortex, successeur de Prisma Cloud (migration accompagnée, une partie des configurations migrée automatiquement). Trois modules : Application Security, Cloud Posture Security (CSPM, CIEM, DSPM, AI-SPM) et Cloud Runtime Security (CWP, CDR, sécurité des API). Cortex Cloud 2.0 depuis octobre 2025. Se déploie seul ou en extension de XSIAM.</div>
         <span class="product-tag" style="background:var(--yellow-dim);border-color:rgba(245,158,11,0.3);color:var(--yellow)">SaaS · Sur devis</span>
       </div>
     </div>
@@ -250,7 +244,7 @@
     <div class="section-title" id="xdr">Cortex XDR · Comparatif des éditions</div>
 
     <div class="info-note">
-      <strong>3 éditions XDR :</strong> Prevent (protection endpoint seule) · Pro per Endpoint (XDR complet, licence par endpoint) · Pro per TB (XDR complet, licence par volume ingéré). Les éditions Pro permettent d'ingérer les logs réseau (PAN-OS, NGFW, Prisma Access), cloud (AWS CloudTrail, Azure AD, GCP) et tierces via des connecteurs.
+      <strong>Éditions XDR (plan de licence, documentation Cortex) :</strong> Prevent (protection endpoint) · Pro per Endpoint (XDR complet par endpoint ; Pro EP pour les hôtes on-prem, EP Cloud pour les VM cloud et les conteneurs) · Pro per GB (XDR complet, licence au volume ingéré en Go/jour) · <strong>XDR One</strong> (tout XDR Pro plus Agentic Endpoint Security). Les éditions Pro ingèrent les logs réseau (PAN-OS, Prisma Access), cloud et tiers. Modules en option : ITDR, Forensics, Host Insights, Extended Threat Hunting, Extended Threat Intel (XTI), Exposure Management, Advanced Email Security, DLP endpoint, Cloud Posture et Cloud Runtime Security.
     </div>
 
     <div class="table-wrapper">
@@ -260,16 +254,10 @@
             <th style="text-align:left;min-width:280px">Capacité</th>
             <th>XDR Prevent</th>
             <th>XDR Pro / Endpoint</th>
-            <th>XDR Pro / TB</th>
+            <th>XDR Pro per GB</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><strong>SKU de référence</strong></td>
-            <td class="val-low" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRT</td>
-            <td class="val-med" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRO-EP</td>
-            <td class="val-high" style="font-family:var(--mono);font-size:10px">PAN-XDR-PRO-TB</td>
-          </tr>
           <tr>
             <td><strong>Unité de licence</strong></td>
             <td>Par endpoint</td>
@@ -378,9 +366,9 @@
           </tr>
           <tr>
             <td>Rétention données</td>
-            <td class="val-low">30 jours</td>
-            <td class="val-med">30 jours (ext. dispo)</td>
-            <td class="val-high">12 mois inclus</td>
+            <td class="val-low">Cas et issues 186 j</td>
+            <td class="val-med">Données ingérées 31 j, cas 186 j (extension en option)</td>
+            <td class="val-high">Données ingérées 31 j, cas 186 j (extension en option)</td>
           </tr>
 
           <tr class="section-row"><td colspan="4">Réponse aux incidents</td></tr>
@@ -403,81 +391,71 @@
             <td class="val-high"><span class="cap-badge green"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span></td>
           </tr>
           <tr>
-            <td>Réponse automatisée (playbooks XSOAR)</td>
+            <td>Réponse automatisée (playbooks, AgentiX)</td>
             <td class="val-low"><span class="cap-badge red">—</span></td>
-            <td class="val-med"><span class="cap-badge yellow">Add-on XSOAR</span></td>
-            <td class="val-high"><span class="cap-badge green"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg> (inclus XSIAM)</span></td>
+            <td class="val-high"><span class="cap-badge green">Playbooks inclus</span></td>
+            <td class="val-high"><span class="cap-badge green"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg> Playbooks inclus</span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <div class="info-note" style="border-left-color:var(--green);margin-top:16px">
+      <strong>Cortex XDR One et Cortex AES (disponibles depuis le 22 octobre 2026) :</strong> XDR One réunit l'EDR/XDR et Agentic Endpoint Security dans un seul agent et une seule console. AES inventorie les agents IA, serveurs MCP, extensions, paquets et modèles présents sur le poste, en évalue le risque et bloque les actions dangereuses avant exécution. AES se vend aussi seul, avec un agent « Targeted » qui cohabite avec un EDR tiers, et passe ensuite à XDR One sans réinstallation. Unit 42 propose une version managée (Managed AES). Selon Palo Alto Networks, XDR One réduit les faux positifs jusqu'à 95 %.
+    </div>
+
     <!-- OS Support -->
-    <div class="section-title">Compatibilité OS · Agent Cortex XDR</div>
+    <div class="section-title">Compatibilité OS · Agent Cortex XDR 9.3</div>
+    <p style="font-size:13px;color:var(--text-muted);margin:-6px 0 14px">Selon la matrice de compatibilité officielle de l'agent Cortex XDR (versions 9.0 à 9.3), relevée le 6 novembre 2026.</p>
     <div class="table-wrapper">
       <table class="comparison-table">
         <thead>
           <tr>
             <th style="text-align:left">Système d'exploitation</th>
-            <th>Version minimale</th>
-            <th>Versions supportées</th>
+            <th>Versions supportées (agent 9.3)</th>
             <th>Notes</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Windows (Desktop)</strong></td>
-            <td>Windows 7 SP1</td>
-            <td style="font-size:12px;color:var(--text-muted)">7 SP1, 8.1, 10, 11</td>
-            <td style="font-size:12px;color:var(--text-muted)">x64 · Win7 support limité (agent v7)</td>
+            <td><strong>Windows (poste)</strong></td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Windows 10 (21H2, 22H2, LTSB/LTSC, IoT), Windows 11 22H2 à 25H2</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">x86_64 et ARM sous Windows 11. Windows 7 SP1 seulement avec l'agent d'extension 7.9.103-CE, jusqu'au 31 décembre 2026</td>
           </tr>
           <tr>
             <td><strong>Windows Server</strong></td>
-            <td>Server 2008 R2 SP1</td>
-            <td style="font-size:12px;color:var(--text-muted)">2008 R2, 2012/R2, 2016, 2019, 2022</td>
-            <td style="font-size:12px;color:var(--text-muted)">Core &amp; GUI · 2008 R2 support agent &lt; v8</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">2012 / 2012 R2 (jusqu'en octobre 2027), 2016, 2019, 2022, 2025</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">2008 R2 SP1 seulement avec l'agent 7.9.103-CE, jusqu'au 31 décembre 2027</td>
           </tr>
           <tr>
             <td><strong>macOS</strong></td>
-            <td>High Sierra (10.13)</td>
-            <td style="font-size:12px;color:var(--text-muted)">10.13+, 11 (Big Sur), 12 (Monterey), 13 (Ventura), 14 (Sonoma), 15 (Sequoia)</td>
-            <td style="font-size:12px;color:var(--text-muted)">Apple Silicon (M1/M2/M3/M4) natif · agent 8.9 (juil. 2025)</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">14 Sonoma, 15 Sequoia, 26 Tahoe, 27</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">macOS 13 Ventura s'arrête à l'agent 9.1</td>
           </tr>
           <tr>
-            <td><strong>Linux · RHEL / CentOS / Rocky</strong></td>
-            <td>RHEL 7.0</td>
-            <td style="font-size:12px;color:var(--text-muted)">7.x, 8.x, 9.x</td>
-            <td style="font-size:12px;color:var(--text-muted)">kernel 3.10+ · SELinux compatible</td>
+            <td><strong>Linux · RHEL / CentOS / Rocky / Alma / Oracle</strong></td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">RHEL 7 à 10, CentOS 7 à Stream 9, Rocky 8 à 10, AlmaLinux 8 à 10, Oracle Linux 7 à 10</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">x86_64 et aarch64 selon la version ; mode noyau ou mode utilisateur (eBPF). Noyaux &lt; 3.10 : agent 9.1 au plus</td>
           </tr>
           <tr>
-            <td><strong>Linux · Ubuntu</strong></td>
-            <td>Ubuntu 16.04 LTS</td>
-            <td style="font-size:12px;color:var(--text-muted)">16.04, 18.04, 20.04, 22.04, 24.04 LTS</td>
-            <td style="font-size:12px;color:var(--text-muted)">glibc 2.17+</td>
+            <td><strong>Linux · Ubuntu / Debian</strong></td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Ubuntu 16.04 à 26.04 LTS, Debian 9 à 13</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Ubuntu 12.04 et 14.04 en mode asynchrone seulement à partir de l'agent 9.2</td>
           </tr>
           <tr>
-            <td><strong>Linux · Amazon Linux</strong></td>
-            <td>Amazon Linux 2</td>
-            <td style="font-size:12px;color:var(--text-muted)">Amazon Linux 2, 2023</td>
-            <td style="font-size:12px;color:var(--text-muted)">Instances EC2 + on-prem</td>
-          </tr>
-          <tr>
-            <td><strong>Linux · SLES / Debian / Oracle</strong></td>
-            <td>SLES 12, Debian 10, OL 7</td>
-            <td style="font-size:12px;color:var(--text-muted)">SLES 12+/15+, Debian 10+, Oracle Linux 7+</td>
-            <td style="font-size:12px;color:var(--text-muted)">Vérifier release notes agent pour versions exactes</td>
+            <td><strong>Linux · SUSE / Amazon / autres</strong></td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">SLES 12 SP4 à 16.0, Amazon Linux 2 et 2023, Alibaba Cloud Linux 3, Fedora Server, openSUSE Leap</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Vérifier la matrice pour le mode (noyau ou utilisateur) et la version de contenu requise</td>
           </tr>
           <tr>
             <td><strong>Android</strong></td>
-            <td>Android 5.0 (Lollipop)</td>
-            <td style="font-size:12px;color:var(--text-muted)">5.0+ (capacités Prevent uniquement)</td>
-            <td style="font-size:12px;color:var(--text-muted)">XDR Prevent mobile · via EMM/MDM</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Android 8 à 16 (agent 9.x)</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">Mobile : capacités réduites par rapport au poste</td>
           </tr>
           <tr>
-            <td><strong>iOS</strong></td>
-            <td>iOS 15+</td>
-            <td style="font-size:12px;color:var(--text-muted)">iOS 15, 16, 17</td>
-            <td style="font-size:12px;color:var(--text-muted)">Threat Prevention mobile · capacités limitées vs desktop</td>
+            <td><strong>iOS / iPadOS</strong></td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">iOS 16 et suivants, iOS 26</td>
+            <td style="font-size:12px;color:var(--text-muted);text-align:left;white-space:normal;min-width:220px">iOS 15 n'est plus supporté ; filtrage SMS et blocage d'appels sur iPhone seulement</td>
           </tr>
         </tbody>
       </table>
@@ -487,33 +465,33 @@
     <div class="section-title">Spécifications techniques · Agent XDR</div>
     <div class="metrics-grid">
       <div class="metric-card">
-        <span class="metric-val">8.9</span>
-        <span class="metric-label">Version agent actuelle<br>(juillet 2025)</span>
+        <span class="metric-val">9.3</span>
+        <span class="metric-label">Dernière version d'agent<br>(matrice, nov. 2026)</span>
       </div>
       <div class="metric-card">
         <span class="metric-val">100%</span>
-        <span class="metric-label">MITRE ATT&amp;CK Round 6<br>6 ans consécutifs</span>
+        <span class="metric-label">Détection MITRE ATT&amp;CK<br>Round 6 (2024)</span>
       </div>
       <div class="metric-card">
         <span class="metric-val">98%</span>
-        <span class="metric-label">Réduction alertes<br>via AI grouping</span>
+        <span class="metric-label">Volume de triage en moins<br>par regroupement (selon PAN)</span>
       </div>
       <div class="metric-card">
         <span class="metric-val">SaaS</span>
         <span class="metric-label">Aucune infra on-prem<br>Management cloud</span>
       </div>
       <div class="metric-card">
-        <span class="metric-val">30 j</span>
-        <span class="metric-label">Rétention hot data<br>XDR Pro (défaut)</span>
+        <span class="metric-val">31 j</span>
+        <span class="metric-label">Données ingérées<br>XDR Pro (défaut)</span>
       </div>
       <div class="metric-card">
         <span class="metric-val">1 100+</span>
-        <span class="metric-label">Content packs XSOAR<br>(marketplace)</span>
+        <span class="metric-label">Intégrations Cortex<br>(selon PAN, août 2026)</span>
       </div>
     </div>
 
     <div class="info-note blue">
-      <strong>Threat Hunting avec XQL :</strong> Cortex XDR Pro inclut le langage XQL (eXtended Query Language) propriétaire PAN, permettant des requêtes forensiques sur l'ensemble des données endpoint, réseau et cloud. Similaire à KQL (Sentinel) ou SPL (Splunk) mais optimisé pour les données Cortex. Rétention des données requêtables : 30 jours (Pro/EP) ou 12 mois (Pro/TB et XSIAM).
+      <strong>Threat Hunting avec XQL :</strong> Cortex XDR Pro inclut le langage XQL (eXtended Query Language) propriétaire PAN, permettant des requêtes forensiques sur l'ensemble des données endpoint, réseau et cloud. Similaire à KQL (Sentinel) ou SPL (Splunk) mais optimisé pour les données Cortex. Rétention par défaut : 31 jours pour les données ingérées et 186 jours pour les cas, issues et requêtes, sur XDR comme sur XSIAM ; au-delà, add-ons de stockage chaud ou froid.
     </div>
 
     <!-- MITRE coverage -->
@@ -531,27 +509,27 @@
           <tr>
             <td>MITRE ATT&amp;CK Evaluations · Détection</td>
             <td class="val-high"><span class="cap-badge green">100% Round 6</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100% detection coverage, Round 6 MITRE ATT&amp;CK Enterprise · 6 années consécutives top résultats (source : mitre-engenuity.org)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Round 6 Enterprise (2024) : 100 % de détection au niveau technique, sans changement de configuration ni délai (source : evals.mitre.org, Palo Alto Networks)</td>
           </tr>
           <tr>
-            <td>Protection (blocage) · MITRE</td>
-            <td class="val-high"><span class="cap-badge green">100% bloqué</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100% protection dans les évaluations MITRE ATT&amp;CK Turla 2024</td>
+            <td>Prévention · MITRE Round 6</td>
+            <td class="val-high"><span class="cap-badge green">Meilleur taux</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Taux de prévention le plus élevé des participants, sans faux positif, selon Palo Alto Networks</td>
           </tr>
           <tr>
             <td>AV-Comparatives EPR 2025</td>
             <td class="val-high"><span class="cap-badge green">99% / 99%</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">99% Threat Prevention + 99% Response · seul «Market Leader» à atteindre ce double score selon AV-Comparatives (source officielle PAN blog)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">99 % Threat Prevention + 99 % Response en 2025 ; seul leader du marché certifié EPR sept années de suite selon Palo Alto Networks</td>
           </tr>
           <tr>
-            <td>Réduction alertes (IA XDR)</td>
-            <td class="val-high"><span class="cap-badge green">98%</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">98% réduction des alertes brutes via AI grouping &amp; déduplication · en incidents actionnables</td>
+            <td>SE Labs Ransomware Test 2026</td>
+            <td class="val-high"><span class="cap-badge green">100%</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">100 % de prévention selon Palo Alto Networks. Gartner Magic Quadrant EPP 2026 : Leader, quatrième année de suite</td>
           </tr>
           <tr>
-            <td>Faux positifs · Évaluations MITRE</td>
+            <td>Faux positifs · MITRE Round 6</td>
             <td class="val-high"><span class="cap-badge green">0</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Zéro faux positif enregistré lors des évaluations MITRE ATT&amp;CK récentes</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Aucun faux positif sur le test de faux positifs introduit au Round 6, selon Palo Alto Networks</td>
           </tr>
         </tbody>
       </table>
@@ -563,45 +541,45 @@
     <div class="section-title" id="xsiam">Cortex XSIAM · Plateforme SOC IA</div>
 
     <div class="info-note purple">
-      <strong>XSIAM = SIEM + SOAR + EDR + Threat Intel + ASM</strong> · en une seule plateforme cloud-native. Lancé en 2022, XSIAM est conçu pour remplacer l'ensemble de la stack SOC traditionnelle. Le moteur d'IA de Cortex corrèle les millions d'événements bruts en quelques incidents actionnables. Il inclut nativement Cortex XDR Pro, XSOAR et le Strata Logging Service (ex-CDL).
+      <strong>XSIAM = SIEM + SOAR + EDR + Threat Intel + ASM</strong> · en une seule plateforme cloud-native, lancée en 2022, version 3.6 en juillet 2026. Paliers de licence : <strong>NG-SIEM</strong> (analytique, collecte, détection, automatisation), <strong>Enterprise</strong> (ajoute un agent XDR par endpoint, Host Insights et Extended Threat Hunting) et <strong>Premium</strong> (ajoute Cloud Posture et Cloud Runtime Security, threat intel XTI et TIM, Attack Surface Management). L'ancienne référence Enterprise Plus est en End of Sale depuis le 30 avril 2025.
     </div>
 
     <div class="xsiam-module-grid">
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/block.webp" alt="" loading="lazy"> Cortex XDR (inclus)</div>
-        <div class="xsiam-module-desc">Protection et détection endpoint · toutes les capacités XDR Pro per TB incluses dans XSIAM.</div>
+        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/block.webp" alt="" loading="lazy"> Cortex XDR (Enterprise, Premium)</div>
+        <div class="xsiam-module-desc">Un agent Cortex XDR par endpoint inclus dans les paliers Enterprise et Premium ; add-on en NG-SIEM.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="configuration"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"/></svg> Cortex AgentiX / XSOAR (inclus)</div>
-        <div class="xsiam-module-desc">Orchestration et automation · 1 100+ intégrations prêtes à l'emploi, playbooks visuels, war room, case management. Cortex AgentiX est la génération suivante de XSOAR et porte l'assistant agentique de XSIAM, XDR et Cortex Cloud.</div>
+        <div class="xsiam-module-name"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="configuration"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"/></svg> Cortex AgentiX (automatisation incluse)</div>
+        <div class="xsiam-module-desc">Playbooks et agents IA inclus dans les trois paliers, plus de 1 100 intégrations selon Palo Alto Networks. Depuis XSIAM 3.5 (mai 2026), les Autonomous Playbooks sont propres à XSIAM.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/servers.webp" alt="" loading="lazy"> Strata Logging Service (ex-CDL)</div>
-        <div class="xsiam-module-desc">Stockage unifié de toutes les données de sécurité · 15 PB/jour max ingestion. Schéma normalisé. Rétention 12 mois par défaut (extensible 24 mois).</div>
+        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/servers.webp" alt="" loading="lazy"> Cortex Extended Data Lake (XDL)</div>
+        <div class="xsiam-module-desc">Socle de données normalisé de la plateforme. Palier Analytics (minimum 100 Go/jour) et palier Data Lake en option (à partir de 50 Go/jour) pour la chasse et la conformité ; Data Pipeline pour filtrer avant ingestion. Rétention par défaut : 31 jours de données ingérées, 186 jours de cas.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/a-i.webp" alt="" loading="lazy"> Precision AI · 2 900+ modèles ML</div>
-        <div class="xsiam-module-desc">2 900+ modèles ML + 2 600+ modèles analytiques. Corrélation IA des alertes · jusqu'à 99% de réduction du bruit. 13 300+ détections OOTB.</div>
+        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/a-i.webp" alt="" loading="lazy"> Precision AI · 3 600+ modèles ML</div>
+        <div class="xsiam-module-desc">3 600+ modèles ML et 13 300+ détecteurs selon Palo Alto Networks (août 2026), sans écriture de règles.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/cloud-search.webp" alt="" loading="lazy"> Threat Intelligence (TIM)</div>
-        <div class="xsiam-module-desc">Threat Intelligence Management · feeds Unit 42, TAXII/STIX, enrichissement automatique IOCs. Entraîné sur 1,2 milliard d'exécutions de playbooks réels.</div>
+        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/cloud-search.webp" alt="" loading="lazy"> Threat Intelligence (TIM, XTI)</div>
+        <div class="xsiam-module-desc">Threat Intelligence Management (flux, TAXII/STIX, enrichissement des IOC) et Extended Threat Intel (XTI, juillet 2026) qui croise le renseignement Unit 42 avec le contexte de l'entreprise. Inclus en Premium, add-on ailleurs.</div>
       </div>
       <div class="xsiam-module">
         <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/globe.webp" alt="" loading="lazy"> Cortex Advanced Email Security</div>
-        <div class="xsiam-module-desc">Détection phishing/BEC par LLM natif · intégrée à XSIAM. Analyse comportementale des emails en complément des gateways existants.</div>
+        <div class="xsiam-module-desc">Add-on (XSIAM, XDR) : analyse par API des messageries cloud, pièces jointes et identités, sans toucher au flux de messagerie. Porte l'agent Email Investigation.</div>
       </div>
       <div class="xsiam-module">
         <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/signal.webp" alt="" loading="lazy"> Cortex Exposure Management</div>
-        <div class="xsiam-module-desc">Priorisation IA des vulnérabilités · corrèle les CVEs avec le contexte métier et la surface d'attaque (intégré Xpanse). Guidance de remédiation IA.</div>
+        <div class="xsiam-module-desc">Add-on (XSIAM, XDR) : agrège les scanners natifs (dont le Cortex Network Scanner) et tiers, filtre les vulnérabilités réellement exploitables en tenant compte des contrôles compensatoires, puis automatise la remédiation. Selon Palo Alto Networks, 99 % de bruit en moins.</div>
       </div>
       <div class="xsiam-module">
         <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/doc.webp" alt="" loading="lazy"> Case Management</div>
-        <div class="xsiam-module-desc">Gestion des incidents et cas · SLA tracking, assignments, collaboration inter-analystes. MTTR réduit de 98% (source : études de cas PAN).</div>
+        <div class="xsiam-module-desc">Cas et issues : regroupement automatique, score de risque IA, suivi des SLA, collaboration. Selon Palo Alto Networks, 90 % des cas clos par l'automatisation et l'IA agentique.</div>
       </div>
       <div class="xsiam-module">
-        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/nodes.webp" alt="" loading="lazy"> 1 000+ Connecteurs natifs</div>
-        <div class="xsiam-module-desc">Ingestion Microsoft (M365, Azure AD, Defender), AWS, GCP, Okta, Cisco, IBM QRadar SaaS (acquis 2024), et 1 000+ autres sources.</div>
+        <div class="xsiam-module-name"><img class="ic-pan" src="img/ic/nodes.webp" alt="" loading="lazy"> 1 100+ intégrations</div>
+        <div class="xsiam-module-desc">Microsoft (M365, Entra ID, Defender), AWS, GCP, Okta, Cisco et collecteurs Syslog, Kafka, base de données, NetFlow… Les offres QRadar SaaS reprises à IBM en 2024 sont en fin de vie (avril et août 2026), migration proposée vers XSIAM.</div>
       </div>
     </div>
 
@@ -620,22 +598,22 @@
           <tr>
             <td>Unité de licence</td>
             <td class="val-high">Par Go/jour ingéré</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Compression effective : 1 Go raw ≈ 0.2-0.3 Go CDL selon type de logs</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Palier Analytics : minimum 100 Go/jour ; palier Data Lake en option à partir de 50 Go/jour</td>
           </tr>
           <tr>
             <td>Rétention hot data (requêtable)</td>
-            <td class="val-high">12 mois (défaut)</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Extension jusqu'à 24 mois disponible en option</td>
+            <td class="val-high">31 jours (défaut)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Cas, issues et requêtes : 186 jours ; journaux d'audit : 365 jours. Extension par add-ons de stockage chaud ou froid</td>
           </tr>
           <tr>
-            <td>Capacité max d'ingestion</td>
-            <td class="val-high">15 PB / jour</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Capacité maximale publiée par PAN · architecture cloud scalable automatiquement</td>
+            <td>Volume traité par la plateforme</td>
+            <td class="val-high">17 PB / jour</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Volume total traité par Cortex selon Palo Alto Networks (août 2026), pas une limite par client</td>
           </tr>
           <tr>
             <td>Connecteurs out-of-the-box</td>
-            <td class="val-high">1 000+</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Microsoft, AWS, GCP, Okta, Cisco, IBM QRadar (acquis 2024), Splunk, etc.</td>
+            <td class="val-high">1 100+</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Selon Palo Alto Networks (août 2026) : Microsoft, AWS, GCP, Okta, Cisco, Splunk, etc.</td>
           </tr>
           <tr>
             <td>Sources PAN natives (sans config)</td>
@@ -650,24 +628,24 @@
           <tr>
             <td>FedRAMP</td>
             <td class="val-high">High authorized</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Certification FedRAMP High · utilisable par agences gouvernementales US (ex: 6 branches US Military)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Autorisation FedRAMP High pour les agences fédérales américaines</td>
           </tr>
 
           <tr class="section-row"><td colspan="3">Détection &amp; IA</td></tr>
           <tr>
             <td>Modèles ML (Precision AI)</td>
-            <td class="val-high">2 900+ modèles ML</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">2 900+ ML models + 2 600+ analytics models · entraînés en continu sur la telemetry PAN globale</td>
+            <td class="val-high">3 600+ modèles ML</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Selon Palo Alto Networks (août 2026)</td>
           </tr>
           <tr>
             <td>Détections OOTB (règles)</td>
             <td class="val-high">13 300+</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">13 300+ détections prêtes à l'emploi, mises à jour en continu par Unit 42</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">13 300+ détecteurs selon Palo Alto Networks (août 2026)</td>
           </tr>
           <tr>
-            <td>Réduction bruit / alertes (IA)</td>
-            <td class="val-high">Jusqu'à 99%</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Via corrélation ML · exemple : State of Louisiana MTTR 24h → 2 min, 86% incidents automatisés</td>
+            <td>Backlog d'alertes (regroupement IA)</td>
+            <td class="val-high">−75 %</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Selon Palo Alto Networks. Exemple publié : State of Louisiana, résolution médiane de plus de 24 h à moins de 2 min, 86 % des incidents résolus automatiquement</td>
           </tr>
           <tr>
             <td>MITRE ATT&amp;CK coverage (XSIAM)</td>
@@ -676,20 +654,20 @@
           </tr>
           <tr>
             <td>Cortex AgentiX (IA agentique)</td>
-            <td class="val-high">Disponible oct. 2025</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Agents IA autonomes · triage, investigation, réponse avec guardrails humains. Entraîné sur 1,2 Mrd d'exécutions XSOAR.</td>
+            <td class="val-high">AgentiX 1.4 (juil. 2026)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Annoncé en octobre 2025. Agents IA (threat intel, investigation de cas et d'endpoint, e-mail, réseau, cloud, IT, agents sur mesure) avec garde-fous et validation humaine ; appuyés sur plus de 1,2 milliard d'exécutions de playbooks selon Palo Alto Networks. FedRAMP Moderate et High.</td>
           </tr>
 
           <tr class="section-row"><td colspan="3">Automatisation &amp; ROI</td></tr>
           <tr>
             <td>Playbooks (AgentiX / XSOAR)</td>
-            <td class="val-high">Illimité · 1 100+ OOTB</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">1 100+ intégrations prêtes à l'emploi · builder visuel drag &amp; drop</td>
+            <td class="val-high">1 100+ intégrations</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Playbooks déterministes, playbooks avec tâches IA et agents ; selon Palo Alto Networks (août 2026)</td>
           </tr>
           <tr>
             <td>MTTR réduction (études de cas)</td>
             <td class="val-high">−98%</td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">CBTS : MTTR jours → secondes. Oneida Nation : résolution en 43 secondes. (source : cas clients PAN)</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">CBTS : MTTR de plusieurs jours à quelques secondes. Oneida Nation : résolution en 43 secondes. (source : cas clients PAN)</td>
           </tr>
           <tr>
             <td>ROI (Forrester TEI)</td>
@@ -724,16 +702,16 @@
           </tr>
           <tr>
             <td>EDR intégré</td>
-            <td class="val-high">Natif (Cortex XDR Pro)</td>
+            <td class="val-high">Agent XDR inclus (Enterprise, Premium)</td>
             <td class="val-low">Intégration tierce requise</td>
           </tr>
           <tr>
             <td>SOAR intégré</td>
-            <td class="val-high">Natif (XSOAR inclus)</td>
+            <td class="val-high">Natif (automatisation incluse)</td>
             <td class="val-low">Module séparé ou produit tiers</td>
           </tr>
           <tr>
-            <td>IA/ML nativ</td>
+            <td>IA/ML natif</td>
             <td class="val-high">Cortex Analytics Engine</td>
             <td class="val-med">Modules IA optionnels (UEBA payant)</td>
           </tr>
@@ -759,13 +737,13 @@
     <!-- ═══════════════════════════════════════════════ -->
     <!-- CORTEX XSOAR                                    -->
     <!-- ═══════════════════════════════════════════════ -->
-    <div class="section-title" id="xsoar">Cortex XSOAR · Orchestration &amp; Automation</div>
+    <div class="section-title" id="xsoar">Cortex AgentiX et XSOAR · Automatisation</div>
 
     <div class="info-note" style="border-left-color:var(--yellow)">
-      <strong><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="attention"><path d="M12 3.8L1.8 20.2h20.4L12 3.8z"/><path d="M12 10v4.2"/></svg> Transition vers Cortex AgentiX :</strong> Cortex AgentiX est disponible en standalone depuis début 2026, en plus de son intégration native à Cortex XSIAM, Cortex Cloud et Cortex XDR. Les SKUs services pros XSOAR sont entrés en End-of-Sale en octobre 2025. XSOAR reste vendu et supporté pendant la transition. Tout nouveau projet SOC devrait cibler XSIAM + AgentiX plutôt que XSOAR standalone.
+      <strong><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="attention"><path d="M12 3.8L1.8 20.2h20.4L12 3.8z"/><path d="M12 10v4.2"/></svg> AgentiX remplace XSOAR :</strong> Cortex AgentiX, annoncé en octobre 2025, est la génération suivante de XSOAR. Il est intégré à XSIAM, XDR et Cortex Cloud, et vendu seul (licence annuelle par utilisateur, SaaS). XSOAR reste supporté : XSOAR 8.15 (SaaS, juillet 2026) et XSOAR 6.14 on-prem, sans fin de vie annoncée, recommandé pour les environnements déconnectés ; XSOAR 6.12 et 6.13 sont en fin de vie depuis le 30 juin 2026. Les références de services professionnels XSOAR sont en End of Sale depuis le 1er février 2026.
     </div>
     <div class="info-note green">
-      <strong>Modes de déploiement XSOAR :</strong> Inclus dans XSIAM (recommandé nouveaux projets) ou vendu séparément pour SOC existants. Standalone : on-prem (VM/Docker) ou cloud-hosted (XSOAR Cloud).
+      <strong>Éditions AgentiX autonomes (documentation Cortex) :</strong> Base pour le case management et l'automatisation par playbooks, Enterprise qui ajoute la gestion du renseignement sur les menaces. L'édition gratuite XSOAR Community Edition est en fin de vie depuis le 15 août 2024.
     </div>
 
     <div class="table-wrapper">
@@ -773,54 +751,53 @@
         <thead>
           <tr>
             <th style="text-align:left;min-width:220px">Édition</th>
-            <th>XSOAR Community</th>
-            <th>XSOAR Essentials</th>
-            <th>XSOAR Enterprise</th>
+            <th>AgentiX Base</th>
+            <th>AgentiX Enterprise</th>
             <th>XSIAM (inclus)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Licence</td>
-            <td class="val-high" style="color:var(--green);font-weight:700">Gratuit</td>
-            <td class="val-med">Sur devis partenaire</td>
-            <td class="val-high">Sur devis partenaire</td>
-            <td class="val-high">Inclus XSIAM</td>
+            <td>Par utilisateur / an</td>
+            <td>Par utilisateur / an</td>
+            <td class="val-high">Incluse dans XSIAM</td>
           </tr>
           <tr>
-            <td>Utilisateurs</td>
-            <td>5 max</td>
-            <td>Illimité</td>
-            <td>Illimité</td>
-            <td>Illimité</td>
+            <td>Utilisateurs inclus</td>
+            <td>2 (extensible)</td>
+            <td>4 (extensible)</td>
+            <td>Selon XSIAM</td>
           </tr>
           <tr>
-            <td>Incidents / mois</td>
-            <td>500 max</td>
-            <td>Illimité</td>
-            <td>Illimité</td>
-            <td>Illimité</td>
+            <td>Compute units / an</td>
+            <td>400</td>
+            <td>800</td>
+            <td>Selon XSIAM</td>
           </tr>
           <tr>
-            <td>Content packs (intégrations)</td>
-            <td class="val-med">1 100+ (marketplace)</td>
-            <td class="val-high">1 100+ (marketplace)</td>
-            <td class="val-high">1 100+ (marketplace)</td>
-            <td class="val-high">1 100+ (marketplace)</td>
+            <td>Intégrations, automatisations</td>
+            <td class="val-high">Illimitées</td>
+            <td class="val-high">Illimitées</td>
+            <td class="val-high">Illimitées</td>
           </tr>
           <tr>
-            <td>HA / Multi-tenant</td>
-            <td class="val-low">—</td>
-            <td class="val-med">Partiel</td>
-            <td class="val-high"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg> Complet</td>
-            <td class="val-high"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg> (SaaS)</td>
+            <td>Historique des incidents</td>
+            <td>180 jours (extensible)</td>
+            <td>180 jours (extensible)</td>
+            <td>Cas : 186 jours</td>
+          </tr>
+          <tr>
+            <td>Flux de threat intel</td>
+            <td class="val-med">5 flux actifs, 100 indicateurs par collecte</td>
+            <td class="val-high">Illimités, bibliothèque de threat intel</td>
+            <td>TIM inclus en Premium</td>
           </tr>
           <tr>
             <td>Déploiement</td>
-            <td>On-prem / Docker</td>
-            <td>On-prem / Cloud</td>
-            <td>On-prem / Cloud</td>
-            <td>Cloud (SaaS PAN)</td>
+            <td>SaaS</td>
+            <td>SaaS</td>
+            <td>SaaS</td>
           </tr>
         </tbody>
       </table>
@@ -832,34 +809,26 @@
     <div class="section-title" id="xpanse">Cortex Xpanse · Attack Surface Management</div>
 
     <div class="info-note">
-      <strong>Principe :</strong> Xpanse scanne l'intégralité de l'espace IPv4 (4,3 milliards d'adresses) plusieurs fois par jour, soit plus de 500 milliards de ports/jour, pour découvrir TOUS les assets exposés de votre organisation · y compris les inconnus (shadow IT, cloud mal configuré, supply chain). En moyenne, Xpanse trouve +35% d'assets que l'inventaire existant du client. Aucun agent requis · vue 100% externe, comme un attaquant.
+      <strong>Principe :</strong> Xpanse découvre, depuis internet et sans agent, les actifs exposés d'une organisation, y compris ceux qu'elle ignore (shadow IT, cloud mal configuré, filiales, tiers). Selon la documentation, un scan de base couvre environ 250 ports courants sur tout l'espace IPv4 deux fois par semaine, les protocoles les plus sensibles (RDP par exemple) plusieurs fois par jour, et chaque service actif est revu quotidiennement. Version 2.14 en juillet 2026.
     </div>
 
-    <!-- Xpanse key metrics -->
+    <!-- Xpanse key metrics (documentation Cortex Xpanse, cadences de scan) -->
     <div class="metrics-grid" style="margin-bottom:24px">
       <div class="metric-card">
-        <span class="metric-val">4,3 Mrd</span>
-        <span class="metric-label">Adresses IPv4 scannées<br>(espace internet complet)</span>
+        <span class="metric-val">IPv4</span>
+        <span class="metric-label">Espace couvert<br>en entier</span>
       </div>
       <div class="metric-card">
-        <span class="metric-val">500 Mrd</span>
-        <span class="metric-label">Ports scannés<br>par jour</span>
+        <span class="metric-val">2 / sem.</span>
+        <span class="metric-label">Scan de base<br>~250 ports courants</span>
       </div>
       <div class="metric-card">
-        <span class="metric-val">+35%</span>
-        <span class="metric-label">Assets supplémentaires<br>vs. inventaire existant</span>
+        <span class="metric-val">n / jour</span>
+        <span class="metric-label">Protocoles sensibles<br>(RDP par exemple)</span>
       </div>
       <div class="metric-card">
-        <span class="metric-val">25%</span>
-        <span class="metric-label">Expositions = RDP<br>présent dans 50% ransomwares</span>
-      </div>
-      <div class="metric-card">
-        <span class="metric-val">45 min</span>
-        <span class="metric-label">Délai moyen attaquant<br>pour trouver une vulnérabilité</span>
-      </div>
-      <div class="metric-card">
-        <span class="metric-val">3+ sem.</span>
-        <span class="metric-label">Délai moyen entreprise<br>pour découvrir la même faille</span>
+        <span class="metric-val">1 / jour</span>
+        <span class="metric-label">Revue de chaque<br>service actif</span>
       </div>
     </div>
 
@@ -895,7 +864,7 @@
             <td style="text-align:left;font-size:12px;color:var(--text-muted)">ML attribue automatiquement les assets découverts à votre organisation (BGP, WHOIS, certs)</td>
           </tr>
 
-          <tr class="section-row"><td colspan="3">Détection des expositions (50+ types)</td></tr>
+          <tr class="section-row"><td colspan="3">Détection des expositions</td></tr>
           <tr>
             <td>Services non sécurisés exposés</td>
             <td class="val-high"><span class="cap-badge green"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span></td>
@@ -926,7 +895,7 @@
           <tr>
             <td>Intégration XSIAM</td>
             <td class="val-high"><span class="cap-badge green">Natif</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Findings Xpanse remontent automatiquement en incidents XSIAM · playbooks XSOAR</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Module Attack Surface Management dans XSIAM (inclus en Premium) et XDR ; findings traités par les playbooks AgentiX</td>
           </tr>
           <tr>
             <td>API REST</td>
@@ -961,28 +930,33 @@
           </tr>
           <tr>
             <td>XDR + remplacement SIEM + gestion de gros volumes de logs</td>
-            <td class="val-high"><span class="cap-badge accent">XDR Pro / TB</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Licence par TB, pertinent a partir de ~1000 endpoints ou gros volumes 3rd party.</td>
+            <td class="val-high"><span class="cap-badge accent">XDR Pro per GB</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Licence au volume ingéré (Go/jour), pertinente quand les sources tierces pèsent plus que les endpoints.</td>
           </tr>
           <tr>
             <td>SOC complet : SIEM + SOAR + EDR + Threat Intel</td>
             <td class="val-high"><span class="cap-badge purple">XSIAM</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Consolidation totale de la stack SOC en une plateforme. ROI : réduction analysts/alertes.</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Consolidation du SOC. Palier NG-SIEM si l'EDR en place est conservé, Enterprise avec l'agent XDR, Premium avec le cloud et la threat intel.</td>
           </tr>
           <tr>
             <td>Automatisation sur SIEM existant (sans migration)</td>
-            <td class="val-high"><span class="cap-badge green">XSOAR standalone</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Ajouter SOAR sans changer le SIEM existant. 1 100+ connecteurs vers outils tiers.</td>
+            <td class="val-high"><span class="cap-badge green">AgentiX autonome</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Automatiser sans changer de SIEM : AgentiX Base ou Enterprise. XSOAR 6.14 on-prem pour les sites déconnectés.</td>
           </tr>
           <tr>
             <td>Découverte surface d'attaque internet</td>
             <td class="val-high"><span class="cap-badge yellow">Xpanse</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Aucun agent requis · priorité pour les grandes organisations avec shadow IT / multi-cloud.</td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Aucun agent requis. Ajouter Exposure Management (XSIAM, XDR) pour prioriser aussi les vulnérabilités internes.</td>
           </tr>
           <tr>
             <td>SOC managé (MSSP) · multi-tenants</td>
-            <td class="val-high"><span class="cap-badge purple">XSIAM + XSOAR Enterprise</span></td>
-            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Architecture multi-tenant native · chaque client dans son tenant isolé, console MSSP unifiée.</td>
+            <td class="val-high"><span class="cap-badge purple">XSIAM multi-tenant</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">Architecture multi-tenant native · chaque client dans son tenant isolé, console MSSP unifiée, allocation dynamique des licences.</td>
+          </tr>
+          <tr>
+            <td>Postes où tournent des agents IA, assistants de code, serveurs MCP</td>
+            <td class="val-high"><span class="cap-badge accent">XDR One</span></td>
+            <td style="text-align:left;font-size:12px;color:var(--text-muted)">XDR Pro et Agentic Endpoint Security dans un seul agent. Si l'EDR en place est conservé : Cortex AES seul, agent « Targeted » à côté de l'EDR tiers.</td>
           </tr>
         </tbody>
       </table>
@@ -1001,7 +975,7 @@
         <div class="card-title">Cortex XSIAM<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Page produit officielle Cortex XSIAM</div>
       </a>
-      <a class="tool-card" href="https://docs.paloaltonetworks.com/cortex/cortex-xdr" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+      <a class="tool-card" href="https://cortex-docs.paloaltonetworks.com/cortex-xdr" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
         <div class="card-icon"><img class="ic-pan" src="img/ic/doc.webp" alt="" loading="lazy"></div>
         <div class="card-title">Documentation XDR<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Documentation admin et agent · release notes, compatibilité OS</div>
@@ -1011,7 +985,7 @@
         <div class="card-title">Datasheet XDR<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Fiche technique officielle Cortex XDR</div>
       </a>
-      <a class="tool-card" href="https://attackevals.mitre-engenuity.org/" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
+      <a class="tool-card" href="https://evals.mitre.org/" target="_blank" rel="noopener" style="min-width:200px;max-width:260px">
         <div class="card-icon"><img class="ic-pan" src="img/ic/discover.webp" alt="" loading="lazy"></div>
         <div class="card-title">MITRE ATT&CK Evaluations<span class="card-arrow"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="lien externe"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg> </span></div>
         <div class="card-description">Résultats officiels des évaluations MITRE ATT&CK · comparer les vendors</div>
@@ -1034,7 +1008,7 @@
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Données issues de la documentation officielle Palo Alto Networks · Dernière mise à jour : août 2026</div>
+    <div style="margin-top:4px;font-size:10px">Données issues de la documentation officielle Palo Alto Networks · Dernière mise à jour : 6 novembre 2026</div>
   </footer>
 </body>
 </html>

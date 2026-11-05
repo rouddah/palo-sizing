@@ -150,8 +150,8 @@ const LINKS_DATA = {
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\" ry=\"2\"/><rect x=\"9\" y=\"9\" width=\"6\" height=\"6\"/><line x1=\"9\" y1=\"1\" x2=\"9\" y2=\"4\"/><line x1=\"15\" y1=\"1\" x2=\"15\" y2=\"4\"/><line x1=\"9\" y1=\"20\" x2=\"9\" y2=\"23\"/><line x1=\"15\" y1=\"20\" x2=\"15\" y2=\"23\"/><line x1=\"20\" y1=\"9\" x2=\"23\" y2=\"9\"/><line x1=\"20\" y1=\"14\" x2=\"23\" y2=\"14\"/><line x1=\"1\" y1=\"9\" x2=\"4\" y2=\"9\"/><line x1=\"1\" y1=\"14\" x2=\"4\" y2=\"14\"/></svg>",
-          "title": "Cortex · XDR · XSIAM · XSOAR · Xpanse",
-          "description": "Plateforme Cortex complète : EDR/XDR, SOC IA (XSIAM), orchestration (XSOAR/AgentiX), Attack Surface Management (Xpanse)",
+          "title": "Cortex · XDR · XSIAM · AgentiX · Xpanse",
+          "description": "Plateforme Cortex : XDR et XDR One, SOC (XSIAM NG-SIEM, Enterprise, Premium), automatisation (AgentiX, ex-XSOAR), Xpanse et Exposure Management, Cortex Cloud",
           "href": "cortex.html",
           "type": "internal",
           "highlight": false
@@ -165,7 +165,7 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 19.5A2.5 2.5 0 0 1 6.5 17H20\"/><path d=\"M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\"/></svg>",
           "title": "Documentation officielle",
-          "description": "Documentation technique complète : PAN-OS, Panorama, Prisma Access, Cortex, Cloud NGFW, CN-Series",
+          "description": "Documentation technique complète : PAN-OS, Panorama, Prisma Access, Prisma Browser, Cloud NGFW, Prisma AIRS",
           "href": "https://docs.paloaltonetworks.com/",
           "type": "external"
         },
@@ -241,8 +241,8 @@ const LINKS_DATA = {
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"/><path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"/></svg>",
-          "title": "Prisma Access Browser",
-          "description": "Enterprise browser Zero Trust basé sur Chromium (ex-Talon, acquis nov. 2023) : DLP, threat prevention, contrôle BYOD sans agent VPN",
+          "title": "Prisma Browser",
+          "description": "Navigateur d'entreprise Zero Trust basé sur Chromium (ex-Prisma Access Browser, issu de Talon) : éditions Education, Core, Pro, DLP, accès RDP/SSH natif",
           "href": "browser.html",
           "type": "internal"
         },
@@ -256,15 +256,15 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>",
           "title": "Prisma Access · Localisation PoP",
-          "description": "Liste des 100+ Points of Presence Prisma Access mondiaux et leur disponibilite par region",
+          "description": "Liste des 150+ points de présence Prisma Access et leur disponibilité par région",
           "href": "https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-overview/list-of-prisma-access-locations",
           "type": "external"
         },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v4m0 12v4M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/></svg>",
           "title": "AI Runtime Security (AIRS)",
-          "description": "Sécurité des workloads IA et conteneurs cloud : Prisma AIRS 2.0 disponible depuis oct. 2025 (remplace CN-Series).",
-          "href": "https://www.paloaltonetworks.com/prisma/prisma-ai-runtime-security",
+          "description": "Sécurité des applications et agents IA : Prisma AIRS 3.0 (mars 2026). AI Runtime Firewall remplace CN-Series, en End of Sale au 1er novembre 2026.",
+          "href": "https://www.paloaltonetworks.com/ai-security/prisma-airs",
           "type": "external"
         },
         {
@@ -297,7 +297,7 @@ const LINKS_DATA = {
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>",
           "title": "Idira · Identity Security Platform",
-          "description": "Nouveau pilier identité Palo Alto (mai 2026) : PAM, IAM, EPM, Identity Governance, Agentic Identities, Secrets Management.",
+          "description": "Plateforme identité de Palo Alto Networks (12 mai 2026, technologie CyberArk) : PAM, IAM, EPM, Identity Governance, Secure AI Agents, Secrets Management.",
           "href": "idira.html",
           "type": "internal",
           "highlight": true

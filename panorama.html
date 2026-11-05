@@ -36,8 +36,10 @@
       <strong>Modes de déploiement Panorama :</strong> chaque appliance M-Series et VM peut opérer en mode
       <em>Management Plane</em> (gestion des policies, Device Groups, Templates) et/ou
       <em>Dedicated Log Collector</em> (ingestion de logs uniquement). En mode Log Collector dédié,
-      la capacité d'ingestion logs est significativement plus élevée. Les capacités ci-dessous
-      correspondent au mode Management (Management Plane Only).
+      la capacité d'ingestion logs est significativement plus élevée. Le nombre d'appareils gérés s'entend
+      en mode Management Only ; le stockage et le débit de logs, en mode Panorama avec Log Collector local
+      (en Management Only, les logs partent vers un Dedicated Log Collector et rien n'est stocké localement).
+      Le mode « legacy » n'est plus supporté sur Panorama depuis le 1er septembre 2025.
       Depuis le 1er novembre 2025, l'Enterprise Support Agreement (ESA) est remplacé par ESA Pro, qui inclut désormais Strata Cloud Manager pour la visibilité et le monitoring unifiés.
     </div>
 
@@ -49,7 +51,7 @@
             <th>M-300</th>
             <th>M-600 <span style="font-size:10px;color:var(--yellow);font-weight:600">plus commandable</span></th>
             <th>M-700</th>
-            <th>Panorama VM<br><small style="font-weight:400;font-size:10px">ESXi / KVM / Hyper-V</small></th>
+            <th>Panorama VM<br><small style="font-weight:400;font-size:10px">ESXi / KVM / Hyper-V / clouds publics</small></th>
             <th>Strata Cloud Manager</th>
           </tr>
         </thead>
@@ -70,7 +72,7 @@
             <td class="val-low">1,000</td>
             <td class="val-med">5,000</td>
             <td class="val-high">5,000</td>
-            <td class="val-med">2,500 <small style="color:var(--text-muted)">(Management Only)</small></td>
+            <td class="val-med">2,500 <small style="color:var(--text-muted)">(licences 25, 100, 1 000, jusqu'à 2 500)</small></td>
             <td class="val-high">Selon licence SCM</td>
           </tr>
           <tr>
@@ -78,7 +80,7 @@
             <td class="val-low">4 TB SSD</td>
             <td class="val-med">24 TB SSD</td>
             <td class="val-high">48 TB SSD</td>
-            <td class="val-low">24 TB <small style="color:var(--text-muted)">(48 TB en paire HA)</small></td>
+            <td class="val-low">24 TB <small style="color:var(--text-muted)">(1 à 12 disques de 2 TB, 48 TB en paire HA)</small></td>
             <td class="val-high">Extensible cloud</td>
           </tr>
           <tr>
@@ -218,9 +220,10 @@
     </div>
 
     <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-muted);font-family:var(--mono)">
-      En mode Management Only, l'appliance virtuelle Panorama gère jusqu'à 2 500 appareils, ingère jusqu'à 20 000 logs/s et adresse 24 TB de stockage de logs, 48 TB en paire haute disponibilité.
-      Le M-600 ne figure plus au catalogue courant : seuls le M-300 et le M-700 restent commandables. Le mode Dedicated Log Collector permet d'atteindre des capacités d'ingestion supérieures : M-300 ≈ 33,000 logs/s · M-600 ≈ 50,000 logs/s · M-700 ≈ 77,000 logs/s (source : Panorama Sizing &amp; Design Guide PAN KB).
+      L'appliance virtuelle Panorama gère jusqu'à 2 500 appareils en mode Management Only (licences de 25, 100 ou 1 000 appareils, 2 500 sur une VM dimensionnée en conséquence). En mode Panorama, son Log Collector local reçoit jusqu'à 20 000 logs/s sur 1 à 12 disques de 2 TB, soit 24 TB, 48 TB en paire haute disponibilité. Hyperviseurs et clouds supportés : VMware ESXi, KVM, Hyper-V, AWS, AWS GovCloud, Azure, Google Cloud, Oracle Cloud, Alibaba Cloud (documentation « Panorama Models »).
+      Le M-600 est en End of Sale depuis le 15 février 2024 : seuls le M-300 et le M-700 restent commandables. Sur M-700, les Collector Groups montent jusqu'à 1 million de logs/s selon Palo Alto Networks (LIVEcommunity, « Breaking Barriers in Log Ingestion »). Le mode Dedicated Log Collector permet d'atteindre des capacités d'ingestion supérieures : M-300 ≈ 33,000 logs/s · M-600 ≈ 50,000 logs/s · M-700 ≈ 77,000 logs/s (source : Panorama Sizing &amp; Design Guide PAN KB).
       Strata Cloud Manager (SCM) est l'option de gestion cloud-first, recommandée pour les nouveaux déploiements multi-sites. Panorama reste pertinent pour les architectures full on-prem, les contraintes de souveraineté ou les très grands parcs.
+      Version courante : PAN-OS et Panorama 12.2 « Ceres », disponibles depuis le 30 juillet 2026 et annoncés le 4 août 2026. Avec 12.2, Strata Cloud Manager reçoit six Network Security Agents (déploiement, dépannage, configuration, posture, investigation de menace, protection des données), avec validation humaine des actions.
     </div>
   </div>
 
@@ -255,7 +258,7 @@
 
   <footer class="site-footer">
     <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
-    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks · Dernière mise à jour : août 2026</div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks · Dernière mise à jour : 6 novembre 2026</div>
   </footer>
 </body>
 </html>
