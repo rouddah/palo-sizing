@@ -7,13 +7,14 @@
    1. Un boitier de reference (PA ou concurrent) pre-remplit le besoin :
       debit avec inspection, VPN, ports ; sessions et CPS seulement si
       c'est un PA (meme protocole de mesure). Tout reste modifiable.
-   2. Contraintes dures : ports (avec reutilisation d'un port plus rapide),
-      vsys, PoE, HA, format, modem 5G, alimentation redondante. Un modele
-      qui ne les tient pas n'est jamais propose.
+   2. Contraintes dures : vsys, HA, format, modem 5G, alimentation
+      redondante. Un modele qui ne les tient pas n'est jamais propose.
+      Interfaces et PoE sont souples : ils departagent (port plus rapide,
+      optique cuivre dans une cage libre, sinon ports manquants chiffres).
    3. Parmi les modeles qui les tiennent, tries par debit Threat Prevention :
-        iso = le plus petit qui couvre toute la volumetrie demandee ;
-        n-1 = celui juste en dessous (meme contraintes dures, volumetrie
-              partiellement couverte : le manque est chiffre) ;
+        iso = parmi ceux qui couvrent la volumetrie (fenetre de 2,5 fois le
+              plus petit), le mieux raccorde puis le plus petit ;
+        n-1 = le plus gros en dessous, aussi bien raccorde si possible ;
         n+1 = le premier au-dessus de l'iso offrant au moins 25 % de debit
               en plus (a defaut, le plus gros compatible au-dessus).
    Exclus d'office : fins de vente effectives ou annoncees (eos, eosD) ;
@@ -90,6 +91,32 @@
     return any ? short : null;
   }
 
+  /* Raccordement realiste : apres l'affectation native, le cuivre qui
+     reste passe par des optiques cuivre du catalogue Palo Alto dans les
+     cages libres : PAN-SFP-CG (1000BASE-T) dans une cage SFP ou SFP+,
+     PAN-L-SFP-PLUS-10GBASE-T dans une cage SFP+. Le cuivre 2,5/5G n'a pas
+     d'optique publiee : il reste manquant.
+     level 0 = ports natifs, 1 = avec optiques cuivre, 2 = ports manquants. */
+  function portFit(m, need) {
+    var have = portsOf(m), short = {};
+    POOLS.forEach(function (row) {
+      var k = row[0], left = +need[k] || 0;
+      row[1].forEach(function (pool) { var t = Math.min(left, have[pool]); have[pool] -= t; left -= t; });
+      if (left > 0) short[k] = left;
+    });
+    var adapt = { cg: 0, t10: 0 };
+    if (short.cu10) {
+      var t = Math.min(short.cu10, have.sfp10); have.sfp10 -= t; short.cu10 -= t; adapt.t10 = t;
+      if (!short.cu10) delete short.cu10;
+    }
+    if (short.cu1) {
+      ['sfp1', 'sfp10'].forEach(function (pool) { var t = Math.min(short.cu1, have[pool]); have[pool] -= t; short.cu1 -= t; adapt.cg += t; });
+      if (!short.cu1) delete short.cu1;
+    }
+    var missing = 0; Object.keys(short).forEach(function (k) { missing += short[k]; });
+    return { level: missing ? 2 : (adapt.cg || adapt.t10) ? 1 : 0, short: short, adapt: adapt, missing: missing };
+  }
+
   function vsysMax(m) {
     if (m.vsysMax) return m.vsysMax;
     var v = String(m.vsys || '').split('/').pop();
@@ -120,10 +147,7 @@
       if (q.form === 'desk' && !isDesk(m)) r.push('pas de bureau');
       if (q.form === 'rack' && !isRack(m)) r.push('pas en rack');
     }
-    var sp = fitPorts(m, q.ports || {});
-    if (sp) r.push('ports');
     if ((q.vsys || 1) > vsysMax(m)) r.push('vsys');
-    if (q.poe > 0 && !(m.poeP >= q.poe || (m.poeP == null && m.poe))) r.push('PoE');
     if (q.ha === 'ap' && m.haAP !== true) r.push('HA A/P');
     if (q.ha === 'aa' && m.haAA !== true) r.push('HA A/A');
     if (q.ha === 'cl' && !m.haCl) r.push('clustering');
@@ -155,38 +179,58 @@
     return t;
   }
 
-  var UP = 1.25;
+  var UP = 1.25, SPAN = 2.5;
+  /* Ecart d'un modele au besoin d'interfaces et de PoE (souple). */
+  function fit(m, q) {
+    var pf = portFit(m, q.ports || {});
+    var poeShort = 0, poeUnknown = false;
+    if (q.poe > 0) {
+      if (m.poeP == null && m.poe) poeUnknown = true;
+      else poeShort = Math.max(0, q.poe - (m.poeP || 0));
+    }
+    return { ports: pf, poeShort: poeShort, poeUnknown: poeUnknown, gap: pf.missing + poeShort };
+  }
+
+  /* Choix des trois propositions. Les ports et le PoE ne bloquent plus :
+     ils departagent. L'iso est cherche parmi les modeles qui couvrent la
+     volumetrie, dans une fenetre de taille raisonnable (jusqu'a 2,5 fois le
+     debit du plus petit qui couvre) : celui qui laisse le moins de ports
+     manquants, puis le plus petit. Un client a qui il manque quatre ports
+     cuivre ne se voit donc pas proposer un boitier trois fois trop gros :
+     on lui dit ce qui manque et comment le raccorder. */
   function propose(models, q) {
     IDS = {}; models.forEach(function (x) { IDS[x.id] = 1; });
     var need = target(q);
     var pool = models.filter(function (m) { return !hardFails(m, q).length; })
       .slice().sort(function (a, b) { return (a.tp - b.tp) || (a.sess - b.sess) || (a.cps - b.cps) || (a.id < b.id ? -1 : 1); });
-    var isoI = -1;
-    for (var i = 0; i < pool.length; i++) { if (covers(coverage(pool[i], need))) { isoI = i; break; } }
-    var iso = isoI >= 0 ? pool[isoI] : null;
-    var lower = null, upper = null;
-    if (iso) {
-      for (var j = isoI - 1; j >= 0; j--) { if (pool[j].tp < iso.tp) { lower = pool[j]; break; } }
-      /* n+1 : un vrai cran, au moins 25 % de debit en plus de l'iso ;
-         a defaut, le plus gros modele compatible au-dessus. */
-      for (var k = isoI + 1; k < pool.length; k++) {
-        if (pool[k].tp >= iso.tp * UP) { upper = pool[k]; break; }
-        if (pool[k].tp > iso.tp) upper = pool[k];
-      }
+    var F = {}; pool.forEach(function (m) { F[m.id] = fit(m, q); });
+    var gap = function (m) { return F[m.id].gap; };
+    var best = function (list) { return list.slice().sort(function (a, b) { return (gap(a) - gap(b)) || (a.tp - b.tp); })[0] || null; };
+    var covering = pool.filter(function (m) { return covers(coverage(m, need)); });
+    var iso = null, lower = null, upper = null;
+    if (covering.length) {
+      var lim = covering[0].tp * SPAN;
+      iso = best(covering.filter(function (m) { return m.tp <= lim; }));
+      var below = pool.filter(function (m) { return m.tp < iso.tp; });
+      var belowOk = below.filter(function (m) { return gap(m) <= gap(iso); });
+      lower = (belowOk.length ? belowOk : below)[(belowOk.length ? belowOk : below).length - 1] || null;
+      var above = pool.filter(function (m) { return m.tp >= iso.tp * UP; });
+      var aboveOk = above.filter(function (m) { return gap(m) === 0; });
+      upper = aboveOk[0] || best(above.slice(0, 3)) || null;
+      if (!upper) { var more = pool.filter(function (m) { return m.tp > iso.tp; }); upper = more[more.length - 1] || null; }
     } else if (pool.length) {
-      lower = pool[pool.length - 1];   // rien ne couvre : le plus gros compatible
+      lower = pool.slice(-3).sort(function (a, b) { return (gap(a) - gap(b)) || (b.tp - a.tp); })[0];   // rien ne couvre : parmi les plus gros, le mieux raccorde
     }
-    /* Pourquoi rien ne passe : raisons d'exclusion les plus frequentes. */
     var blockers = {};
     if (!pool.length) models.forEach(function (m) {
       if (retired(m)) return;
       hardFails(m, q).forEach(function (r) { blockers[r] = (blockers[r] || 0) + 1; });
     });
-    return { need: need, pool: pool, lower: lower, iso: iso, upper: upper, blockers: blockers };
+    return { need: need, pool: pool, lower: lower, iso: iso, upper: upper, blockers: blockers, fit: function (m) { return F[m.id] || fit(m, q); } };
   }
 
   var api = { PORT_KEYS: PORT_KEYS, PORT_LABEL: PORT_LABEL, mgig10: mgig10, portsOf: portsOf, portsNeedFrom: portsNeedFrom,
-    fitPorts: fitPorts, vsysMax: vsysMax, hardFails: hardFails, coverage: coverage, target: target, propose: propose,
+    fitPorts: fitPorts, portFit: portFit, fit: fit, vsysMax: vsysMax, hardFails: hardFails, coverage: coverage, target: target, propose: propose,
     psuRedundant: psuRedundant, hasCell: hasCell, isRugged: isRugged };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.ReplaceEngine = api;

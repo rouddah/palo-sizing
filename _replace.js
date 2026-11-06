@@ -60,7 +60,15 @@ run('1 Gbps, durci', { tp: 1, form: 'rug' });
 run('20 Gbps, 15 vsys', { tp: 20, vsys: 15 });
 const r = run('Impossible : 2 Tbps', { tp: 2000 });
 ok(!r.iso && r.lower, '2 Tbps : pas d iso, n-1 = plus gros');
-const r2 = run('Impossible : bureau + 4 QSFP', { tp: 1, form: 'desk', ports: { sfp100: 4 } });
-ok(!r2.pool.length && r2.blockers.ports, 'blocage par ports signale');
+const r2 = run('Bureau + 4 QSFP (ports manquants)', { tp: 1, form: 'desk', ports: { sfp100: 4 } });
+ok(r2.iso && r2.fit(r2.iso).ports.short.sfp100 === 4, 'ports manquants chiffres au lieu de bloquer');
+const r3 = run('Impossible : 15 vsys en bureau', { tp: 1, form: 'desk', vsys: 15 });
+ok(!r3.pool.length && r3.blockers.vsys, 'blocage dur signale');
+// optiques cuivre : 4 cuivre 1G de trop sur un PA-3410 passent en SFP+
+const f = E.portFit(M('PA-3410'), Object.assign({}, P0, { cu1: 16 }));
+ok(f.level === 1 && f.adapt.cg === 4, 'PAN-SFP-CG dans les cages SFP+ libres');
+// le FortiGate 1000F complet ne bloque plus
+const r4 = run('FortiGate 1000F complet (souple)', pre(C('FG-1000F')));
+ok(r4.iso, 'FG-1000F : une proposition iso');
 console.log(fail ? fail + ' echec(s)' : 'OK');
 process.exit(fail ? 1 : 0);

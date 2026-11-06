@@ -227,7 +227,7 @@
     $('rp-res-sub').textContent = 'Besoin retenu : ' + gb(R.need.tp) + ' inspectés'
       + (R.need.sess ? ', ' + big(R.need.sess) + ' sessions' : '') + (R.need.cps ? ', ' + big(R.need.cps) + ' CPS' : '')
       + (R.need.vpn ? ', ' + gb(R.need.vpn) + ' VPN' : '') + (q.grow ? ' (croissance +' + q.grow + ' % comprise)' : '')
-      + '. ' + R.pool.length + ' PA-Series tiennent vos interfaces et contraintes.';
+      + '. ' + R.pool.length + ' PA-Series respectent vos contraintes de HA, format et vsys ; les interfaces départagent.';
     var cols = [['lower', 'N-1', 'Au plus juste'], ['iso', 'Iso', 'Équivalent'], ['upper', 'N+1', 'Avec marge']];
     $('rp-cols').innerHTML = cols.map(function (c) { return col(c[0], c[1], c[2], R[c[0]], ref); }).join('');
     $('rp-warn').innerHTML = warn(ref);
@@ -255,10 +255,12 @@
 
   function col(slot, role, roleName, m, ref) {
     var txt = {
-      lower: R.iso ? 'Tient vos interfaces et contraintes avec moins de capacité. Pour un usage réel nettement inférieur au besoin saisi.' : 'Le plus gros PA-Series compatible avec vos contraintes. Il ne couvre pas toute la volumétrie.',
-      iso: 'Le plus petit PA-Series qui couvre toute la volumétrie et toutes les contraintes.',
+      lower: R.iso ? 'Moins de capacité que le besoin saisi. Pour un usage réel nettement inférieur, ou un budget serré.' : 'Le plus gros PA-Series compatible avec vos contraintes. Il ne couvre pas toute la volumétrie.',
+      iso: 'Couvre toute la volumétrie, avec le meilleur raccordement possible sans surdimensionner.',
       upper: 'Le cran au-dessus : marge pour la croissance, le déchiffrement et les nouveaux services.'
     }[slot];
+    if (slot === 'lower' && m && R.iso && E.coverage(m, R.need).every(function (c) { return c.ratio == null || c.ratio >= 1; }))
+      txt = 'Plus petit que l’iso : couvre aussi la volumétrie, avec moins d’interfaces. Si le câblage peut être revu.';
     var h = '<div class="rp-col' + (slot === 'iso' ? ' is-iso' : '') + '"><div class="rp-role">' + role + ' · ' + roleName + '</div><div class="rp-role-txt">' + txt + '</div>';
     if (!m) {
       var why = slot === 'lower' ? (R.iso ? 'Aucun PA-Series plus petit ne tient vos interfaces et contraintes : l’iso est déjà l’entrée de gamme possible.' : 'Aucun PA-Series ne tient toutes vos contraintes.')
@@ -291,7 +293,7 @@
       else if (c.ratio < 1) li.push(['is-short', 'Couvre ' + Math.round(c.ratio * 100) + ' % ' + (c.k === 'tp' ? 'du ' : c.k === 'vpn' ? 'du ' : 'des ') + c.label + ' visé' + (c.k === 'sess' ? 'es' : '') + ' (' + fmtVal(c.k, c.have) + ' pour ' + fmtVal(c.k, c.want) + ')']);
     });
     if (!li.some(function (x) { return x[0] === 'is-short'; })) li.push(['', 'Couvre toute la volumétrie demandée']);
-    li.push(['', 'Interfaces et contraintes tenues']);
+    fitLines(R.fit(m)).forEach(function (x) { li.push(x); });
     if (ref && ref.v === 'pan' && ref.m.tp) {
       var d = Math.round((m.tp / ref.m.tp - 1) * 100);
       li.push(['is-info', (d >= 0 ? '+' : '') + d + ' % de Threat Prevention par rapport au ' + ref.m.id]);
@@ -299,10 +301,24 @@
     if (m.panosMin) li.push(['is-info', 'PAN-OS ' + m.panosMin + ' minimum']);
     return h + '<ul class="rp-why">' + li.map(function (x) { return '<li class="' + x[0] + '">' + esc(x[1]) + '</li>'; }).join('') + '</ul></div>';
   }
+  /* Raccordement : natif, avec optiques cuivre, ou ports manquants. */
+  function fitLines(f) {
+    var out = [], pf = f.ports;
+    var asked = E.PORT_KEYS.some(function (k) { return q.ports[k] > 0; });
+    if (asked && pf.level === 0) out.push(['', 'Toutes les interfaces en ports natifs']);
+    if (pf.adapt.cg) out.push(['is-info', pf.adapt.cg + ' cuivre 1G sur cage SFP ou SFP+, avec l’optique PAN-SFP-CG']);
+    if (pf.adapt.t10) out.push(['is-info', pf.adapt.t10 + ' cuivre 10G sur cage SFP+, avec l’optique PAN-L-SFP-PLUS-10GBASE-T']);
+    if (pf.level === 1 && !pf.missing) out.push(['', 'Toutes les interfaces se raccordent']);
+    if (pf.missing) out.push(['is-short', 'Manque ' + Object.keys(pf.short).map(function (k) { return pf.short[k] + ' × ' + E.PORT_LABEL[k]; }).join(', ') + ' : à reprendre sur un switch, ou modèle au-dessus']);
+    if (f.poeShort) out.push(['is-short', 'PoE : ' + (q.poe - f.poeShort) + ' ports pour ' + q.poe + ' demandés, compléter par un switch ou des injecteurs PoE']);
+    if (f.poeUnknown) out.push(['is-info', 'PoE présent, nombre de ports PoE non publié']);
+    if (!asked && !q.poe) out.push(['', 'Contraintes tenues']);
+    return out;
+  }
   function fmtVal(k, v) { return k === 'tp' || k === 'vpn' ? gb(v) : big(v); }
 
   function blockersTxt() {
-    var names = { 'variante 5G': 'les variantes 5G', 'ports': 'les interfaces', 'vsys': 'le nombre de vsys', 'PoE': 'les ports PoE', 'HA A/P': 'la HA actif/passif', 'HA A/A': 'la HA actif/actif', 'clustering': 'le clustering', '5G': 'le modem 5G', 'alimentation': 'l’alimentation redondante', 'pas durci': 'le format durci', 'gamme durcie': 'le format', 'pas de bureau': 'le format bureau', 'pas en rack': 'le format rack' };
+    var names = { 'variante 5G': 'les variantes 5G', 'vsys': 'le nombre de vsys', 'PoE': 'les ports PoE', 'HA A/P': 'la HA actif/passif', 'HA A/A': 'la HA actif/actif', 'clustering': 'le clustering', '5G': 'le modem 5G', 'alimentation': 'l’alimentation redondante', 'pas durci': 'le format durci', 'gamme durcie': 'le format', 'pas de bureau': 'le format bureau', 'pas en rack': 'le format rack' };
     var top = Object.keys(R.blockers).sort(function (a, b) { return R.blockers[b] - R.blockers[a]; }).slice(0, 3).map(function (k) { return names[k] || k; });
     return 'Aucun PA-Series ne tient toutes ces contraintes. Ce qui bloque le plus souvent : ' + top.join(', ') + '. Assouplissez une contrainte ou voyez l’avant-vente.';
   }
