@@ -278,3 +278,27 @@ trait, dessinee pour ces tailles-la.
 
 La transition est appliquee partout : plus aucune occurrence d'« IoT
 Security » dans les pages ni dans les scripts.
+
+## Recontrole independant du 6 novembre 2026
+
+Deux relectures separees des 13 datasheets (editions identiques a celles
+de l audit v9, aucune nouvelle edition en ligne) et des pages TechDocs HA.
+Aucun ecart sur les debits, sessions, CPS, ports multi-gig, PoE, combos,
+HA A/P et A/A. Corrige : `vsysMax` 1 sur PA-410, PA-415, PA-415-5G
+(Table 1 : 1/1), alimentation vehicule ajoutee a la PA-56R-POE-5G (Table 7),
+edition PA-5500 dans l en-tete (08/2026). Restent ouverts :
+
+- **PAN-OS 12.2 sur PA-415-5G, PA-410R, PA-410R-5G** : la Compatibility
+  Matrix porte un tiret sous 12.2. Plafond 12.1 ou simple retard de la
+  matrice ? `panosMax` laisse nul.
+- **Budget PoE PA-555-POE** : 330 W (bloc PoE) contre 332 W (table
+  d alimentation) dans la meme datasheet. Le site garde 330 W.
+- **NGFW clustering « 2 membres » sur PA-3510 a PA-3540 et PA-5510 a
+  PA-5530** : la page NGFW Clustering ne nomme que PA-7500 et PA-5540 a
+  PA-5580 ; le nombre vient des New Features 12.2. A relire a la prochaine
+  edition.
+- **Ports HA PA-500, PA-450R, PA-455R-5G** : « ports de donnees en HA1/HA2 »
+  deduit du tiret de la matrice HA ; TechDocs ne l ecrit que pour la PA-400.
+- **HSCI PA-3500** : datasheet « 100G (2) », TechDocs « 40/100 Gbps ».
+- **DC PA-5540 a PA-5580** : « 2,200 W » dans le texte, reference
+  PAN-PA-5500-PWR-2000-DC dans la table de commande.
