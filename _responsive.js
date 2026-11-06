@@ -30,7 +30,7 @@ const CHROME = [
 
 const WIDTHS = [360, 390, 768, 1024, 1440, 1920];
 const PAGES = ['qualification.html', 'pa-series.html', 'index.html', 'optiques.html',
-  'accessoires.html', 'search.html', 'wizard.html', 'panorama.html'];
+  'accessoires.html', 'search.html', 'wizard.html', 'panorama.html', 'remplacement.html'];
 
 const failures = [];
 

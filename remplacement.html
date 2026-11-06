@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remplacer un firewall · Sizing Guide</title>
+  <meta name="description" content="Partir d'un firewall existant, Palo Alto, Fortinet, Check Point ou Cisco, et obtenir trois propositions PA-Series : au plus juste, équivalente et avec marge, à valider avec un avant-vente." />
+  <meta property="og:title" content="Remplacer un firewall · Sizing Guide" />
+  <meta property="og:description" content="Trois propositions PA-Series à partir d'un firewall existant." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ══ Assistant de remplacement (.rp-) ══
+       Une colonne, cinq étapes déroulées une à une ; une étape faite se
+       replie en une ligne de résumé, rouvrable. Les propositions
+       apparaissent après la dernière étape et suivent ensuite toute
+       modification. */
+    .rp-wrap { max-width: 1120px; margin: 0 auto; padding: 8px 24px 64px; }
+    .rp-steps { list-style: none; margin: 24px 0 0; padding: 0; counter-reset: rp; }
+    .rp-step { border-top: 1px solid var(--border); counter-increment: rp; }
+    .rp-step:last-child { border-bottom: 1px solid var(--border); }
+    .rp-head {
+      display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: 14px;
+      width: 100%; padding: 16px 0; background: none; border: 0; color: inherit; text-align: left;
+      font: inherit; cursor: pointer;
+    }
+    .rp-head:disabled { cursor: default; }
+    .rp-num {
+      width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+      font-family: var(--mono); font-size: 13px; color: var(--text-muted); border: 1px solid var(--border2);
+    }
+    .rp-num::before { content: counter(rp); }
+    .rp-step.is-open .rp-num { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .rp-step.is-done .rp-num { color: var(--accent-txt); border-color: var(--accent-line); }
+    .rp-step.is-done .rp-num::before { content: '\2713'; }
+    .rp-title { font-size: 17px; font-weight: 650; color: var(--text-bright); }
+    .rp-sum { display: block; font-size: 13px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rp-step.is-open .rp-sum { display: none; }
+    .rp-edit { font-size: 13px; color: var(--accent-txt); }
+    .rp-step.is-open .rp-edit, .rp-step:not(.is-done) .rp-edit { visibility: hidden; }
+    .rp-body { padding: 0 0 26px 50px; }
+    .rp-step:not(.is-open) .rp-body { display: none; }
+    .rp-lead { font-size: 14px; color: var(--text-dim); max-width: 70ch; margin: 0 0 16px; line-height: 1.55; }
+    .rp-next { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .rp-btn {
+      min-height: var(--tap); padding: 0 20px; border-radius: var(--r-sm); border: 1px solid var(--border2);
+      background: var(--surface); color: var(--text-bright); font: 600 14px var(--font); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .rp-btn:hover { border-color: var(--accent); }
+    .rp-btn.is-main { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .rp-btn.is-main:hover { background: var(--accent-hover); }
+    .rp-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .rp-skip { background: none; border: 0; color: var(--text-muted); font: 13px var(--font); text-decoration: underline; cursor: pointer; padding: 8px 4px; }
+    .rp-err { color: var(--crit); font-size: 13px; }
+
+    /* choix en tuiles (type de déploiement, HA, format) */
+    .rp-choices { display: flex; flex-wrap: wrap; gap: 10px; }
+    .rp-choice {
+      position: relative; flex: 1 1 200px; max-width: 320px; padding: 14px 16px; border-radius: var(--r-md);
+      border: 1px solid var(--border2); background: var(--surface); cursor: pointer; text-align: left;
+      color: inherit; font: inherit;
+    }
+    .rp-choice b { display: block; color: var(--text-bright); font-size: 15px; }
+    .rp-choice span { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.45; }
+    .rp-choice[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-dim); }
+    .rp-choice[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+    .rp-choices.is-small .rp-choice { flex: 0 1 auto; padding: 10px 14px; }
+    .rp-choices.is-small .rp-choice b { font-size: 14px; }
+
+    /* ancien boîtier */
+    .rp-vendors { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .rp-vendor {
+      padding: 6px 12px; border-radius: var(--r-pill); border: 1px solid var(--border2); background: none;
+      color: var(--text-dim); font: 13px var(--font); cursor: pointer; min-height: 34px;
+    }
+    .rp-vendor[aria-pressed="true"] { border-color: var(--accent); color: var(--text-bright); background: var(--accent-dim); }
+    .rp-search {
+      width: 100%; max-width: 520px; height: var(--tap); padding: 0 14px; border-radius: var(--r-sm);
+      border: 1px solid var(--border2); background: var(--surface); color: var(--text-bright); font: 15px var(--font);
+    }
+    .rp-search:focus, .rp-field input:focus, .rp-field select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .rp-list { list-style: none; margin: 10px 0 0; padding: 0; max-width: 720px; max-height: 320px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--r-md); }
+    .rp-list:empty { display: none; }
+    .rp-list li + li { border-top: 1px solid var(--border); }
+    .rp-opt {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; width: 100%;
+      padding: 10px 14px; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer;
+    }
+    .rp-opt:hover, .rp-opt:focus-visible { background: var(--surface2); }
+    .rp-opt[aria-selected="true"] { background: var(--accent-dim); }
+    .rp-opt b { color: var(--text-bright); font-weight: 600; }
+    .rp-opt small { color: var(--text-muted); font-size: 12px; margin-left: 8px; }
+    .rp-opt .rp-m { font-family: var(--mono); font-size: 12.5px; color: var(--text-dim); white-space: nowrap; }
+    .rp-picked { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 var(--r-sm) var(--r-sm) 0; max-width: 720px; }
+    .rp-picked[hidden] { display: none; }
+    .rp-picked b { color: var(--text-bright); font-size: 16px; }
+    .rp-picked span { color: var(--text-muted); font-size: 13px; }
+
+    /* champs */
+    .rp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px 18px; max-width: 900px; }
+    .rp-field label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
+    .rp-field input, .rp-field select {
+      width: 100%; height: 42px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--border2);
+      background: var(--surface); color: var(--text-bright); font: 15px var(--mono);
+    }
+    .rp-field select { font-family: var(--font); }
+    .rp-field input.is-pre { border-color: var(--accent-line); }
+    .rp-hint { display: block; font-size: 11.5px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+    .rp-group { margin: 22px 0 10px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .rp-note { font-size: 12.5px; color: var(--text-muted); max-width: 80ch; line-height: 1.5; margin: 14px 0 0; }
+    .rp-note b { color: var(--text-dim); }
+    .rp-check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text); cursor: pointer; max-width: 420px; }
+    .rp-check input { width: 18px; height: 18px; margin-top: 1px; accent-color: var(--accent); flex: none; }
+    .rp-check small { display: block; color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+    /* propositions */
+    .rp-res { margin-top: 40px; }
+    .rp-res[hidden] { display: none; }
+    .rp-res h2 { font-size: 26px; color: var(--text-bright); margin: 0 0 6px; letter-spacing: -.3px; }
+    .rp-res-sub { font-size: 14px; color: var(--text-dim); margin: 0 0 22px; max-width: 80ch; line-height: 1.5; }
+    .rp-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
+    .rp-col { padding: 20px 20px 22px; background: var(--surface); display: flex; flex-direction: column; min-width: 0; }
+    .rp-col + .rp-col { border-left: 1px solid var(--border); }
+    .rp-col.is-iso { background: var(--surface2); box-shadow: inset 0 3px 0 var(--accent); }
+    .rp-role { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+    .rp-col.is-iso .rp-role { color: var(--accent-txt); }
+    .rp-role-txt { font-size: 13px; color: var(--text-dim); margin-top: 3px; min-height: 4.2em; line-height: 1.4; }
+    .rp-ph { height: 70px; margin: 12px 0 8px; display: flex; align-items: center; }
+    .rp-ph img { max-width: 100%; max-height: 70px; object-fit: contain; }
+    .rp-name { font: 700 26px var(--mono); color: var(--text-bright); letter-spacing: -.5px; }
+    .rp-name a { color: inherit; text-decoration: none; }
+    .rp-name a:hover { text-decoration: underline; }
+    .rp-meta { font-size: 13px; color: var(--text-muted); margin: 2px 0 14px; }
+    .rp-kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 12px; font-size: 13px; margin: 0; }
+    .rp-kv dt { color: var(--text-muted); }
+    .rp-kv dd { margin: 0; color: var(--text); font-family: var(--mono); font-size: 12.5px; text-align: right; overflow-wrap: anywhere; }
+    .rp-io { margin: 12px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-dim); }
+    .rp-io span { display: block; color: var(--text-muted); font-size: 13px; margin-bottom: 2px; }
+    .rp-load { height: 4px; background: var(--border); border-radius: 2px; margin: 14px 0 4px; overflow: hidden; }
+    .rp-load i { display: block; height: 100%; background: var(--ok); transform-origin: left; }
+    .rp-load.is-warn i { background: var(--warn); }
+    .rp-load.is-crit i { background: var(--crit); }
+    .rp-load-t { font-size: 12px; color: var(--text-muted); }
+    .rp-why { list-style: none; margin: 14px 0 0; padding: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-dim); }
+    .rp-why li { padding-left: 16px; position: relative; margin-top: 5px; }
+    .rp-why li::before { content: ''; position: absolute; left: 2px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+    .rp-why li.is-short::before { background: var(--warn); }
+    .rp-why li.is-info::before { background: var(--text-muted); }
+    .rp-empty { color: var(--text-muted); font-size: 14px; line-height: 1.5; padding-top: 12px; }
+    .rp-acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .rp-warn { margin-top: 22px; padding: 14px 18px; border-radius: var(--r-sm); background: var(--warn-dim); color: var(--text); font-size: 13.5px; line-height: 1.55; max-width: 90ch; }
+    .rp-warn b { color: var(--text-bright); }
+    .rp-toast { font-size: 13px; color: var(--ok); }
+
+    @media (max-width: 900px) {
+      .rp-cols { grid-template-columns: minmax(0, 1fr); }
+      .rp-col + .rp-col { border-left: 0; border-top: 1px solid var(--border); }
+      .rp-role-txt { min-height: 0; }
+    }
+    @media (max-width: 600px) {
+      .rp-wrap { padding: 4px 16px 96px; }
+      .rp-body { padding-left: 0; }
+      .rp-choice { max-width: none; }
+      .rp-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .rp-step.is-open .rp-body { animation: rp-in .32s var(--ease) backwards; }
+      .rp-load i { transition: transform .5s var(--ease); }
+    }
+    @keyframes rp-in { from { opacity: 0; transform: translateY(6px); } }
+    @media print {
+      .site-header, .dock, .rp-steps, .rp-acts, .site-footer, .page-header p { display: none !important; }
+      .rp-cols { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body data-bg="calme">
+  <div id="header-root"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/CustomEase.min.js"></script>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
+  <script src="data/competitors.js"></script>
+
+  <main class="rp-wrap">
+    <div class="page-header">
+      <h1>Remplacer un <em>firewall</em></h1>
+      <p>Partez du boîtier en place chez le client, Palo Alto, Fortinet, Check Point ou Cisco. L’outil reprend ses débits et ses interfaces, vous ajustez, et il propose trois PA-Series : au plus juste, équivalent, avec marge. À valider ensuite avec un avant-vente.</p>
+    </div>
+
+    <ol class="rp-steps" id="rp-steps">
+      <li class="rp-step" data-step="kind">
+        <button type="button" class="rp-head"><span class="rp-num"></span><span><span class="rp-title">Type de pare-feu</span><span class="rp-sum"></span></span><span class="rp-edit">Modifier</span></button>
+        <div class="rp-body">
+          <div class="rp-choices" id="rp-kind">
+            <button type="button" class="rp-choice" data-v="hw" aria-pressed="true"><b>Boîtier physique</b><span>Remplacement d’un firewall matériel par un PA-Series.</span></button>
+            <button type="button" class="rp-choice" data-v="sw" aria-pressed="false" aria-disabled="true"><b>Pare-feu logiciel</b><span>VM-Series, CN-Series, Cloud NGFW : dimensionnement en crédits Flex, avec l’avant-vente.</span></button>
+          </div>
+          <p class="rp-note" id="rp-sw-note" hidden>Les pare-feu logiciels se dimensionnent en crédits Flex (vCPU, abonnements) avec l’outil officiel Palo Alto ; ce site ne le remplace pas. Voyez votre avant-vente.</p>
+          <div class="rp-next"><button type="button" class="rp-btn is-main" data-next>Continuer</button></div>
+        </div>
+      </li>
+
+      <li class="rp-step" data-step="old">
+        <button type="button" class="rp-head"><span class="rp-num"></span><span><span class="rp-title">Boîtier actuel</span><span class="rp-sum"></span></span><span class="rp-edit">Modifier</span></button>
+        <div class="rp-body">
+          <p class="rp-lead">Choisissez le firewall en place : ses débits et ses interfaces pré-remplissent les étapes suivantes, que vous pourrez corriger. Facultatif : sans boîtier de référence, vous saisissez les besoins vous-même.</p>
+          <div class="rp-vendors" id="rp-vendors" role="group" aria-label="Éditeur"></div>
+          <input type="search" class="rp-search" id="rp-q" placeholder="FortiGate 200G, PA-3220, Quantum Force 9100, Firepower 1120…" autocomplete="off" spellcheck="false" aria-label="Chercher le boîtier actuel" aria-controls="rp-list" />
+          <ul class="rp-list" id="rp-list" role="listbox" aria-label="Boîtiers"></ul>
+          <div class="rp-picked" id="rp-picked" hidden></div>
+          <div class="rp-next">
+            <button type="button" class="rp-btn is-main" data-next>Continuer</button>
+            <button type="button" class="rp-skip" id="rp-noold">Pas de boîtier de référence</button>
+          </div>
+        </div>
+      </li>
+
+      <li class="rp-step" data-step="perf">
+        <button type="button" class="rp-head"><span class="rp-num"></span><span><span class="rp-title">Débits et volumétrie</span><span class="rp-sum"></span></span><span class="rp-edit">Modifier</span></button>
+        <div class="rp-body">
+          <p class="rp-lead" id="rp-perf-lead">Le débit avec inspection des menaces est le seul champ obligatoire. Les autres affinent la proposition.</p>
+          <div class="rp-grid">
+            <div class="rp-field"><label for="f-tp">Débit avec inspection (Gbps)</label><input id="f-tp" type="number" min="0" step="0.1" inputmode="decimal" /><span class="rp-hint" id="h-tp">Threat Prevention, App-ID actif</span></div>
+            <div class="rp-field"><label for="f-sess">Sessions simultanées</label><input id="f-sess" type="number" min="0" step="1000" inputmode="numeric" /><span class="rp-hint" id="h-sess">Facultatif</span></div>
+            <div class="rp-field"><label for="f-cps">Nouvelles sessions par seconde</label><input id="f-cps" type="number" min="0" step="1000" inputmode="numeric" /><span class="rp-hint" id="h-cps">Facultatif</span></div>
+            <div class="rp-field"><label for="f-vpn">Débit VPN IPsec (Gbps)</label><input id="f-vpn" type="number" min="0" step="0.1" inputmode="decimal" /><span class="rp-hint" id="h-vpn">Facultatif</span></div>
+            <div class="rp-field"><label for="f-grow">Croissance à absorber</label>
+              <select id="f-grow"><option value="0">Aucune, à l’identique</option><option value="20">+20 %</option><option value="50">+50 %</option><option value="100">× 2</option></select>
+              <span class="rp-hint">S’applique aux débits, sessions et CPS</span></div>
+          </div>
+          <p class="rp-note" id="rp-perf-note"></p>
+          <div class="rp-next"><button type="button" class="rp-btn is-main" data-next>Continuer</button><span class="rp-err" id="rp-perf-err" role="alert"></span></div>
+        </div>
+      </li>
+
+      <li class="rp-step" data-step="ports">
+        <button type="button" class="rp-head"><span class="rp-num"></span><span><span class="rp-title">Interfaces à raccorder</span><span class="rp-sum"></span></span><span class="rp-edit">Modifier</span></button>
+        <div class="rp-body">
+          <p class="rp-lead" id="rp-ports-lead">Nombre de ports de données à câbler, hors management et HA. Un port plus rapide peut servir un besoin plus lent (un SFP+ accepte un SFP 1G, un SFP28 un SFP+, un port multi-gig du cuivre 1G).</p>
+          <p class="rp-group">Cuivre (RJ45)</p>
+          <div class="rp-grid">
+            <div class="rp-field"><label for="p-cu1">1G</label><input id="p-cu1" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-cu25">Multi-gig 2,5 / 5G</label><input id="p-cu25" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-cu10">10G (10GBASE-T)</label><input id="p-cu10" type="number" min="0" step="1" inputmode="numeric" /></div>
+          </div>
+          <p class="rp-group">Fibre et cages optiques</p>
+          <div class="rp-grid">
+            <div class="rp-field"><label for="p-sfp1">SFP 1G</label><input id="p-sfp1" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-sfp10">SFP+ 10G</label><input id="p-sfp10" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-sfp25">SFP28 25G</label><input id="p-sfp25" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-sfp100">QSFP 40 / 100G</label><input id="p-sfp100" type="number" min="0" step="1" inputmode="numeric" /></div>
+            <div class="rp-field"><label for="p-sfp400">400G</label><input id="p-sfp400" type="number" min="0" step="1" inputmode="numeric" /></div>
+          </div>
+          <p class="rp-note" id="rp-ports-note"></p>
+          <div class="rp-next"><button type="button" class="rp-btn is-main" data-next>Continuer</button></div>
+        </div>
+      </li>
+
+      <li class="rp-step" data-step="cons">
+        <button type="button" class="rp-head"><span class="rp-num"></span><span><span class="rp-title">Contraintes</span><span class="rp-sum"></span></span><span class="rp-edit">Modifier</span></button>
+        <div class="rp-body">
+          <p class="rp-group">Haute disponibilité</p>
+          <div class="rp-choices is-small" id="c-ha">
+            <button type="button" class="rp-choice" data-v="none" aria-pressed="true"><b>Boîtier seul</b></button>
+            <button type="button" class="rp-choice" data-v="ap" aria-pressed="false"><b>Actif / passif</b></button>
+            <button type="button" class="rp-choice" data-v="aa" aria-pressed="false"><b>Actif / actif</b></button>
+            <button type="button" class="rp-choice" data-v="cl" aria-pressed="false"><b>Clustering</b></button>
+          </div>
+          <p class="rp-group">Format</p>
+          <div class="rp-choices is-small" id="c-form">
+            <button type="button" class="rp-choice" data-v="any" aria-pressed="true"><b>Indifférent</b></button>
+            <button type="button" class="rp-choice" data-v="desk" aria-pressed="false"><b>Bureau</b></button>
+            <button type="button" class="rp-choice" data-v="rack" aria-pressed="false"><b>Rack</b></button>
+            <button type="button" class="rp-choice" data-v="rug" aria-pressed="false"><b>Durci (industriel)</b></button>
+          </div>
+          <p class="rp-group">Autres besoins</p>
+          <div class="rp-grid">
+            <div class="rp-field"><label for="c-vsys">Systèmes virtuels (vsys)</label><input id="c-vsys" type="number" min="1" step="1" inputmode="numeric" /><span class="rp-hint">1 = pas de multi-tenant</span></div>
+            <div class="rp-field"><label for="c-poe">Ports PoE</label><input id="c-poe" type="number" min="0" step="1" inputmode="numeric" /><span class="rp-hint">Bornes Wi-Fi, caméras, téléphones</span></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:16px 32px;margin-top:16px">
+            <label class="rp-check"><input type="checkbox" id="c-cell" /><span>Modem 5G intégré<small>Lien cellulaire de secours ou principal</small></span></label>
+            <label class="rp-check"><input type="checkbox" id="c-psu" /><span>Alimentation redondante<small>De série ou en option</small></span></label>
+          </div>
+          <div class="rp-next"><button type="button" class="rp-btn is-main" data-next>Voir les propositions</button></div>
+        </div>
+      </li>
+    </ol>
+
+    <section class="rp-res" id="rp-res" hidden aria-live="polite">
+      <h2>Trois propositions</h2>
+      <p class="rp-res-sub" id="rp-res-sub"></p>
+      <div class="rp-cols" id="rp-cols"></div>
+      <div class="rp-warn" id="rp-warn"></div>
+      <div class="rp-acts">
+        <a class="rp-btn is-main" id="rp-cmp" href="pa-series.html">Comparer en détail</a>
+        <button type="button" class="rp-btn" id="rp-copy">Copier la proposition</button>
+        <button type="button" class="rp-btn" id="rp-link">Copier le lien</button>
+        <button type="button" class="rp-btn" id="rp-print">Imprimer / PDF</button>
+        <button type="button" class="rp-skip" id="rp-reset">Recommencer</button>
+        <span class="rp-toast" id="rp-toast" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div style="margin-top:4px;font-size:10px">Propositions indicatives à valider avec un avant-vente · Ne remplace pas un sizing officiel Palo Alto</div>
+  </footer>
+
+  <script src="js/replace-engine.js"></script>
+  <script src="js/replace-ui.js"></script>
+</body>
+</html>
