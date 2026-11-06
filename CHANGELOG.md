@@ -1,5 +1,23 @@
 # Changelog
 
+## Session 24 - 6 novembre 2026 : outil Remplacer, vue Tableau, recontrole datasheets
+
+- Nouvel outil `remplacement.html` (onglet Remplacer, raccourci R) pour les
+  commerciaux : boitier actuel PA, Fortinet, Check Point ou Cisco, pre-remplissage
+  modifiable du debit d inspection et des ports, contraintes (HA, vsys, PoE, 5G,
+  format, alimentation), trois propositions n-1 / iso / n+1 a valider avec un
+  avant-vente. Moteur `js/replace-engine.js`, test `_replace.js` dans le build.
+  Concurrents : seuls le debit d inspection et les ports sont repris ; n+1 = au
+  moins +25 % de Threat Prevention ; variantes 5G non demandees et fins de vente
+  annoncees exclues. Lien partageable, texte a copier, impression.
+- Vue Tableau du comparateur : filtres secondaires replies derriere « Filtres »,
+  en-tetes de colonne raccourcis, bac discret hors du tableau ; 8 lignes visibles
+  a 1366x768 au lieu d une. Ports absents en 0 attenue, PoE « Non ».
+- Recontrole independant des 13 datasheets : aucun ecart sur debits, ports
+  multi-gig, PoE et HA. Corriges : vsysMax PA-410/415/415-5G, alimentation
+  vehicule PA-56R, edition PA-5500. Points ouverts dans `_to_verify.md`.
+- `_stage.js` publie le dossier `js/`.
+
 ## Session 23 - 6 novembre 2026 : pages produit remises a jour (branche audit-v9)
 
 Les pages Cortex, Prisma Browser, Idira, Panorama, Prisma (Access, SD-WAN,
