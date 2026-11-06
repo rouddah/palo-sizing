@@ -25,6 +25,10 @@
   var byKey = {}; REFS.forEach(function (r) { byKey[r.key] = r; });
   var norm = function (s) { return String(s).toLowerCase().replace(/fortigate|quantum|force|firepower|secure firewall/g, function (w) { return w; }).replace(/[\s\-_]/g, ''); };
 
+  /* Commande CLI qui donne l'usage reel (sessions en cours) sur le boitier
+     du client : a relever avant de valider le dimensionnement. */
+  var SESS_CMD = { pan: 'show session info', fortinet: 'get system session status', checkpoint: 'fw tab -t connections -s', cisco: 'show conn count' };
+
   var STEPS = ['kind', 'old', 'perf', 'ports', 'cons'];
   var q = blank();
   var vendor = 'all', shown = false;
@@ -178,7 +182,7 @@
     $('h-cps').textContent = !m ? 'Facultatif' : pan ? 'Capacité du ' + m.id : r.name + ' annonce ' + big(m.cps) + ' : non repris';
     $('h-vpn').textContent = !m ? 'Facultatif' : pan ? 'Capacité du ' + m.id : r.name + ' annonce ' + gb(m.vpn) + ' : non repris (mesure ' + r.vname + ', souvent avec accélération matérielle)';
     $('rp-perf-note').innerHTML = vm
-      ? '<b>Mesures non équivalentes.</b> ' + esc(r.vname) + ' publie le débit d’inspection ainsi : ' + esc(vm.metrics.tp) + '. Les PA-Series sont mesurés en Threat Prevention appmix. Si vous connaissez le débit réellement constaté chez le client, remplacez la valeur.'
+      ? '<b>Mesures non équivalentes.</b> ' + esc(r.vname) + ' publie le débit d’inspection ainsi : ' + esc(vm.metrics.tp) + '. Les PA-Series sont mesurés en Threat Prevention appmix. Si vous connaissez le débit réellement constaté chez le client, remplacez la valeur. Sessions en cours sur le boîtier : <code>' + esc(SESS_CMD[r.v] || '') + '</code>.'
       : pan ? 'Les valeurs sont les capacités datasheet du ' + esc(m.id) + ' : la proposition iso couvrira au moins autant. Si le client consomme moins, baissez-les.' : '';
     var need = m ? E.portsNeedFrom(m) : {};
     E.PORT_KEYS.forEach(function (k) { setPre('p-' + k, need[k] || null); });
@@ -261,7 +265,7 @@
     }[slot];
     if (slot === 'lower' && m && R.iso && E.coverage(m, R.need).every(function (c) { return c.ratio == null || c.ratio >= 1; }))
       txt = 'Plus petit que l’iso : couvre aussi la volumétrie, avec moins d’interfaces. Si le câblage peut être revu.';
-    var h = '<div class="rp-col' + (slot === 'iso' ? ' is-iso' : '') + '"><div class="rp-role">' + role + ' · ' + roleName + '</div><div class="rp-role-txt">' + txt + '</div>';
+    var h = '<div class="rp-col' + (slot === 'iso' ? ' is-iso' : '') + (m && R.pick === slot ? ' is-pick' : '') + '"><div class="rp-role">' + role + ' · ' + roleName + (m && R.pick === slot ? '<span class="rp-badge">Conseillé</span>' : '') + '</div><div class="rp-role-txt">' + txt + '</div>';
     if (!m) {
       var why = slot === 'lower' ? (R.iso ? 'Aucun PA-Series plus petit ne tient vos interfaces et contraintes : l’iso est déjà l’entrée de gamme possible.' : 'Aucun PA-Series ne tient toutes vos contraintes.')
         : slot === 'iso' ? (R.pool.length ? 'Aucun PA-Series ne couvre toute la volumétrie demandée avec ces contraintes. Au-delà : PA-7500, clustering ou plusieurs boîtiers, à étudier avec l’avant-vente.' : blockersTxt())
@@ -326,6 +330,12 @@
   function warn(ref) {
     var t = '<b>Propositions indicatives, à valider avec un avant-vente avant toute offre.</b> Calcul sur les chiffres datasheet PA-Series (Threat Prevention appmix, sans déchiffrement) : le profil de trafic réel, la part de trafic déchiffré, les services activés et la rétention des journaux peuvent faire monter d’un cran. Aucun prix ni référence de commande.';
     if (ref && ref.v !== 'pan') t += ' Le ' + esc(ref.name) + ' est mesuré par ' + esc(ref.vname) + ' avec un autre protocole : l’équivalence porte sur le débit saisi, pas sur une conversion.';
+    if (ref && ref.v !== 'pan' && ref.m.sess && !(+q.sess > 0)) {
+      var props = [R.lower, R.iso, R.upper].filter(Boolean);
+      var lo = props.length ? Math.min.apply(null, props.map(function (m) { return m.sess; })) : 0;
+      if (props.length && ref.m.sess > lo) t += ' <b>Sessions :</b> le ' + esc(ref.name) + ' annonce ' + big(ref.m.sess) + ' sessions simultanées (maximum ' + esc(ref.vname) + '), les propositions en tiennent ' + big(lo) + ' à ' + big(Math.max.apply(null, props.map(function (m) { return m.sess; }))) + '. Relevez l’usage réel sur le boîtier (<code>' + esc(SESS_CMD[ref.v]) + '</code>) et saisissez-le à l’étape 3.';
+    }
+    if (R.pick === 'upper' && R.iso && R.need.tp / R.iso.tp > 0.8) t += ' Le N+1 est conseillé : l’iso tournerait au-delà de 80 % de sa capacité datasheet.';
     if (q.ha === 'ap' || q.ha === 'aa') t += ' Haute disponibilité : prévoir deux boîtiers identiques.';
     if (q.ha === 'cl') t += ' Clustering : nombre de membres et version PAN-OS à confirmer par modèle.';
     var gone = MODELS.filter(function (m) { return !m.eos && m.eosD; }).map(function (m) { return m.s; });
@@ -342,7 +352,7 @@
     L.push('');
     [['lower', 'N-1 au plus juste'], ['iso', 'Iso équivalent'], ['upper', 'N+1 avec marge']].forEach(function (x) {
       var m = R[x[0]];
-      L.push(x[1] + ' : ' + (m ? m.id + ' (' + gb(m.tp) + ' Threat Prevention, ' + big(m.sess) + ' sessions, charge ' + Math.round(R.need.tp / m.tp * 100) + ' %)' : 'aucun'));
+      L.push(x[1] + (R.pick === x[0] ? ' (conseillé)' : '') + ' : ' + (m ? m.id + ' (' + gb(m.tp) + ' Threat Prevention, ' + big(m.sess) + ' sessions, charge ' + Math.round(R.need.tp / m.tp * 100) + ' %)' : 'aucun'));
     });
     L.push('', 'Chiffres datasheet Palo Alto, sans déchiffrement. Lien : ' + location.href);
     return L.join('\n');

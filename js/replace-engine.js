@@ -14,9 +14,12 @@
    3. Parmi les modeles qui les tiennent, tries par debit Threat Prevention :
         iso = parmi ceux qui couvrent la volumetrie (fenetre de 2,5 fois le
               plus petit), le mieux raccorde puis le plus petit ;
-        n-1 = le plus gros en dessous, aussi bien raccorde si possible ;
+        n-1 = le plus gros en dessous, sans remonter de gamme, aussi bien
+              raccorde si possible ;
         n+1 = le premier au-dessus de l'iso offrant au moins 25 % de debit
-              en plus (a defaut, le plus gros compatible au-dessus).
+              en plus, sans redescendre de gamme (a defaut, le plus gros
+              compatible au-dessus). Conseil : l'iso si sa charge reste sous
+              80 %, sinon le n+1.
    Exclus d'office : fins de vente effectives ou annoncees (eos, eosD) ;
    gamme durcie sauf si demandee, et alors seulement elle.
    Une metrique nulle dans la datasheet ne bloque pas : elle est signalee. */
@@ -203,6 +206,8 @@
     var need = target(q);
     var pool = models.filter(function (m) { return !hardFails(m, q).length; })
       .slice().sort(function (a, b) { return (a.tp - b.tp) || (a.sess - b.sess) || (a.cps - b.cps) || (a.id < b.id ? -1 : 1); });
+    var RANK = {}; models.forEach(function (m) { if (!(m.s in RANK)) RANK[m.s] = Object.keys(RANK).length; });
+    var rank = function (m) { return RANK[m.s]; };
     var F = {}; pool.forEach(function (m) { F[m.id] = fit(m, q); });
     var gap = function (m) { return F[m.id].gap; };
     var best = function (list) { return list.slice().sort(function (a, b) { return (gap(a) - gap(b)) || (a.tp - b.tp); })[0] || null; };
@@ -211,13 +216,17 @@
     if (covering.length) {
       var lim = covering[0].tp * SPAN;
       iso = best(covering.filter(function (m) { return m.tp <= lim; }));
-      var below = pool.filter(function (m) { return m.tp < iso.tp; });
+      /* Rang de gamme : ordre des series dans les donnees (PA-400, PA-500,
+         ... PA-7500). Un n-1 ne remonte jamais dans une gamme superieure
+         (une PA-3410 n'est pas le « plus juste » d'une PA-1510, meme si
+         son debit d'inspection est plus bas), un n+1 ne redescend pas. */
+      var below = pool.filter(function (m) { return m.tp < iso.tp && rank(m) <= rank(iso); });
       var belowOk = below.filter(function (m) { return gap(m) <= gap(iso); });
       lower = (belowOk.length ? belowOk : below)[(belowOk.length ? belowOk : below).length - 1] || null;
-      var above = pool.filter(function (m) { return m.tp >= iso.tp * UP; });
+      var above = pool.filter(function (m) { return m.tp >= iso.tp * UP && rank(m) >= rank(iso); });
       var aboveOk = above.filter(function (m) { return gap(m) === 0; });
       upper = aboveOk[0] || best(above.slice(0, 3)) || null;
-      if (!upper) { var more = pool.filter(function (m) { return m.tp > iso.tp; }); upper = more[more.length - 1] || null; }
+      if (!upper) { var more = pool.filter(function (m) { return m.tp > iso.tp && rank(m) >= rank(iso); }); upper = more[more.length - 1] || null; }
     } else if (pool.length) {
       lower = pool.slice(-3).sort(function (a, b) { return (gap(a) - gap(b)) || (b.tp - a.tp); })[0];   // rien ne couvre : parmi les plus gros, le mieux raccorde
     }
@@ -226,7 +235,10 @@
       if (retired(m)) return;
       hardFails(m, q).forEach(function (r) { blockers[r] = (blockers[r] || 0) + 1; });
     });
-    return { need: need, pool: pool, lower: lower, iso: iso, upper: upper, blockers: blockers, fit: function (m) { return F[m.id] || fit(m, q); } };
+    /* Conseil : l'iso s'il garde de la marge (charge <= 80 %), sinon le
+       n+1 s'il raccorde au moins aussi bien. */
+    var pick = iso && (need.tp / iso.tp <= 0.8 || !upper || gap(upper) > gap(iso)) ? 'iso' : upper ? 'upper' : null;
+    return { need: need, pool: pool, lower: lower, iso: iso, upper: upper, blockers: blockers, pick: pick, fit: function (m) { return F[m.id] || fit(m, q); } };
   }
 
   var api = { PORT_KEYS: PORT_KEYS, PORT_LABEL: PORT_LABEL, mgig10: mgig10, portsOf: portsOf, portsNeedFrom: portsNeedFrom,
