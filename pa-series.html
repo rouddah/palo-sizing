@@ -22,7 +22,7 @@
       display: flex;
       align-items: center;
       gap: var(--sp-2) var(--sp-3);
-      padding: var(--sp-2) var(--sp-5);
+      padding: 6px var(--sp-5);
       flex-wrap: wrap;
     }
     .toolbar + .toolbar {
@@ -37,6 +37,7 @@
       white-space: nowrap;
     }
     .tb-group { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+    .tb-group[hidden] { display: none; }
     .filter-group { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
 
     .fb {
@@ -146,21 +147,39 @@
     }
     .tb-reset[hidden] { display: none; }
 
-    /* ── Bandeau de navigation des colonnes ── */
-    .nav-strip {
-      display: flex;
-      align-items: center;
-      gap: var(--sp-2) var(--sp-4);
-      flex-wrap: wrap;
-      padding: var(--sp-1) var(--sp-5);
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      font-size: var(--text-2xs);
-      color: var(--text-muted);
-      min-height: 36px;
+    /* ── Bouton « Filtres » : serie, format et plages repliees ── */
+    .tb-more-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: inherit; font-size: var(--text-2xs); font-weight: 600;
+      min-height: 28px; padding: 0 var(--sp-3);
+      border: 1px solid var(--border2); border-radius: var(--r-xs);
+      background: transparent; color: var(--text);
+      cursor: pointer; white-space: nowrap;
+      transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
     }
+    .tb-more-btn:hover { border-color: var(--text-muted); color: var(--text-bright); }
+    .tb-more-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent-txt); }
+    .tb-more-n:empty { display: none; }
+    .tb-more-n {
+      min-width: 18px; height: 18px; padding: 0 5px;
+      display: inline-grid; place-items: center;
+      font: 700 11px/1 var(--mono); color: var(--on-accent);
+      background: var(--accent); border-radius: var(--r-pill);
+    }
+    .tb-main .tb-reset { margin-left: 0; }
+    .th-corner .stats-note { display: block; margin-bottom: 6px; font-size: var(--text-2xs); line-height: 1.4; color: var(--text-muted); white-space: normal; }
+    .tb-more { border-top: 1px solid var(--border); background: var(--surface2); }
+    .tb-more[hidden] { display: none; }
+    .tb-more .toolbar + .toolbar { border-top: 0; padding-top: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .tb-more:not([hidden]) { animation: tb-more-in var(--dur) var(--ease); }
+    }
+    @keyframes tb-more-in { from { opacity: 0; transform: translate3d(0, -4px, 0); } }
+
+    /* ── Navigation des colonnes, dans la cellule d'angle ── */
+    .th-corner .ns-count { display: block; font-size: var(--text-2xs); color: var(--text-muted); }
     .ns-count strong { color: var(--accent-txt); font-family: var(--mono); }
-    .ns-nav { display: inline-flex; align-items: center; gap: var(--sp-1); }
+    .ns-nav { display: inline-flex; align-items: center; gap: var(--sp-1); margin: 4px 0 2px; }
     .ns-btn {
       display: inline-flex; align-items: center; justify-content: center;
       width: 28px; height: 28px;
@@ -174,11 +193,7 @@
     .ns-btn:hover:not(:disabled) { border-color: var(--accent); }
     .ns-btn:active:not(:disabled) { transform: scale(.94); }
     .ns-btn:disabled { opacity: .4; cursor: default; }
-    .ns-pos { font-family: var(--mono); color: var(--text-dim); min-width: 0; }
-    /* largeur fixe : la position change a chaque defilement, le bandeau ne doit pas changer de hauteur avec elle */
-    @media (min-width: 861px) { .ns-pos { min-width: 44ch; white-space: nowrap; } }
-    .ns-hint { color: var(--text-muted); }
-    .stats-note { margin-left: auto; font-style: italic; }
+    .ns-pos { display: block; font-family: var(--mono); font-size: var(--text-2xs); color: var(--text-dim); white-space: normal; }
 
     .vendor-note {
       display: flex; gap: var(--sp-2); align-items: flex-start;
@@ -202,8 +217,6 @@
       overscroll-behavior-x: contain;
     }
     .table-outer:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-    body.has-tray .table-outer { scroll-padding-bottom: 96px; }
-    body.has-tray .pa-table { margin-bottom: 96px; }
     .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
     .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
     .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: var(--r-sm); min-height: 40px; }
@@ -235,7 +248,7 @@
       top: 0;
       vertical-align: bottom;
       text-align: left;
-      padding: 0 var(--sp-3) var(--sp-2);
+      padding: 0 var(--sp-3) 4px;
       font-size: var(--text-2xs);
       font-weight: 500;
       color: var(--text-muted);
@@ -243,7 +256,7 @@
     }
     .spec-label-cell {
       background: var(--surface);
-      padding: var(--sp-2) 14px;
+      padding: 5px 14px;
       font-size: var(--text-xs);
       color: var(--text);
       border-bottom: 1px solid var(--border);
@@ -260,16 +273,18 @@
       z-index: 50;
       background: var(--bg);
     }
+    /* l'angle reste au-dessus des en-tetes de colonne qui passent dessous */
+    .col-header-row th.th-corner { z-index: 62; }
 
     .model-hw {
       background: linear-gradient(180deg, #f7f8fa, #e9ecf1);
-      padding: 7px var(--sp-2) 6px;
+      padding: 3px var(--sp-2);
       display: flex; align-items: center; justify-content: center;
-      min-height: 34px;
+      height: 24px;
       border-top: 1px solid rgba(0,0,0,.12);
     }
     .model-hw img {
-      max-width: 100%; max-height: 26px; width: auto;
+      max-width: 100%; max-height: 18px; width: auto;
       object-fit: contain;
       transition: transform var(--dur) var(--ease);
     }
@@ -291,8 +306,8 @@
     .model-th.selected .model-card-clip { transform: translate3d(0, -3px, 0); }
 
     .model-card-top {
-      padding: 10px var(--sp-3) var(--sp-2);
-      display: flex; flex-direction: column; gap: 3px;
+      padding: 6px var(--sp-2) 5px;
+      display: flex; flex-direction: column; gap: 2px;
       position: relative;
       cursor: pointer;
     }
@@ -315,30 +330,30 @@
       color: inherit;
       opacity: .85;
       font-family: var(--mono);
-      letter-spacing: 0.03em;
+      letter-spacing: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .model-repl { display: block; margin-top: 2px; }
 
     /* concurrent : fond neutre, l'editeur se lit dans son badge */
     .model-th.is-comp .model-card-top { background: var(--surface3); color: var(--text-bright); }
     .vendor-badge {
-      align-self: flex-start;
+      position: relative; z-index: 1;
       font-family: var(--font);
       font-size: var(--text-2xs);
       font-weight: 600;
       color: var(--text-dim);
       border-bottom: 1px dotted var(--text-muted);
       cursor: help;
-      position: relative;
     }
 
     /* Lien datasheet a gauche, case de selection a droite. Sur une
        colonne de 148px les deux libelles complets ne tenaient pas : la
        case garde son mot, le lien se reduit a son pictogramme. */
     .model-card-bot {
-      padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-2);
+      padding: 3px;
       display: flex; align-items: center; justify-content: space-between;
-      gap: var(--sp-1);
+      gap: 3px;
       border-top: 1px solid rgba(255,255,255,0.1);
       background: var(--surface2);
     }
@@ -354,22 +369,15 @@
     .model-ds-link:hover { color: var(--text-bright); }
     /* Le lien datasheet vit dans la carte, sous le nom : en mot entier,
        souligne, dans l'encre de la carte. */
-    .model-card-top .model-ds-link {
-      position: relative; z-index: 1;
-      align-self: flex-start;
-      margin-top: var(--sp-1);
-      color: inherit;
-      opacity: .9;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 600;
+    /* Lien datasheet : pictogramme seul, nom complet dans aria-label */
+    .model-card-bot .model-ds-link {
+      flex: none; justify-content: center;
+      width: 26px; height: 26px;
+      border: 1px solid var(--border2); border-radius: var(--r-sm);
+      color: var(--text-dim);
     }
-    .model-card-top .model-ds-link:hover { opacity: 1; color: inherit; }
-    .model-card-top .model-ds-link .ic { width: 10px; height: 10px; }
-    .model-card-bot { justify-content: center; }
-    .model-card-bot .sel-btn { flex: 1; justify-content: center; }
+    .model-card-bot .model-ds-link:hover { border-color: var(--accent); color: var(--text-bright); }
+    .model-card-bot .sel-btn { flex: 1; justify-content: center; min-height: 26px; }
     .spec-sub {
       display: block;
       margin-top: 2px;
@@ -442,7 +450,7 @@
 
     .val-cell {
       width: var(--col-w);
-      padding: 5px var(--sp-3);
+      padding: 4px var(--sp-3);
       text-align: right;
       border-bottom: 1px solid var(--border);
       border-left: 2px solid transparent;
@@ -469,6 +477,7 @@
     .val-max { color: var(--green) !important; font-weight: 700; }
     .val-max::after { content: ' \2191'; font-size: var(--text-2xs); opacity: 0.7; }
     .val-na { color: var(--text-muted); font-weight: 400; }
+    .val-zero { color: var(--text-muted); font-weight: 400; }
 
     tr[data-cat="perf"] .val-cell,
     tr[data-cat="sess"] .val-cell { font-weight: 700; color: var(--text-bright); }
@@ -498,7 +507,7 @@
     .model-th.eos-model .model-card-top::after {
       content: 'EoS';
       position: absolute;
-      top: 5px; right: 7px;
+      top: 5px; right: 5px;
       background: rgba(234,179,8,0.25);
       border: 1px solid rgba(234,179,8,0.6);
       color: #fbbf24;
@@ -577,6 +586,29 @@
          ecrase a leur min-height et la ligne de source, renvoyee a la ligne
          quand la position est longue, debordait sur l'avertissement. */
       #view-tbl > :not(.table-outer) { flex: none; }
+      /* Vue tableau : la barre du comparateur se resserre, et le bac
+         quitte sa position flottante pour devenir une barre d'etat sous
+         le tableau. Il ne couvre plus ni lignes ni ascenseur horizontal. */
+      body[data-view="tbl"] .cmp-bar { padding-top: var(--sp-2); padding-bottom: var(--sp-2); }
+      body[data-view="tbl"] .cmp-count { display: none; }
+      body[data-view="tbl"] .cmp-title h1 { font-size: 20px; }
+      body.cmp-page[data-view="tbl"] > .sel {
+        position: relative; left: auto; bottom: auto; transform: none;
+        flex: none; width: auto; margin: 0;
+        padding: 4px var(--sp-6);
+        border: 0; border-top: 1px solid var(--border); border-radius: 0;
+        background: var(--surface); box-shadow: none;
+        backdrop-filter: none; -webkit-backdrop-filter: none;
+        max-width: none;
+      }
+      body.cmp-page[data-view="tbl"] > .sel.is-empty { padding: 7px var(--sp-6); }
+      body[data-view="tbl"] .sel-slots { max-width: 720px; }
+      body[data-view="tbl"] .slot { height: 36px; }
+      body[data-view="tbl"] .slot-card { padding: 3px 4px 3px 10px; }
+      body[data-view="tbl"] .slot-card .vl { display: none; }
+      body[data-view="tbl"] .slot-card .rm { grid-row: 1; width: 24px; height: 24px; }
+      body[data-view="tbl"] .sel .btn { height: 32px; }
+      body[data-view="tbl"] .sel-acts { margin-left: auto; }
     }
     .view[hidden] { display: none !important; }
 
@@ -779,6 +811,11 @@
     .btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
     .btn:disabled { opacity: .45; cursor: default; }
     .sel-msg { position: absolute; left: var(--sp-4); bottom: calc(100% + 6px); font: 500 12px/1 var(--font); color: var(--warn); }
+    /* Bac vide : une pastille sur une ligne, sans cases ni boutons */
+    .sel.is-empty { width: max-content; max-width: calc(100vw - 32px); padding: 7px var(--sp-4); border-radius: var(--r-pill); }
+    .sel.is-empty .sel-slots, .sel.is-empty .sel-acts { display: none; }
+    .sel.is-empty .sel-k { display: block; font-size: 12.5px; }
+    .sel.is-empty .sel-k span { display: inline; margin: 0 0 0 var(--sp-2); font-size: 12.5px; }
     .sel-msg:empty { display: none; }
     .flyer {
       position: fixed; z-index: 400; left: 0; top: 0; pointer-events: none;
@@ -884,9 +921,23 @@
       .tb-tools { flex-wrap: wrap; overflow: visible; }
       #model-search { width: 100%; }
       .tb-tools .tb-group:first-child { flex: 1 1 100%; }
-      .nav-strip { padding: var(--sp-1) var(--sp-3); }
-      .stats-note, .ns-hint { display: none; }
-      .table-outer { height: 70vh; }
+      .th-corner .stats-note { display: none; }
+      /* Ligne dense : les categories defilent seules, tri et filtres dessous */
+      .tb-main { flex-wrap: wrap; overflow: visible; }
+      .tb-main #cat-filters { flex: 1 1 100%; overflow-x: auto; scrollbar-width: none; }
+      .tb-main #cat-filters::-webkit-scrollbar { display: none; }
+      .tb-main .tb-group { flex: 1 1 auto; }
+      .tb-main #sort-metric { flex: 1; min-width: 0; }
+      .sel:not(.is-empty) { padding: 6px; gap: 6px; }
+      .slot { height: 34px; }
+      .sel-acts .btn { height: 34px; }
+      .tb-main .tb-label#lb-cat { display: none; }
+      /* Le tableau occupe l'ecran une fois la page defilee jusqu'a lui,
+         au-dessus du bac et du dock. */
+      .table-outer { height: calc(100dvh - var(--header-h) - var(--dock-h) - var(--tray-h, 0px) - var(--sp-5)); min-height: 300px; }
+      body[data-view="tbl"] .view-tbl { padding-bottom: calc(var(--tray-h, 0px) + var(--sp-4)); }
+      .th-corner { padding: 0 var(--sp-2) 4px; }
+      .sel.is-empty { width: max-content; flex-wrap: nowrap; padding: 7px var(--sp-4); }
       .spec-label-cell { padding: 6px var(--sp-2); font-size: var(--text-2xs); }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -993,9 +1044,9 @@
 
     <!-- ── Vue tableau ── -->
     <section class="view view-tbl" id="view-tbl" role="tabpanel" aria-labelledby="tab-tbl" hidden>
-  <!-- ── Filtres ── -->
+  <!-- ── Filtres : une ligne dense, le reste replie sous « Filtres » ── -->
   <div class="tb-wrap">
-    <div class="toolbar">
+    <div class="toolbar tb-main">
       <span class="tb-label" id="lb-cat">Catégories</span>
       <div class="filter-group" id="cat-filters" role="group" aria-labelledby="lb-cat">
         <button class="fb on" data-cat="all" aria-pressed="true">Toutes</button>
@@ -1006,26 +1057,7 @@
         <button class="fb" data-cat="cap" aria-pressed="false">Capacités</button>
         <button class="fb" data-cat="vpn" aria-pressed="false">VPN &amp; SD-WAN</button>
         <button class="fb" data-cat="feat" aria-pressed="false">Fonctionnalités</button>
-      </div>
-    </div>
-    <div class="toolbar">
-      <span class="tb-label" id="lb-series">Série</span>
-      <!-- Construits depuis MODELS : une serie ajoutee aux donnees
-           apparait ici sans toucher au HTML. -->
-      <div class="filter-group" id="series-filters" role="group" aria-labelledby="lb-series"></div>
-      <span class="tb-label" id="lb-form">Format</span>
-      <div class="filter-group" id="form-filters" role="group" aria-labelledby="lb-form">
-        <button class="fb on" data-form="all" aria-pressed="true">Tous</button>
-        <button class="fb" data-form="Desktop" aria-pressed="false">Desktop</button>
-        <button class="fb" data-form="1U" aria-pressed="false">1U Rack</button>
-        <button class="fb" data-form="2U" aria-pressed="false">2U Rack</button>
-        <button class="fb" data-form="Chassis" aria-pressed="false">Chassis</button>
-      </div>
-    </div>
-    <div class="toolbar tb-tools">
-      <div class="tb-group">
-        <label class="tb-label" for="model-search">Recherche</label>
-        <input type="search" id="model-search" class="tb-input" placeholder="Nom ou usage (PA-3420, Branch...)" autocomplete="off">
+        <button class="fb" data-cat="ref" aria-pressed="false">Références</button>
       </div>
       <div class="tb-group">
         <label class="tb-label" for="sort-metric">Trier par</label>
@@ -1037,26 +1069,40 @@
           <option value="cps">CPS</option>
         </select>
       </div>
-      <div class="range" id="rg-tp"></div>
-      <div class="range" id="rg-sess"></div>
+      <button type="button" class="tb-more-btn" id="tb-more-btn" aria-expanded="false" aria-controls="tb-more"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>Filtres<span class="tb-more-n" id="tb-more-n"></span></button>
       <button type="button" class="tb-reset" id="tb-reset" hidden>Tout réafficher</button>
+    </div>
+    <div class="tb-more" id="tb-more" hidden>
+      <div class="toolbar">
+        <span class="tb-label" id="lb-series">Série</span>
+        <!-- Construits depuis MODELS : une serie ajoutee aux donnees
+             apparait ici sans toucher au HTML. -->
+        <div class="filter-group" id="series-filters" role="group" aria-labelledby="lb-series"></div>
+      </div>
+      <div class="toolbar">
+        <span class="tb-label" id="lb-form">Format</span>
+        <div class="filter-group" id="form-filters" role="group" aria-labelledby="lb-form">
+          <button class="fb on" data-form="all" aria-pressed="true">Tous</button>
+          <button class="fb" data-form="Desktop" aria-pressed="false">Desktop</button>
+          <button class="fb" data-form="1U" aria-pressed="false">1U Rack</button>
+          <button class="fb" data-form="2U" aria-pressed="false">2U Rack</button>
+          <button class="fb" data-form="Chassis" aria-pressed="false">Chassis</button>
+        </div>
+        <div class="range" id="rg-tp"></div>
+        <div class="range" id="rg-sess"></div>
+        <!-- La recherche du bandeau (#q) filtre deja le tableau : ce champ
+             reste synchronise mais n'est plus affiche. -->
+        <div class="tb-group" hidden>
+          <label class="tb-label" for="model-search">Recherche</label>
+          <input type="search" id="model-search" class="tb-input" placeholder="Nom ou usage (PA-3420, Branch...)" autocomplete="off">
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ── Navigation des colonnes ── -->
-  <div class="nav-strip">
-    <span class="ns-count"><strong id="stat-models"></strong> <span id="stat-label">modèles</span></span>
-    <span class="ns-nav">
-      <button type="button" class="ns-btn" id="ns-prev" aria-label="Colonnes précédentes" title="Colonnes précédentes (flèche gauche)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-      <button type="button" class="ns-btn" id="ns-next" aria-label="Colonnes suivantes" title="Colonnes suivantes (flèche droite)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-    </span>
-    <span class="ns-pos" id="ns-pos" aria-live="polite"></span>
-    <span class="ns-hint">Cochez « Comparer » sur les modèles à mettre côte à côte</span>
-    <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés.">Débits appmix</span> · PAN-OS 11.0 à 12.2 selon la série (ligne « PAN-OS des mesures datasheet ») · Source : datasheets officielles</span>
-  </div>
   <div class="vendor-note" id="vendor-note" hidden>
     <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></svg>
-    <span>Chaque éditeur mesure ses débits à sa façon : un chiffre concurrent ne se compare pas un pour un à un débit appmix PA. La définition de l'éditeur s'affiche au survol de son nom. Un tiret signifie « non publié ».</span>
+    <span>Chaque éditeur mesure ses débits à sa façon : un chiffre concurrent ne se compare pas un pour un à un débit appmix PA. Les concurrents sont en gris ; la définition de l'éditeur s'affiche au survol de son nom. Un tiret signifie « non publié ».</span>
   </div>
 
   <!-- ── Tableau ── -->
@@ -1064,7 +1110,15 @@
     <table class="pa-table" id="pa-table">
       <thead>
         <tr class="col-header-row" id="header-row">
-          <th class="th-corner"></th>
+          <th class="th-corner" scope="col">
+            <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés. Mesures sous PAN-OS 11.0 à 12.2 selon la série (ligne « PAN-OS des mesures datasheet »).">Débits appmix</span>, datasheets officielles. Tiret : non publié.</span>
+            <span class="ns-count"><strong id="stat-models"></strong> <span id="stat-label">modèles</span></span>
+            <span class="ns-nav">
+              <button type="button" class="ns-btn" id="ns-prev" aria-label="Colonnes précédentes" title="Colonnes précédentes (flèche gauche)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+              <button type="button" class="ns-btn" id="ns-next" aria-label="Colonnes suivantes" title="Colonnes suivantes (flèche droite)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+            </span>
+            <span class="ns-pos" id="ns-pos" aria-live="polite"></span>
+          </th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
@@ -1143,9 +1197,9 @@
     { cat:'ports', label:'100G SFP-DD',                     fn: m => m.sfpdd || '—',    num: m => m.sfpdd, vx: false },
     { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
     { cat:'ports', label:'Ports PoE',                       fn: m => m.poeP  || '—',    num: m => m.poeP, vx: true },
-    { cat:'ports', label:'Interfaces, libellé datasheet',   fn: m => m.io ? '<span class="val-txt">' + esc(m.io) + '</span>' : '—', num: null, vx: false, np: m => !m.io },
+    { cat:'ports', label:'Interfaces, libellé datasheet',   fn: m => '<span class="val-txt">' + esc(m._v ? m.ports : m.io) + '</span>', num: null, vx: true, np: m => !(m._v ? m.ports : m.io) },
     { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
-    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : '—', num: null },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : m.poe === false ? 'Non' : '—', num: null, np: m => m.poe == null },
     { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
     { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
     { cat:'hw',    label:'Ports de gestion, libellé datasheet', fn: m => m.mgmt ? '<span class="val-txt">' + esc(m.mgmt) + '</span>' : '—', num: null, np: m => !m.mgmt },
@@ -1165,7 +1219,7 @@
     { cat:'feat',  label:'WildFire',                        fn: () => YES, num: null },
     { cat:'feat',  label:'App-ID',                          fn: () => YES, num: null },
     { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Section Mobile Network Infrastructure de la datasheet. PA-3400, PA-5400 et PA-7000 y ajoutent GTP et SCTP Security. Tiret : la datasheet n’en parle pas.">5G Security</span>', fn: m => m.m5g ? YES : m.m5g === false ? 'Non (modèle exclu)' : '—', num: null, np: m => m.m5g == null },
-    { cat:'feat',  label:'End of Sale',                     fn: m => m.eosD ? frDate(m.eosD) + (m.eos ? '' : '<span class="val-prof">annoncée</span>') : (m.eos ? '<span class="badge-eos-pa">EoS</span>' : 'Non annoncée'), num: null },
+    { cat:'feat',  label:'End of Sale',                     fn: m => (m.eosD ? frDate(m.eosD) + (m.eos ? '' : '<span class="val-prof">annoncée</span>') : (m.eos ? '<span class="badge-eos-pa">EoS</span>' : 'Non annoncée')) + (m.eos && EOS_REPLACEMENTS[m.id] ? '<span class="val-prof">remplacé par ' + EOS_REPLACEMENTS[m.id] + '</span>' : ''), num: null },
     { cat:'feat',  label:'End of Life',                     fn: m => m.eolD ? frDate(m.eolD) : 'Non annoncée', num: null },
     { cat:'feat',  label:'Dernière version PAN-OS',         fn: m => m.panosMax ? esc(m.panosMax) : (m.eosD ? '—' : 'Non annoncée'), num: null, np: m => !m.panosMax && !!m.eosD },
     { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
@@ -1203,7 +1257,9 @@
     if (row.xOnly && !m._v) return '—';
     if (m._v && row.label === 'End of Sale') return EOS_X;
     if (m._v && !isComparable(row)) return '—';
-    if (row.num && row.num(m) == null) return '—';
+    if (row.num && row.num(m) == null) return (/Budget PoE/.test(row.label) && m.poe === false) ? '<span class="val-zero">sans PoE</span>' : '—';
+    /* Un port absent est un zero publie, pas un tiret (« non publie »). */
+    if (row.cat === 'ports' && row.num && row.num(m) === 0) return '<span class="val-zero">0</span>';
     if (row.np && row.np(m)) return '—';
     if (row.label === 'Format') return m.f || '—';
     return row.fn(m);
@@ -1444,38 +1500,37 @@
 
   function dsLink(href, name, title) {
     return '<a class="model-ds-link" href="' + esc(href) + '" target="_blank" rel="noopener"'
-      + ' aria-label="Datasheet officielle ' + esc(name) + '" title="' + esc(title) + '">Datasheet' + ICO.ext + '</a>';
+      + ' aria-label="Datasheet officielle ' + esc(name) + '" title="' + esc(title) + '">' + ICO.ext + '</a>';
   }
 
+  /* En-tete de colonne compacte : nom, usage, facade, puis la case
+     « Comparer » et le lien datasheet (pictogramme) sur une ligne. */
   function headCell(m) {
     const k = m._key, on = selected.indexOf(k) !== -1;
-    let top;
+    let top, ds;
     if (m._v) {
       const V = COMP.vendors[m.v] || { name: m.v, metrics: {} };
       const defs = ['fw', 'tp', 'vpn'].filter(x => V.metrics && V.metrics[x])
         .map(x => '<b>' + ({ fw: 'Firewall', tp: 'Protection complète', vpn: 'VPN' })[x] + '</b> : ' + esc(V.metrics[x])).join('<br>');
       const file = m.ds ? decodeURIComponent(String(m.ds).split('/').pop().split('?')[0]) : '';
       top = '<div class="model-card-top" data-act="sel">'
-        + '<span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l’éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span>'
         + '<span class="model-name">' + esc(m.id) + '</span>'
-        + '<span class="model-target">' + esc(m.s || '') + '</span>'
-        + (m.ds ? dsLink(m.ds, m.id, 'Datasheet ' + V.name + (file ? ' : ' + file : '') + (m.dsRev ? ' (' + m.dsRev + ')' : '')) : '')
+        + '<span class="model-target"><span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l’éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span> · ' + esc(m.s || '') + '</span>'
         + '</div>';
+      ds = m.ds ? dsLink(m.ds, m.id, 'Datasheet ' + V.name + (file ? ' : ' + file : '') + (m.dsRev ? ' (' + m.dsRev + ')' : '')) : '';
     } else {
       const ink = inkOn(m.color);
-      const repl = m.eos && EOS_REPLACEMENTS[m.id]
-        ? '<span class="model-repl" style="color:' + ink + ';opacity:.82">&rarr; ' + EOS_REPLACEMENTS[m.id] + '</span>' : '';
       top = '<div class="model-card-top" data-act="sel" style="background:' + m.color + ';color:' + ink + '">'
         + '<span class="model-name">' + m.id + '</span>'
-        + '<span class="model-target">' + m.target + repl + '</span>'
-        + dsLink(DS_URLS[m.s] || '#', m.s, 'Datasheet officielle ' + m.s + ' (paloaltonetworks.com)')
+        + '<span class="model-target" title="' + esc(m.s + ' · ' + m.target) + '">' + esc(m.target) + '</span>'
         + '</div>' + chassis(m.id);
+      ds = dsLink(DS_URLS[m.s] || '#', m.s, 'Datasheet officielle ' + m.s + ' (paloaltonetworks.com)');
     }
     return '<th class="model-th' + (on ? ' selected' : '') + (m.eos ? ' eos-model' : '') + (m._v ? ' is-comp' : '') + '" data-k="' + esc(k) + '" scope="col">'
       + '<div class="model-card-clip">' + top
       + '<div class="model-card-bot">'
       + '<button type="button" class="sel-btn" data-act="sel" aria-pressed="' + on + '" aria-label="Comparer ' + esc(m.id) + '">'
-      + '<span class="sel-box">' + ICO.check + '</span>Comparer</button></div>'
+      + '<span class="sel-box">' + ICO.check + '</span>Comparer</button>' + ds + '</div>'
       + '</div></th>';
   }
 
@@ -1483,8 +1538,10 @@
     const visible = visibleModels();
     const withComp = visible.some(m => m._v);
     const hRow = document.getElementById('header-row');
-    hRow.innerHTML = '<th class="th-corner">' + (withComp ? 'Les concurrents sont en gris : survolez l’éditeur pour sa définition des débits.' : '') + '</th>'
-      + visible.map(headCell).join('');
+    /* La cellule d'angle porte le compteur et la navigation des
+       colonnes : elle reste en place, seules les colonnes changent. */
+    hRow.querySelectorAll('th.model-th').forEach(th => th.remove());
+    hRow.insertAdjacentHTML('beforeend', visible.map(headCell).join(''));
 
     /* Lignes a afficher. Avec des concurrents, une ligne vide pour tous
        les modeles visibles (capacites propres a PAN-OS quand on ne voit
@@ -1565,6 +1622,9 @@
         : 'Les filtres de série, de format et de plage s\'excluent les uns les autres.';
     }
     document.getElementById('tb-reset').hidden = !filtersActive();
+    const nMore = (state.series !== 'all') + (state.form !== 'all') + Object.keys(state.range).filter(k => state.range[k]).length;
+    document.getElementById('tb-more-n').textContent = nMore ? String(nMore) : '';
+    document.getElementById('tb-more-btn').setAttribute('aria-label', 'Filtres' + (nMore ? ', ' + nMore + ' actif' + (nMore > 1 ? 's' : '') : ''));
     updateNav();
   }
 
@@ -1634,6 +1694,14 @@
       rebuild();
     };
     document.getElementById('tb-reset').addEventListener('click', reset);
+    /* Serie, format et plages : replies derriere un seul bouton. */
+    const moreBtn = document.getElementById('tb-more-btn'), more = document.getElementById('tb-more');
+    moreBtn.addEventListener('click', () => {
+      const open = more.hidden;
+      more.hidden = !open;
+      moreBtn.setAttribute('aria-expanded', String(open));
+      updateNav();
+    });
     document.getElementById('pa-empty-reset').addEventListener('click', reset);
   }
 
@@ -2170,7 +2238,9 @@
     go.disabled = selected.length < 2;
     go.textContent = selected.length >= 2 ? 'Comparer les ' + selected.length : 'Comparer';
     document.getElementById('sel-clear').disabled = !selected.length;
-    document.getElementById('sel-hint').textContent = selected.length >= 2 ? 'prêt à comparer' : selected.length ? 'encore un modèle' : 'deux à quatre modèles';
+    document.getElementById('sel-hint').textContent = selected.length >= 2 ? 'prêt à comparer' : selected.length ? 'encore un modèle' : 'choisissez deux à quatre modèles';
+    /* Bac vide : une pastille discrete, sans cases ni boutons. */
+    document.getElementById('sel').classList.toggle('is-empty', !selected.length);
     if (before) Flip.from(before, { targets: box.querySelectorAll('.slot-card'), duration: .45, ease: 'power3.out' });
     if (added) fly(added, srcEl);
   }
@@ -2224,6 +2294,7 @@
   function showOnly(v) {
     Object.keys(VIEWS).forEach(k => { document.getElementById(VIEWS[k]).hidden = k !== v; });
     document.body.dataset.view = v;
+    document.dispatchEvent(new Event('cmpview'));
     ['xp', 'tbl', 'cmp'].forEach(k => document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === v)));
   }
   function setUrl() {
@@ -2575,6 +2646,20 @@
     syncPressed(); renderDock();
     if (state.view === 'cmp') { if (selected.length < 2) setView('xp'); else renderCompare(); }
   });
+
+  /* Hauteur du bac fixe, pour que le tableau lui laisse sa place (mobile). */
+  (function trackTray() {
+    const el = document.getElementById('sel');
+    const put = () => {
+      const cs = getComputedStyle(el);
+      const h = cs.display !== 'none' && cs.position === 'fixed' ? el.offsetHeight : 0;
+      document.documentElement.style.setProperty('--tray-h', h + 'px');
+    };
+    if (window.ResizeObserver) new ResizeObserver(put).observe(el);
+    window.addEventListener('resize', put);
+    document.addEventListener('cmpview', put);
+    put();
+  })();
 
   /* ══ Demarrage ══ */
   buildSeriesFilters();
