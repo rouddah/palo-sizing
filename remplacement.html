@@ -159,6 +159,9 @@
       .rp-cols { grid-template-columns: minmax(0, 1fr); }
       .rp-col + .rp-col { border-left: 0; border-top: 1px solid var(--border); }
       .rp-role-txt { min-height: 0; }
+      .rp-col.is-iso { order: -1; }
+      .rp-col.is-iso + .rp-col { border-top: 0; }
+      .rp-col:not(.is-iso) { border-top: 1px solid var(--border); }
     }
     @media (max-width: 600px) {
       .rp-wrap { padding: 4px 16px 96px; }
