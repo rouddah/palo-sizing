@@ -8,9 +8,11 @@
 `sase.html` = Dimensionner SASE. Regles dans `data/sase-rules.js` (sources
 citees par cle, `window.SASE_RULES` expose explicitement : un const de haut
 niveau n'est pas sur window), moteur `js/sase-engine.js` (`SaseEngine.size`),
-test `_sase.js`. Sources telechargees localement dans `.sase-src/` (ignore par
-git). A completer quand l'editeur publie : unites des add-ons, liste des ION
-dont le SD-WAN est inclus dans le compteur par site.
+test `_sase.js`. Axe = offre Core par persona (User / Net / Site), source
+affichee « Descriptif officiel des references Palo Alto, aout 2026 » : ne jamais
+nommer le document ni son fichier, ne jamais lire ni recopier prix ou references.
+Sources docs telechargees localement dans `.sase-src/` (ignore par git). Marge
+sous le debit ION : en attente de Rayan.
 
 ## Session 25 (branche concurrents-v13) : tri des outils
 

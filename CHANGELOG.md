@@ -13,6 +13,14 @@
   ION physiques et virtuels, abonnements Prisma SD-WAN), chaque regle citee par sa
   source ; moteur `js/sase-engine.js` ; test `_sase.js` (83 controles) dans le build.
   Rapport AUDIT_SASE_2026-11.md, points ouverts dans _to_verify.md.
+- Axe refait sur l offre « Core » par persona (descriptif officiel des references
+  Palo Alto, aout 2026) : Prisma Access User (par utilisateur), Net (par Mbps, SWG
+  et Enterprise seulement), Site (par site, paliers 25 Mbps a 2,5 Gbps, SD-WAN
+  inclus), en SWG, ZTNA ou Enterprise Core, avec ce que chaque offre inclut.
+  Local / Worldwide retires (note historique seulement). Add-ons avec leurs unites
+  (par utilisateur, par Mbps, par site et palier, par Service Connection, par lien,
+  par To, forfait). Abonnements ION par appareil (25 Mbps a 2,5 Gbps), par site,
+  par Mbps et Data Center. 149 controles dans _sase.js.
 - prisma.html renvoie vers l outil (pas de doublon de calcul).
 
 ## Session 25 - 10 novembre 2026 : Sophos, SonicWall, Stormshield ; retrait Exclusive Networks

@@ -317,8 +317,9 @@ edition PA-5500 dans l en-tete (08/2026). Restent ouverts :
 
 ## Dimensionnement SASE (releve du 10 novembre 2026, detail dans AUDIT_SASE_2026-11.md)
 
-- Unites de vente des add-ons Prisma Access (ADEM pour les Mobile Users, RBI, DLP, SaaS Inline, AI Access, App Acceleration, IoT...) : non publiees dans le guide de juin 2026, affichees « unite non publiee ».
-- Note 1 du guide : SD-WAN inclus avec « certains modeles » selon le palier de site Prisma Access ; liste des modeles a trouver.
-- Service Connections incluses en Worldwide quand le tenant n'a que des Remote Networks (unites en Mbps) : regle des 1 000 unites ecrite pour des « units » sans precision ; le moteur compte 5.
-- Couverture Local / Worldwide : les pages de licence 2026 ne citent plus que les editions SWG / ZTNA / Enterprise ; Local et Worldwide restent dans les pages d'allocation Common Services. A confirmer comme axe de vente courant.
+- Axe : offre Core par persona (User par utilisateur, Net par Mbps, Site par palier), d'apres le descriptif officiel des references d'aout 2026. Local / Worldwide n'y figurent plus ; seule une note historique reste.
+- Unites non publiees : ZTNA Connector applications illimitees, NG-CASB, Remote Browser Isolation, AI Access, SSPM, Email DLP, Endpoint DLP.
+- Paliers Very Small a Large des options par ION (Security, IoT, SLS) : debit correspondant non publie.
+- Private App Access pour SWG Core : nombre de Service Connections et de ZTNA Connectors apportes non publie.
+- Marge sous le debit ION : le maximum de la datasheet est utilise tel quel, en attente de la decision de Rayan.
 - Datasheet ION : debits mesures en Prisma SD-WAN 6.5.1 (fevrier 2025), « subject to change ».

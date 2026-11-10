@@ -138,37 +138,29 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="ha" data-ic-size="20"></span>Couverture</h3>
+              <h3 class="wb-group-title"><span data-ic="ha" data-ic-size="20"></span>Tenants et volumes</h3>
               <div class="wb-row">
                 <div class="wb-field">
-                  <label for="f-loc">Lieux à couvrir
-                    <button type="button" class="wb-help" data-tip="Lieux Prisma Access|Nombre de lieux (pays ou régions) Prisma Access où les utilisateurs et les sites se connectent. Local en inclut 5.">?</button></label>
-                  <input type="number" id="f-loc" inputmode="numeric" min="0" step="1" placeholder="1">
+                  <label for="f-ten">Tenants
+                    <button type="button" class="wb-help" data-tip="Tenants|Plusieurs tenants pour séparer des filiales. Chaque tenant porte une seule édition.">?</button></label>
+                  <input type="number" id="f-ten" inputmode="numeric" min="1" step="1" placeholder="1">
                 </div>
                 <div class="wb-field">
-                  <label for="f-cov">Couverture</label>
-                  <select id="f-cov">
-                    <option value="auto" selected>Déduite</option>
-                    <option value="local">Local</option>
-                    <option value="worldwide">Worldwide</option>
-                  </select>
+                  <label for="f-tb">Transfert annuel <span class="wb-unit">To</span>
+                    <button type="button" class="wb-help" data-tip="Transfert de données|250 GB par an sont inclus dans toutes les éditions ; au-delà, add-on Excess Data Transfer par To.">?</button></label>
+                  <input type="number" id="f-tb" inputmode="decimal" min="0" step="0.1" placeholder="0">
                 </div>
-              </div>
-              <div class="wb-field">
-                <label for="f-ten">Tenants
-                  <button type="button" class="wb-help" data-tip="Tenants|Plusieurs tenants pour séparer des filiales. Chaque tenant porte une seule édition et un minimum d’unités.">?</button></label>
-                <input type="number" id="f-ten" inputmode="numeric" min="1" step="1" placeholder="1">
               </div>
             </div>
 
             <div class="wb-group">
               <h3 class="wb-group-title"><span data-ic="site" data-ic-size="20"></span>Sites (Remote Networks)</h3>
               <div class="wb-field">
-                <label for="f-rnm">Comptage
-                  <button type="button" class="wb-help" data-tip="Remote Networks|Par site : un palier par site, de 25 Mbps à 2,5 Gbps (Prisma Access 6.0). Agrégé : Mbps alloués par compute location, 50 Mbps minimum.">?</button></label>
+                <label for="f-rnm">Offre
+                  <button type="button" class="wb-help" data-tip="Remote Networks|Site Core : un palier par site, de 25 Mbps à 2,5 Gbps, SD-WAN inclus. Net Core : Mbps alloués par compute location, 50 Mbps minimum (SWG ou Enterprise seulement).">?</button></label>
                 <select id="f-rnm">
-                  <option value="site" selected>Par site (paliers)</option>
-                  <option value="aggregate">Bande passante agrégée par compute location</option>
+                  <option value="site" selected>Site Core, par site et par palier</option>
+                  <option value="net">Net Core, par Mbps</option>
                 </select>
               </div>
               <p class="sz-hint">Un profil = des sites identiques. Débit = entrant + sortant du site.</p>
@@ -193,6 +185,11 @@
                   <button type="button" class="wb-help" data-tip="ZTNA Connector|Connecteur vers des applications privées sans tunnel IPsec à monter, jusqu’à 2 Gbps chacun. 10 inclus dans ZTNA et Enterprise.">?</button></label>
                 <input type="number" id="f-zc" inputmode="numeric" min="0" step="1" placeholder="0">
               </div>
+              <div class="wb-field">
+                <label for="f-colo">Liens Colo-Connect
+                  <button type="button" class="wb-help" data-tip="Colo-Connect|Interconnexion privée entre les hubs du client et Prisma Access, utilisée par les Service Connections ; vendue par lien.">?</button></label>
+                <input type="number" id="f-colo" inputmode="numeric" min="0" step="1" placeholder="0">
+              </div>
               <div class="sz-flags">
                 <label class="sz-check"><input type="checkbox" id="f-dcsd"> ION en data center</label>
                 <label class="sz-check"><input type="checkbox" id="f-dcha"> En paire HA</label>
@@ -204,11 +201,11 @@
               <h3 class="wb-group-title"><span data-ic="table" data-ic-size="20"></span>Abonnement Prisma SD-WAN</h3>
               <div class="wb-field">
                 <label for="f-sdm">Modèle de branche
-                  <button type="button" class="wb-help" data-tip="Prisma SD-WAN|Un seul modèle pour toutes les branches du tenant : par ION (S, M, L), par site (S, M, L) ou bande passante agrégée.">?</button></label>
+                  <button type="button" class="wb-help" data-tip="Prisma SD-WAN|Pour les sites hors Site Core (qui inclut le SD-WAN). Un seul modèle pour toutes les branches du tenant : par ION, par site ou par Mbps.">?</button></label>
                 <select id="f-sdm">
-                  <option value="device" selected>Par appareil (S, M, L)</option>
-                  <option value="site">Par site (S, M, L)</option>
-                  <option value="aggregate">Bande passante agrégée</option>
+                  <option value="device" selected>Par appareil, palier de débit</option>
+                  <option value="site">Par site, palier de débit</option>
+                  <option value="aggregate">Par Mbps, agrégé</option>
                 </select>
               </div>
             </div>
@@ -226,7 +223,7 @@
       <section class="wb-pane in" aria-label="Nomenclature">
         <div class="wb-pane-head">
           <h2 class="wb-pane-title">Nomenclature</h2>
-          <span class="wb-pane-sub">Guide de licences juin 2026, docs Prisma Access et SD-WAN</span>
+          <span class="wb-pane-sub">Descriptif des références août 2026, docs Prisma Access et SD-WAN</span>
         </div>
         <div class="wb-pane-in">
           <div id="sz-out" aria-live="polite" aria-atomic="false"></div>
@@ -282,8 +279,8 @@
   }).join('');
 
   /* ── Lecture et ecriture de l'etat ── */
-  var FIELDS = { 'n-internet': 'c', 'n-private': 'c', 'n-browser': 'c', 'f-edition': 'v', 'f-mu': 'v', 'f-cl': 'v', 'f-loc': 'v', 'f-cov': 'v', 'f-ten': 'v',
-    'f-rnm': 'v', 'f-dc': 'v', 'f-dcm': 'v', 'f-zc': 'v', 'f-dcsd': 'c', 'f-dcha': 'c', 'f-dcv': 'c', 'f-sdm': 'v' };
+  var FIELDS = { 'n-internet': 'c', 'n-private': 'c', 'n-browser': 'c', 'f-edition': 'v', 'f-mu': 'v', 'f-cl': 'v', 'f-ten': 'v', 'f-tb': 'v',
+    'f-rnm': 'v', 'f-dc': 'v', 'f-dcm': 'v', 'f-zc': 'v', 'f-colo': 'v', 'f-dcsd': 'c', 'f-dcha': 'c', 'f-dcv': 'c', 'f-sdm': 'v' };
   function readState() {
     var s = {};
     Object.keys(FIELDS).forEach(function (id) { s[id] = FIELDS[id] === 'c' ? $(id).checked : $(id).value; });
@@ -301,7 +298,7 @@
     var addons = {}; (s.a || []).forEach(function (k) { addons[k] = true; });
     return {
       needs: { internet: s['n-internet'], privateApps: s['n-private'], browser: s['n-browser'] },
-      edition: s['f-edition'], coverage: s['f-cov'], locations: s['f-loc'], tenants: s['f-ten'] || 1,
+      edition: s['f-edition'], tenants: s['f-ten'] || 1, dataTB: s['f-tb'], coloLinks: s['f-colo'],
       mu: { users: s['f-mu'], clientless: s['f-cl'] },
       rn: { model: s['f-rnm'], sites: s.p },
       dc: { count: s['f-dc'], mbps: s['f-dcm'] || 1000, sdwan: s['f-dcsd'], ha: s['f-dcha'], virt: s['f-dcv'] },
@@ -312,16 +309,16 @@
   function dec(t) { try { return JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) { return null; } }
 
   /* ── Rendu ── */
-  var GROUPS = { base: 'Prisma Access', mu: 'Mobile Users', rn: 'Remote Networks', pa: 'Applications privées', sdwan: 'Prisma SD-WAN', addon: 'Add-ons', incl: 'Inclus dans l’édition' };
+  var GROUPS = { core: 'Prisma Access, offres Core', mu: 'Mobile Users', rn: 'Remote Networks', pa: 'Applications privées', sdwan: 'Prisma SD-WAN', addon: 'Add-ons', incl: 'Inclus dans l’édition' };
   function srcHTML(keys) {
     return String(keys || '').split(/,\s*/).filter(Boolean).map(function (k) {
-      var S = R.src[k]; return S ? '<a href="' + esc(S.u) + '" target="_blank" rel="noopener">' + esc(S.t) + '</a>' : esc(k);
+      var S = R.src[k]; return !S ? esc(k) : S.u ? '<a href="' + esc(S.u) + '" target="_blank" rel="noopener">' + esc(S.t) + '</a>' : esc(S.t);
     }).join(' · ');
   }
   var prevQ = {};
   function render() {
     var st = readState(), r = E.size(toInput(st), R);
-    var h = '<div class="sz-head"><h3>Prisma Access ' + esc(r.edition.name) + ' · ' + esc(r.coverage.name) + '</h3>'
+    var h = '<div class="sz-head"><h3>Prisma Access ' + esc(r.edition.name) + '</h3>'
       + '<p>' + esc(r.edition.use) + '</p></div>';
     var alertList = function (list) {
       return '<ul class="sz-alerts">' + list.map(function (a) {
@@ -348,7 +345,8 @@
     h += '</tbody></table>';
     if (info.length) h += '<p class="sz-sub">À savoir</p>' + alertList(info);
     r.notes.forEach(function (n) { h += '<p class="sz-notes">' + esc(n.text) + ' (' + srcHTML(n.src) + ')</p>'; });
-    h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML('palg') + '). ' + esc(R.ionNote) + '</p>';
+    h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML('palg') + '). ' + esc(R.ionNote) + '</p>'
+      + '<p class="sz-notes">' + esc(R.history) + ' (' + srcHTML('allocl') + ')</p>';
     h += '<div class="sz-actions">'
       + '<button type="button" class="fx-btn primary" id="sz-copy">' + icn('copy') + 'Copier la nomenclature</button>'
       + '<button type="button" class="fx-btn" id="sz-link">' + icn('link') + 'Copier le lien</button>'
@@ -362,7 +360,7 @@
     history.replaceState(null, '', location.pathname + (t ? '?s=' + t : ''));
   }
   function textOf(r) {
-    var t = 'DIMENSIONNEMENT PRISMA SASE\nPrisma Access ' + r.edition.name + ', couverture ' + r.coverage.name + '\n\n';
+    var t = 'DIMENSIONNEMENT PRISMA SASE\nPrisma Access ' + r.edition.name + '\n\n';
     var last = '';
     r.lines.forEach(function (l) {
       if (l.grp !== last) { last = l.grp; t += '\n' + (GROUPS[l.grp] || l.grp).toUpperCase() + '\n'; }

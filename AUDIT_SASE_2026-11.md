@@ -4,45 +4,55 @@ Releve du 10 novembre 2026 pour l'outil `sase.html` (donnees `data/sase-rules.js
 moteur `js/sase-engine.js`, test `_sase.js`). Sources officielles Palo Alto Networks
 seulement. Aucun prix, aucune reference de commande.
 
-## Sources
+## Axe principal : l'offre « Core » par persona
+
+Source `cat` : descriptif officiel des references Palo Alto, aout 2026. Seules les
+descriptions et les unites ont ete lues ; aucune colonne de prix ni de reference.
+
+| Persona | Unite | Editions | Inclus selon la description |
+|---|---|---|---|
+| Prisma Access User | par utilisateur | SWG, ZTNA, Enterprise Core | SWG : securite internet (abonnement premium), SaaS Inline, AI Access Security, ADEM Core. ZTNA : applications privees, Adv. Threat Prevention, Adv. WildFire, 5 SCs, 10 ZTNA-C, ADEM Core. Enterprise : applications privees et internet, 5 SCs, 10 ZTNA-C, SaaS Inline, AI Access Sec., ADEM Core, Prisma Browser Core, 5 sites de 10 Mbps a partir de 2 000 utilisateurs achetes |
+| Prisma Access Net | par Mbps | SWG, Enterprise Core (pas de ZTNA) | SWG : securite internet, SaaS Inline, AI Access Sec., ADEM Core. Enterprise : applications privees et internet, 5 SCs, 10 ZTNA-C, SaaS Inline, AI Access Sec., ADEM Core, Prisma Browser Core |
+| Prisma Access Site | par site, paliers 25, 50, 250 Mbps, 1 Gbps, 2,5 Gbps | SWG, ZTNA, Enterprise Core | toutes : abonnement de bande passante SD-WAN, ADEM Core ; ZTNA et Enterprise : 5 SCs, 10 ZTNA-C, Interconnect ; SWG et Enterprise : SaaS Inline, AI Access Sec. ; Enterprise : Prisma Browser Core |
+
+Les couvertures « Local » et « Worldwide » (minimums de 200 et 1 000 unites par
+tenant, 5 lieux en Local) ne figurent plus dans le descriptif d'aout 2026 ; seules
+des pages d'allocation de licences les citent encore. L'outil ne les propose pas et
+l'indique en note.
+
+## Add-ons et unites (cat, sauf mention)
+
+- Par persona (utilisateur, Mbps, site et palier) : Private App Access (acces aux SCs et ZTNA-C pour SWG), Private App Security, SaaS Inline, App Acceleration, Strata Cloud Manager avec AIOps et ADEM (SLS 1 an compris), Strata Logging Service.
+- Par utilisateur seulement : DLP, Secure Agentless Access (RDP, SSH, VNC), Traffic Replication, Prisma Browser add-on, Prisma Browser Pro add-on.
+- Par Mbps seulement : Interconnect (inclus dans Site ZTNA et Enterprise Core).
+- Par site et palier : IoT (une autre description dit « par unite » sans persona).
+- Unites fixes : Service Connections supplementaires (par Service Connection), Colo-Connect (par lien, variante 100G), Excess Data Transfer (par To, 1 To par unite, au-dela des 250 GB inclus, palg), onboarding des IP du client (forfait), X-Border Connectivity Chine (forfait).
+- Unite non publiee : ZTNA Connector applications illimitees, NG-CASB (« par unite »), Remote Browser Isolation, AI Access, SSPM, Email DLP, Endpoint DLP (ces quatre derniers viennent du guide de juin 2026).
+
+## Prisma SD-WAN
+
+- Abonnements ION (cat, sdwanlic) : par appareil aux paliers 25, 50, 150, 250, 500 Mbps, 1 Gbps, 2,5 Gbps (ION virtuel jusqu'a 500 Mbps), et paliers Very Small a Large ; par site jusqu'a 25, 250, 2 500 Mbps ; par Mbps (ZBFW, WAN Reporting, EDA inclus, moyenne d'au moins 10 Mbps par ION) ; Data Center par ION physique ou virtuel. Options par ION : Security, SD-WAN + Security, IoT Device Security, SLS, ZBFW, WCR, DVR, App Acceleration.
+- Site Core inclut l'abonnement de bande passante SD-WAN : pour ces sites, seuls les ION entrent dans la nomenclature.
+- Appareils (iondev) : ION 1200, 1200-S, 3200, 3200H, 5200, 9200, PA-5440 en data center, vION 3102V a 7132V, debits chiffres 1 400 octets en mode branche et DC. Le maximum de la datasheet est utilise tel quel (marge a trancher par Rayan).
+
+## Sources documentaires (docs.paloaltonetworks.com et datasheets)
 
 | Cle | Document | Ce qu'on en tire |
 |---|---|---|
-| palg | Prisma Access Licensing Guide, datasheet, code `prisma_ds_prisma-access-licensing-guide_060526` (juin 2026), https://www.paloaltonetworks.com/resources/datasheets/prisma-access-licensing-guide | 3 compteurs (par utilisateur, par site, par Mbps), 3 editions (table 1), ce que toutes incluent (150+ emplacements, 250 GB/an, SCM ou Panorama, GlobalProtect / Prisma Agent / Explicit Proxy / IPsec), 20 add-ons (table 2), Private App Access jusqu'a 200 connecteurs, Colo-Connect jusqu'a 20 Gbps par region, note 1 : SD-WAN inclus avec certains modeles selon le palier de site |
-| lic | docs : Your Prisma Access License | 1 unite Mobile User = 1 utilisateur (GlobalProtect, Explicit Proxy ou les deux), Clientless VPN compte ; 1 unite Remote Network = 1 Mbps |
-| site | docs : Remote Networks, High Performance Site-Based Licensing | Prisma Access 6.0 ; paliers Very Small 25, Small 50, Medium 250 Mbps, Large 1 Gbps, X-Large 2,5 Gbps ; entrant + sortant ; 10 % de depassement ; Egress NAT et redondance regionale inclus ; > 2,5 Gbps = plusieurs sites, sans acces aux applications privees |
-| alloc | docs : Allocate Remote Network Bandwidth | modele agrege : minimum 50 Mbps par compute location, entrant + sortant, QoS et acces entrant non pris en charge, jusqu'a 1 000 remote networks par import CSV, ECMP jusqu'a 4 tunnels (BGP), bande passante ADEM RN = bande allouee |
-| rncheck | docs : Planning Checklist for Remote Networks | IPSec Termination Node : 1 000 Mbps, 500 sites (5.0+), 200 noeuds par compute location ; Local Zones 500 Mbps |
-| rnhp | docs : Remote Networks, High Performance | 3 Gbps par noeud, 2 Gbps par tunnel, 120 branches par IP de service |
-| sc | docs : Prisma Access Service Connections | recommande toujours une Service Connection (MU vers RN en hub and spoke) ; ZTNA ou Enterprise : 5 au plus ; Private App add-on : 200 par tenant ; Global >= 1 000 unites : 5, 200 a 999 : 2 ; Local : 2 ; achat de Service Connections additionnelles possible |
-| scplan | docs : Plan Service Connections (Common Services) | Local : 2 par defaut ; global enterprise ou worldwide : 5 |
-| schb | docs : High-Bandwidth Network Using Multiple Service Connections | environ 1 Gbps par Service Connection, pas plus de 4 par site, au-dela ZTNA Connector ou Colo-Connect |
-| allocl | docs : Allocate Licenses (Common Services) | minimum par tenant : 200 (Local), 1 000 (global ou worldwide) ; une seule edition par tenant ; licence combinee MU + RN a repartir en quantites egales |
-| addloc | docs : Add Additional Locations | Local : 5 lieux par defaut, add-on Additional Locations ; Worldwide : illimite |
-| ztna, ztnaon | docs : Configure ZTNA Connector ; Onboarding Workflow for ZTNA Connector | 10 connecteurs dans ZTNA et Enterprise, jusqu'a 200 avec Private App Access ; jusqu'a 2 Gbps par connecteur |
-| rbi | docs : Cheat Sheet RBI | requiert Prisma Access 5.0 Innovation et un abonnement Mobile User ou Remote Network |
-| iondev | Prisma SD-WAN ION Device Specifications, datasheet `prisma_ds_sdwan-ion-device-specifications_082426` | portefeuille Small / Medium / Large, ports, cellulaire, debits chiffres 1 400 octets (6.5.1), TP appmix, flux, echelle VPN DC, vION 3102V a 7132V |
-| sdwanlic | docs : Your Prisma SD-WAN License | 1 a 5 ans ; DC : un abonnement par ION ; branche : par appareil S 25 / M 250 / L 2 500 Mbps (paliers alternatifs 25 a 2 500), par site S/M/L, agrege (Mbps, moyenne >= 10 Mbps par ION) ; un seul type par tenant ; ZBFW, DVR, WCR selon le modele |
+| palg | Prisma Access Licensing Guide (juin 2026) | ce que toutes les editions incluent (150+ emplacements, 250 GB/an, SCM ou Panorama, connexions), descriptions des add-ons, Colo-Connect 20 Gbps par region |
+| lic | Your Prisma Access License | unite Mobile User (GlobalProtect, Explicit Proxy, Clientless VPN), 1 unite RN = 1 Mbps |
+| site | Site-Based Licensing | Prisma Access 6.0, paliers, 10 % de depassement, Egress NAT et redondance regionale, decoupage au-dela de 2,5 Gbps sans applications privees |
+| alloc, rncheck | Allocate Remote Network Bandwidth ; Planning Checklist | 50 Mbps minimum par compute location, QoS et acces entrant non pris en charge, IPSec Termination Node 1 000 Mbps et 500 sites |
+| rnhp | Remote Networks, High Performance | 2 Gbps par tunnel |
+| sc, schb | Service Connections ; High-Bandwidth with Multiple SCs | une SC recommandee meme sans DC (MU vers RN), environ 1 Gbps par SC, pas plus de 4 par site |
+| ztna, ztnaon | ZTNA Connector | 10 inclus (ZTNA, Enterprise), jusqu'a 200 avec Private App Access, 2 Gbps par connecteur |
+| allocl | Allocate Licenses | une seule edition par tenant ; mention historique Local / Worldwide |
+| rbi | Cheat Sheet RBI | requiert un abonnement Mobile User ou Remote Network |
+| iondev | ION Device Specifications | modeles, ports, debits, cellulaire |
+| sdwanlic | Your Prisma SD-WAN License | modeles d'abonnement, un seul type par tenant, 1 a 5 ans |
 
-## Ce que le moteur calcule
+## Non publie
 
-1. Edition : deduite des usages (internet seul : Secure Web Gateway ; applications privees seules : ZTNA ; les deux ou navigateur / donnees SaaS : Enterprise) ou imposee, avec alertes d'incoherence.
-2. Couverture Local / Worldwide : deduite (plus de 5 lieux ou au moins 1 000 utilisateurs par tenant : Worldwide), Additional Locations au-dela de 5 lieux en Local.
-3. Mobile Users : utilisateurs + Clientless, releves au minimum par tenant.
-4. Remote Networks : par site (palier par profil, scission au-dela de 2,5 Gbps) ou agrege (Mbps par compute location, minimum 50, noeuds IPSec et plafond de 500 sites par noeud).
-5. Service Connections : une par data center au moins, une par Gbps jusqu'a 4, une d'office si MU et RN coexistent ; comparaison aux quantites incluses et Private App Access au-dela ; ZTNA Connectors.
-6. Prisma SD-WAN : plus petit ION qui tient le debit (mode branche ou DC) et les contraintes PoE, cellulaire, SFP+, durci, virtuel ; paire HA = 2 ; abonnements par appareil, par site ou agreges ; abonnement DC par ION de data center.
-7. Add-ons coches : une ligne chacun, quantite nulle (« unite non publiee ») sauf mention ; SaaS Inline et Prisma Browser Core notes « inclus » en Enterprise.
-
-## Non publie (laisse nul ou signale)
-
-- Unite de vente des add-ons (ADEM pour les Mobile Users, RBI, DLP, SaaS Inline, AI Access, App Acceleration, IoT, etc.) : le guide de juin 2026 ne la donne pas.
-- Liste des modeles ION dont l'abonnement SD-WAN est inclus dans le compteur Prisma Access par site (note 1 du guide sans detail).
-- Service Connections incluses pour un tenant Worldwide sans Mobile Users (unites en Mbps) : le texte parle d'« units » sans distinguer.
-- Prix, references de commande : jamais.
-
-## Choix faits
-
-- Un ION est retenu si le debit du site est inferieur ou egal au debit chiffre publie (pas de marge ajoutee : la datasheet est un maximum, la nomenclature le dit).
-- Le palier de site est le plus petit dont le plafond couvre le debit saisi ; la tolerance de 10 % n'est pas utilisee pour descendre d'un palier.
-- PA-5440 apparait comme option data center au-dela de 15 Gbps, parce que la datasheet ION le liste dans sa table des modeles.
+- Unites des add-ons listes plus haut comme « unite non publiee ».
+- Correspondance entre les paliers Very Small a Large des options par ION et un debit.
+- Nombre de Service Connections et de ZTNA Connectors apportes par Private App Access pour SWG Core ; extension au-dela de 10 ZTNA Connectors.
