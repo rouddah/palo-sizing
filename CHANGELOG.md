@@ -16,6 +16,18 @@
   (logo retire, `img/exn-logo.png` supprime), mode guide, Prisma, Browser,
   Ressources et `links.js`. Les renvois devis pointent vers « votre distributeur
   Palo Alto Networks ».
+- Tri des outils redondants. Recherche (`search.html`) supprimee : ses criteres
+  d interfaces (cuivre 1G, multi-gig, SFP, SFP+, SFP28, 40/100G, PoE) passent
+  dans l etabli de Dimensionner, ou ils ecartent les modeles qui ne les tiennent
+  pas en ports natifs (meme comptage que Remplacer). Mode guide (`wizard.html`,
+  `_wizard.js`) supprime, a reprendre pour le futur dimensionnement SASE
+  (`git show 8b099a3:wizard.html`). Dans l etabli, le champ « Constructeur en
+  place » et sa table de correspondance FortiGate / Check Point ecrite a la main
+  (et les arguments concurrentiels non sources qui l accompagnaient) sont
+  remplaces par un lien vers Remplacer. Le questionnaire client n est plus un
+  onglet concurrent : fiche ouverte par « Questions a poser (imprimable) ».
+  L accueil liste cinq outils (Remplacer y manquait). `_smoke.js` couvre les
+  interfaces.
 
 ## Session 24 - 6 novembre 2026 : outil Remplacer, vue Tableau, recontrole datasheets
 

@@ -40,8 +40,6 @@ const PAGES = [
   ['pa-series.html?vendors=fortinet,checkpoint,cisco', 'concurrents'],
   ['optiques.html', 'optiques'],
   ['accessoires.html', 'accessoires'],
-  ['search.html', 'recherche'],
-  ['wizard.html', 'wizard'],
   ['prisma.html', 'sase'],
   ['cortex.html', 'cortex'],
   ['browser.html', 'browser'],

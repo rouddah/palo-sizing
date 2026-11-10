@@ -47,6 +47,8 @@
 
     /* ── Guide de qualification ── */
     .guide-view { position: relative; z-index: 1; }
+    .wb-hint { margin: -4px 0 12px; font-size: var(--text-xs); color: var(--text-muted); line-height: 1.5; }
+    .wb-hint a { color: var(--accent-txt); text-decoration: underline; text-underline-offset: 2px; }
     .guide-wrap {
       max-width: 860px;
       margin: 0 auto;
@@ -179,14 +181,12 @@
   <script src="icons.js"></script>
   <script src="data/pa-models.js"></script>
   <script src="data/pa-chassis.js"></script>
+  <script src="js/replace-engine.js"></script>
 
   <!-- ── Barre de mode ── -->
-  <div class="wb-bar" role="tablist" aria-label="Modes de l'outil de dimensionnement">
-    <button class="wb-tab" id="mode-commercial" role="tab" aria-selected="true" aria-controls="view-commercial" onclick="setMode('commercial')">
-      <span data-ic="target" data-ic-size="16"></span>Dimensionnement
-    </button>
-    <button class="wb-tab" id="mode-guide" role="tab" aria-selected="false" aria-controls="view-guide" onclick="setMode('guide')">
-      <span data-ic="info" data-ic-size="16"></span>Questionnaire client
+  <div class="wb-bar">
+    <button type="button" class="wb-tab" id="mode-guide" aria-expanded="false" aria-controls="view-guide" onclick="toggleGuide()">
+      <span data-ic="info" data-ic-size="16"></span><span id="mode-guide-l">Questions à poser (imprimable)</span>
     </button>
     <span class="spacer"></span>
     <span class="wb-credit">Sizing Guide PANW</span>
@@ -319,29 +319,50 @@
             </div>
 
             <div class="wb-group">
-              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="20"></span>Parc en place</h3>
-
+              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="20"></span>Interfaces requises</h3>
+              <p class="wb-hint">Ports de données natifs, hors management et HA. Un modèle qui ne les tient pas est écarté.</p>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-p-cu1">Cuivre 1G</label>
+                  <input type="number" id="wiz-p-cu1" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-p-mgig">Multi-gig <span class="wb-unit">2,5G+</span></label>
+                  <input type="number" id="wiz-p-mgig" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+              </div>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-p-sfp1">SFP 1G</label>
+                  <input type="number" id="wiz-p-sfp1" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-p-sfp10">SFP+ 10G</label>
+                  <input type="number" id="wiz-p-sfp10" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+              </div>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="wiz-p-sfp25">SFP28 25G</label>
+                  <input type="number" id="wiz-p-sfp25" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+                <div class="wb-field">
+                  <label for="wiz-p-sfp100">40/100G <span class="wb-unit">QSFP</span></label>
+                  <input type="number" id="wiz-p-sfp100" inputmode="numeric" placeholder="0" min="0" max="200" step="1" value="">
+                </div>
+              </div>
               <div class="wb-field">
-                <label for="wiz-existing">Constructeur en place <button type="button" class="wb-help" data-tip="Constructeur en place|Sert à convertir les débits annoncés du boîtier existant en équivalent PA-Series. Les méthodes de mesure diffèrent d'un constructeur à l'autre.">?</button></label>
-                <select id="wiz-existing" onchange="updateExistingModels()">
-                  <option value="unknown" selected>Non renseigné</option>
-                  <option value="none">Aucun, nouveau site</option>
-                  <option value="fortinet">Fortinet FortiGate</option>
-                  <option value="checkpoint">Check Point Quantum</option>
-                  <option value="cisco">Cisco Firepower / ASA</option>
-                  <option value="sophos">Sophos Firewall</option>
-                  <option value="sonicwall">SonicWall</option>
-                  <option value="stormshield">Stormshield SNS</option>
-                  <option value="other">Autre</option>
+                <label for="wiz-p-poe">PoE</label>
+                <select id="wiz-p-poe">
+                  <option value="unknown" selected>Non requis</option>
+                  <option value="yes">Requis</option>
                 </select>
               </div>
+            </div>
 
-              <div class="wb-field" id="wiz-model-field" hidden>
-                <label for="wiz-existing-model">Modèle en place</label>
-                <select id="wiz-existing-model">
-                  <option value="unknown" selected>Non renseigné</option>
-                </select>
-              </div>
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="doc" data-ic-size="20"></span>Contexte</h3>
+              <p class="wb-hint">Le client a déjà un pare-feu ? <a href="remplacement.html">Remplacer</a> part de son boîtier actuel.</p>
 
               <div class="wb-field">
                 <label for="wiz-sector">Secteur
@@ -415,7 +436,8 @@
       <div class="guide-header">
         <h2>Guide de qualification</h2>
         <p>Questions à poser au client pour préparer une recommandation firewall Palo Alto Networks. À consulter avant ou pendant un rendez-vous.</p>
-        <button class="guide-print-btn" onclick="window.print()">Imprimer le guide</button>
+        <button class="guide-print-btn" onclick="window.print()">Imprimer la fiche</button>
+        <button class="guide-print-btn" onclick="setMode('commercial')">Retour au dimensionnement</button>
       </div>
 
       <div class="guide-category">
@@ -759,26 +781,32 @@
       </div>
 
       <div style="text-align:center;margin-top:24px">
-        <button class="wiz-btn" onclick="setMode('commercial')" style="padding:10px 28px">Passer à la qualification rapide</button>
+        <button class="wiz-btn" onclick="setMode('commercial')" style="padding:10px 28px">Retour au dimensionnement</button>
       </div>
     </div>
   </div>
 
   <script>
-  /* ══ Bascule des deux vues ══ */
+  /* ══ Fiche de questions ══
+     Ce n'est plus un mode concurrent de l'etabli : une fiche a lire ou a
+     imprimer avant le rendez-vous, ouverte par un bouton de la barre. */
   const VIEWS = { commercial: 'view-commercial', guide: 'view-guide' };
   function setMode(mode) {
     for (const [key, id] of Object.entries(VIEWS)) {
-      const on = key === mode;
-      document.getElementById(id).hidden = !on;
-      const tab = document.getElementById('mode-' + key);
-      if (tab) tab.setAttribute('aria-selected', String(on));
+      const el = document.getElementById(id);
+      el.hidden = key !== mode;
+      el.style.display = key !== mode ? 'none' : '';
     }
+    const b = document.getElementById('mode-guide');
+    if (b) b.setAttribute('aria-expanded', String(mode === 'guide'));
+    const l = document.getElementById('mode-guide-l');
+    if (l) l.textContent = mode === 'guide' ? 'Retour au dimensionnement' : 'Questions à poser (imprimable)';
     const v = document.getElementById(VIEWS[mode]);
     if (window.Motion && v) Motion.enter(v);
     jumpMode = mode;
     syncJump();
   }
+  function toggleGuide() { setMode(jumpMode === 'guide' ? 'commercial' : 'guide'); }
 
   /* ══ Aller-retour entre les volets empiles ══ */
   let jumpMode = 'commercial', jumpTo = 'in';
@@ -856,7 +884,6 @@
     const form = document.getElementById('wb-form');
     form.querySelectorAll('input').forEach(el => { el.value = ''; });
     form.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
-    updateExistingModels();
     history.replaceState(null, '', window.location.pathname);
     runCommercialWizard();
     document.getElementById('wiz-bw').focus();
@@ -871,7 +898,8 @@
   });
 
   /* ══ Partage par URL ══ */
-  const URL_FIELDS = ['client','partner','users','sites','type','bw','ssl','cloud','sector','existing','existing-model','iot','ha','remote','growth'];
+  const URL_FIELDS = ['client','partner','users','sites','type','bw','ssl','cloud','sector','iot','ha','remote','growth',
+    'p-cu1','p-mgig','p-sfp1','p-sfp10','p-sfp25','p-sfp100','p-poe'];
 
   function encodeSession() {
     const params = new URLSearchParams();
@@ -889,13 +917,8 @@
       const v = params.get(f);
       const el = document.getElementById('wiz-' + f);
       if (!v || !el) return;
-      // le modele concurrent depend de la marque : la liste doit exister avant
-      if (f === 'existing-model') return;
       el.value = v;
     });
-    updateExistingModels();
-    const em = params.get('existing-model');
-    if (em) document.getElementById('wiz-existing-model').value = em;
   }
 
 
@@ -906,87 +929,31 @@
      du site, juste en dessous.
      Garde-fou : ne pas depasser 60-70% de la capacite datasheet.
   ══ */
-  /* ══ Base concurrents — mapping vers PA-Series ══
-     Sources : datasheets officielles Fortinet (Product Matrix 2026) et Check Point (Appliance Comparison 2026)
-     Throughput : IPS/Threat Prevention en conditions enterprise, pas les débits firewall bruts
-     Le mapping PA-Series est basé sur le débit TP comparable (fourchette)
-  ══ */
-  const COMPETITOR_MODELS = {
-    fortinet: [
-      { id:'FG-30G',   tp:0.5,  target:'Home office / TPE',              pa:'PA-410' },
-      { id:'FG-40F',   tp:0.6,  target:'SMB',                            pa:'PA-410' },
-      { id:'FG-50G',   tp:1.1,  target:'Petite agence',                  pa:'PA-440' },
-      { id:'FG-60F',   tp:0.7,  target:'Petite agence / retail',         pa:'PA-410' },
-      { id:'FG-70F',   tp:0.8,  target:'SMB',                            pa:'PA-440' },
-      { id:'FG-70G',   tp:1.3,  target:'SMB',                            pa:'PA-445' },
-      { id:'FG-80F',   tp:0.9,  target:'SMB desktop',                    pa:'PA-440' },
-      { id:'FG-90G',   tp:2.2,  target:'PME (50-250 users)',             pa:'PA-460' },
-      { id:'FG-120G',  tp:2.8,  target:'Campus PME',                     pa:'PA-540' },
-      { id:'FG-200F',  tp:3.5,  target:'Agence distribuée',              pa:'PA-550' },
-      { id:'FG-200G',  tp:6,    target:'Multi-sites (50-250 users)',     pa:'PA-560' },
-      { id:'FG-400F',  tp:9,    target:'Siège entreprise',               pa:'PA-1420' },
-      { id:'FG-600F',  tp:10,   target:'Campus enterprise',              pa:'PA-3410' },
-      { id:'FG-700G',  tp:26,   target:'Campus haute densité',           pa:'PA-3440' },
-      { id:'FG-900G',  tp:30,   target:'Périmètre enterprise',           pa:'PA-5410' },
-      { id:'FG-1000F', tp:13,   target:'Enterprise tier 1',              pa:'PA-3420' },
-      { id:'FG-1800F', tp:15,   target:'Service provider',               pa:'PA-3430' },
-      { id:'FG-2600F', tp:25,   target:'Datacenter',                     pa:'PA-5410' },
-      { id:'FG-3000F', tp:33,   target:'Hyperscale',                     pa:'PA-5410' },
-      { id:'FG-3200F', tp:45,   target:'Enterprise haut de gamme',       pa:'PA-5420' },
-      { id:'FG-3500F', tp:63,   target:'Datacenter',                     pa:'PA-5430' },
-      { id:'FG-3700F', tp:75,   target:'Hyperscale datacenter',          pa:'PA-5445' },
-      { id:'FG-4200F', tp:45,   target:'Enterprise',                     pa:'PA-5420' },
-      { id:'FG-4400F', tp:75,   target:'Datacenter haute capacité',      pa:'PA-5445' },
-    ],
-    checkpoint: [
-      { id:'1535',    tp:0.44, target:'PME',                             pa:'PA-410' },
-      { id:'1555',    tp:0.6,  target:'PME',                             pa:'PA-410' },
-      { id:'1575',    tp:0.65, target:'PME',                             pa:'PA-410' },
-      { id:'1595',    tp:0.9,  target:'PME',                             pa:'PA-440' },
-      { id:'1600',    tp:1.5,  target:'PME',                             pa:'PA-445' },
-      { id:'1800',    tp:2,    target:'PME',                             pa:'PA-460' },
-      { id:'2530',    tp:0.75, target:'Small office / retail',           pa:'PA-410' },
-      { id:'2550',    tp:1,    target:'Small office',                    pa:'PA-440' },
-      { id:'2560',    tp:1.85, target:'Small office',                    pa:'PA-445' },
-      { id:'2570',    tp:2.5,  target:'Small office',                    pa:'PA-460' },
-      { id:'2580',    tp:3.2,  target:'Small office',                    pa:'PA-540' },
-      { id:'3920',    tp:3.2,  target:'Campus corporate',               pa:'PA-540' },
-      { id:'3950',    tp:5.5,  target:'Campus corporate',               pa:'PA-1410' },
-      { id:'3970',    tp:4.25, target:'Campus corporate',               pa:'PA-1410' },
-      { id:'3980',    tp:7,    target:'Campus corporate',               pa:'PA-1420' },
-      { id:'9100',    tp:6.5,  target:'Périmètre enterprise',           pa:'PA-1420' },
-      { id:'9200',    tp:8,    target:'Périmètre enterprise',           pa:'PA-3410' },
-      { id:'9300',    tp:10.5, target:'Périmètre enterprise',           pa:'PA-3420' },
-      { id:'9400',    tp:14,   target:'Grande enterprise',              pa:'PA-3430' },
-      { id:'9700',    tp:20,   target:'Grande enterprise',              pa:'PA-3440' },
-      { id:'9800',    tp:25,   target:'Grande enterprise',              pa:'PA-5410' },
-      { id:'7000',    tp:9.5,  target:'Datacenter (legacy)',            pa:'PA-3410' },
-      { id:'16200',   tp:15,   target:'Datacenter (legacy)',            pa:'PA-3430' },
-      { id:'26000',   tp:24,   target:'Datacenter (legacy)',            pa:'PA-5410' },
-      { id:'28000',   tp:30,   target:'Datacenter (legacy)',            pa:'PA-5410' },
-      { id:'19100',   tp:35,   target:'Datacenter (Force)',             pa:'PA-5410' },
-      { id:'19200',   tp:44,   target:'Datacenter (Force)',             pa:'PA-5420' },
-      { id:'29100',   tp:60,   target:'Datacenter (Force)',             pa:'PA-5430' },
-      { id:'29200',   tp:75,   target:'Datacenter (Force)',             pa:'PA-5445' },
-    ],
-  };
-
-  function updateExistingModels() {
-    const brand = document.getElementById('wiz-existing').value;
-    const modelField = document.getElementById('wiz-model-field');
-    const modelSelect = document.getElementById('wiz-existing-model');
-    if (brand === 'fortinet' || brand === 'checkpoint') {
-      modelField.hidden = false;
-      const models = COMPETITOR_MODELS[brand];
-      modelSelect.innerHTML = '<option value="unknown">Non renseigné</option>' +
-        models.map(m => {
-          const prefix = brand === 'fortinet' ? '' : 'Quantum ';
-          return `<option value="${m.id}">${prefix}${m.id} (TP ${m.tp} Gbps, ${m.target})</option>`;
-        }).join('');
-    } else {
-      modelField.hidden = true;
-      modelSelect.innerHTML = '<option value="unknown">Non renseigné</option>';
-    }
+  /* ══ Interfaces requises ══
+     Meme comptage que l'outil Remplacer (js/replace-engine.js) : chaque
+     besoin accepte sa classe de port et les classes plus rapides
+     compatibles, un port combo ne sert qu'une fois. Ici les ports natifs
+     seulement : un modele qui ne les tient pas sort du calcul. */
+  const PORT_FIELDS = [['wiz-p-cu1', 'cu1', 'cuivre 1G'], ['wiz-p-mgig', 'cu25', 'cuivre multi-gig'],
+    ['wiz-p-sfp1', 'sfp1', 'SFP 1G'], ['wiz-p-sfp10', 'sfp10', 'SFP+ 10G'],
+    ['wiz-p-sfp25', 'sfp25', 'SFP28 25G'], ['wiz-p-sfp100', 'sfp100', '40/100G']];
+  function portNeed() {
+    const need = {}, parts = [];
+    PORT_FIELDS.forEach(([id, k, label]) => {
+      const el = document.getElementById(id);
+      const n = el ? parseInt(el.value, 10) || 0 : 0;
+      if (n > 0) { need[k] = n; parts.push(n + ' ' + label); }
+    });
+    const poeEl = document.getElementById('wiz-p-poe');
+    const poe = !!poeEl && poeEl.value === 'yes';
+    if (poe) parts.push('PoE');
+    return { need, poe, any: parts.length > 0, text: parts.join(', ') };
+  }
+  function tientPorts(m, pn) {
+    if (!pn || !pn.any) return true;
+    if (pn.poe && !m.poe) return false;
+    const E = window.ReplaceEngine;
+    return !(E && E.fitPorts(m, pn.need));
   }
 
   /* Metadonnees editoriales des series. Aucun chiffre ici : les bornes
@@ -1028,45 +995,6 @@
     return _familles;
   }
 
-  const COMPETITOR_ARGS = {
-    fortinet: {
-      name: 'Fortinet (FortiGate)',
-      args: [
-        { title:'Sécurité sans compromis sur les performances', text:'Les débits Palo Alto sont mesurés en conditions réelles (appmix), pas en conditions de laboratoire. La comparaison sur les débits Threat Prevention en trafic réel est souvent favorable à Palo Alto.' },
-        { title:'App-ID vs port-based', text:'App-ID identifie les applications en continu dans le flux, là où Fortinet reste majoritairement basé sur les ports et signatures. La granularité de contrôle est nativement supérieure.' },
-      ]
-    },
-    cisco: {
-      name: 'Cisco (Firepower / ASA)',
-      args: [
-        { title:'Plateforme unifiée vs assemblage', text:'Palo Alto propose une architecture single-pass (App-ID + Content-ID + User-ID en un seul passage), là où Cisco empile des modules (AMP, Snort, AVC) avec un impact sur les performances.' },
-        { title:'Migration simplifiée', text:'Palo Alto fournit des outils de migration Expedition pour convertir les règles Cisco ASA/Firepower vers PAN-OS.' },
-      ]
-    },
-    checkpoint: {
-      name: 'Check Point',
-      args: [
-        { title:'Innovation continue vs héritage', text:'Palo Alto investit massivement dans l\'IA (Precision AI, Nebula) et le cloud-native, là où Check Point reste centré sur une architecture traditionnelle.' },
-        { title:'Gestion cloud-native', text:'Strata Cloud Manager (SCM) offre une gestion unifiée NGFW + SASE + SD-WAN, là où Check Point nécessite des consoles séparées.' },
-      ]
-    },
-    zscaler: {
-      name: 'Zscaler',
-      args: [
-        { title:'Approche complémentaire', text:'Zscaler est une solution proxy cloud (SWG/CASB). Palo Alto couvre le même périmètre avec Prisma Access, mais offre en plus le NGFW on-prem, le SD-WAN et Cortex XDR pour une plateforme unifiée.' },
-        { title:'Visibilité complète', text:'Palo Alto inspecte tout le trafic (pas seulement HTTP/HTTPS) et offre App-ID pour identifier les applications, y compris celles qui n\'utilisent pas le web.' },
-      ]
-    },
-    default: {
-      name: 'Concurrent générique',
-      args: [
-        { title:'Leader du Gartner Magic Quadrant', text:'Palo Alto Networks est leader du Magic Quadrant for Network Firewalls depuis plus de 10 années consécutives (Gartner).' },
-        { title:'Plateforme unifiée', text:'Seul acteur proposant NGFW + SASE + XDR + Cloud Security sur une plateforme intégrée (Strata + Prisma + Cortex), avec une IA transversale (Precision AI).' },
-        { title:'Zero Trust natif', text:'Architecture ZTNA 2.0 native avec App-ID, User-ID et Device-ID pour un contrôle granulaire en continu, pas seulement à la connexion.' },
-      ]
-    },
-  };
-
   /* ══ Selection au modele pres ══
 
      Trois metriques decident du dimensionnement d'un NGFW, et c'est
@@ -1096,9 +1024,9 @@
      mesure sur le parc existant doit la remplacer des qu'il existe. */
   const DUREE_SESSION_S = 30;
 
-  function choisirModeles(needTp, needSess, needCps, familleId) {
-    const dansLaSerie = MODELS.filter(m => m.s === familleId && !m.eos);
-    const pool = dansLaSerie.length ? dansLaSerie : MODELS.filter(m => !m.eos);
+  function choisirModeles(needTp, needSess, needCps, familleId, pn) {
+    const dansLaSerie = MODELS.filter(m => m.s === familleId && !m.eos && tientPorts(m, pn));
+    const pool = dansLaSerie.length ? dansLaSerie : MODELS.filter(m => !m.eos && tientPorts(m, pn));
 
     return pool
       .map(m => {
@@ -1171,8 +1099,6 @@
     const rawSsl    = _v('wiz-ssl');
     const rawCloud  = _v('wiz-cloud');
     const rawSector = _v('wiz-sector');
-    const rawExist  = _v('wiz-existing');
-    const rawExistModel = _v('wiz-existing-model');
     const rawIot    = _v('wiz-iot');
     const rawHa     = _v('wiz-ha');
     const rawRemote = _v('wiz-remote');
@@ -1213,7 +1139,6 @@
     const needCps = Math.round(needSess / DUREE_SESSION_S);
 
     if (rawRemote === 'unknown') openQuestions.push('Combien d\'utilisateurs se connectent à distance (VPN, télétravail) ?');
-    if (rawExist === 'unknown') openQuestions.push('Quel firewall est actuellement en place (marque et modèle) ?');
     if (rawGrowth === 'unknown') openQuestions.push('Quelle est la croissance prévue à 3 ans (effectif, débit) ?');
     if (rawCloud === 'unknown') openQuestions.push('Le client utilise-t-il massivement du SaaS / cloud (Teams, M365, Salesforce) ?');
     if (rawSsl === 'unknown') openQuestions.push('Le déchiffrement HTTPS est-il prévu ou souhaité ?');
@@ -1230,7 +1155,15 @@
 
     const reco = [];
     const alsoConsider = [];
-    const FAMILIES = familles();
+    /* Interfaces : une serie ne compte que par ses modeles qui tiennent
+       les ports demandes, et son plafond de debit est le leur. */
+    const pn = portNeed();
+    const FAMILIES = familles().map(f => {
+      if (!pn.any) return f;
+      const ok = MODELS.filter(m => m.s === f.id && !m.eos && tientPorts(m, pn));
+      return ok.length ? Object.assign({}, f, { tpMax: Math.max.apply(null, ok.map(m => m.tp)) }) : null;
+    }).filter(Boolean).sort((a, b) => a.tpMax - b.tpMax);
+    const portsEcartes = pn.any ? MODELS.filter(m => !m.eos && !tientPorts(m, pn)).length : 0;
     /* Une serie qui tient a 65% de la datasheet est retenue. Une serie
        qui ne tient qu'a 90% est un repli : elle n'est proposee que si
        aucune serie superieure ne tient dans la marge. Sans cette
@@ -1288,6 +1221,13 @@
       if (field) field.classList.toggle('assumed', val === 'unknown');
     });
 
+    if (reco.length === 0 && pn.any && !FAMILIES.length) {
+      box.innerHTML = '<div class="wb-note" style="border-left-color:var(--crit)">'
+        + ic('alert', 15)
+        + '<div><b>Aucun modèle en vente ne tient ces interfaces en ports natifs</b> (' + pn.text + ').<br>'
+        + 'Réduisez le besoin ou passez par <a href="remplacement.html">Remplacer</a>, qui compte aussi les optiques cuivre dans les cages libres.</div></div>';
+      return;
+    }
     if (reco.length === 0) {
       box.innerHTML = '<div class="wb-note" style="border-left-color:var(--crit)">'
         + ic('alert', 15)
@@ -1301,14 +1241,14 @@
 
     /* Modeles de la serie retenue, classes du plus juste au plus
        large. On ne se contente plus d'annoncer la serie. */
-    const candidats = choisirModeles(needTp, needSess, needCps, primary.id);
+    const candidats = choisirModeles(needTp, needSess, needCps, primary.id, pn);
     const retenu = (candidats.find(c => c.tient) || candidats[0]) || null;
 
     /* Modele le plus capable de la serie retenue : c'est LUI que la jauge
        mesure, pas la serie. Sans cette precision, un lecteur peut croire
        que le premier modele de la gamme tient le debit affiche. */
     const topModel = MODELS
-      .filter(m => m.s === primary.id && !m.eos)
+      .filter(m => m.s === primary.id && !m.eos && tientPorts(m, pn))
       .sort((a, b) => b.tp - a.tp)[0];
     const topLabel = topModel ? topModel.id : primary.id;
     const needRate = fmtRate(needTp);
@@ -1508,25 +1448,12 @@
       html += '</ul>';
     }
 
-    /* ── 5. Equivalence avec le boitier en place ── */
-    if (rawExistModel !== 'unknown' && (rawExist === 'fortinet' || rawExist === 'checkpoint')) {
-      const match = COMPETITOR_MODELS[rawExist].find(m => m.id === rawExistModel);
-      if (match) {
-        const paModel = MODELS.find(m => m.id === match.pa);
-        const brandName = rawExist === 'fortinet' ? 'FortiGate ' : 'Check Point Quantum ';
-        html += '<h3 class="wb-group-title">' + ic('ha', 20) + 'Équivalence PA-Series</h3>'
-          + '<div class="wb-verdict" style="border-left-color:var(--ok);margin-bottom:10px">'
-          + '<div class="wb-verdict-top" style="align-items:center">'
-          +   '<span style="font-family:var(--mono);font-size:14px;color:var(--text-muted)">' + brandName + match.id + '</span>'
-          +   ic('arrow', 16)
-          +   '<span style="font-family:var(--mono);font-size:16px;font-weight:700;color:var(--ok)">' + match.pa + '</span>'
-          + '</div>'
-          + '<p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:8px;line-height:1.55">'
-          +   'TP ~' + match.tp + ' Gbps côté ' + (rawExist === 'fortinet' ? 'Fortinet' : 'Check Point')
-          +   (paModel ? ', TP ' + paModel.tp + ' Gbps et ' + fmtN(paModel.sess) + ' sessions côté ' + match.pa : '')
-          +   '. Rapprochement indicatif : les méthodes de mesure diffèrent d\'un constructeur à l\'autre.'
-          + '</p></div>';
-      }
+    /* ── 5. Interfaces demandees ── */
+    if (pn.any) {
+      html += '<h3 class="wb-group-title">' + ic('rack', 20) + 'Interfaces demandées</h3><ul class="wb-list">'
+        + '<li>' + ic('check', 14) + '<span>' + esc(pn.text) + ', tenues en ports natifs par le modèle retenu'
+        + (portsEcartes ? ' ; ' + portsEcartes + ' modèle' + (portsEcartes > 1 ? 's' : '') + ' en vente écarté' + (portsEcartes > 1 ? 's' : '') + ' faute de ports' : '')
+        + '</span></li></ul>';
     }
 
     /* ── 6. Architecture ── */
@@ -1608,11 +1535,7 @@
       sector: { finance: 'finance, banque, assurance', health: 'santé, pharma',
                 industry: 'industrie, OT', retail: 'commerce, distribution',
                 education: 'éducation, recherche', public: 'secteur public',
-                services: 'services, conseil', tech: 'tech, SaaS', other: 'autre' },
-      exist:  { none: 'aucun, nouveau site', fortinet: 'Fortinet FortiGate',
-                checkpoint: 'Check Point Quantum', cisco: 'Cisco Firepower / ASA',
-                sophos: 'Sophos Firewall', sonicwall: 'SonicWall',
-                stormshield: 'Stormshield SNS', other: 'autre' }
+                services: 'services, conseil', tech: 'tech, SaaS', other: 'autre' }
     };
 
     const recoText = retenu
@@ -1637,7 +1560,7 @@ CONTRAINTES
   Haute disponibilité : ${LBL.ha[rawHa] || 'non renseigné'}
   Croissance à 3 ans  : ${LBL.growth[rawGrowth] || 'non renseigné (hypothèse x1,3)'}
   Secteur             : ${LBL.sector[rawSector] || 'non renseigné'}
-  Parc en place       : ${LBL.exist[rawExist] || 'non renseigné'}${rawExistModel !== 'unknown' ? ' ' + rawExistModel : ''}
+  Interfaces requises : ${pn.any ? pn.text : 'non renseignées'}
 
 RECOMMANDATION
   Modèle retenu       : ${recoText}
@@ -1738,7 +1661,7 @@ Source : datasheets Palo Alto Networks, mesures sous PAN-OS ${retenu && retenu.m
         confidence, confLabel,
         users, sites, typeLabel, bwMbps, sslLabel, cloudLabel,
         clientName, partnerName,
-        sector: rawSector, existing: rawExist, existingModel: rawExistModel,
+        sector: rawSector, portsText: pn.any ? pn.text : '',
         iot: rawIot, ha: rawHa, remote: rawRemote, growth: rawGrowth,
         recoText, reco, needTp, needSess, needCps,
         modele: retenu ? retenu.m : null,
@@ -1756,15 +1679,6 @@ Source : datasheets Palo Alto Networks, mesures sous PAN-OS ${retenu && retenu.m
     const confColor = d.confidence === 'green' ? '#16a34a' : d.confidence === 'orange' ? '#d97706' : '#dc2626';
     const confBg = d.confidence === 'green' ? '#f0fdf4' : d.confidence === 'orange' ? '#fffbeb' : '#fef2f2';
 
-    let existingLine = '';
-    if (d.existing !== 'unknown' && d.existing !== 'none') {
-      const brandLabel = { fortinet: 'Fortinet FortiGate', checkpoint: 'Check Point Quantum', cisco: 'Cisco', sophos: 'Sophos Firewall', sonicwall: 'SonicWall', stormshield: 'Stormshield SNS' }[d.existing] || d.existing;
-      existingLine = `<tr><td>Existant</td><td>${brandLabel}${d.existingModel !== 'unknown' ? ' ' + d.existingModel : ''}</td></tr>`;
-      if (d.existingModel !== 'unknown' && (d.existing === 'fortinet' || d.existing === 'checkpoint')) {
-        const m = COMPETITOR_MODELS[d.existing]?.find(x => x.id === d.existingModel);
-        if (m) existingLine += `<tr><td>Équivalent PA-Series</td><td style="color:#16a34a;font-weight:600">${m.pa} (TP ${MODELS.find(x=>x.id===m.pa)?.tp || '?'} Gbps)</td></tr>`;
-      }
-    }
 
     const subsHtml = d.subs.map(s => `<span style="display:inline-block;padding:3px 10px;margin:2px;border-radius: var(--r-lg);font-size:11px;${s.included ? 'background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0' : 'background:#f8fafc;color:#475569;border:1px solid #e2e8f0'}">${s.name}</span>`).join('');
 
@@ -1819,7 +1733,7 @@ ${d.clientName ? `<h2 style="font-size:16px;color:#0f172a;margin-bottom:2px">${d
     <tr><td>Déchiffrement SSL</td><td>${d.sslLabel}</td></tr>
     <tr><td>Usage cloud</td><td>${d.cloudLabel}</td></tr>
     ${d.sector !== 'unknown' ? `<tr><td>Secteur</td><td>${d.sector}</td></tr>` : ''}
-    ${existingLine}
+    ${d.portsText ? `<tr><td>Interfaces requises</td><td>${d.portsText}</td></tr>` : ''}
     ${d.ha !== 'unknown' ? `<tr><td>Haute disponibilité</td><td>${d.ha}</td></tr>` : ''}
     ${d.remote !== 'unknown' ? `<tr><td>Utilisateurs nomades</td><td>${d.remote}</td></tr>` : ''}
     ${d.growth !== 'unknown' ? `<tr><td>Croissance à 3 ans</td><td>${d.growth}</td></tr>` : ''}
@@ -1866,32 +1780,32 @@ ${d.openQuestions.length > 0 ? `<div class="questions"><strong>Questions à pose
     {
       name: 'TPE mono-site',
       desc: '20 utilisateurs, 1 site agence, 50 Mbps, pas de SSL',
-      inputs: { users:'30', sites:'1', type:'branch', bw:'50', ssl:'no', cloud:'low', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      inputs: { users:'30', sites:'1', type:'branch', bw:'50', ssl:'no', cloud:'low', sector:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
       expect: { families: ['PA-400'], confidenceMin: 'green' }
     },
     {
       name: 'PME multi-sites avec déchiffrement',
       desc: '200 utilisateurs, 5 sites, siège, 200 Mbps, SSL oui, SaaS intensif',
-      inputs: { users:'250', sites:'3', type:'campus', bw:'200', ssl:'yes', cloud:'high', sector:'services', existing:'fortinet', iot:'none', ha:'yes', remote:'medium', growth:'moderate' },
+      inputs: { users:'250', sites:'3', type:'campus', bw:'200', ssl:'yes', cloud:'high', sector:'services', iot:'none', ha:'yes', remote:'medium', growth:'moderate' },
       expect: { families: ['PA-400','PA-500','PA-1400'], confidenceMin: 'green' }
     },
     {
       name: 'ETI avec datacenter',
       desc: '2000 utilisateurs, 10 sites, datacenter, 5 Gbps, SSL oui, forte croissance',
-      inputs: { users:'2500', sites:'10', type:'dc', bw:'5000', ssl:'yes', cloud:'high', sector:'finance', existing:'cisco', iot:'moderate', ha:'yes', remote:'high', growth:'strong' },
+      inputs: { users:'2500', sites:'10', type:'dc', bw:'5000', ssl:'yes', cloud:'high', sector:'finance', iot:'moderate', ha:'yes', remote:'high', growth:'strong' },
       expect: { families: ['PA-5400','PA-7500'], confidenceMin: 'green' }
     },
     {
       name: 'Tout inconnu',
       desc: 'Toutes les réponses à "je ne sais pas"',
-      inputs: { users:'unknown', sites:'unknown', type:'unknown', bw:'unknown', ssl:'unknown', cloud:'unknown', sector:'unknown', existing:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
+      inputs: { users:'unknown', sites:'unknown', type:'unknown', bw:'unknown', ssl:'unknown', cloud:'unknown', sector:'unknown', iot:'unknown', ha:'unknown', remote:'unknown', growth:'unknown' },
       expect: { families: ['PA-400','PA-500'], confidenceMin: 'red' }
     },
   ];
 
   function runGoldenCases() {
     const results = [];
-    const fieldMap = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', existing:'wiz-existing', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
+    const fieldMap = { users:'wiz-users', sites:'wiz-sites', type:'wiz-type', bw:'wiz-bw', ssl:'wiz-ssl', cloud:'wiz-cloud', sector:'wiz-sector', iot:'wiz-iot', ha:'wiz-ha', remote:'wiz-remote', growth:'wiz-growth' };
 
     // On sauvegarde l'etat du formulaire : la campagne de test ne doit pas
     // laisser l'outil rempli avec le dernier cas joue.

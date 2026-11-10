@@ -112,7 +112,7 @@ function log(ok, msg) {
   // visible par les autres scripts, exactement comme dans un navigateur.
   // La nuance compte : elle a masque un appel a MODELS qui fonctionnait
   // en production mais echouait ici.
-  for (const src of ['header.js', 'ui.js', 'icons.js', 'data/pa-models.js']) {
+  for (const src of ['header.js', 'ui.js', 'icons.js', 'data/pa-models.js', 'js/replace-engine.js']) {
     const el = doc.createElement('script');
     el.textContent = fs.readFileSync(path.join(ROOT, src), 'utf8');
     doc.head.appendChild(el);
@@ -170,6 +170,39 @@ function log(ok, msg) {
           c.name + ' -> facteur dimensionnant « ' + c.expectFacteur + ' » annonce');
     }
   }
+
+  /* Interfaces requises (reprises de l'ancienne page Recherche) : un
+     modele qui ne tient pas les ports natifs demandes sort du calcul. */
+  console.log('\nInterfaces requises');
+  const reset = () => {
+    doc.querySelectorAll('#wb-form input').forEach(el => { el.value = ''; });
+    doc.querySelectorAll('#wb-form select').forEach(el => { el.selectedIndex = 0; });
+  };
+  reset();
+  doc.getElementById('wiz-bw').value = '100';
+  doc.getElementById('wiz-users').value = '50';
+  doc.getElementById('wiz-p-sfp25').value = '4';
+  win.eval('runCommercialWizard()');
+  const famP = ((doc.querySelector('#wb-out .wb-verdict-family') || {}).textContent || '').replace(' Series', '').trim();
+  /* le verdict affiche le modele retenu ; il doit porter les 4 SFP28 et
+     aucun modele plus petit en vente ne doit les porter */
+  const fitOk = win.eval('(function () { var pn = portNeed(); var m = MODELS.find(function (x) { return x.id === ' + JSON.stringify(famP) + '; });'
+    + ' if (!m || !tientPorts(m, pn) || ReplaceEngine.fitPorts(m, pn.need)) return false;'
+    + ' return !MODELS.some(function (x) { return !x.eos && x.tp < m.tp && x.s !== m.s && tientPorts(x, pn) && x.s !== "PA-50R"; }); })()');
+  log(!!famP && fitOk, '4 SFP28 sur un petit besoin -> ' + famP + ', pourvu des 4 SFP28, aucune serie plus petite ne les a');
+  log(/Interfaces demandées/.test(doc.getElementById('wb-out').textContent), 'les interfaces demandees sont rappelees dans la sortie');
+  reset();
+  doc.getElementById('wiz-bw').value = '100';
+  doc.getElementById('wiz-p-sfp100').value = '500';
+  win.eval('runCommercialWizard()');
+  log(/Aucun modèle en vente ne tient ces interfaces/.test(doc.getElementById('wb-out').textContent), '500 ports 100G -> aucun modele, renvoi vers Remplacer');
+  reset();
+  doc.getElementById('wiz-bw').value = '50';
+  doc.getElementById('wiz-p-poe').value = 'yes';
+  win.eval('runCommercialWizard()');
+  const poeOk = win.eval('(function () { var pn = portNeed(); var l = MODELS.filter(function (m) { return !m.eos && tientPorts(m, pn); }); return l.length > 0 && l.every(function (m) { return m.poe; }); })()');
+  log(poeOk, 'PoE requis -> seuls des modeles PoE restent candidats');
+  reset();
 
   /* Les capacites reprises d'editions anterieures des datasheets
      (LEGACY_CAPS) ne doivent jamais peser dans le dimensionnement : on

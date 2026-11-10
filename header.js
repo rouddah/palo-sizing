@@ -42,8 +42,7 @@
     { href: 'remplacement.html',  label: 'Remplacer',    ic: 'swap',  key: 'R' },
     { href: 'qualification.html', label: 'Dimensionner', ic: 'size',  key: 'D' },
     { href: 'optiques.html',      label: 'Optiques',     ic: 'optic' },
-    { href: 'accessoires.html',   label: 'Accessoires',  ic: 'box' },
-    { href: 'search.html',        label: 'Recherche',    ic: 'find' }
+    { href: 'accessoires.html',   label: 'Accessoires',  ic: 'box' }
   ];
   /* Portefeuille : second niveau. */
   var PILLARS = [
@@ -54,7 +53,6 @@
     { href: 'idira.html',     label: 'Idira' }
   ];
   var MORE = [
-    { href: 'wizard.html',    label: 'Mode guidé' },
     { href: 'resources.html', label: 'Ressources' }
   ];
 
@@ -181,11 +179,9 @@
     ['pa-series.html', 'Comparateur PA-Series', 'comparer gamme explorer debit sessions', 'Outil'],
     ['pa-series.html?view=table', 'Tableau complet des PA-Series', 'tableau toutes les specs colonnes', 'Outil'],
     ['remplacement.html', 'Remplacer un firewall existant', 'remplacement renouvellement ancien boitier fortinet fortigate check point cisco sophos xgs sonicwall tz nsa stormshield sns equivalent iso n-1 n+1 commercial', 'Outil'],
-    ['qualification.html', 'Dimensionner un firewall', 'etabli qualification sizing besoin utilisateurs', 'Outil'],
+    ['qualification.html', 'Dimensionner un firewall', 'etabli qualification sizing besoin utilisateurs interfaces ports poe questions client', 'Outil'],
     ['optiques.html', 'Optiques et transceivers', 'sfp qsfp fibre transceiver optique', 'Outil'],
     ['accessoires.html', 'Alimentations et accessoires', 'alimentation rack disque ventilation', 'Outil'],
-    ['search.html', 'Recherche par critère', 'recherche critere interface utilisateurs', 'Outil'],
-    ['wizard.html', 'Mode guidé', 'wizard questions guide', 'Page'],
     ['panorama.html', 'Panorama', 'ngfw gestion centralisee', 'Portefeuille'],
     ['prisma.html', 'Prisma Access et SASE', 'sase prisma sd-wan', 'Portefeuille'],
     ['browser.html', 'Prisma Browser', 'navigateur browser', 'Portefeuille'],
