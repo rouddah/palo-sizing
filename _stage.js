@@ -25,7 +25,7 @@ const OUT = path.join(ROOT, '.deploy');
 
 /* Fichiers racine publies : les pages, plus les scripts et la
    feuille de style qu'elles chargent. */
-const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js'];
+const ROOT_FILES = ['styles.css', 'header.js', 'ui.js', 'icons.js', 'links.js', '_redirects'];
 /* Dossiers publies en entier */
 const DIRS = ['data', 'img', 'fonts', 'vendor', 'js'];
 
