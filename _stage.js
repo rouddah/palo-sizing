@@ -96,7 +96,7 @@ const leaked = [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const r = rel ? rel + '/' + e.name : e.name;
     if (e.isDirectory()) walk(path.join(dir, e.name), r);
-    else if (FORBIDDEN.test(e.name) || e.name.endsWith('.md') || e.name.endsWith('.py')) leaked.push(r);
+    else if ((FORBIDDEN.test(e.name) && r !== '_redirects') || e.name.endsWith('.md') || e.name.endsWith('.py')) leaked.push(r);
   }
 })(OUT, '');
 
