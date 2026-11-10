@@ -1491,7 +1491,12 @@
   function shortProfile(def) {
     if (!def) return '';
     if (/UDP 1518|1518 ?B UDP|1518 octets/i.test(def) && /UDP/i.test(def)) return 'UDP 1518 o';
+    if (/1518 byte UDP/i.test(def)) return 'UDP 1518 o';
     if (/Enterprise Traffic Mix/i.test(def)) return 'Ent. Traffic Mix';
+    if (/realistic traffic mix/i.test(def)) return 'trafic réaliste';
+    if (/512 Ko/i.test(def)) return 'HTTP 512 Ko';
+    if (/RFC 2544/i.test(def) && !/octets/i.test(def)) return 'RFC 2544';
+    if (/Keysight HTTP|HTTP Keysight/i.test(def)) return 'HTTP Keysight';
     if (/Enterprise Test Conditions/i.test(def)) return 'Ent. Test Cond.';
     const o = def.match(/(\d{3,4}) ?octets/i);
     if (o) return o[1] + ' o';
@@ -2679,7 +2684,7 @@
   </script>
 
   <footer class="site-footer">
-    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div>Sizing Guide PANW</div>
     <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (mesures sous PAN-OS 11.0 à 12.2 selon la série), documentation technique Palo Alto pour la HA et les versions · Dernière mise à jour : novembre 2026</div>
     <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
   </footer>

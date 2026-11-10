@@ -1,5 +1,22 @@
 # Changelog
 
+## Session 25 - 10 novembre 2026 : Sophos, SonicWall, Stormshield ; retrait Exclusive Networks
+
+- `data/competitors.js` : trois editeurs de plus, releves sur leurs datasheets
+  officielles (124 concurrents au lieu de 69). Sophos Firewall XGS 19 modeles
+  (brochure officielle d octobre 2026, la seule source publiee par modele),
+  SonicWall TZ / NSa / NSsp 21 modeles (Gen 7 et Gen 8 vendus ; TZ270, TZ470,
+  NSa 2700 et 3700 en fin de vente, ecartes), Stormshield SNS 15 modeles (SN-L
+  et SN-XL : ports de donnees uniquement sur modules, donc nuls). Profils de
+  mesure courts ajoutes dans `shortProfile`. Remplacer : commandes de releve des
+  sessions SonicWall (`show status`) et Stormshield (`sfctl -s conn`), aucune
+  commande officielle Sophos (renvoi au tableau de bord).
+- Qualification : Sophos Firewall, SonicWall et Stormshield SNS dans le parc en place.
+- Plus aucune mention d Exclusive Networks : pieds de page, metas, brief imprimable
+  (logo retire, `img/exn-logo.png` supprime), mode guide, Prisma, Browser,
+  Ressources et `links.js`. Les renvois devis pointent vers « votre distributeur
+  Palo Alto Networks ».
+
 ## Session 24 - 6 novembre 2026 : outil Remplacer, vue Tableau, recontrole datasheets
 
 - Nouvel outil `remplacement.html` (onglet Remplacer, raccourci R) pour les

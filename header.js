@@ -180,7 +180,7 @@
   var PAGES = [
     ['pa-series.html', 'Comparateur PA-Series', 'comparer gamme explorer debit sessions', 'Outil'],
     ['pa-series.html?view=table', 'Tableau complet des PA-Series', 'tableau toutes les specs colonnes', 'Outil'],
-    ['remplacement.html', 'Remplacer un firewall existant', 'remplacement renouvellement ancien boitier fortinet fortigate check point cisco equivalent iso n-1 n+1 commercial', 'Outil'],
+    ['remplacement.html', 'Remplacer un firewall existant', 'remplacement renouvellement ancien boitier fortinet fortigate check point cisco sophos xgs sonicwall tz nsa stormshield sns equivalent iso n-1 n+1 commercial', 'Outil'],
     ['qualification.html', 'Dimensionner un firewall', 'etabli qualification sizing besoin utilisateurs', 'Outil'],
     ['optiques.html', 'Optiques et transceivers', 'sfp qsfp fibre transceiver optique', 'Outil'],
     ['accessoires.html', 'Alimentations et accessoires', 'alimentation rack disque ventilation', 'Outil'],

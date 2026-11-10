@@ -376,7 +376,7 @@
   </div>
 
   <footer class="site-footer">
-    <div>Sizing Guide PANW &middot; by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div>Sizing Guide PANW</div>
     <div style="margin-top:4px;font-size:10px">Recommandation indicative de premier niveau · Ne remplace pas un sizing officiel Palo Alto</div>
   </footer>
 
@@ -768,7 +768,7 @@
       var bw = SITE_BW[sz] || 100;
       var lines = [];
       lines.push('# Recommandation Palo Alto - Premier niveau');
-      lines.push('Généré par Sizing Guide Exclusive Networks - ' + new Date().toLocaleDateString('fr-FR'));
+      lines.push('Généré par Sizing Guide PANW - ' + new Date().toLocaleDateString('fr-FR'));
       lines.push('');
       lines.push('## Données saisies');
       lines.push('- Utilisateurs sur site : ' + onsite);
@@ -823,7 +823,7 @@
       }
       lines.push('');
       lines.push('## Avertissement');
-      lines.push('Recommandation indicative pour qualification de premier niveau. Ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Tarif non affiché. Pour un devis : partner-connect.exclusive-labs.com');
+      lines.push('Recommandation indicative pour qualification de premier niveau. Ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Tarif non affiché. Pour un devis : votre distributeur Palo Alto Networks.');
       return lines.join('\n');
     }
 
@@ -977,7 +977,7 @@
       /* === Disclaimer === */
       h += '<div class="wiz-result-block" style="border-left:3px solid var(--yellow)">';
       h += '<div class="wiz-result-title" style="color:var(--yellow)">Avertissement</div>';
-      h += '<div class="wiz-result-line">Cette recommandation est indicative pour qualification de premier niveau. Elle ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Le tarif n’est jamais affiché : pour un devis, contacter votre interlocuteur Exclusive Networks via <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener" style="color:var(--yellow)">partner-connect.exclusive-labs.com</a>.</div>';
+      h += '<div class="wiz-result-line">Cette recommandation est indicative pour qualification de premier niveau. Elle ne remplace pas un POC, un sizing officiel Palo Alto, ni une consultation avec votre SE. Le tarif n’est jamais affiché : pour un devis, contacter votre distributeur Palo Alto Networks.</div>';
       h += '</div>';
 
       /* === Actions === */
