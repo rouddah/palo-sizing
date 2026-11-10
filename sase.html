@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dimensionner SASE · Sizing Guide</title>
+  <meta name="description" content="Dimensionner une offre Prisma SASE : édition et couverture Prisma Access, Mobile Users, Remote Networks, Service Connections, appareils ION et abonnements Prisma SD-WAN, add-ons. Chaque ligne cite sa règle officielle." />
+  <meta property="og:title" content="Dimensionner SASE · Sizing Guide" />
+  <meta property="og:description" content="Nomenclature Prisma SASE sourcée, sans prix ni référence de commande." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .sz-check { display: flex; align-items: flex-start; gap: 8px; font-size: var(--text-sm); color: var(--text); margin: 0 0 8px; cursor: pointer; line-height: 1.45; }
+    .sz-check input { margin-top: 3px; accent-color: var(--accent); flex: none; }
+    .sz-hint { margin: -2px 0 10px; font-size: var(--text-xs); color: var(--text-muted); line-height: 1.5; }
+    .sz-prof { border: 1px solid var(--border); border-radius: var(--r-sm); padding: 10px 10px 4px; margin: 0 0 10px; }
+    .sz-prof legend { font-size: var(--text-xs); color: var(--text-muted); padding: 0 4px; }
+    .sz-prof .wb-row { grid-template-columns: 1fr 1fr 1.3fr; }
+    .sz-flags { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 2px 0 6px; }
+    .sz-flags .sz-check { margin: 0 0 4px; font-size: var(--text-xs); }
+    .sz-rm { background: none; border: 0; color: var(--text-muted); font-size: var(--text-xs); text-decoration: underline; cursor: pointer; padding: 4px 0; }
+    .sz-rm:hover { color: var(--text-bright); }
+    .sz-add { background: none; border: 1px dashed var(--border2); color: var(--text); border-radius: var(--r-sm); padding: 7px 10px; font-size: var(--text-xs); cursor: pointer; width: 100%; }
+    .sz-add:hover { border-color: var(--accent); color: var(--text-bright); }
+    .sz-addons { columns: 2; column-gap: 14px; }
+    .sz-addons .sz-check { break-inside: avoid; font-size: var(--text-xs); }
+
+    .sz-head { margin-bottom: 14px; }
+    .sz-head h3 { font-size: 22px; font-weight: 700; color: var(--text-bright); margin: 0; letter-spacing: -.01em; }
+    .sz-head p { margin: 4px 0 0; font-size: var(--text-xs); color: var(--text-muted); }
+    .sz-alerts { list-style: none; margin: 0 0 16px; padding: 0; }
+    .sz-alerts li { display: flex; gap: 8px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.5; color: var(--text); }
+    .sz-alerts li:last-child { border-bottom: 0; }
+    .sz-alerts .ic { flex: none; margin-top: 1px; }
+    .sz-alerts .crit .ic { color: var(--crit); }
+    .sz-alerts .warn .ic { color: var(--warn); }
+    .sz-alerts .info .ic { color: var(--text-muted); }
+    .sz-alerts a, .sz-notes a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 2px; }
+    .sz-alerts a:hover, .sz-notes a:hover { color: var(--accent-txt); }
+    .sz-src { color: var(--text-muted); }
+    .sz-sub { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); font-weight: 600; margin: 4px 0 6px; }
+    .sz-bom { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    .sz-bom th, .sz-bom td { text-align: left; vertical-align: top; padding: 8px 8px 8px 0; border-bottom: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.5; }
+    .sz-bom thead th { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); font-weight: 600; }
+    .sz-bom tr.grp td { padding-top: 14px; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-txt); font-weight: 700; border-bottom-color: var(--border2); }
+    .sz-bom td.q { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text-bright); font-weight: 700; white-space: nowrap; }
+    .sz-bom td.q .u { display: block; font-family: var(--font); font-weight: 400; color: var(--text-muted); font-size: 10px; }
+    .sz-bom td.q .np { font-family: var(--font); font-weight: 400; font-style: italic; color: var(--text-muted); }
+    .sz-bom td.n { color: var(--text-bright); font-weight: 600; min-width: 130px; }
+    .sz-bom .src { display: block; margin-top: 3px; color: var(--text-muted); font-size: 10px; }
+    .sz-bom .src a { color: var(--text-muted); }
+    .sz-bom .src a:hover { color: var(--accent-txt); }
+    .sz-bom .inc { display: block; margin-top: 3px; color: var(--text-muted); }
+    .sz-bom tbody tr.chg td { animation: szflash .9s var(--ease) 1; }
+    @keyframes szflash { from { background: var(--accent-dim); } to { background: transparent; } }
+    @media (prefers-reduced-motion: reduce) { .sz-bom tbody tr.chg td { animation: none; } }
+    .sz-notes { font-size: var(--text-xs); color: var(--text-muted); line-height: 1.6; margin: 0 0 14px; }
+    .sz-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+    @media (max-width: 560px) {
+      .sz-prof .wb-row { grid-template-columns: 1fr 1fr; }
+      .sz-addons { columns: 1; }
+      .sz-bom td.n { min-width: 0; }
+      .sz-bom thead { display: none; }
+      .sz-bom tr { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; border-bottom: 1px solid var(--border); }
+      .sz-bom td { border-bottom: 0; padding: 8px 0 4px; }
+      .sz-bom td:nth-child(3) { grid-column: 1 / -1; padding: 0 0 10px; color: var(--text-muted); }
+      .sz-bom tr.grp td { grid-column: 1 / -1; }
+      .sz-bom td.q { text-align: right; }
+    }
+    @media print {
+      .site-header, .wb-bar, .wb-pane:first-child, .sz-actions, .wb-jump, #header-root { display: none !important; }
+      body.wb-page { display: block; height: auto; }
+      .wb { display: block; }
+      .wb-pane { overflow: visible !important; height: auto !important; border: 0 !important; }
+    }
+  </style>
+</head>
+<body class="wb-page" data-bg="calme">
+  <div id="header-root"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/CustomEase.min.js"></script>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="data/sase-rules.js"></script>
+  <script src="js/sase-engine.js"></script>
+
+  <div class="wb-bar">
+    <span class="wb-credit">Dimensionner Prisma SASE · règles officielles, sans prix ni référence de commande</span>
+    <span class="spacer"></span>
+    <a class="wb-tab" href="prisma.html"><span data-ic="info" data-ic-size="16"></span>Éditions et add-ons Prisma SASE</a>
+  </div>
+
+  <div class="commercial-view" id="view-commercial">
+    <div class="wb">
+
+      <section class="wb-pane in" aria-label="Besoins du client">
+        <div class="wb-pane-head">
+          <h2 class="wb-pane-title">Besoins</h2>
+          <span class="wb-pane-sub">Recalcul à chaque saisie</span>
+        </div>
+        <div class="wb-pane-in">
+          <form id="sz-form" novalidate>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="target" data-ic-size="20"></span>Usages</h3>
+              <label class="sz-check"><input type="checkbox" id="n-internet" checked> Filtrer l’accès internet des utilisateurs (catégories web, contrôle des SaaS)</label>
+              <label class="sz-check"><input type="checkbox" id="n-private"> Atteindre des applications internes à distance (intranet, ERP, fichiers, bases de données)</label>
+              <label class="sz-check"><input type="checkbox" id="n-browser"> Navigateur d’entreprise sécurisé ou protection des données SaaS en ligne</label>
+              <div class="wb-field">
+                <label for="f-edition">Édition Prisma Access</label>
+                <select id="f-edition">
+                  <option value="auto" selected>Déduite des usages</option>
+                  <option value="swg">Secure Web Gateway</option>
+                  <option value="ztna">Zero Trust Network Access (ZTNA)</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="throughput" data-ic-size="20"></span>Mobile Users</h3>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="f-mu">Utilisateurs nomades
+                    <button type="button" class="wb-help" data-tip="Mobile Users|Télétravail, mobilité, accès depuis l’extérieur des sites. Une unité par utilisateur, GlobalProtect, Prisma Agent ou Explicit Proxy.">?</button></label>
+                  <input type="number" id="f-mu" inputmode="numeric" min="0" step="1" placeholder="0">
+                </div>
+                <div class="wb-field">
+                  <label for="f-cl">Dont accès sans client
+                    <button type="button" class="wb-help" data-tip="Clientless VPN|Les utilisateurs qui passent par Clientless VPN comptent aussi comme des unités.">?</button></label>
+                  <input type="number" id="f-cl" inputmode="numeric" min="0" step="1" placeholder="0">
+                </div>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="ha" data-ic-size="20"></span>Couverture</h3>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="f-loc">Lieux à couvrir
+                    <button type="button" class="wb-help" data-tip="Lieux Prisma Access|Nombre de lieux (pays ou régions) Prisma Access où les utilisateurs et les sites se connectent. Local en inclut 5.">?</button></label>
+                  <input type="number" id="f-loc" inputmode="numeric" min="0" step="1" placeholder="1">
+                </div>
+                <div class="wb-field">
+                  <label for="f-cov">Couverture</label>
+                  <select id="f-cov">
+                    <option value="auto" selected>Déduite</option>
+                    <option value="local">Local</option>
+                    <option value="worldwide">Worldwide</option>
+                  </select>
+                </div>
+              </div>
+              <div class="wb-field">
+                <label for="f-ten">Tenants
+                  <button type="button" class="wb-help" data-tip="Tenants|Plusieurs tenants pour séparer des filiales. Chaque tenant porte une seule édition et un minimum d’unités.">?</button></label>
+                <input type="number" id="f-ten" inputmode="numeric" min="1" step="1" placeholder="1">
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="site" data-ic-size="20"></span>Sites (Remote Networks)</h3>
+              <div class="wb-field">
+                <label for="f-rnm">Comptage
+                  <button type="button" class="wb-help" data-tip="Remote Networks|Par site : un palier par site, de 25 Mbps à 2,5 Gbps (Prisma Access 6.0). Agrégé : Mbps alloués par compute location, 50 Mbps minimum.">?</button></label>
+                <select id="f-rnm">
+                  <option value="site" selected>Par site (paliers)</option>
+                  <option value="aggregate">Bande passante agrégée par compute location</option>
+                </select>
+              </div>
+              <p class="sz-hint">Un profil = des sites identiques. Débit = entrant + sortant du site.</p>
+              <div id="sz-profiles"></div>
+              <button type="button" class="sz-add" id="sz-addp">Ajouter un profil de sites</button>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="rack" data-ic-size="20"></span>Data centers et applications privées</h3>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="f-dc">Data centers</label>
+                  <input type="number" id="f-dc" inputmode="numeric" min="0" step="1" placeholder="0">
+                </div>
+                <div class="wb-field">
+                  <label for="f-dcm">Débit par DC <span class="wb-unit">Mbps</span></label>
+                  <input type="number" id="f-dcm" inputmode="numeric" min="0" step="1" placeholder="1000">
+                </div>
+              </div>
+              <div class="wb-field">
+                <label for="f-zc">ZTNA Connectors
+                  <button type="button" class="wb-help" data-tip="ZTNA Connector|Connecteur vers des applications privées sans tunnel IPsec à monter, jusqu’à 2 Gbps chacun. 10 inclus dans ZTNA et Enterprise.">?</button></label>
+                <input type="number" id="f-zc" inputmode="numeric" min="0" step="1" placeholder="0">
+              </div>
+              <div class="sz-flags">
+                <label class="sz-check"><input type="checkbox" id="f-dcsd"> ION en data center</label>
+                <label class="sz-check"><input type="checkbox" id="f-dcha"> En paire HA</label>
+                <label class="sz-check"><input type="checkbox" id="f-dcv"> ION virtuel</label>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="table" data-ic-size="20"></span>Abonnement Prisma SD-WAN</h3>
+              <div class="wb-field">
+                <label for="f-sdm">Modèle de branche
+                  <button type="button" class="wb-help" data-tip="Prisma SD-WAN|Un seul modèle pour toutes les branches du tenant : par ION (S, M, L), par site (S, M, L) ou bande passante agrégée.">?</button></label>
+                <select id="f-sdm">
+                  <option value="device" selected>Par appareil (S, M, L)</option>
+                  <option value="site">Par site (S, M, L)</option>
+                  <option value="aggregate">Bande passante agrégée</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="20"></span>Add-ons</h3>
+              <div class="sz-addons" id="sz-addons"></div>
+            </div>
+
+            <button type="button" class="sz-rm" id="sz-reset">Tout effacer</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="wb-pane in" aria-label="Nomenclature">
+        <div class="wb-pane-head">
+          <h2 class="wb-pane-title">Nomenclature</h2>
+          <span class="wb-pane-sub">Guide de licences juin 2026, docs Prisma Access et SD-WAN</span>
+        </div>
+        <div class="wb-pane-in">
+          <div id="sz-out" aria-live="polite" aria-atomic="false"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+  var R = window.SASE_RULES, E = window.SaseEngine;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var icn = function (n, s) { return window.ic ? window.ic(n, s || 14) : ''; };
+  var nf = function (n) { return Number(n).toLocaleString('fr-FR'); };
+
+  /* ── Profils de sites ── */
+  var FLAGS = [['sdwan', 'SD-WAN (ION)'], ['ha', 'Paire HA'], ['poe', 'PoE'], ['cell', '4G / 5G'], ['sfp10', 'Ports 10G SFP+'], ['rugged', 'Durci'], ['virt', 'ION virtuel']];
+  var profiles = [];
+  function profHTML(p, i) {
+    return '<fieldset class="sz-prof" data-i="' + i + '"><legend>Profil ' + (i + 1) + '</legend>'
+      + '<div class="wb-row">'
+      + '<div class="wb-field"><label for="p' + i + '-n">Sites</label><input type="number" id="p' + i + '-n" data-k="n" min="0" step="1" inputmode="numeric" value="' + (p.n || '') + '" placeholder="0"></div>'
+      + '<div class="wb-field"><label for="p' + i + '-m">Débit <span class="wb-unit">Mbps</span></label><input type="number" id="p' + i + '-m" data-k="mbps" min="0" step="1" inputmode="numeric" value="' + (p.mbps || '') + '" placeholder="100"></div>'
+      + '<div class="wb-field"><label for="p' + i + '-r">Région</label><input type="text" id="p' + i + '-r" data-k="region" value="' + esc(p.region || '') + '" placeholder="Europe ouest" maxlength="40"></div>'
+      + '</div><div class="sz-flags">'
+      + FLAGS.map(function (f) { return '<label class="sz-check"><input type="checkbox" data-k="' + f[0] + '"' + (p[f[0]] ? ' checked' : '') + '> ' + f[1] + '</label>'; }).join('')
+      + '</div>' + (profiles.length > 1 ? '<button type="button" class="sz-rm" data-rm="' + i + '">Retirer ce profil</button>' : '')
+      + '</fieldset>';
+  }
+  function renderProfiles() { $('sz-profiles').innerHTML = profiles.map(profHTML).join(''); }
+  $('sz-profiles').addEventListener('input', function (e) {
+    var fs = e.target.closest('.sz-prof'); if (!fs) return;
+    var p = profiles[+fs.dataset.i], k = e.target.dataset.k; if (!k) return;
+    p[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    schedule();
+  });
+  $('sz-profiles').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-rm]'); if (!b) return;
+    profiles.splice(+b.dataset.rm, 1); renderProfiles(); schedule();
+  });
+  $('sz-addp').addEventListener('click', function () {
+    if (profiles.length >= 8) return;
+    profiles.push({ n: '', mbps: '', region: '' }); renderProfiles(); schedule();
+    var last = $('sz-profiles').lastElementChild; if (last) last.querySelector('input').focus();
+  });
+
+  /* ── Add-ons ── */
+  $('sz-addons').innerHTML = R.addons.map(function (a) {
+    return '<label class="sz-check" title="' + esc(a.desc) + '"><input type="checkbox" data-addon="' + a.id + '"> ' + esc(a.name) + '</label>';
+  }).join('');
+
+  /* ── Lecture et ecriture de l'etat ── */
+  var FIELDS = { 'n-internet': 'c', 'n-private': 'c', 'n-browser': 'c', 'f-edition': 'v', 'f-mu': 'v', 'f-cl': 'v', 'f-loc': 'v', 'f-cov': 'v', 'f-ten': 'v',
+    'f-rnm': 'v', 'f-dc': 'v', 'f-dcm': 'v', 'f-zc': 'v', 'f-dcsd': 'c', 'f-dcha': 'c', 'f-dcv': 'c', 'f-sdm': 'v' };
+  function readState() {
+    var s = {};
+    Object.keys(FIELDS).forEach(function (id) { s[id] = FIELDS[id] === 'c' ? $(id).checked : $(id).value; });
+    s.p = profiles.map(function (p) { return Object.assign({}, p); });
+    s.a = Array.prototype.filter.call(document.querySelectorAll('[data-addon]'), function (x) { return x.checked; }).map(function (x) { return x.dataset.addon; });
+    return s;
+  }
+  function writeState(s) {
+    Object.keys(FIELDS).forEach(function (id) { if (id in s) { if (FIELDS[id] === 'c') $(id).checked = !!s[id]; else $(id).value = s[id]; } });
+    profiles = (s.p && s.p.length ? s.p : [{ n: '', mbps: '', region: '' }]).slice(0, 8);
+    renderProfiles();
+    document.querySelectorAll('[data-addon]').forEach(function (x) { x.checked = (s.a || []).indexOf(x.dataset.addon) !== -1; });
+  }
+  function toInput(s) {
+    var addons = {}; (s.a || []).forEach(function (k) { addons[k] = true; });
+    return {
+      needs: { internet: s['n-internet'], privateApps: s['n-private'], browser: s['n-browser'] },
+      edition: s['f-edition'], coverage: s['f-cov'], locations: s['f-loc'], tenants: s['f-ten'] || 1,
+      mu: { users: s['f-mu'], clientless: s['f-cl'] },
+      rn: { model: s['f-rnm'], sites: s.p },
+      dc: { count: s['f-dc'], mbps: s['f-dcm'] || 1000, sdwan: s['f-dcsd'], ha: s['f-dcha'], virt: s['f-dcv'] },
+      ztnaConnectors: s['f-zc'], sdwanModel: s['f-sdm'], addons: addons
+    };
+  }
+  function enc(s) { try { return btoa(unescape(encodeURIComponent(JSON.stringify(s)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) { return ''; } }
+  function dec(t) { try { return JSON.parse(decodeURIComponent(escape(atob(t.replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) { return null; } }
+
+  /* ── Rendu ── */
+  var GROUPS = { base: 'Prisma Access', mu: 'Mobile Users', rn: 'Remote Networks', pa: 'Applications privées', sdwan: 'Prisma SD-WAN', addon: 'Add-ons', incl: 'Inclus dans l’édition' };
+  function srcHTML(keys) {
+    return String(keys || '').split(/,\s*/).filter(Boolean).map(function (k) {
+      var S = R.src[k]; return S ? '<a href="' + esc(S.u) + '" target="_blank" rel="noopener">' + esc(S.t) + '</a>' : esc(k);
+    }).join(' · ');
+  }
+  var prevQ = {};
+  function render() {
+    var st = readState(), r = E.size(toInput(st), R);
+    var h = '<div class="sz-head"><h3>Prisma Access ' + esc(r.edition.name) + ' · ' + esc(r.coverage.name) + '</h3>'
+      + '<p>' + esc(r.edition.use) + '</p></div>';
+    var alertList = function (list) {
+      return '<ul class="sz-alerts">' + list.map(function (a) {
+        return '<li class="' + a.lvl + '">' + icn(a.lvl === 'info' ? 'dash' : 'alert', 14) + '<span>' + esc(a.text) + (a.src ? '<span class="sz-src"> (' + srcHTML(a.src) + ')</span>' : '') + '</span></li>';
+      }).join('') + '</ul>';
+    };
+    var hot = r.alerts.filter(function (a) { return a.lvl !== 'info'; }).sort(function (a, b) { return (a.lvl === 'crit' ? 0 : 1) - (b.lvl === 'crit' ? 0 : 1); });
+    var info = r.alerts.filter(function (a) { return a.lvl === 'info'; });
+    if (hot.length) h += alertList(hot);
+    h += '<table class="sz-bom"><thead><tr><th scope="col">Brique</th><th scope="col">Quantité</th><th scope="col">Règle appliquée</th></tr></thead><tbody>';
+    var last = '', nowQ = {};
+    r.lines.forEach(function (l, i) {
+      if (l.grp !== last) { last = l.grp; h += '<tr class="grp"><td colspan="3">' + esc(GROUPS[l.grp] || l.grp) + '</td></tr>'; }
+      var key = l.grp + '|' + l.name + '|' + i, q = l.qty == null ? (l.grp === 'incl' ? 'inclus' : null) : l.qty;
+      nowQ[key] = q;
+      var chg = prevQ[key] !== undefined && prevQ[key] !== q;
+      h += '<tr' + (chg ? ' class="chg"' : '') + '><td class="n">' + esc(l.name)
+        + (l.incl && l.incl.length ? '<span class="inc">Inclus : ' + esc(l.incl.join(', ')) + '</span>' : '')
+        + (l.ion && l.ion.ports ? '<span class="inc">' + esc(l.ion.ports) + '</span>' : '') + '</td>'
+        + '<td class="q">' + (q == null ? '<span class="np">unité non publiée</span>' : q === 'inclus' ? '<span class="np">inclus</span>' : nf(q) + '<span class="u">' + esc(l.unit) + '</span>') + '</td>'
+        + '<td>' + esc(l.why) + '<span class="src">' + srcHTML(l.src) + '</span></td></tr>';
+    });
+    prevQ = nowQ;
+    h += '</tbody></table>';
+    if (info.length) h += '<p class="sz-sub">À savoir</p>' + alertList(info);
+    r.notes.forEach(function (n) { h += '<p class="sz-notes">' + esc(n.text) + ' (' + srcHTML(n.src) + ')</p>'; });
+    h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML('palg') + '). ' + esc(R.ionNote) + '</p>';
+    h += '<div class="sz-actions">'
+      + '<button type="button" class="fx-btn primary" id="sz-copy">' + icn('copy') + 'Copier la nomenclature</button>'
+      + '<button type="button" class="fx-btn" id="sz-link">' + icn('link') + 'Copier le lien</button>'
+      + '<button type="button" class="fx-btn" id="sz-print">' + icn('print') + 'Imprimer</button></div>'
+      + '<p class="sz-notes">Nomenclature indicative de premier niveau, sans prix ni référence de commande : à valider avec un avant-vente et le configurateur Palo Alto Networks.</p>';
+    $('sz-out').innerHTML = h;
+    $('sz-copy').addEventListener('click', function (e) { copy(textOf(r), e.currentTarget); });
+    $('sz-link').addEventListener('click', function (e) { copy(location.href, e.currentTarget); });
+    $('sz-print').addEventListener('click', function () { window.print(); });
+    var t = enc(st);
+    history.replaceState(null, '', location.pathname + (t ? '?s=' + t : ''));
+  }
+  function textOf(r) {
+    var t = 'DIMENSIONNEMENT PRISMA SASE\nPrisma Access ' + r.edition.name + ', couverture ' + r.coverage.name + '\n\n';
+    var last = '';
+    r.lines.forEach(function (l) {
+      if (l.grp !== last) { last = l.grp; t += '\n' + (GROUPS[l.grp] || l.grp).toUpperCase() + '\n'; }
+      t += '- ' + l.name + ' : ' + (l.qty == null ? (l.grp === 'incl' ? 'inclus' : 'quantité à définir (unité non publiée)') : nf(l.qty) + ' ' + l.unit) + '\n';
+    });
+    if (r.alerts.length) t += '\nPOINTS D’ATTENTION\n' + r.alerts.filter(function (a) { return a.lvl !== 'info'; }).map(function (a) { return '- ' + a.text; }).join('\n') + '\n';
+    t += '\nSans prix ni référence de commande. Règles : Prisma Access Licensing Guide (juin 2026), documentation Prisma Access et Prisma SD-WAN.\nLien : ' + location.href + '\n';
+    return t;
+  }
+  function copy(text, btn) {
+    var lab = btn.innerHTML;
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      function () { btn.textContent = 'Copié'; setTimeout(function () { btn.innerHTML = lab; }, 1500); },
+      function () { btn.textContent = 'Copie impossible ici'; setTimeout(function () { btn.innerHTML = lab; }, 1800); });
+  }
+  var tm = null;
+  function schedule() { clearTimeout(tm); tm = setTimeout(render, 120); }
+  $('sz-form').addEventListener('input', function (e) { if (!e.target.closest('#sz-profiles')) schedule(); });
+  $('sz-form').addEventListener('change', function (e) { if (!e.target.closest('#sz-profiles')) schedule(); });
+  $('sz-reset').addEventListener('click', function () {
+    $('sz-form').reset(); profiles = [{ n: '', mbps: '', region: '' }]; renderProfiles();
+    document.querySelectorAll('[data-addon]').forEach(function (x) { x.checked = false; }); render();
+  });
+
+  var init = dec(new URLSearchParams(location.search).get('s') || '');
+  if (init) writeState(init); else { profiles = [{ n: '', mbps: '', region: '' }]; renderProfiles(); }
+  render();
+})();
+</script>
+</body>
+</html>

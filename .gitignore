@@ -25,3 +25,4 @@ tools/icons/catalogue.json
 tools/icons/pptx/
 tools/icons/*.html
 tools/icons/icons.generated.js
+.sase-src/

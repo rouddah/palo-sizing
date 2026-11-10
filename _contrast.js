@@ -35,6 +35,7 @@ const CHROME = [
    que leur contenu dynamique soit rendu. */
 const PAGES = [
   ['qualification.html?bw=800&users=600&type=campus&ssl=yes&sites=3', 'etabli'],
+  ['sase.html?s=eyJuLWludGVybmV0Ijp0cnVlLCJuLXByaXZhdGUiOnRydWUsImYtbXUiOiIxNTAwIiwiZi1sb2MiOiI4IiwiZi1kYyI6IjIiLCJmLWRjbSI6IjE1MDAiLCJwIjpbeyJuIjoiMjUiLCJtYnBzIjoiMTAwIiwicmVnaW9uIjoiRXVyb3BlIiwic2R3YW4iOnRydWV9XSwiYSI6WyJyYmkiLCJzYWFzSW5saW5lIl19', 'sase'],
   ['index.html', 'accueil'],
   ['pa-series.html', 'comparateur'],
   ['pa-series.html?vendors=fortinet,checkpoint,cisco', 'concurrents'],

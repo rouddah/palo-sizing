@@ -35,6 +35,7 @@ const CHROME = [
 
 const PAGES = [
   ['qualification.html', 'etabli'],
+  ['sase.html', 'sase'],
   ['index.html', 'accueil'],
   ['pa-series.html', 'comparateur'],
   ['optiques.html', 'optiques'],

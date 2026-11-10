@@ -314,3 +314,11 @@ edition PA-5500 dans l en-tete (08/2026). Restent ouverts :
 - SonicWall : NSsp 15700 13 instances et virtBase tires d'une FAQ de 2020.
 - Stormshield : vlan = plafond commun des interfaces logiques ; XL-6200 ipsec 30 000 (matrice 10/2026) contre 23 000 (datasheet 05/2026) ; SNxr1200 : datasheet de 2024 en decalage avec la matrice 2026, aussi pour les debits du tableau 1.
 - Sophos : zones 100 en 22.0 MR3, 248 en 23.0 GA (04/11/2026).
+
+## Dimensionnement SASE (releve du 10 novembre 2026, detail dans AUDIT_SASE_2026-11.md)
+
+- Unites de vente des add-ons Prisma Access (ADEM pour les Mobile Users, RBI, DLP, SaaS Inline, AI Access, App Acceleration, IoT...) : non publiees dans le guide de juin 2026, affichees « unite non publiee ».
+- Note 1 du guide : SD-WAN inclus avec « certains modeles » selon le palier de site Prisma Access ; liste des modeles a trouver.
+- Service Connections incluses en Worldwide quand le tenant n'a que des Remote Networks (unites en Mbps) : regle des 1 000 unites ecrite pour des « units » sans precision ; le moteur compte 5.
+- Couverture Local / Worldwide : les pages de licence 2026 ne citent plus que les editions SWG / ZTNA / Enterprise ; Local et Worldwide restent dans les pages d'allocation Common Services. A confirmer comme axe de vente courant.
+- Datasheet ION : debits mesures en Prisma SD-WAN 6.5.1 (fevrier 2025), « subject to change ».

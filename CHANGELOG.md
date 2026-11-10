@@ -1,5 +1,20 @@
 # Changelog
 
+## Session 26 - 10 novembre 2026 : Dimensionner SASE
+
+- Nouvel outil `sase.html` (barre d outils « SASE », raccourci S, palette, accueil
+  en 04) : besoins a gauche, nomenclature Prisma SASE a droite, recalcul continu,
+  lien partageable (`?s=`), texte a copier, impression. Entrees reprises de l ancien
+  mode guide : usages (internet, applications internes, navigateur / donnees SaaS),
+  Mobile Users, lieux, tenants, profils de sites, data centers, ZTNA Connectors,
+  modele d abonnement SD-WAN, add-ons.
+- Table de decision `data/sase-rules.js` (editions, couverture Local / Worldwide,
+  paliers de site, modele agrege, Service Connections, ZTNA Connectors, 20 add-ons,
+  ION physiques et virtuels, abonnements Prisma SD-WAN), chaque regle citee par sa
+  source ; moteur `js/sase-engine.js` ; test `_sase.js` (83 controles) dans le build.
+  Rapport AUDIT_SASE_2026-11.md, points ouverts dans _to_verify.md.
+- prisma.html renvoie vers l outil (pas de doublon de calcul).
+
 ## Session 25 - 10 novembre 2026 : Sophos, SonicWall, Stormshield ; retrait Exclusive Networks
 
 - `data/competitors.js` : trois editeurs de plus, releves sur leurs datasheets

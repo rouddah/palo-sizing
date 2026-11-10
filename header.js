@@ -33,7 +33,8 @@
     plus: '<path d="M12 5v14M5 12h14"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    swap: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>'
+    swap: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>',
+    sase: '<path d="M7 18a4.5 4.5 0 01-.6-8.96A6 6 0 0118 8.5a4.75 4.75 0 01-.5 9.5H7z"/>'
   };
 
   /* Outils : premier niveau. key = raccourci clavier affiche. */
@@ -41,6 +42,7 @@
     { href: 'pa-series.html',     label: 'Comparer',     ic: 'cmp',   key: 'C', main: true },
     { href: 'remplacement.html',  label: 'Remplacer',    ic: 'swap',  key: 'R' },
     { href: 'qualification.html', label: 'Dimensionner', ic: 'size',  key: 'D' },
+    { href: 'sase.html',          label: 'SASE',         ic: 'sase',  key: 'S' },
     { href: 'optiques.html',      label: 'Optiques',     ic: 'optic' },
     { href: 'accessoires.html',   label: 'Accessoires',  ic: 'box' }
   ];
@@ -179,6 +181,7 @@
     ['pa-series.html', 'Comparateur PA-Series', 'comparer gamme explorer debit sessions', 'Outil'],
     ['pa-series.html?view=table', 'Tableau complet des PA-Series', 'tableau toutes les specs colonnes', 'Outil'],
     ['remplacement.html', 'Remplacer un firewall existant', 'remplacement renouvellement ancien boitier fortinet fortigate check point cisco sophos xgs sonicwall tz nsa stormshield sns equivalent iso n-1 n+1 commercial', 'Outil'],
+    ['sase.html', 'Dimensionner SASE (Prisma Access, Prisma SD-WAN)', 'sase prisma access sd-wan ion mobile users remote networks service connections ztna connector licence nomenclature add-on adem rbi dlp', 'Outil'],
     ['qualification.html', 'Dimensionner un firewall', 'etabli qualification sizing besoin utilisateurs interfaces ports poe questions client', 'Outil'],
     ['optiques.html', 'Optiques et transceivers', 'sfp qsfp fibre transceiver optique', 'Outil'],
     ['accessoires.html', 'Alimentations et accessoires', 'alimentation rack disque ventilation', 'Outil'],
@@ -454,5 +457,6 @@
     else if ((e.key === 'c' || e.key === 'C') && page !== 'pa-series.html') { location.href = 'pa-series.html'; }
     else if ((e.key === 'd' || e.key === 'D') && page !== 'qualification.html') { location.href = 'qualification.html'; }
     else if ((e.key === 'r' || e.key === 'R') && page !== 'remplacement.html') { location.href = 'remplacement.html'; }
+    else if ((e.key === 's' || e.key === 'S') && page !== 'sase.html') { location.href = 'sase.html'; }
   });
 })();
