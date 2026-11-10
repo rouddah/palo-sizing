@@ -38,6 +38,7 @@ const PAGES = [
   ['index.html', 'accueil'],
   ['pa-series.html', 'comparateur'],
   ['pa-series.html?vendors=fortinet,checkpoint,cisco', 'concurrents'],
+  ['pa-series.html?view=table&set=cap&vendors=fortinet,checkpoint,cisco,sophos,sonicwall,stormshield', 'limites'],
   ['optiques.html', 'optiques'],
   ['accessoires.html', 'accessoires'],
   ['prisma.html', 'sase'],

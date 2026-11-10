@@ -1161,7 +1161,8 @@
     const FAMILIES = familles().map(f => {
       if (!pn.any) return f;
       const ok = MODELS.filter(m => m.s === f.id && !m.eos && tientPorts(m, pn));
-      return ok.length ? Object.assign({}, f, { tpMax: Math.max.apply(null, ok.map(m => m.tp)) }) : null;
+      return ok.length ? Object.assign({}, f, { tpMax: Math.max.apply(null, ok.map(m => m.tp)),
+        modeles: ok.length > 1 ? ok.map(m => m.id).join(', ') : ok[0].id }) : null;
     }).filter(Boolean).sort((a, b) => a.tpMax - b.tpMax);
     const portsEcartes = pn.any ? MODELS.filter(m => !m.eos && !tientPorts(m, pn)).length : 0;
     /* Une serie qui tient a 65% de la datasheet est retenue. Une serie

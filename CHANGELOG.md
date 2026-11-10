@@ -28,6 +28,23 @@
   onglet concurrent : fiche ouverte par « Questions a poser (imprimable) ».
   L accueil liste cinq outils (Remplacer y manquait). `_smoke.js` couvre les
   interfaces.
+- Deuxieme tableau du comparateur, « Limites et fonctions » (bascule en tete de
+  la vue Tableau, `?set=cap`, repris dans la vue Comparaison et le texte copie) :
+  15 limites de configuration (tunnels IPsec, utilisateurs VPN, VLAN, contextes
+  virtuels, regles, NAT, objets, zones, routes, utilisateurs identifies, sessions
+  TLS dechiffrees, bornes et commutateurs geres) et 19 fonctions en libelles
+  generiques (IPS, antivirus, sandbox, URL, DNS, controle applicatif, TLS, DLP,
+  IoT, OT, apprentissage automatique, SD-WAN, ZTNA, VPN nomade, post-quantique,
+  Wi-Fi, 5G, controleurs Wi-Fi et switch). 183 modeles, 7 editeurs, source au
+  survol de chaque cellule. Donnees `data/capabilities.js` generees par
+  `node tools/caps-merge.js tools/caps` a partir des releves bruts ; controle
+  `_caps.js` dans le build ; rapports dans AUDIT_CAPACITES_2026-11.md. Les limites
+  se comparent entre editeurs (barres et ecarts), pas les debits.
+- PA : limites tirees de l'outil officiel « Product comparison » (lu le 10/11/2026).
+  Les anciennes lignes de capacites du tableau 1 (GlobalProtect, zones, politiques,
+  IPsec, SSL, objets, NAT, vsys) et les lignes GlobalProtect / SD-WAN / WildFire /
+  App-ID sont retirees : le tableau 2 les remplace avec des valeurs courantes
+  (l'ancien jeu recopiait par erreur le PA-5410 sur les PA-5420 a 5445).
 
 ## Session 24 - 6 novembre 2026 : outil Remplacer, vue Tableau, recontrole datasheets
 

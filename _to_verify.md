@@ -302,3 +302,15 @@ edition PA-5500 dans l en-tete (08/2026). Restent ouverts :
 - **HSCI PA-3500** : datasheet « 100G (2) », TechDocs « 40/100 Gbps ».
 - **DC PA-5540 a PA-5580** : « 2,200 W » dans le texte, reference
   PAN-PA-5500-PWR-2000-DC dans la table de commande.
+
+## Limites et fonctions (releve du 10 novembre 2026, detail dans AUDIT_CAPACITES_2026-11.md)
+
+- PA : 15 modeles absents de l'outil Product comparison (PA-520-5G, PA-1500, PA-3500, PA-5510 a 5530, PA-50R) : seules leurs vsys sont publiees.
+- PA : licence GlobalProtect pour l'acces distant (doc d'administration : sans licence ; datasheets : passerelle sous licence). Retenu 'base'.
+- PA-820/850 : VPN post-quantique a false par deduction (derniere version 11.1, ML-KEM exige 11.2).
+- Fortinet : table des valeurs maximales 8.0.2 et datasheets divergent (VDOM 60F/400G/1800F, regles 3800G/4800F, FortiAP 3800G, FortiSwitch 50G/200G/2600F) : table retenue.
+- Cisco : virtBase = virt (licences par chassis) est une interpretation ; 4225 21 instances (guide 10.x) contre 15 (datasheet 2024).
+- Check Point : vlan Spark (sk113247) lu via un resume, a relire ; 7 datasheets Force derriere un challenge anti-robot, lues dans le navigateur.
+- SonicWall : NSsp 15700 13 instances et virtBase tires d'une FAQ de 2020.
+- Stormshield : vlan = plafond commun des interfaces logiques ; XL-6200 ipsec 30 000 (matrice 10/2026) contre 23 000 (datasheet 05/2026) ; SNxr1200 : datasheet de 2024 en decalage avec la matrice 2026, aussi pour les debits du tableau 1.
+- Sophos : zones 100 en 22.0 MR3, 248 en 23.0 GA (04/11/2026).
