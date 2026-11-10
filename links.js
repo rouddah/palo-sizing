@@ -36,13 +36,6 @@ const LINKS_DATA = {
                       "description": "Alimentations de rechange, kits rack, tiroirs de ventilation et disques de logs, filtrables par plateforme",
                       "href": "accessoires.html",
                       "type": "internal"
-                },
-                {
-                      "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.3-4.3\"/></svg>",
-                      "title": "Recherche & sizing",
-                      "description": "Retrouver un firewall a partir d'un debit, d'un nombre d'utilisateurs ou d'un critere technique",
-                      "href": "search.html",
-                      "type": "internal"
                 }
           ]
     },
@@ -50,14 +43,6 @@ const LINKS_DATA = {
       "id": "partenariats",
       "title": "Partenariats",
       "items": [
-        {
-          "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"/></svg>",
-          "title": "Partner Connect · Exclusive Networks",
-          "description": "Portail partenaire Exclusive Networks : ressources, enregistrement de deals et outils PAN dédiés",
-          "href": "https://partner-connect.exclusive-labs.com",
-          "type": "external",
-          "highlight": true
-        },
         {
           "icon": "<svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z\"/></svg>",
           "title": "NextWave Partner Portal",

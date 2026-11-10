@@ -130,6 +130,8 @@
     /* ── Concurrents ── */
     .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
     .vendors[hidden] { display: none; }
+    .tbl-set { display: flex; gap: 4px; margin-right: var(--sp-3); }
+    .tbl-set .fb { font-weight: 600; }
     .vchk {
       display: inline-flex; align-items: center; gap: var(--sp-1);
       font-size: var(--text-xs); color: var(--text);
@@ -648,6 +650,10 @@
     .tgl input, .vchk input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
     .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
     .vendors[hidden] { display: none; }
+    .tbl-set { display: flex; gap: 4px; margin-right: var(--sp-3); }
+    .tbl-set .fb { font-weight: 600; }
+    .cap-v { cursor: help; }
+    body:not([data-set="cap"]) .stats-cap, body[data-set="cap"] .stats-note:not(.stats-cap) { display: none; }
     .vchk { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--font); color: var(--text-dim); cursor: pointer; white-space: nowrap; }
     .bar-end { margin-left: auto; }
     .xp-only { display: contents; }
@@ -1001,6 +1007,7 @@
   <script src="icons.js"></script>
   <script src="data/pa-models.js"></script>
   <script src="data/pa-chassis.js"></script>
+  <script src="data/capabilities.js"></script>
 
   <main class="cmp" id="main">
     <!-- ── Barre du comparateur : vue, filtre, axe, concurrents ── -->
@@ -1047,18 +1054,13 @@
   <!-- ── Filtres : une ligne dense, le reste replie sous « Filtres » ── -->
   <div class="tb-wrap">
     <div class="toolbar tb-main">
-      <span class="tb-label" id="lb-cat">Catégories</span>
-      <div class="filter-group" id="cat-filters" role="group" aria-labelledby="lb-cat">
-        <button class="fb on" data-cat="all" aria-pressed="true">Toutes</button>
-        <button class="fb" data-cat="perf" aria-pressed="false">Performances</button>
-        <button class="fb" data-cat="sess" aria-pressed="false">Sessions</button>
-        <button class="fb" data-cat="ports" aria-pressed="false">Interfaces</button>
-        <button class="fb" data-cat="hw" aria-pressed="false">Hardware</button>
-        <button class="fb" data-cat="cap" aria-pressed="false">Capacités</button>
-        <button class="fb" data-cat="vpn" aria-pressed="false">VPN &amp; SD-WAN</button>
-        <button class="fb" data-cat="feat" aria-pressed="false">Fonctionnalités</button>
-        <button class="fb" data-cat="ref" aria-pressed="false">Références</button>
+      <div class="tbl-set" id="tbl-set" role="group" aria-label="Tableau affiché">
+        <button type="button" class="fb on" data-set="hw" aria-pressed="true">Performances et matériel</button>
+        <button type="button" class="fb" data-set="cap" aria-pressed="false">Limites et fonctions</button>
       </div>
+      <span class="tb-label" id="lb-cat">Catégories</span>
+      <!-- Construites depuis CATS selon le tableau affiché. -->
+      <div class="filter-group" id="cat-filters" role="group" aria-labelledby="lb-cat"></div>
       <div class="tb-group">
         <label class="tb-label" for="sort-metric">Trier par</label>
         <select id="sort-metric" class="tb-input">
@@ -1112,6 +1114,7 @@
         <tr class="col-header-row" id="header-row">
           <th class="th-corner" scope="col">
             <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés. Mesures sous PAN-OS 11.0 à 12.2 selon la série (ligne « PAN-OS des mesures datasheet »).">Débits appmix</span>, datasheets officielles. Tiret : non publié.</span>
+            <span class="stats-note stats-cap"><span class="glossary-tip" tabindex="0" data-tip="Limites et fonctions|Valeurs maximales publiées par chaque éditeur (outil de comparaison, tables de valeurs maximales, datasheets, guides). Source de chaque valeur au survol de la cellule. Les limites dépendent de la version logicielle.">Limites publiées</span> par chaque éditeur. Tiret : non publié.</span>
             <span class="ns-count"><strong id="stat-models"></strong> <span id="stat-label">modèles</span></span>
             <span class="ns-nav">
               <button type="button" class="ns-btn" id="ns-prev" aria-label="Colonnes précédentes" title="Colonnes précédentes (flèche gauche)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -1168,24 +1171,14 @@
   const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
   const frDate = iso => { const p = String(iso).split('-'); return (+p[2]) + ' ' + MOIS[+p[1] - 1] + ' ' + p[0]; };
   /* Fonctions que la datasheet de la serie ne publie pas (voir AUDIT_EXHAUSTIF_2026-11.md). */
-  const NO_GP = new Set(['PA-400', 'PA-400R']);
-  const NO_SDWAN = new Set(['PA-7500']);
   const ROWS = [
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
     { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
     { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
     { cat:'sess',  label:'<span class="glossary-tip" tabindex="0" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
-    { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="GlobalProtect est le client VPN de Palo Alto Networks pour l\'accès distant sécurisé des utilisateurs nomades.">Tunnels GlobalProtect max</span>',         fn: m => m.gp        != null ? fmtN(m.gp)        : '—', num: m => m.gp        != null ? m.gp        : null },
-    { cat:'cap',   label:'Zones de sécurité max',            fn: m => m.zones     != null ? fmtN(m.zones)     : '—', num: m => m.zones     != null ? m.zones     : null },
-    { cat:'cap',   label:'Politiques de sécurité max',       fn: m => m.policies  != null ? fmtN(m.policies)  : '—', num: m => m.policies  != null ? m.policies  : null },
-    { cat:'cap',   label:'Tunnels IPSec site-à-site',        fn: m => m.ipsec     != null ? fmtN(m.ipsec)     : '—', num: m => m.ipsec     != null ? m.ipsec     : null },
-    { cat:'cap',   label:'Sessions SSL/TLS déchiffrement',   fn: m => m.ssl       != null ? fmtN(m.ssl)       : '—', num: m => m.ssl       != null ? m.ssl       : null },
-    { cat:'cap',   label:'Objets adresses max',              fn: m => m.addr      != null ? fmtN(m.addr)      : '—', num: m => m.addr      != null ? m.addr      : null },
-    { cat:'cap',   label:'Règles NAT max',                   fn: m => m.nat       != null ? fmtN(m.nat)       : '—', num: m => m.nat       != null ? m.nat       : null },
     { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
     { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
-    { cat:'cap',   label:'<span class="glossary-tip" tabindex="0" data-tip="Virtual Systems (vsys) : partitions logiques du firewall, chacune avec ses propres politiques et interfaces. Permet la multi-tenancy.">Systèmes virtuels max</span>',            fn: m => m.vsysMax   != null ? fmtN(m.vsysMax)   : '—', num: m => m.vsysMax   != null ? m.vsysMax   : null },
     { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
     { cat:'ports', label:'Cuivre RJ45 1G',                  fn: m => m.rj45  || '—',    num: m => m.rj45  },
     { cat:'ports', label:'<span class="glossary-tip" tabindex="0" data-tip="Ports cuivre multi-gig (2,5GBASE-T, 5GBASE-T, 10GBASE-T), qui négocient aussi 1G. Vitesses exactes de la datasheet sous le nombre.">Cuivre multi-gig (mGig)</span>', fn: m => m.mgig ? m.mgig + '<span class="val-prof">' + esc(m.mgigSp) + '</span>' : '—', num: m => m.mgig, vx: true },
@@ -1201,7 +1194,6 @@
     { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
     { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : m.poe === false ? 'Non' : '—', num: null, np: m => m.poe == null },
     { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
-    { cat:'hw',    label:'Systèmes virtuels (base / max)',  fn: m => m.vsys || '—',     num: null         },
     { cat:'hw',    label:'Ports de gestion, libellé datasheet', fn: m => m.mgmt ? '<span class="val-txt">' + esc(m.mgmt) + '</span>' : '—', num: null, np: m => !m.mgmt },
     { cat:'hw',    label:'Stockage',                        fn: m => m.disk ? esc(m.disk) : '—', num: null, np: m => !m.disk },
     { cat:'hw',    label:'Alimentation',                    fn: m => m.psu ? '<span class="val-txt">' + esc(m.psu) + '</span>' + (m._v ? psuRLab(m.psuR) : '') : '—', num: null, np: m => !m.psu, vx: true },
@@ -1214,10 +1206,6 @@
     { cat:'feat',  label:'Ports HA dédiés',                 fn: m => m.haPorts ? '<span class="val-txt">' + esc(m.haPorts) + '</span>' : '—', num: null, np: m => !m.haPorts },
     { cat:'feat',  label:'HA : source et réserves',         fn: m => m.haNote ? '<span class="val-txt">' + esc(m.haNote) + '</span>' : '—', num: null, np: m => !m.haNote, vx: true },
     { cat:'feat',  label:'Matériel concurrent : sources datasheet', fn: m => m.hwSrc ? '<span class="val-txt">' + esc(hwSrcText(m.hwSrc)) + '</span>' : '—', num: null, np: m => !m.hwSrc, vx: true, xOnly: true },
-    { cat:'feat',  label:'GlobalProtect VPN',               fn: m => NO_GP.has(m.s) ? '—' : YES, num: null, np: m => NO_GP.has(m.s) },
-    { cat:'feat',  label:'SD-WAN',                          fn: m => NO_SDWAN.has(m.s) ? '—' : YES, num: null, np: m => NO_SDWAN.has(m.s) },
-    { cat:'feat',  label:'WildFire',                        fn: () => YES, num: null },
-    { cat:'feat',  label:'App-ID',                          fn: () => YES, num: null },
     { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Section Mobile Network Infrastructure de la datasheet. PA-3400, PA-5400 et PA-7000 y ajoutent GTP et SCTP Security. Tiret : la datasheet n’en parle pas.">5G Security</span>', fn: m => m.m5g ? YES : m.m5g === false ? 'Non (modèle exclu)' : '—', num: null, np: m => m.m5g == null },
     { cat:'feat',  label:'End of Sale',                     fn: m => (m.eosD ? frDate(m.eosD) + (m.eos ? '' : '<span class="val-prof">annoncée</span>') : (m.eos ? '<span class="badge-eos-pa">EoS</span>' : 'Non annoncée')) + (m.eos && EOS_REPLACEMENTS[m.id] ? '<span class="val-prof">remplacé par ' + EOS_REPLACEMENTS[m.id] + '</span>' : ''), num: null },
     { cat:'feat',  label:'End of Life',                     fn: m => m.eolD ? frDate(m.eolD) : 'Non annoncée', num: null },
@@ -1234,7 +1222,95 @@
     hw:    { label:'Hardware' },
     feat:  { label:'Fonctionnalités' },
     ref:   { label:'Références / SKU' },
+    lim:   { label:'Limites de configuration' },
+    sec:   { label:'Fonctions de sécurité' },
+    net:   { label:'Réseau et accès' },
   };
+
+  /* ══ Deuxième tableau : limites et fonctions (data/capabilities.js) ══
+     Mêmes règles que le reste du site : nul = non publié, jamais zéro,
+     et chaque valeur publiée porte sa source (survol de la cellule).
+     Libellés génériques : on compare des fonctions, pas des marques.
+     Les limites sont des nombres d'objets : elles se comparent d'un
+     éditeur à l'autre, contrairement aux débits. */
+  const CAPX = typeof CAPABILITIES !== 'undefined' ? CAPABILITIES : null;
+  const capOf = m => (CAPX && CAPX.models[m.id]) || null;
+  const capVendor = m => (CAPX && CAPX.vendors[m._v ? m.v : 'pan']) || null;
+  function capVal(m, row) {
+    const c = capOf(m);
+    if (row.feat) {
+      if (c && c.feat && row.k in c.feat) return c.feat[row.k];
+      const V = capVendor(m);
+      return V && V.features && row.k in V.features ? V.features[row.k] : null;
+    }
+    return c && c[row.k] != null ? c[row.k] : null;
+  }
+  function capSrc(m, row) {
+    const c = capOf(m), V = capVendor(m);
+    if (row.feat) return (c && c.featSrc && c.featSrc[row.k]) || (V && V.featSrc && V.featSrc[row.k]) || '';
+    return (c && c.src && (c.src[row.k] || (row.k === 'virt' && c.src.virtBase))) || '';
+  }
+  const FEAT_TXT = { base: 'Inclus', lic: 'Licence', 'lic-local': 'Licence<span class="val-prof">analyse sur le boîtier</span>' };
+  function capCell(row, m) {
+    const v = capVal(m, row);
+    if (v == null) return { html: '—', n: null, na: true };
+    let html;
+    if (row.feat) {
+      html = v === false ? '<span class="val-zero">Non</span>' : v === true ? 'Oui' : (FEAT_TXT[v] || esc(v));
+    } else {
+      html = v.toLocaleString('fr-FR');
+      if (row.k === 'virt' && v === 0) html = '<span class="val-zero">non pris en charge</span>';
+      else if (row.k === 'virt') {
+        const c = capOf(m);
+        if (c.virtBase != null && c.virtBase !== v) html += '<span class="val-prof">dont ' + c.virtBase.toLocaleString('fr-FR') + ' sans licence</span>';
+        if (c.virtTerm) html += '<span class="val-prof">' + esc(c.virtTerm) + '</span>';
+      }
+    }
+    const src = capSrc(m, row);
+    if (src) html = '<span class="cap-v" title="' + esc('Source : ' + src) + '">' + html + '</span>';
+    return { html, n: row.feat ? null : v };
+  }
+  const CAP_ROWS = [
+    ['lim', 'ipsec',   'Tunnels IPsec site-à-site max'],
+    ['lim', 'ra',      'Utilisateurs VPN d’accès distant max'],
+    ['lim', 'vlan',    'VLAN (sous-interfaces 802.1Q) max'],
+    ['lim', 'virt',    '<span class="glossary-tip" tabindex="0" data-tip="Partitions logiques du pare-feu, chacune avec ses propres politiques et interfaces (le terme de l’éditeur est rappelé sous la valeur).">Contextes virtuels max</span>'],
+    ['lim', 'rules',   'Règles de sécurité max'],
+    ['lim', 'nat',     'Règles NAT max'],
+    ['lim', 'addr',    'Objets adresse max'],
+    ['lim', 'addrGrp', 'Groupes d’adresses max'],
+    ['lim', 'svc',     'Objets service max'],
+    ['lim', 'zones',   'Zones de sécurité max'],
+    ['lim', 'routes',  'Routes statiques max'],
+    ['lim', 'users',   'Utilisateurs identifiés max'],
+    ['lim', 'sslDec',  'Sessions TLS déchiffrées max'],
+    ['lim', 'ap',      'Points d’accès Wi-Fi gérés max'],
+    ['lim', 'sw',      'Commutateurs gérés max'],
+    ['sec', 'ips',     'Prévention d’intrusion (IPS)', 1],
+    ['sec', 'av',      'Antivirus réseau', 1],
+    ['sec', 'sandbox', '<span class="glossary-tip" tabindex="0" data-tip="Analyse des fichiers inconnus en environnement isolé. « analyse sur le boîtier » : le pare-feu lui-même peut exécuter l’analyse ; sinon elle se fait dans le cloud de l’éditeur ou sur une appliance séparée.">Sandbox de fichiers inconnus</span>', 1],
+    ['sec', 'ai',      'Détection en ligne par apprentissage automatique', 1],
+    ['sec', 'url',     'Filtrage URL par catégories', 1],
+    ['sec', 'dns',     'Sécurité DNS', 1],
+    ['sec', 'app',     'Contrôle applicatif', 1],
+    ['sec', 'tls',     'Inspection TLS (déchiffrement)', 1],
+    ['sec', 'dlp',     'Prévention de fuite de données (DLP)', 1],
+    ['sec', 'iot',     'Identification IoT et équipements non gérés', 1],
+    ['sec', 'ot',      'Protocoles industriels (OT)', 1],
+    ['net', 'sdwan',   'SD-WAN', 1],
+    ['net', 'ztna',    'Accès zero trust (ZTNA)', 1],
+    ['net', 'raVpn',   'VPN d’accès distant', 1],
+    ['net', 'pqc',     'VPN IPsec post-quantique', 1],
+    ['net', 'wifi',    'Wi-Fi intégré', 1],
+    ['net', 'cell',    '5G / LTE', 1],
+    ['net', 'wlc',     'Contrôleur Wi-Fi', 1],
+    ['net', 'swc',     'Contrôleur de commutateurs', 1]
+  ].map(([cat, k, label, feat]) => ({ cap: true, cat, k, label, feat: !!feat,
+    fn: m => capCell(CAP_ROWS_BY[k], m).html, num: feat ? null : m => capVal(m, CAP_ROWS_BY[k]) }));
+  const CAP_ROWS_BY = {}; CAP_ROWS.forEach(r => { CAP_ROWS_BY[r.k] = r; });
+  /* Le tableau 1 et le tableau 2 partagent la même mécanique ; la vue
+     Comparaison et le texte copié enchaînent les deux. */
+  ROWS.push.apply(ROWS, CAP_ROWS);
 
   /* Lignes qui ont un sens pour un boitier concurrent : debits,
      sessions, interfaces, format. Le reste (GlobalProtect, vsys,
@@ -1254,6 +1330,7 @@
 
   /* Une valeur nulle veut dire « non publie », jamais zero. */
   function cellRaw(row, m) {
+    if (row.cap) return capCell(row, m).html;
     if (row.xOnly && !m._v) return '—';
     if (m._v && row.label === 'End of Sale') return EOS_X;
     if (m._v && !isComparable(row)) return '—';
@@ -1300,7 +1377,7 @@
 
   /* ══ Etat ══ */
   const state = {
-    cat: 'all', series: 'all', form: 'all', q: '', sort: 'default',
+    cat: 'all', series: 'all', form: 'all', q: '', sort: 'default', set: 'hw',
     range: {},            // tp, sess : { lo, hi } en valeurs reelles
     vendors: new Set(),   // editeurs concurrents affiches
     isolate: false
@@ -1461,7 +1538,7 @@
   /* Cle de donnee d'une ligne (fw, tp, rj45...), lue en faisant tourner
      sa fonction num sur un objet qui renvoie le nom du champ demande. */
   const FIELD_PROBE = new Proxy({}, { get: (t, p) => p });
-  const fieldOf = row => { try { return row.num ? row.num(FIELD_PROBE) : null; } catch (e) { return null; } };
+  const fieldOf = row => { if (row.cap) return 'cap:' + row.k; try { return row.num ? row.num(FIELD_PROBE) : null; } catch (e) { return null; } };
 
   /* Quand un concurrent est visible, les libelles « appmix » deviennent
      faux pour sa colonne : on passe a des intitules neutres, et chaque
@@ -1491,7 +1568,12 @@
   function shortProfile(def) {
     if (!def) return '';
     if (/UDP 1518|1518 ?B UDP|1518 octets/i.test(def) && /UDP/i.test(def)) return 'UDP 1518 o';
+    if (/1518 byte UDP/i.test(def)) return 'UDP 1518 o';
     if (/Enterprise Traffic Mix/i.test(def)) return 'Ent. Traffic Mix';
+    if (/realistic traffic mix/i.test(def)) return 'trafic réaliste';
+    if (/512 Ko/i.test(def)) return 'HTTP 512 Ko';
+    if (/RFC 2544/i.test(def) && !/octets/i.test(def)) return 'RFC 2544';
+    if (/Keysight HTTP|HTTP Keysight/i.test(def)) return 'HTTP Keysight';
     if (/Enterprise Test Conditions/i.test(def)) return 'Ent. Test Cond.';
     const o = def.match(/(\d{3,4}) ?octets/i);
     if (o) return o[1] + ' o';
@@ -1550,6 +1632,7 @@
     const shown = [];
     const hiddenByCat = {};
     ROWS.forEach((row, ri) => {
+      if ((row.cap ? 'cap' : 'hw') !== state.set) return;
       if (state.cat !== 'all' && row.cat !== state.cat) return;
       if (row.xOnly && !withComp) return;
       if (withComp && visible.length && visible.every(m => cellRaw(row, m) === '—')) {
@@ -1572,14 +1655,14 @@
       // debit appmix ne mesurent pas la meme chose. Et seulement s'il y
       // a un ecart : une ligne ou tous les PA se valent n'a pas de meilleur.
       let maxVal = -Infinity, minVal = Infinity;
-      if (row.num) visible.forEach(m => { if (m._v) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
+      if (row.num) visible.forEach(m => { if (m._v && !row.cap) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
       if (!(maxVal > minVal) || isLegacy(row)) maxVal = -Infinity;
       const field = fieldOf(row);
       const legacy = isLegacy(row);
 
       const cells = visible.map(m => {
         let raw = cellRaw(row, m);
-        const num = (!m._v && row.num) ? row.num(m) : null;
+        const num = ((!m._v || row.cap) && row.num) ? row.num(m) : null;
         let cls = 'val-cell';
         if (num != null && num === maxVal && maxVal > 0) cls += ' val-max';
         else if (raw === '—') cls += ' val-na';
@@ -1603,7 +1686,7 @@
     if (nHidden) {
       const cats = Object.keys(hiddenByCat).map(c => CATS[c] ? CATS[c].label : c).join(', ');
       html += '<tr class="cat-row row-folded"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-folded">'
-        + nHidden + ' ligne' + (nHidden > 1 ? 's' : '') + ' sans objet pour ces modèles (' + cats + ' : capacités propres à PAN-OS)'
+        + nHidden + ' ligne' + (nHidden > 1 ? 's' : '') + (state.set === 'cap' ? ' non publiées pour ces modèles (' + cats + ')' : ' sans objet pour ces modèles (' + cats + ' : capacités propres à PAN-OS)')
         + '</span></div></td>' + span + '</tr>';
     }
     document.getElementById('table-body').innerHTML = html;
@@ -1664,7 +1747,24 @@
         }).join('');
   }
 
+  function renderCatFilters() {
+    const used = new Set(ROWS.filter(r => (r.cap ? 'cap' : 'hw') === state.set).map(r => r.cat));
+    document.getElementById('cat-filters').innerHTML = '<button class="fb' + (state.cat === 'all' ? ' on' : '') + '" data-cat="all" aria-pressed="' + (state.cat === 'all') + '">Toutes</button>'
+      + Object.keys(CATS).filter(c => used.has(c)).map(c => '<button class="fb' + (state.cat === c ? ' on' : '') + '" data-cat="' + c + '" aria-pressed="' + (state.cat === c) + '">' + CATS[c].label + '</button>').join('');
+  }
+  function setTableSet(set) {
+    if (set !== 'cap') set = 'hw';
+    state.set = set; state.cat = 'all';
+    document.body.dataset.set = set;
+    document.querySelectorAll('#tbl-set .fb').forEach(b => { const on = b.dataset.set === set; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+    renderCatFilters();
+  }
   function wireFilters() {
+    setTableSet(new URLSearchParams(location.search).get('set'));
+    document.getElementById('tbl-set').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b || b.dataset.set === state.set) return;
+      setTableSet(b.dataset.set); rebuild(); setUrl();
+    });
     document.getElementById('cat-filters').addEventListener('click', e => {
       const b = e.target.closest('.fb'); if (!b) return;
       pressGroup('cat-filters', b); state.cat = b.dataset.cat; rebuild();
@@ -2300,7 +2400,7 @@
   function setUrl() {
     const p = new URLSearchParams();
     if (state.vendors.size) p.set('vendors', Array.from(state.vendors).join(','));
-    if (state.view === 'tbl') p.set('view', 'table');
+    if (state.view === 'tbl') { p.set('view', 'table'); if (state.set === 'cap') p.set('set', 'cap'); }
     if (state.view === 'cmp') p.set('cmp', selected.map(k => byKey(k) ? byKey(k).id : k).join(','));
     const s = p.toString();
     history.replaceState(null, '', location.pathname + (s ? '?' + s.replace(/%2C/g, ',') : ''));
@@ -2372,6 +2472,7 @@
   let cmpDiffOnly = false;
   function cvCell(row, m) {
     const NP = { html: '<span class="np">non publié</span>', n: null, na: true };
+    if (row.cap) { const c = capCell(row, m); return c.na ? NP : c; }
     if (m._v && row.label === 'End of Sale') return { html: EOS_X, n: null, na: true };
     if ((m._v && !isComparable(row)) || (row.xOnly && !m._v)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
     if (row.num) {
@@ -2415,11 +2516,12 @@
       const plain = cells.map(c => String(c.html).replace(/<[^>]+>/g, ''));
       const same = plain.every(p => p === plain[0]);
       if (cmpDiffOnly && same) return;
-      if (comp && models.every(m => m._v) && !isComparable(row)) return;
+      if (comp && models.every(m => m._v) && !isComparable(row) && !row.cap) return;
       if (row.xOnly && !comp) return;
+      if (row.cap && cells.every(c => c.na)) return;
       if (row.cat !== lastCat) { lastCat = row.cat; h += '<div class="cv-cat">' + CATS[row.cat].label + '</div>'; }
       /* Un port absent (0) n'est pas un ecart de capacite : pas de barre. */
-      const pa = models.map((m, i) => (!m._v && cells[i].n != null && !(row.cat === 'ports' && cells[i].n === 0)) ? cells[i].n : null);
+      const pa = models.map((m, i) => ((!m._v || row.cap) && cells[i].n != null && !(row.cat === 'ports' && cells[i].n === 0)) ? cells[i].n : null);
       const nums = pa.filter(v => v != null);
       const max = nums.length > 1 ? Math.max.apply(null, nums) : null;
       const hasGap = max != null && Math.min.apply(null, nums) < max && max > 0;
@@ -2444,7 +2546,7 @@
     });
     cv.innerHTML = h;
     document.getElementById('cv-note').textContent = comp
-      ? 'Les débits des concurrents suivent la définition de leur éditeur, rappelée sous chaque valeur : ils ne se comparent pas un pour un aux débits appmix des PA. Les écarts et les barres ne se calculent qu’entre PA.'
+      ? 'Les débits des concurrents suivent la définition de leur éditeur, rappelée sous chaque valeur : ils ne se comparent pas un pour un aux débits appmix des PA. Les écarts et les barres de débit ne se calculent qu’entre PA ; ceux des limites de configuration, qui sont des nombres d’objets, se calculent entre tous les modèles. Source de chaque limite et de chaque fonction au survol.'
       : 'Barres et écarts par rapport à la valeur la plus élevée de la ligne. Données issues des datasheets officielles Palo Alto Networks.';
     cv.querySelectorAll('[data-rmc]').forEach(b => b.addEventListener('click', () => {
       toggleSel(b.dataset.rmc);
@@ -2679,7 +2781,7 @@
   </script>
 
   <footer class="site-footer">
-    <div>Sizing Guide PANW · by <a href="https://partner-connect.exclusive-labs.com" target="_blank" rel="noopener">Exclusive Networks</a></div>
+    <div>Sizing Guide PANW</div>
     <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (mesures sous PAN-OS 11.0 à 12.2 selon la série), documentation technique Palo Alto pour la HA et les versions · Dernière mise à jour : novembre 2026</div>
     <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
   </footer>

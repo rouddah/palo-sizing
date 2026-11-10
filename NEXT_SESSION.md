@@ -2,6 +2,19 @@
 
 > Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
+## Session 25 (branche concurrents-v13) : tri des outils
+
+`search.html` et `wizard.html` (avec son test `_wizard.js`) sont supprimes.
+Les criteres d interfaces de la Recherche vivent dans l etabli de
+`qualification.html` (groupe « Interfaces requises », comptage de
+`js/replace-engine.js`, ports natifs seulement). Le mode guide (7 questions
+metier, recommandation NGFW + SASE + Cortex) sera repris pour le
+dimensionnement SASE : le recuperer par `git show 8b099a3:wizard.html`
+(et `git show 8b099a3:_wizard.js` pour son test). Le champ « Constructeur
+en place » de l etabli et sa table FortiGate / Check Point ecrite a la main
+sont retires : un lien renvoie vers Remplacer. Le questionnaire client n est
+plus un onglet : bouton « Questions a poser (imprimable) » dans la barre.
+
 ## Audit v9 (branche audit-v9, non fusionnee, non deployee)
 
 Session 20 (meme branche) : photos de facade des datasheets dans

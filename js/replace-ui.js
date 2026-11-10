@@ -27,7 +27,9 @@
 
   /* Commande CLI qui donne l'usage reel (sessions en cours) sur le boitier
      du client : a relever avant de valider le dimensionnement. */
-  var SESS_CMD = { pan: 'show session info', fortinet: 'get system session status', checkpoint: 'fw tab -t connections -s', cisco: 'show conn count' };
+  var SESS_CMD = { pan: 'show session info', fortinet: 'get system session status', checkpoint: 'fw tab -t connections -s', cisco: 'show conn count', sonicwall: 'show status', stormshield: 'sfctl -s conn' };
+  /* Sophos : aucune commande officielle documentee, on renvoie au tableau de bord. */
+  function sessHow(v) { return SESS_CMD[v] ? 'commande <code>' + esc(SESS_CMD[v]) + '</code>' : 'tableau de bord de l’éditeur'; }
 
   var STEPS = ['kind', 'old', 'perf', 'ports', 'cons'];
   var q = blank();
@@ -182,7 +184,7 @@
     $('h-cps').textContent = !m ? 'Facultatif' : pan ? 'Capacité du ' + m.id : r.name + ' annonce ' + big(m.cps) + ' : non repris';
     $('h-vpn').textContent = !m ? 'Facultatif' : pan ? 'Capacité du ' + m.id : r.name + ' annonce ' + gb(m.vpn) + ' : non repris (mesure ' + r.vname + ', souvent avec accélération matérielle)';
     $('rp-perf-note').innerHTML = vm
-      ? '<b>Mesures non équivalentes.</b> ' + esc(r.vname) + ' publie le débit d’inspection ainsi : ' + esc(vm.metrics.tp) + '. Les PA-Series sont mesurés en Threat Prevention appmix. Si vous connaissez le débit réellement constaté chez le client, remplacez la valeur. Sessions en cours sur le boîtier : <code>' + esc(SESS_CMD[r.v] || '') + '</code>.'
+      ? '<b>Mesures non équivalentes.</b> ' + esc(r.vname) + ' publie le débit d’inspection ainsi : ' + esc(vm.metrics.tp) + '. Les PA-Series sont mesurés en Threat Prevention appmix. Si vous connaissez le débit réellement constaté chez le client, remplacez la valeur. Sessions en cours sur le boîtier : ' + sessHow(r.v) + '.'
       : pan ? 'Les valeurs sont les capacités datasheet du ' + esc(m.id) + ' : la proposition iso couvrira au moins autant. Si le client consomme moins, baissez-les.' : '';
     var need = m ? E.portsNeedFrom(m) : {};
     E.PORT_KEYS.forEach(function (k) { setPre('p-' + k, need[k] || null); });
@@ -333,7 +335,7 @@
     if (ref && ref.v !== 'pan' && ref.m.sess && !(+q.sess > 0)) {
       var props = [R.lower, R.iso, R.upper].filter(Boolean);
       var lo = props.length ? Math.min.apply(null, props.map(function (m) { return m.sess; })) : 0;
-      if (props.length && ref.m.sess > lo) t += ' <b>Sessions :</b> le ' + esc(ref.name) + ' annonce ' + big(ref.m.sess) + ' sessions simultanées (maximum ' + esc(ref.vname) + '), les propositions en tiennent ' + big(lo) + ' à ' + big(Math.max.apply(null, props.map(function (m) { return m.sess; }))) + '. Relevez l’usage réel sur le boîtier (<code>' + esc(SESS_CMD[ref.v]) + '</code>) et saisissez-le à l’étape 3.';
+      if (props.length && ref.m.sess > lo) t += ' <b>Sessions :</b> le ' + esc(ref.name) + ' annonce ' + big(ref.m.sess) + ' sessions simultanées (maximum ' + esc(ref.vname) + '), les propositions en tiennent ' + big(lo) + ' à ' + big(Math.max.apply(null, props.map(function (m) { return m.sess; }))) + '. Relevez l’usage réel sur le boîtier (' + sessHow(ref.v) + ') et saisissez-le à l’étape 3.';
     }
     if (R.pick === 'upper' && R.iso && R.need.tp / R.iso.tp > 0.8) t += ' Le N+1 est conseillé : l’iso tournerait au-delà de 80 % de sa capacité datasheet.';
     if (q.ha === 'ap' || q.ha === 'aa') t += ' Haute disponibilité : prévoir deux boîtiers identiques.';

@@ -200,9 +200,8 @@ const MODELS = [
    sessions SSL, objets adresses, NAT, SD-WAN, profils). Aucune edition
    courante ne les publie plus (verifie le 5 novembre 2026 sur les 13
    PDF) : elles restent affichees, attenuees et signalees comme telles,
-   et n'entrent dans aucun calcul (etabli, mode guide, ecarts et barres
-   du comparateur). _smoke.js et _wizard.js le verifient en les
-   faisant varier. Voir _to_verify.md. */
+   et n'entrent dans aucun calcul (etabli, ecarts et barres du
+   comparateur). _smoke.js le verifie en les faisant varier. Voir _to_verify.md. */
 const LEGACY_CAPS = ['gp', 'zones', 'policies', 'ipsec', 'ssl', 'addr', 'nat', 'sdwanT', 'sdwanR', 'secProf'];
 const LEGACY_NOTE = 'Édition antérieure de la datasheet : valeur absente de l’édition courante, à confirmer';
 

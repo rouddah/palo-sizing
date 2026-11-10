@@ -1,5 +1,51 @@
 # Changelog
 
+## Session 25 - 10 novembre 2026 : Sophos, SonicWall, Stormshield ; retrait Exclusive Networks
+
+- `data/competitors.js` : trois editeurs de plus, releves sur leurs datasheets
+  officielles (124 concurrents au lieu de 69). Sophos Firewall XGS 19 modeles
+  (brochure officielle d octobre 2026, la seule source publiee par modele),
+  SonicWall TZ / NSa / NSsp 21 modeles (Gen 7 et Gen 8 vendus ; TZ270, TZ470,
+  NSa 2700 et 3700 en fin de vente, ecartes), Stormshield SNS 15 modeles (SN-L
+  et SN-XL : ports de donnees uniquement sur modules, donc nuls). Profils de
+  mesure courts ajoutes dans `shortProfile`. Remplacer : commandes de releve des
+  sessions SonicWall (`show status`) et Stormshield (`sfctl -s conn`), aucune
+  commande officielle Sophos (renvoi au tableau de bord).
+- Qualification : Sophos Firewall, SonicWall et Stormshield SNS dans le parc en place.
+- Plus aucune mention d Exclusive Networks : pieds de page, metas, brief imprimable
+  (logo retire, `img/exn-logo.png` supprime), mode guide, Prisma, Browser,
+  Ressources et `links.js`. Les renvois devis pointent vers « votre distributeur
+  Palo Alto Networks ».
+- Tri des outils redondants. Recherche (`search.html`) supprimee : ses criteres
+  d interfaces (cuivre 1G, multi-gig, SFP, SFP+, SFP28, 40/100G, PoE) passent
+  dans l etabli de Dimensionner, ou ils ecartent les modeles qui ne les tiennent
+  pas en ports natifs (meme comptage que Remplacer). Mode guide (`wizard.html`,
+  `_wizard.js`) supprime, a reprendre pour le futur dimensionnement SASE
+  (`git show 8b099a3:wizard.html`). Dans l etabli, le champ « Constructeur en
+  place » et sa table de correspondance FortiGate / Check Point ecrite a la main
+  (et les arguments concurrentiels non sources qui l accompagnaient) sont
+  remplaces par un lien vers Remplacer. Le questionnaire client n est plus un
+  onglet concurrent : fiche ouverte par « Questions a poser (imprimable) ».
+  L accueil liste cinq outils (Remplacer y manquait). `_smoke.js` couvre les
+  interfaces.
+- Deuxieme tableau du comparateur, « Limites et fonctions » (bascule en tete de
+  la vue Tableau, `?set=cap`, repris dans la vue Comparaison et le texte copie) :
+  15 limites de configuration (tunnels IPsec, utilisateurs VPN, VLAN, contextes
+  virtuels, regles, NAT, objets, zones, routes, utilisateurs identifies, sessions
+  TLS dechiffrees, bornes et commutateurs geres) et 19 fonctions en libelles
+  generiques (IPS, antivirus, sandbox, URL, DNS, controle applicatif, TLS, DLP,
+  IoT, OT, apprentissage automatique, SD-WAN, ZTNA, VPN nomade, post-quantique,
+  Wi-Fi, 5G, controleurs Wi-Fi et switch). 183 modeles, 7 editeurs, source au
+  survol de chaque cellule. Donnees `data/capabilities.js` generees par
+  `node tools/caps-merge.js tools/caps` a partir des releves bruts ; controle
+  `_caps.js` dans le build ; rapports dans AUDIT_CAPACITES_2026-11.md. Les limites
+  se comparent entre editeurs (barres et ecarts), pas les debits.
+- PA : limites tirees de l'outil officiel « Product comparison » (lu le 10/11/2026).
+  Les anciennes lignes de capacites du tableau 1 (GlobalProtect, zones, politiques,
+  IPsec, SSL, objets, NAT, vsys) et les lignes GlobalProtect / SD-WAN / WildFire /
+  App-ID sont retirees : le tableau 2 les remplace avec des valeurs courantes
+  (l'ancien jeu recopiait par erreur le PA-5410 sur les PA-5420 a 5445).
+
 ## Session 24 - 6 novembre 2026 : outil Remplacer, vue Tableau, recontrole datasheets
 
 - Nouvel outil `remplacement.html` (onglet Remplacer, raccourci R) pour les

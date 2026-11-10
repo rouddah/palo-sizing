@@ -39,8 +39,6 @@ const PAGES = [
   ['pa-series.html', 'comparateur'],
   ['optiques.html', 'optiques'],
   ['accessoires.html', 'accessoires'],
-  ['search.html', 'recherche'],
-  ['wizard.html', 'wizard'],
   ['resources.html', 'ressources']
 ];
 
