@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Wrangler / Cloudflare local cache
+.wrangler/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Profils Chrome des controles headless
+.chrome-profile*/
+
+# Dossier de deploiement genere par _stage.js
+.deploy/
+
+# Catalogue regenere depuis le pptx officiel (3,7 Mo)
+tools/icons/catalogue.json
+tools/icons/pptx/
+tools/icons/*.html
+tools/icons/icons.generated.js

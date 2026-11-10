@@ -1,0 +1,2789 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon-180.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparateur PA-Series · Sizing Guide</title>
+  <meta name="description" content="Comparateur technique PA-Series Palo Alto Networks : 59 modèles, de la PA-410 à la PA-7500, débits, sessions, interfaces et fin de commercialisation. PA-1500, PA-3500, PA-5500 et PA-50R comprises." />
+  <meta property="og:title" content="Sizing Guide · PA-Series NGFW" />
+  <meta property="og:description" content="Comparateur technique des firewalls PA-Series Palo Alto Networks." />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Barres de filtres ── */
+    .tb-wrap {
+      position: relative; z-index: 2;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2) var(--sp-3);
+      padding: 6px var(--sp-5);
+      flex-wrap: wrap;
+    }
+    .toolbar + .toolbar {
+      background: var(--surface2);
+      border-top: 1px solid var(--border);
+    }
+    .tb-label {
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tb-group { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; }
+    .tb-group[hidden] { display: none; }
+    .filter-group { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
+
+    .fb {
+      font: inherit;
+      font-size: var(--text-2xs);
+      padding: var(--sp-1) var(--sp-3);
+      border-radius: var(--r-xs);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease),
+                  border-color var(--dur-fast) var(--ease),
+                  color var(--dur-fast) var(--ease),
+                  transform var(--dur-fast) var(--ease);
+    }
+    .fb:hover { border-color: var(--border2); color: var(--text-bright); transform: translate3d(0,-1px,0); }
+    .fb:active { transform: none; transition-duration: 60ms; }
+    .fb.on    { border-color: var(--accent); color: var(--accent-txt); background: var(--accent-dim); }
+    .fb .new  { font-size: var(--text-2xs); color: var(--ok); font-weight: 700; }
+    .fb .eos  { font-size: var(--text-2xs); color: var(--warn); }
+
+    .tb-input {
+      font: inherit;
+      font-size: var(--text-xs);
+      padding: var(--sp-1) var(--sp-2);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xs);
+      color: var(--text-bright);
+      min-height: 28px;
+    }
+    #model-search { width: calc(var(--sp-8) * 6); }
+
+    /* ── Curseur de plage, deux poignees ──
+       Deux input range superposes : chacun garde son nom accessible et
+       son comportement clavier natif (fleches, Page, Debut, Fin).
+       L'echelle est logarithmique : de 0,08 a 300 Gbps, une echelle
+       lineaire ecraserait toute la gamme branche dans le premier pixel. */
+    .range { display: flex; align-items: center; gap: var(--sp-2); }
+    .range-box { display: grid; gap: 2px; }
+    .range-val {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      color: var(--text-dim);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .range-val.is-set { color: var(--accent-txt); }
+    .range-track { position: relative; width: calc(var(--sp-8) * 5); height: var(--sp-5); }
+    .range-rail, .range-fill {
+      position: absolute; top: 50%; height: 2px; margin-top: -1px;
+      border-radius: var(--r-xs); pointer-events: none;
+    }
+    .range-rail { left: 0; right: 0; background: var(--border2); }
+    .range-fill { background: var(--accent); }
+    .range input[type=range] {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; margin: 0;
+      background: none;
+      -webkit-appearance: none; appearance: none;
+      pointer-events: none;
+    }
+    .range input[type=range]::-webkit-slider-runnable-track { background: none; height: 100%; }
+    .range input[type=range]::-moz-range-track { background: none; }
+    .range input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      pointer-events: auto;
+      width: 14px; height: 14px; margin-top: 3px;
+      border-radius: var(--r-pill);
+      background: var(--accent);
+      border: 2px solid var(--surface2);
+      cursor: grab;
+      transition: transform var(--dur-fast) var(--ease);
+    }
+    .range input[type=range]::-moz-range-thumb {
+      pointer-events: auto;
+      width: 14px; height: 14px;
+      border-radius: var(--r-pill);
+      background: var(--accent);
+      border: 2px solid var(--surface2);
+      cursor: grab;
+    }
+    .range input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); cursor: grabbing; }
+    .range input[type=range]:focus-visible { outline: none; box-shadow: none; border-color: transparent; }
+    .range input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--accent-line); }
+    .range input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── Concurrents ── */
+    .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+    .vendors[hidden] { display: none; }
+    .tbl-set { display: flex; gap: 4px; margin-right: var(--sp-3); }
+    .tbl-set .fb { font-weight: 600; }
+    .vchk {
+      display: inline-flex; align-items: center; gap: var(--sp-1);
+      font-size: var(--text-xs); color: var(--text);
+      cursor: pointer; white-space: nowrap;
+    }
+    .vchk input { accent-color: var(--accent); width: 14px; height: 14px; margin: 0; }
+
+    .tb-reset {
+      font: inherit; font-size: var(--text-2xs);
+      margin-left: auto;
+      background: none; border: 0; padding: var(--sp-1) 0;
+      color: var(--accent-txt);
+      text-decoration: underline; text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .tb-reset[hidden] { display: none; }
+
+    /* ── Bouton « Filtres » : serie, format et plages repliees ── */
+    .tb-more-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font: inherit; font-size: var(--text-2xs); font-weight: 600;
+      min-height: 28px; padding: 0 var(--sp-3);
+      border: 1px solid var(--border2); border-radius: var(--r-xs);
+      background: transparent; color: var(--text);
+      cursor: pointer; white-space: nowrap;
+      transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+    }
+    .tb-more-btn:hover { border-color: var(--text-muted); color: var(--text-bright); }
+    .tb-more-btn[aria-expanded="true"] { border-color: var(--accent); color: var(--accent-txt); }
+    .tb-more-n:empty { display: none; }
+    .tb-more-n {
+      min-width: 18px; height: 18px; padding: 0 5px;
+      display: inline-grid; place-items: center;
+      font: 700 11px/1 var(--mono); color: var(--on-accent);
+      background: var(--accent); border-radius: var(--r-pill);
+    }
+    .tb-main .tb-reset { margin-left: 0; }
+    .th-corner .stats-note { display: block; margin-bottom: 6px; font-size: var(--text-2xs); line-height: 1.4; color: var(--text-muted); white-space: normal; }
+    .tb-more { border-top: 1px solid var(--border); background: var(--surface2); }
+    .tb-more[hidden] { display: none; }
+    .tb-more .toolbar + .toolbar { border-top: 0; padding-top: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .tb-more:not([hidden]) { animation: tb-more-in var(--dur) var(--ease); }
+    }
+    @keyframes tb-more-in { from { opacity: 0; transform: translate3d(0, -4px, 0); } }
+
+    /* ── Navigation des colonnes, dans la cellule d'angle ── */
+    .th-corner .ns-count { display: block; font-size: var(--text-2xs); color: var(--text-muted); }
+    .ns-count strong { color: var(--accent-txt); font-family: var(--mono); }
+    .ns-nav { display: inline-flex; align-items: center; gap: var(--sp-1); margin: 4px 0 2px; }
+    .ns-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text-bright);
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .ns-btn:hover:not(:disabled) { border-color: var(--accent); }
+    .ns-btn:active:not(:disabled) { transform: scale(.94); }
+    .ns-btn:disabled { opacity: .4; cursor: default; }
+    .ns-pos { display: block; font-family: var(--mono); font-size: var(--text-2xs); color: var(--text-dim); white-space: normal; }
+
+    .vendor-note {
+      display: flex; gap: var(--sp-2); align-items: flex-start;
+      padding: var(--sp-2) var(--sp-5);
+      background: var(--warn-dim);
+      border-bottom: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
+      font-size: var(--text-xs);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .vendor-note[hidden] { display: none; }
+    .vendor-note .ic { color: var(--warn); margin-top: 2px; }
+
+    /* ── Tableau ── */
+    .table-outer {
+      position: relative; z-index: 1;
+      overflow: auto;
+      height: calc(100vh - var(--header-h) - 160px);
+      scroll-snap-type: x proximity;
+      scroll-padding-left: var(--label-w);
+      overscroll-behavior-x: contain;
+    }
+    .table-outer:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .table-outer::-webkit-scrollbar { height: 12px; width: 10px; }
+    .table-outer::-webkit-scrollbar-track { background: var(--bg2); border-top: 1px solid var(--border); }
+    .table-outer::-webkit-scrollbar-thumb { background: var(--border2); border-radius: var(--r-sm); min-height: 40px; }
+    .table-outer::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .table-outer::-webkit-scrollbar-corner { background: var(--bg2); }
+    @supports (scrollbar-width: auto) {
+      .table-outer { scrollbar-width: auto; scrollbar-color: var(--border2) var(--bg2); }
+    }
+
+    .pa-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      table-layout: fixed;
+      min-width: max-content;
+    }
+
+    .th-corner,
+    .spec-label-cell {
+      position: sticky;
+      left: 0;
+      width: var(--label-w);
+      min-width: var(--label-w);
+      max-width: var(--label-w);
+      z-index: 20;
+    }
+    .th-corner {
+      background: var(--bg);
+      z-index: 62;
+      top: 0;
+      vertical-align: bottom;
+      text-align: left;
+      padding: 0 var(--sp-3) 4px;
+      font-size: var(--text-2xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .spec-label-cell {
+      background: var(--surface);
+      padding: 5px 14px;
+      font-size: var(--text-xs);
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      border-right: 2px solid var(--border2);
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.15);
+    }
+
+    .col-header-row th {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+    }
+    /* l'angle reste au-dessus des en-tetes de colonne qui passent dessous */
+    .col-header-row th.th-corner { z-index: 62; }
+
+    .model-hw {
+      background: linear-gradient(180deg, #f7f8fa, #e9ecf1);
+      padding: 3px var(--sp-2);
+      display: flex; align-items: center; justify-content: center;
+      height: 24px;
+      border-top: 1px solid rgba(0,0,0,.12);
+    }
+    .model-hw img {
+      max-width: 100%; max-height: 18px; width: auto;
+      object-fit: contain;
+      transition: transform var(--dur) var(--ease);
+    }
+    .model-th:hover .model-hw img { transform: scale(1.06); }
+
+    .model-th {
+      width: var(--col-w);
+      min-width: var(--col-w);
+      max-width: var(--col-w);
+      padding: var(--sp-1) var(--sp-1) 0;
+      vertical-align: bottom;
+      scroll-snap-align: start;
+    }
+    .model-card-clip {
+      overflow: hidden;
+      border-radius: var(--r-md) var(--r-md) 0 0;
+      transition: transform var(--dur) var(--ease);
+    }
+    .model-th.selected .model-card-clip { transform: translate3d(0, -3px, 0); }
+
+    .model-card-top {
+      padding: 6px var(--sp-2) 5px;
+      display: flex; flex-direction: column; gap: 2px;
+      position: relative;
+      cursor: pointer;
+    }
+    .model-card-top::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: #fff;
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease);
+    }
+    .model-card-top:hover::before { opacity: .08; }
+    .model-name {
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: inherit;
+    }
+    .model-target {
+      font-size: var(--text-2xs);
+      color: inherit;
+      opacity: .85;
+      font-family: var(--mono);
+      letter-spacing: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .model-repl { display: block; margin-top: 2px; }
+
+    /* concurrent : fond neutre, l'editeur se lit dans son badge */
+    .model-th.is-comp .model-card-top { background: var(--surface3); color: var(--text-bright); }
+    .vendor-badge {
+      position: relative; z-index: 1;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      color: var(--text-dim);
+      border-bottom: 1px dotted var(--text-muted);
+      cursor: help;
+    }
+
+    /* Lien datasheet a gauche, case de selection a droite. Sur une
+       colonne de 148px les deux libelles complets ne tenaient pas : la
+       case garde son mot, le lien se reduit a son pictogramme. */
+    .model-card-bot {
+      padding: 3px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 3px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: var(--surface2);
+    }
+    .model-ds-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: var(--text-2xs);
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color var(--dur-fast) var(--ease);
+    }
+    .model-ds-link:hover { color: var(--text-bright); }
+    /* Le lien datasheet vit dans la carte, sous le nom : en mot entier,
+       souligne, dans l'encre de la carte. */
+    /* Lien datasheet : pictogramme seul, nom complet dans aria-label */
+    .model-card-bot .model-ds-link {
+      flex: none; justify-content: center;
+      width: 26px; height: 26px;
+      border: 1px solid var(--border2); border-radius: var(--r-sm);
+      color: var(--text-dim);
+    }
+    .model-card-bot .model-ds-link:hover { border-color: var(--accent); color: var(--text-bright); }
+    .model-card-bot .sel-btn { flex: 1; justify-content: center; min-height: 26px; }
+    .spec-sub {
+      display: block;
+      margin-top: 2px;
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .val-prof {
+      display: block;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+    /* Libelles longs de datasheet (I/O, alimentation, HA) : texte courant,
+       pas de chiffre en chasse fixe, retour a la ligne autorise. */
+    .val-txt {
+      display: block;
+      min-width: 14em;
+      max-width: 22em;
+      font-family: var(--font);
+      font-size: var(--text-2xs);
+      font-weight: 400;
+      line-height: 1.35;
+      white-space: normal;
+      text-align: left;
+      color: var(--text);
+    }
+    .cv-c .val-txt { min-width: 0; max-width: none; }
+    .cat-folded {
+      font-size: var(--text-2xs);
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    /* Selection explicite : une case par colonne. */
+    .sel-btn {
+      display: inline-flex; align-items: center; gap: var(--sp-1);
+      font: inherit; font-size: var(--text-2xs); font-weight: 600;
+      padding: 3px var(--sp-2) 3px var(--sp-1);
+      min-height: 24px;
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+    }
+    .sel-btn:hover { border-color: var(--accent); }
+    .sel-box {
+      width: 12px; height: 12px;
+      border: 1.5px solid var(--text-muted);
+      border-radius: var(--r-xs);
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .sel-box svg { width: 10px; height: 10px; opacity: 0; transform: scale(.5);
+      transition: opacity var(--dur-fast) var(--ease), transform var(--dur) var(--ease); }
+    .sel-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-dim); color: var(--accent-txt); }
+    .sel-btn[aria-pressed="true"] .sel-box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .sel-btn[aria-pressed="true"] .sel-box svg { opacity: 1; transform: none; }
+
+    /* colonne retenue : une teinte tres basse sur toute la hauteur */
+    .val-cell.is-sel, .cat-spacer.is-sel {
+      background-image: linear-gradient(var(--accent-dim), var(--accent-dim)) !important;
+    }
+
+    .val-cell {
+      width: var(--col-w);
+      padding: 4px var(--sp-3);
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+      border-left: 2px solid transparent;
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+      font-size: var(--text-xs);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .val-cell.is-comp { border-left-color: var(--border); }
+
+    tr.data-row:nth-child(even) .val-cell,
+    tr.data-row:nth-child(even) .spec-label-cell { background-color: var(--surface2); }
+
+    tr.data-row:hover .val-cell,
+    tr.data-row:hover .spec-label-cell {
+      background-color: color-mix(in srgb, var(--accent) 7%, var(--surface)) !important;
+    }
+    tr.data-row:hover .spec-label-cell {
+      border-right-color: var(--accent);
+      color: var(--text-bright);
+    }
+
+    .val-max { color: var(--green) !important; font-weight: 700; }
+    .val-max::after { content: ' \2191'; font-size: var(--text-2xs); opacity: 0.7; }
+    .val-na { color: var(--text-muted); font-weight: 400; }
+    .val-zero { color: var(--text-muted); font-weight: 400; }
+
+    tr[data-cat="perf"] .val-cell,
+    tr[data-cat="sess"] .val-cell { font-weight: 700; color: var(--text-bright); }
+    tr[data-cat="perf"] .spec-label-cell,
+    tr[data-cat="sess"] .spec-label-cell { color: var(--text-bright); font-weight: 600; }
+    tr[data-cat="perf"] .val-cell.val-na,
+    tr[data-cat="sess"] .val-cell.val-na { font-weight: 400; color: var(--text-muted); }
+
+    .badge-yes {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: var(--r-xs);
+      font-size: var(--text-2xs);
+      background: var(--ok-dim);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: var(--green);
+    }
+    .badge-eos-pa {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: var(--r-xs);
+      font-size: var(--text-2xs);
+      background: var(--warn-dim);
+      border: 1px solid color-mix(in srgb, var(--warn) 40%, transparent);
+      color: var(--warn);
+    }
+    .model-th.eos-model .model-card-top::after {
+      content: 'EoS';
+      position: absolute;
+      top: 5px; right: 5px;
+      background: rgba(234,179,8,0.25);
+      border: 1px solid rgba(234,179,8,0.6);
+      color: #fbbf24;
+      font-size: var(--text-2xs);
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: var(--r-xs);
+      letter-spacing: 0.07em;
+    }
+    [data-theme="light"] .model-th.eos-model.is-comp .model-card-top::after { color: var(--warn); }
+
+    .cat-row td {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      border-bottom: 1px solid var(--border2);
+      padding: 0;
+    }
+    .cat-row td.cat-label-cell {
+      position: sticky;
+      left: 0;
+      z-index: 40;
+      background: var(--bg2);
+      border-right: 2px solid var(--accent);
+    }
+    .cat-inner { display: flex; align-items: center; gap: var(--sp-2); padding: 6px var(--sp-4); }
+    .cat-inner-text {
+      font-size: var(--text-2xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-bright);
+    }
+
+    /* Les definitions passent par la bulle de ui.js (data-tip), qui
+       s'ouvre aussi au clavier. L'ancienne bulle CSS faisait doublon. */
+    .glossary-tip { cursor: help; border-bottom: 1px dotted var(--text-muted); }
+
+    /* ── Etat vide ── */
+    .pa-empty {
+      position: sticky; left: 0;
+      max-width: 520px;
+      margin: var(--sp-8) var(--sp-5);
+      padding: var(--pad-large);
+      border: 1px dashed var(--border2);
+      border-radius: var(--r-md);
+      color: var(--text);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+    }
+    .pa-empty[hidden] { display: none; }
+    .pa-empty b { color: var(--text-bright); display: block; margin-bottom: var(--sp-1); }
+    .pa-empty button { margin-top: var(--sp-3); }
+
+
+    /* ============================================================
+       Comparateur v8 : la gamme sur un axe, la comparaison en face
+       ------------------------------------------------------------
+       Trois vues sur la meme selection : la gamme (explorateur sur
+       un axe logarithmique), le tableau complet, et la comparaison
+       cote a cote. La selection vit dans un bac fixe en bas d'ecran.
+       ============================================================ */
+    :root { --label-w: 220px; --col-w: 148px; --lane-lab: 210px; }
+
+    @media (min-width: 861px) {
+      body.cmp-page { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+      body.cmp-page > .site-header, body.cmp-page > .site-footer { flex: none; }
+      body.cmp-page > .cmp { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+      .cmp > .view { flex: 1 1 auto; min-height: 0; overflow: auto; }
+      body.cmp-page > .site-footer { padding: var(--sp-2) var(--sp-4); }
+      body.cmp-page > .site-footer > div + div { display: none; }
+      #view-tbl:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+      #view-tbl .table-outer { flex: 1 1 auto; min-height: 0; height: auto; }
+      /* Les bandeaux gardent leur hauteur : sans cela la colonne flex les
+         ecrase a leur min-height et la ligne de source, renvoyee a la ligne
+         quand la position est longue, debordait sur l'avertissement. */
+      #view-tbl > :not(.table-outer) { flex: none; }
+      /* Vue tableau : la barre du comparateur se resserre, et le bac
+         quitte sa position flottante pour devenir une barre d'etat sous
+         le tableau. Il ne couvre plus ni lignes ni ascenseur horizontal. */
+      body[data-view="tbl"] .cmp-bar { padding-top: var(--sp-2); padding-bottom: var(--sp-2); }
+      body[data-view="tbl"] .cmp-count { display: none; }
+      body[data-view="tbl"] .cmp-title h1 { font-size: 20px; }
+      body.cmp-page[data-view="tbl"] > .sel {
+        position: relative; left: auto; bottom: auto; transform: none;
+        flex: none; width: auto; margin: 0;
+        padding: 4px var(--sp-6);
+        border: 0; border-top: 1px solid var(--border); border-radius: 0;
+        background: var(--surface); box-shadow: none;
+        backdrop-filter: none; -webkit-backdrop-filter: none;
+        max-width: none;
+      }
+      body.cmp-page[data-view="tbl"] > .sel.is-empty { padding: 7px var(--sp-6); }
+      body[data-view="tbl"] .sel-slots { max-width: 720px; }
+      body[data-view="tbl"] .slot { height: 36px; }
+      body[data-view="tbl"] .slot-card { padding: 3px 4px 3px 10px; }
+      body[data-view="tbl"] .slot-card .vl { display: none; }
+      body[data-view="tbl"] .slot-card .rm { grid-row: 1; width: 24px; height: 24px; }
+      body[data-view="tbl"] .sel .btn { height: 32px; }
+      body[data-view="tbl"] .sel-acts { margin-left: auto; }
+    }
+    .view[hidden] { display: none !important; }
+
+    /* ── Barre du comparateur ── */
+    .cmp-bar {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: var(--sp-3) var(--sp-5);
+      padding: var(--sp-4) var(--sp-6);
+      border-bottom: 1px solid var(--border);
+    }
+    .cmp-title h1 { font: 700 24px/1 var(--font); letter-spacing: -.02em; color: var(--text-bright); white-space: nowrap; }
+    .cmp-title h1 span { color: var(--accent-txt); }
+    .cmp-count { margin-top: 6px; font: 400 12px/1 var(--mono); color: var(--text-muted); white-space: nowrap; }
+    .seg { display: inline-flex; border: 1px solid var(--border2); border-radius: var(--r-md); padding: 2px; gap: 2px; }
+    .seg button {
+      font: 500 13px/1 var(--font); color: var(--text-dim);
+      background: none; border: 0; border-radius: var(--r-sm);
+      padding: 8px 12px; cursor: pointer; white-space: nowrap;
+      transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+    }
+    .seg button:hover { color: var(--text-bright); }
+    .seg button[aria-selected="true"], .seg button[aria-checked="true"] { background: var(--surface3); color: var(--text-bright); font-weight: 700; }
+    .seg button:disabled { opacity: .45; cursor: default; }
+    .seg .n { font-family: var(--mono); color: var(--accent-txt); margin-left: 4px; }
+    .cmp-search {
+      display: flex; align-items: center; gap: var(--sp-2);
+      height: 36px; padding: 0 var(--sp-3);
+      border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--surface);
+      color: var(--text-muted); min-width: 230px;
+    }
+    .cmp-search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; font: 400 14px/1 var(--font); color: var(--text-bright); }
+    .cmp-search:focus-within { border-color: var(--accent); }
+    .cmp-search input:focus-visible { outline: none; }
+    .bar-k { font: 400 12px/1 var(--font); color: var(--text-muted); margin-right: var(--sp-2); white-space: nowrap; }
+    .bar-grp { display: flex; align-items: center; }
+    .tgl { display: inline-flex; align-items: center; gap: var(--sp-2); font: 400 13px/1 var(--font); color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+    .tgl input, .vchk input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+    .vendors { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+    .vendors[hidden] { display: none; }
+    .tbl-set { display: flex; gap: 4px; margin-right: var(--sp-3); }
+    .tbl-set .fb { font-weight: 600; }
+    .cap-v { cursor: help; }
+    body:not([data-set="cap"]) .stats-cap, body[data-set="cap"] .stats-note:not(.stats-cap) { display: none; }
+    .vchk { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1 var(--font); color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+    .bar-end { margin-left: auto; }
+    .xp-only { display: contents; }
+    body[data-view="tbl"] .xp-only, body[data-view="cmp"] .xp-only { display: none; }
+
+    /* ── Explorateur ── */
+    .view-xp { position: relative; padding: 0 var(--sp-6) 130px; scroll-padding: 60px 0 120px; }
+    .xp-axis {
+      position: sticky; top: 0; z-index: 5;
+      height: 44px; margin-left: var(--lane-lab);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border2);
+    }
+    .xp-axis::before { content: ''; position: absolute; right: 100%; top: 0; bottom: -1px; width: calc(var(--lane-lab) + 2px); background: var(--bg); }
+    .xp-tick { position: absolute; bottom: 0; transform: translateX(-50%); font: 400 11px/1 var(--mono); color: var(--text-muted); padding-bottom: 8px; white-space: nowrap; }
+    .xp-tick::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 1px; height: 5px; background: var(--border2); }
+    .xp-unit { position: absolute; left: 0; top: 10px; font: 700 12px/1 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .xp-unit span { font-weight: 400; color: var(--text-muted); }
+    .xp-np { position: absolute; bottom: 0; right: 0; width: 64px; text-align: center; font: 400 11px/1.2 var(--font); color: var(--text-muted); padding-bottom: 6px; border-left: 1px dashed var(--border2); height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+    .xp-plot { position: relative; }
+    .xp-grid { position: absolute; top: 0; bottom: 0; left: var(--lane-lab); right: 0; pointer-events: none; }
+    .xp-grid i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); opacity: .6; }
+    .xp-lane {
+      position: relative; display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .xp-lane.is-off { opacity: .28; }
+    .xp-lane.is-hidden { display: none; }
+    .xp-lab {
+      flex: none; width: var(--lane-lab);
+      display: flex; flex-direction: column; justify-content: center; gap: 3px;
+      padding: 8px var(--sp-3) 8px 0;
+    }
+    .xp-lab b { font: 700 14px/1.1 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .xp-lab b .eos { font: 700 10px/1 var(--mono); color: var(--warn); margin-left: 6px; }
+    .xp-lab span { font: 400 11.5px/1.25 var(--font); color: var(--text-muted); }
+    .xp-lab img { height: 14px; width: auto; max-width: 150px; object-fit: contain; object-position: left; margin-top: 3px; opacity: .9; }
+    .xp-lane.is-comp .xp-lab b { color: var(--text-dim); }
+    .xp-track { position: relative; flex: 1; min-width: 0; }
+    .xp-span { position: absolute; height: 2px; margin-top: -1px; background: var(--border2); border-radius: 1px; }
+    .xp-lane:not(.is-comp) .xp-span { background: color-mix(in srgb, var(--accent) 40%, var(--border2)); }
+    .xp-lane.is-comp .xp-span { background: repeating-linear-gradient(90deg, var(--border2) 0 4px, transparent 4px 7px); }
+    .xp-sep { padding: var(--sp-5) 0 var(--sp-2) var(--lane-lab); font: 400 12.5px/1.5 var(--font); color: var(--text-muted); border-bottom: 1px solid var(--border2); }
+    .xp-sep b { color: var(--text-bright); font-weight: 700; }
+
+    .xp-tok {
+      position: absolute; left: 0; top: 0;
+      height: 18px; padding: 0 4px;
+      font: 600 11.5px/18px var(--mono); color: var(--text-dim);
+      background: none; border: 0; border-radius: var(--r-sm);
+      white-space: nowrap; cursor: pointer;
+      will-change: transform;
+    }
+    .xp-tok .d {
+      position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px;
+      border-radius: 50%; background: var(--text-muted);
+      box-shadow: 0 0 0 2px var(--bg);
+      transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+    }
+    .xp-tok .l { position: absolute; width: 1px; margin-left: -.5px; background: var(--border2); }
+    .xp-lane:not(.is-comp) .xp-tok .d { background: var(--text-dim); }
+    .xp-tok:hover, .xp-tok:focus-visible, .xp-tok.is-hot { color: var(--text-bright); background: var(--surface3); }
+    .xp-tok:hover .d, .xp-tok:focus-visible .d, .xp-tok.is-hot .d { transform: scale(1.4); background: var(--text-bright); }
+    .xp-tok[aria-pressed="true"] { color: var(--on-accent); background: var(--accent); }
+    .xp-tok[aria-pressed="true"] .d { background: var(--accent); transform: scale(1.5); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent); }
+    .xp-tok[aria-pressed="true"] .l { background: var(--accent); }
+    .xp-tok.is-dim { opacity: .22; }
+    .xp-tok.is-eos { font-style: italic; }
+    .xp-tok:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .xp-tok .b, .xp-tok .v { display: none; }
+    .is-list .xp-tick, .is-list .xp-np { display: none; }
+    .is-list .xp-axis { height: 34px; }
+    .xp-box { position: absolute; left: 0; top: 0; height: 22px; width: auto; max-width: 150px; object-fit: contain; opacity: .95; pointer-events: none; }
+    .xp-list .xp-box, .xp-list .xp-span, .xp-list .xp-grid, .xp-list .xp-tok .d, .xp-list .xp-tok .l { display: none; }
+    .xp-list .xp-track { display: flex; flex-direction: column; padding: 4px 0 10px; }
+    .xp-list .xp-tok {
+      position: relative; transform: none !important; height: 32px; width: 100%;
+      display: grid; grid-template-columns: 104px 1fr 78px; align-items: center; gap: 10px; text-align: left;
+    }
+    .xp-list .xp-tok .b { display: block; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .xp-list .xp-tok .b i { display: block; height: 100%; background: var(--text-muted); }
+    .xp-list .xp-tok[aria-pressed="true"] .b i { background: var(--on-accent); }
+    .xp-list .xp-tok .v { display: block; text-align: right; font-weight: 400; }
+    .xp-list .xp-tok .n { overflow: hidden; text-overflow: ellipsis; }
+    .xp-note { margin: var(--sp-4) 0 0 var(--lane-lab); font: 400 12px/1.6 var(--font); color: var(--text-muted); max-width: 90ch; }
+    .xp-note kbd { margin: 0 2px; }
+
+    /* Loupe : le boitier et ses chiffres, au survol ou au focus */
+    .xp-loupe {
+      position: absolute; z-index: 30; left: 0; top: 0;
+      width: 300px; padding: var(--sp-4);
+      background: var(--surface); border: 1px solid var(--border2); border-radius: var(--r-lg);
+      box-shadow: 0 30px 60px -24px rgba(0,0,0,.7);
+      pointer-events: none; opacity: 0; visibility: hidden;
+    }
+    [data-theme="light"] .xp-loupe { box-shadow: 0 24px 50px -24px rgba(11,12,15,.35); }
+    .xp-loupe .ph { height: 84px; display: flex; align-items: center; justify-content: center; margin: -4px 0 var(--sp-3); }
+    .xp-loupe .ph img { width: auto; height: auto; max-height: 84px; max-width: 100%; object-fit: contain; }
+    .xp-loupe h3 { font: 700 20px/1 var(--mono); color: var(--text-bright); letter-spacing: -.02em; }
+    .xp-loupe .sub { margin-top: 5px; font: 400 12px/1.4 var(--font); color: var(--text-muted); }
+    .xp-loupe dt { white-space: nowrap; }
+    .xp-loupe dl { display: grid; grid-template-columns: auto 1fr; gap: 5px var(--sp-3); margin-top: var(--sp-3); padding-top: var(--sp-3); border-top: 1px solid var(--border); }
+    .xp-loupe dt { font: 400 12px/1.3 var(--font); color: var(--text-muted); }
+    .xp-loupe dd { font: 700 12.5px/1.3 var(--mono); color: var(--text-bright); text-align: right; }
+    .xp-loupe dd.np { font-weight: 400; font-style: italic; color: var(--text-muted); font-family: var(--font); }
+    .xp-loupe .hint { margin-top: var(--sp-3); font: 400 11.5px/1.4 var(--font); color: var(--text-muted); }
+    .xp-loupe .hint b { color: var(--accent-txt); }
+    .xp-loupe .prof { margin-top: var(--sp-2); font: 400 11px/1.4 var(--font); color: var(--warn); }
+
+    /* Visuel absent : un plastron dessine, sans pretendre etre une photo */
+    .hw-ph { display: block; width: 120px; height: 22px; border: 1px solid var(--border2); border-radius: 3px;
+      background: repeating-linear-gradient(90deg, transparent 0 9px, var(--border) 9px 10px) 10px 6px / calc(100% - 20px) 9px no-repeat; }
+    .hw-ph.u2 { height: 30px; } .hw-ph.u3 { height: 38px; } .hw-ph.ch { height: 48px; width: 70px; }
+    .hw-ph.dt { width: 90px; height: 18px; border-radius: 5px; }
+
+    /* ── Bac de selection ── */
+    .sel {
+      position: fixed; z-index: 120;
+      left: 50%; bottom: calc(var(--dock-h) + var(--sp-4));
+      width: min(1080px, calc(100vw - 32px));
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: var(--sp-3);
+      padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border2); border-radius: var(--r-lg);
+      box-shadow: 0 24px 50px -24px rgba(0,0,0,.8);
+    }
+    [data-theme="light"] .sel { box-shadow: 0 20px 40px -24px rgba(11,12,15,.3); }
+    body[data-view="cmp"] .sel { display: none; }
+    .sel-k { font: 700 13px/1.2 var(--font); color: var(--text-bright); white-space: nowrap; }
+    .sel-k span { display: block; font-weight: 400; font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+    .sel-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); flex: 1; min-width: 0; list-style: none; }
+    .slot { position: relative; height: 52px; border-radius: var(--r-md); }
+    .slot.is-empty { border: 1px dashed var(--border2); display: flex; align-items: center; justify-content: center; font: 400 12px/1 var(--mono); color: var(--text-muted); }
+    .slot-card {
+      position: absolute; inset: 0;
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px var(--sp-2);
+      padding: 6px 6px 6px 10px;
+      border: 1px solid var(--border2); border-radius: var(--r-md); background: var(--surface2);
+      overflow: hidden;
+    }
+    .slot-card .nm { font: 700 13px/1.1 var(--mono); color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-card .vl { grid-column: 1; font: 400 11px/1.1 var(--font); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-card .rm { grid-row: 1 / span 2; grid-column: 2; width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: var(--r-sm); background: none; color: var(--text-muted); cursor: pointer; }
+    .slot-card .rm:hover { color: var(--text-bright); background: var(--surface3); }
+    .slot-card::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--accent); }
+    .slot-card.is-comp::before { background: var(--text-muted); }
+    .sel-acts { display: flex; gap: var(--sp-2); }
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--sp-2);
+      height: 40px; padding: 0 var(--sp-4);
+      font: 600 13.5px/1 var(--font); color: var(--text);
+      background: none; border: 1px solid var(--border2); border-radius: var(--r-sm);
+      cursor: pointer; white-space: nowrap; text-decoration: none;
+      transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+    }
+    .btn:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-bright); }
+    .btn:active:not(:disabled) { transform: scale(.97); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+    .btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+    .btn:disabled { opacity: .45; cursor: default; }
+    .sel-msg { position: absolute; left: var(--sp-4); bottom: calc(100% + 6px); font: 500 12px/1 var(--font); color: var(--warn); }
+    /* Bac vide : une pastille sur une ligne, sans cases ni boutons */
+    .sel.is-empty { width: max-content; max-width: calc(100vw - 32px); padding: 7px var(--sp-4); border-radius: var(--r-pill); }
+    .sel.is-empty .sel-slots, .sel.is-empty .sel-acts { display: none; }
+    .sel.is-empty .sel-k { display: block; font-size: 12.5px; }
+    .sel.is-empty .sel-k span { display: inline; margin: 0 0 0 var(--sp-2); font-size: 12.5px; }
+    .sel-msg:empty { display: none; }
+    .flyer {
+      position: fixed; z-index: 400; left: 0; top: 0; pointer-events: none;
+      font: 700 13px/1 var(--mono); color: var(--on-accent); background: var(--accent);
+      padding: 6px 9px; border-radius: var(--r-sm);
+      box-shadow: 0 10px 30px -8px rgba(250,88,45,.6);
+    }
+
+    /* ── Vue comparaison ── */
+    .view-cmp { padding: 0 var(--sp-6) var(--sp-8); }
+    .cv-bar {
+      position: sticky; top: 0; z-index: 6;
+      display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-3) var(--sp-4);
+      padding: var(--sp-3) 0; background: var(--bg);
+    }
+    .cv-bar h2 { font: 700 18px/1 var(--font); color: var(--text-bright); margin-right: auto; }
+    .cv { --n: 2; max-width: 1280px; }
+    .cv-row {
+      display: grid; grid-template-columns: 250px repeat(var(--n), minmax(0, 1fr));
+      column-gap: var(--sp-5); align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .cv-heads { position: sticky; top: 64px; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--border2); align-items: end; }
+    .cv-head { position: relative; padding: var(--sp-3) 0 var(--sp-4); min-width: 0; }
+    .cv-head .ph { height: 72px; display: flex; align-items: center; margin-bottom: var(--sp-3); }
+    .cv-head .ph img { width: auto; height: auto; max-height: 72px; max-width: 100%; object-fit: contain; object-position: left; }
+    .cv-head .nm { font: 700 clamp(18px, 1.8vw, 26px)/1 var(--mono); letter-spacing: -.02em; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cv-head .sb { margin-top: 6px; font: 400 12.5px/1.35 var(--font); color: var(--text-muted); }
+    .cv-head .lk { display: inline-flex; gap: var(--sp-3); margin-top: var(--sp-2); align-items: center; }
+    .cv-head .lk a { font: 500 12px/1 var(--font); color: var(--text-dim); text-underline-offset: 3px; }
+    .cv-head .rm { font: 500 12px/1 var(--font); color: var(--text-muted); background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .cv-head::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); }
+    .cv-head.is-comp::before { background: var(--text-muted); }
+    .cv-cat { padding: var(--sp-6) 0 var(--sp-2); font: 700 15px/1 var(--font); color: var(--text-bright); border-bottom: 1px solid var(--border2); }
+    .cv-lab { padding: 10px 0; font: 400 13px/1.35 var(--font); color: var(--text); }
+    .cv-lab .spec-sub { display: block; font-size: 11px; color: var(--text-muted); }
+    .spec-legacy { font-style: italic; }
+    .val-legacy { color: var(--text-muted); font-style: italic; font-weight: 400; cursor: help;
+      text-decoration: underline dotted; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .val-cell.is-legacy { font-weight: 400; }
+    .cv-c { position: relative; padding: 10px 0 12px; min-width: 0; }
+    .cv-v { font: 400 14px/1.2 var(--mono); color: var(--text-bright); white-space: nowrap; }
+    .cv-c.is-top .cv-v { font-weight: 700; }
+    .cv-c .np { font: italic 400 12.5px/1.2 var(--font); color: var(--text-muted); }
+    .cv-d { margin-left: var(--sp-2); font: 400 11.5px/1 var(--mono); color: var(--text-muted); }
+    .cv-c.is-top .cv-d { color: var(--accent-txt); font-family: var(--font); font-weight: 600; }
+    .cv-bar-t { position: absolute; left: 0; bottom: 4px; height: 3px; width: 100%; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .cv-bar-t i { display: block; height: 100%; background: var(--text-muted); transform-origin: left; border-radius: 2px; }
+    .cv-c.is-top .cv-bar-t i { background: var(--accent); }
+    .cv-row.is-same .cv-v { color: var(--text-dim); }
+    .cv-prof { display: block; margin-top: 3px; font: 400 10.5px/1.2 var(--font); color: var(--warn); }
+    .cv-note { margin-top: var(--sp-4); font: 400 12px/1.6 var(--font); color: var(--text-muted); max-width: 100ch; }
+    .cv-empty { padding: var(--sp-8) 0; font-size: 15px; color: var(--text-dim); }
+
+    /* ── Tableau (vue complete) : en-tete compacte ── */
+    #view-tbl .tb-wrap { border-bottom: 1px solid var(--border); }
+    .model-card-top { border-radius: 0; }
+
+    /* ── Mobile ── */
+    @media (max-width: 860px) {
+      :root { --label-w: 128px; --col-w: 132px; --lane-lab: 0px; }
+      .cmp-bar { padding: var(--sp-4); gap: var(--sp-3); }
+      .cmp-title { width: 100%; }
+      .cmp-search { min-width: 0; flex: 1 1 100%; }
+      .seg { max-width: 100%; overflow-x: auto; }
+      .bar-k { display: none; }
+      .view-xp { padding: 0 var(--sp-4) 170px; }
+      .xp-axis { margin-left: 0; top: var(--header-h); }
+      .xp-lane { flex-direction: column; }
+      .xp-lab { width: auto; flex-direction: row; align-items: baseline; justify-content: flex-start; gap: var(--sp-2); padding: var(--sp-3) 0 0; }
+
+      .xp-lab img { display: none; }
+      .xp-note, .xp-sep { margin-left: 0; padding-left: 0; }
+      .xp-grid { left: 0; }
+      .sel { flex-wrap: wrap; padding: var(--sp-2); gap: var(--sp-2); bottom: calc(var(--dock-h) + var(--sp-2)); width: calc(100vw - 16px); }
+      .sel-k { display: none; }
+      .sel-slots { grid-template-columns: repeat(4, minmax(0, 1fr)); flex: 1 1 100%; gap: 4px; }
+      .slot { height: 40px; }
+      .slot-card { padding: 4px 2px 4px 7px; grid-template-columns: 1fr; }
+      .slot-card .vl { display: none; }
+      .slot-card .nm { font-size: 11px; }
+      .slot-card .rm { display: none; }
+      .sel-acts { width: 100%; }
+      .sel-acts .btn { flex: 1; justify-content: center; height: 38px; }
+      .view-cmp { padding: 0 var(--sp-3) 120px; }
+      .cv-bar { position: static; gap: var(--sp-2); }
+      .cv-bar h2 { display: none; }
+      .cv-bar .btn { height: 34px; padding: 0 var(--sp-3); font-size: 12.5px; }
+      .cmp-title h1 { font-size: 21px; }
+      .cmp-count { display: none; }
+      .cv-row { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: var(--sp-2); }
+      .cv-lab { grid-column: 1 / -1; padding: 10px 0 0; font-size: 12px; color: var(--text-muted); }
+      .cv-heads { top: 0; }
+      .view-cmp .cv-heads { top: var(--header-h); }
+      .cv-head .ph { display: none; }
+      .cv-head .nm { font-size: 14px; }
+      .cv-head .sb, .cv-head .lk a { display: none; }
+      .cv-v { font-size: 12.5px; white-space: normal; }
+      .cv-d { display: block; margin: 3px 0 0; }
+      .toolbar { flex-wrap: nowrap; overflow-x: auto; padding: var(--sp-2) var(--sp-3); scrollbar-width: none; }
+      .toolbar::-webkit-scrollbar { display: none; }
+      .filter-group { flex-wrap: nowrap; }
+      .tb-tools { flex-wrap: wrap; overflow: visible; }
+      #model-search { width: 100%; }
+      .tb-tools .tb-group:first-child { flex: 1 1 100%; }
+      .th-corner .stats-note { display: none; }
+      /* Ligne dense : les categories defilent seules, tri et filtres dessous */
+      .tb-main { flex-wrap: wrap; overflow: visible; }
+      .tb-main #cat-filters { flex: 1 1 100%; overflow-x: auto; scrollbar-width: none; }
+      .tb-main #cat-filters::-webkit-scrollbar { display: none; }
+      .tb-main .tb-group { flex: 1 1 auto; }
+      .tb-main #sort-metric { flex: 1; min-width: 0; }
+      .sel:not(.is-empty) { padding: 6px; gap: 6px; }
+      .slot { height: 34px; }
+      .sel-acts .btn { height: 34px; }
+      .tb-main .tb-label#lb-cat { display: none; }
+      /* Le tableau occupe l'ecran une fois la page defilee jusqu'a lui,
+         au-dessus du bac et du dock. */
+      .table-outer { height: calc(100dvh - var(--header-h) - var(--dock-h) - var(--tray-h, 0px) - var(--sp-5)); min-height: 300px; }
+      body[data-view="tbl"] .view-tbl { padding-bottom: calc(var(--tray-h, 0px) + var(--sp-4)); }
+      .th-corner { padding: 0 var(--sp-2) 4px; }
+      .sel.is-empty { width: max-content; flex-wrap: nowrap; padding: 7px var(--sp-4); }
+      .spec-label-cell { padding: 6px var(--sp-2); font-size: var(--text-2xs); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .xp-tok .d, .btn { transition: none; }
+    }
+
+
+    /* ── Fiche de comparaison imprimable (A4, noir et blanc) ──
+       Construite a la demande dans #print-sheet ; a l'ecran elle reste
+       masquee, a l'impression elle remplace toute la page. */
+    #print-sheet { display: none; }
+    @page { size: A4 portrait; margin: 11mm 11mm 12mm; }
+    @media print {
+      html, body.ps-on { background: #fff !important; color: #000 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; display: block !important; padding: 0 !important; margin: 0 !important; }
+      body.ps-on > *:not(#print-sheet) { display: none !important; }
+      body.ps-on #print-sheet { display: block !important; }
+    }
+    .ps { font: 400 8.2pt/1.25 Helvetica, Arial, sans-serif; color: #000; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ps-hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 6mm; padding-bottom: 2.5mm; border-bottom: 1.4pt solid #000; }
+    .ps-brand { font: 700 8pt/1 Helvetica, Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+    .ps-hd h1 { margin: 1.2mm 0 0; font: 700 14pt/1.1 Helvetica, Arial, sans-serif; letter-spacing: -.01em; }
+    .ps-date { font: 400 8pt/1.35 Helvetica, Arial, sans-serif; text-align: right; }
+    .ps-t { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 2mm; }
+    .ps-t thead { display: table-header-group; }
+    .ps-t tr { break-inside: avoid; page-break-inside: avoid; }
+    .ps-t th, .ps-t td { padding: .55mm 1.6mm; border-bottom: .5pt solid #8c8c8c; vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+    .ps-t col.lab { width: 27%; }
+    .ps-t th.lab, .ps-t td.lab { font-weight: 400; color: #000; padding-left: 0; }
+    .ps-t .lab small { display: block; font-size: 6.4pt; color: #333; }
+    .ps-m { vertical-align: bottom !important; border-bottom: 1pt solid #000 !important; padding-top: 0 !important; }
+    .ps-m .ph { height: 11mm; display: flex; align-items: flex-end; margin-bottom: 1.5mm; }
+    .ps-m .ph img { max-height: 11mm; max-width: 100%; width: auto; height: auto; object-fit: contain; object-position: left bottom; filter: grayscale(1); }
+    .ps-m .ph .nophoto { display: block; font: italic 400 7pt/1.2 Helvetica, Arial, sans-serif; color: #333; border: .5pt dashed #666; padding: 1.5mm 2mm; }
+    .ps-m .nm { display: block; font: 700 11.5pt/1.05 Helvetica, Arial, sans-serif; }
+    .ps-m .sb { display: block; margin-top: .8mm; font-size: 7.4pt; color: #222; }
+    .ps-m .tag { display: inline-block; margin-top: 1mm; padding: .2mm 1.2mm; border: .6pt solid #000; font: 700 6.6pt/1.3 Helvetica, Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+    .ps-m.is-comp .tag { border-style: dashed; }
+    .ps-cat td { padding-top: 1.8mm; border-bottom: .9pt solid #000; font: 700 8.4pt/1.2 Helvetica, Arial, sans-serif; text-transform: uppercase; letter-spacing: .08em; }
+    .ps-t td.v { font-variant-numeric: tabular-nums; }
+    .ps-t td.v b { font-weight: 700; }
+    .ps-t td.v .val-prof, .ps-t td.v .pf { display: block; font-size: 6.8pt; color: #333; font-weight: 400; }
+    .ps-t td.v .np { font-style: italic; color: #333; }
+    .ps-t td.v .badge-yes svg { width: 9pt; height: 9pt; vertical-align: -1pt; }
+    .ps-t td.v .val-txt { display: block; font-size: 7.2pt; white-space: normal; min-width: 0; max-width: none; }
+    .ps, .ps * { color: #000 !important; }
+    .ps .val-prof, .ps .pf, .ps .np, .ps small, .ps-m .sb { color: #333 !important; }
+    .ps-ft { margin-top: 2mm; padding-top: 1.4mm; border-top: 1pt solid #000; font-size: 6.6pt; line-height: 1.3; break-inside: avoid; page-break-inside: avoid; }
+    .ps-ft p { margin: 0 0 1mm; }
+    .ps-ft ol { margin: 0 0 1.6mm; padding-left: 4mm; }
+    .ps-ft li { margin: 0; overflow-wrap: anywhere; }
+    .ps-ft b { font-weight: 700; }
+  </style>
+</head>
+<body data-bg="calme" class="cmp-page" data-view="xp">
+  <div id="header-root"></div>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/Flip.min.js"></script>
+  <script src="vendor/CustomEase.min.js"></script>
+  <script src="header.js"></script>
+  <script src="ui.js"></script>
+  <script src="icons.js"></script>
+  <script src="data/pa-models.js"></script>
+  <script src="data/pa-chassis.js"></script>
+  <script src="data/capabilities.js"></script>
+
+  <main class="cmp" id="main">
+    <!-- ── Barre du comparateur : vue, filtre, axe, concurrents ── -->
+    <div class="cmp-bar">
+      <div class="cmp-title">
+        <h1>Comparateur <span>PA-Series</span></h1>
+        <p class="cmp-count" id="cmp-count"></p>
+      </div>
+      <div class="seg" role="tablist" aria-label="Vue">
+        <button type="button" role="tab" id="tab-xp" aria-selected="true" aria-controls="view-xp">Gamme</button>
+        <button type="button" role="tab" id="tab-tbl" aria-selected="false" aria-controls="view-tbl">Tableau</button>
+        <button type="button" role="tab" id="tab-cmp" aria-selected="false" aria-controls="view-cmp">Comparaison<span class="n" id="tab-cmp-n"></span></button>
+      </div>
+      <label class="cmp-search">
+        <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Filtrer : 3420, campus, PoE" autocomplete="off" aria-label="Filtrer les modèles par nom ou usage">
+      </label>
+      <div class="xp-only">
+        <div class="bar-grp"><span class="bar-k" id="lb-axis">Axe</span>
+          <div class="seg" role="radiogroup" aria-labelledby="lb-axis" id="axis-seg">
+            <button type="button" role="radio" aria-checked="true" data-m="tp">Threat Prevention</button>
+            <button type="button" role="radio" aria-checked="false" data-m="fw">App-ID</button>
+            <button type="button" role="radio" aria-checked="false" data-m="sess">Sessions</button>
+            <button type="button" role="radio" aria-checked="false" data-m="cps">CPS</button>
+          </div>
+        </div>
+        <label class="tgl"><input type="checkbox" id="hide-eos"> Masquer les fins de vente</label>
+      </div>
+      <div class="vendors bar-end" id="vendors" hidden role="group" aria-labelledby="lb-vendors">
+        <span class="bar-k" id="lb-vendors">Concurrents</span>
+      </div>
+    </div>
+
+    <!-- ── Vue gamme ── -->
+    <section class="view view-xp" id="view-xp" role="tabpanel" aria-labelledby="tab-xp">
+      <div class="xp-axis" id="xp-axis" aria-hidden="true"></div>
+      <div class="xp-plot" id="xp-plot" aria-label="Modèles rangés par débit. Flèches pour se déplacer, Entrée pour ajouter à la comparaison." role="group"></div>
+      <p class="xp-note" id="xp-note"></p>
+      <div class="xp-loupe" id="xp-loupe" aria-hidden="true"></div>
+    </section>
+
+    <!-- ── Vue tableau ── -->
+    <section class="view view-tbl" id="view-tbl" role="tabpanel" aria-labelledby="tab-tbl" hidden>
+  <!-- ── Filtres : une ligne dense, le reste replie sous « Filtres » ── -->
+  <div class="tb-wrap">
+    <div class="toolbar tb-main">
+      <div class="tbl-set" id="tbl-set" role="group" aria-label="Tableau affiché">
+        <button type="button" class="fb on" data-set="hw" aria-pressed="true">Performances et matériel</button>
+        <button type="button" class="fb" data-set="cap" aria-pressed="false">Limites et fonctions</button>
+      </div>
+      <span class="tb-label" id="lb-cat">Catégories</span>
+      <!-- Construites depuis CATS selon le tableau affiché. -->
+      <div class="filter-group" id="cat-filters" role="group" aria-labelledby="lb-cat"></div>
+      <div class="tb-group">
+        <label class="tb-label" for="sort-metric">Trier par</label>
+        <select id="sort-metric" class="tb-input">
+          <option value="default">Ordre de la gamme</option>
+          <option value="tp">Débit Threat Prevention</option>
+          <option value="fw">Débit App-ID</option>
+          <option value="sess">Sessions concurrentes</option>
+          <option value="cps">CPS</option>
+        </select>
+      </div>
+      <button type="button" class="tb-more-btn" id="tb-more-btn" aria-expanded="false" aria-controls="tb-more"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>Filtres<span class="tb-more-n" id="tb-more-n"></span></button>
+      <button type="button" class="tb-reset" id="tb-reset" hidden>Tout réafficher</button>
+    </div>
+    <div class="tb-more" id="tb-more" hidden>
+      <div class="toolbar">
+        <span class="tb-label" id="lb-series">Série</span>
+        <!-- Construits depuis MODELS : une serie ajoutee aux donnees
+             apparait ici sans toucher au HTML. -->
+        <div class="filter-group" id="series-filters" role="group" aria-labelledby="lb-series"></div>
+      </div>
+      <div class="toolbar">
+        <span class="tb-label" id="lb-form">Format</span>
+        <div class="filter-group" id="form-filters" role="group" aria-labelledby="lb-form">
+          <button class="fb on" data-form="all" aria-pressed="true">Tous</button>
+          <button class="fb" data-form="Desktop" aria-pressed="false">Desktop</button>
+          <button class="fb" data-form="1U" aria-pressed="false">1U Rack</button>
+          <button class="fb" data-form="2U" aria-pressed="false">2U Rack</button>
+          <button class="fb" data-form="Chassis" aria-pressed="false">Chassis</button>
+        </div>
+        <div class="range" id="rg-tp"></div>
+        <div class="range" id="rg-sess"></div>
+        <!-- La recherche du bandeau (#q) filtre deja le tableau : ce champ
+             reste synchronise mais n'est plus affiche. -->
+        <div class="tb-group" hidden>
+          <label class="tb-label" for="model-search">Recherche</label>
+          <input type="search" id="model-search" class="tb-input" placeholder="Nom ou usage (PA-3420, Branch...)" autocomplete="off">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vendor-note" id="vendor-note" hidden>
+    <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/></svg>
+    <span>Chaque éditeur mesure ses débits à sa façon : un chiffre concurrent ne se compare pas un pour un à un débit appmix PA. Les concurrents sont en gris ; la définition de l'éditeur s'affiche au survol de son nom. Un tiret signifie « non publié ».</span>
+  </div>
+
+  <!-- ── Tableau ── -->
+  <div class="table-outer" id="table-outer" tabindex="0" role="region" aria-label="Tableau comparatif. Flèches gauche et droite pour passer d'une colonne à l'autre.">
+    <table class="pa-table" id="pa-table">
+      <thead>
+        <tr class="col-header-row" id="header-row">
+          <th class="th-corner" scope="col">
+            <span class="stats-note"><span class="glossary-tip" tabindex="0" data-tip="Débits appmix|Mesure en conditions réelles avec trafic applicatif mixte (HTTP, HTTPS, FTP, SMTP...), App-ID active et logs activés. Mesures sous PAN-OS 11.0 à 12.2 selon la série (ligne « PAN-OS des mesures datasheet »).">Débits appmix</span>, datasheets officielles. Tiret : non publié.</span>
+            <span class="stats-note stats-cap"><span class="glossary-tip" tabindex="0" data-tip="Limites et fonctions|Valeurs maximales publiées par chaque éditeur (outil de comparaison, tables de valeurs maximales, datasheets, guides). Source de chaque valeur au survol de la cellule. Les limites dépendent de la version logicielle.">Limites publiées</span> par chaque éditeur. Tiret : non publié.</span>
+            <span class="ns-count"><strong id="stat-models"></strong> <span id="stat-label">modèles</span></span>
+            <span class="ns-nav">
+              <button type="button" class="ns-btn" id="ns-prev" aria-label="Colonnes précédentes" title="Colonnes précédentes (flèche gauche)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+              <button type="button" class="ns-btn" id="ns-next" aria-label="Colonnes suivantes" title="Colonnes suivantes (flèche droite)"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+            </span>
+            <span class="ns-pos" id="ns-pos" aria-live="polite"></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="pa-empty" id="pa-empty" hidden>
+      <b>Aucun modèle ne correspond à ces filtres.</b>
+      <span id="pa-empty-why"></span>
+      <div><button type="button" class="tray-btn" id="pa-empty-reset">Tout réafficher</button></div>
+    </div>
+  </div>
+
+    </section>
+
+    <!-- ── Vue comparaison ── -->
+    <section class="view view-cmp" id="view-cmp" role="tabpanel" aria-labelledby="tab-cmp" hidden>
+      <div class="cv-bar">
+        <button type="button" class="btn" id="cv-back"><svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Revenir à la gamme</button>
+        <h2 id="cv-title">Comparaison</h2>
+        <label class="tgl"><input type="checkbox" id="cv-diff"> Écarts seulement</label>
+        <button type="button" class="btn" id="cv-copy">Copier le texte</button>
+        <button type="button" class="btn" id="cv-link">Copier le lien</button>
+        <button type="button" class="btn" id="cv-print">Imprimer / PDF</button>
+      </div>
+      <div class="cv" id="cv"></div>
+      <p class="cv-note" id="cv-note"></p>
+    </section>
+  </main>
+
+  <!-- Fiche imprimable, remplie au clic sur « Imprimer / PDF » -->
+  <div class="ps" id="print-sheet" aria-hidden="true"></div>
+
+  <!-- ── Bac de selection ── -->
+  <section class="sel" id="sel" aria-label="Modèles retenus pour la comparaison">
+    <span class="sel-msg" id="sel-msg" aria-live="polite"></span>
+    <p class="sel-k">À comparer<span id="sel-hint">deux à quatre modèles</span></p>
+    <ol class="sel-slots" id="sel-slots"></ol>
+    <div class="sel-acts">
+      <button type="button" class="btn" id="sel-clear">Vider</button>
+      <button type="button" class="btn primary" id="sel-go" disabled>Comparer</button>
+    </div>
+  </section>
+
+  <script>
+  const YES = '<span class="badge-yes"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="oui"><path d="M4 12.5l5 5L20 6.5"/></svg></span>';
+  /* Vrai : coche. Faux : non. Nul : tiret, rendu « non publié » en comparaison. */
+  const yesNo = v => v === true ? YES : v === false ? 'Non' : '—';
+  const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+  const frDate = iso => { const p = String(iso).split('-'); return (+p[2]) + ' ' + MOIS[+p[1] - 1] + ' ' + p[0]; };
+  /* Fonctions que la datasheet de la serie ne publie pas (voir AUDIT_EXHAUSTIF_2026-11.md). */
+  const ROWS = [
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit firewall avec App-ID active et trafic applicatif mixte (appmix). Représente les conditions réelles d\'utilisation.">App-ID Firewall (appmix)</span>',       fn: m => m.fw    + ' Gbps', num: m => m.fw    },
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit avec toutes les protections activées : App-ID, IPS, antivirus, antispyware, WildFire, DNS Security, file blocking.">Threat Prevention (appmix)</span>',      fn: m => m.tp    + ' Gbps', num: m => m.tp    },
+    { cat:'perf',  label:'<span class="glossary-tip" tabindex="0" data-tip="Débit du tunnel VPN IPsec chiffré, mesuré avec des transactions HTTP de 64 KB.">IPsec VPN</span>',                       fn: m => m.vpn != null ? m.vpn + ' Gbps' : '—', num: m => m.vpn },
+    { cat:'sess',  label:'Sessions concurrentes max',       fn: m => fmtN(m.sess),      num: m => m.sess  },
+    { cat:'sess',  label:'<span class="glossary-tip" tabindex="0" data-tip="Connections Per Second : nombre de nouvelles connexions que le firewall peut établir par seconde.">Nouvelles sessions/s (CPS)</span>',            fn: m => m.cps != null ? fmtN(m.cps) : '—', num: m => m.cps },
+    { cat:'vpn',   label:'Tunnels SD-WAN IPSec',             fn: m => m.sdwanT    != null ? fmtN(m.sdwanT)    : '—', num: m => m.sdwanT    != null ? m.sdwanT    : null },
+    { cat:'vpn',   label:'Règles SD-WAN max',                fn: m => m.sdwanR    != null ? fmtN(m.sdwanR)    : '—', num: m => m.sdwanR    != null ? m.sdwanR    : null },
+    { cat:'cap',   label:'Profils de sécurité max',          fn: m => m.secProf   != null ? fmtN(m.secProf)   : '—', num: m => m.secProf   != null ? m.secProf   : null },
+    { cat:'ports', label:'Cuivre RJ45 1G',                  fn: m => m.rj45  || '—',    num: m => m.rj45  },
+    { cat:'ports', label:'<span class="glossary-tip" tabindex="0" data-tip="Ports cuivre multi-gig (2,5GBASE-T, 5GBASE-T, 10GBASE-T), qui négocient aussi 1G. Vitesses exactes de la datasheet sous le nombre.">Cuivre multi-gig (mGig)</span>', fn: m => m.mgig ? m.mgig + '<span class="val-prof">' + esc(m.mgigSp) + '</span>' : '—', num: m => m.mgig, vx: true },
+    { cat:'ports', label:'Combo SFP/RJ45 1G',               fn: m => m.combo || '—',    num: m => m.combo, vx: false },
+    { cat:'ports', label:'1G SFP',                          fn: m => m.sfp1  || '—',    num: m => m.sfp1  },
+    { cat:'ports', label:'10G SFP+',                        fn: m => m.sfp10 || '—',    num: m => m.sfp10 },
+    { cat:'ports', label:'25G SFP28',                       fn: m => m.sfp25 || '—',    num: m => m.sfp25 },
+    { cat:'ports', label:'100G QSFP28',                     fn: m => m.sfp100|| '—',    num: m => m.sfp100},
+    { cat:'ports', label:'100G SFP-DD',                     fn: m => m.sfpdd || '—',    num: m => m.sfpdd, vx: false },
+    { cat:'ports', label:'400G QSFP-DD',                    fn: m => m.sfp400|| '—',    num: m => m.sfp400},
+    { cat:'ports', label:'Ports PoE',                       fn: m => m.poeP  || '—',    num: m => m.poeP, vx: true },
+    { cat:'ports', label:'Interfaces, libellé datasheet',   fn: m => '<span class="val-txt">' + esc(m._v ? m.ports : m.io) + '</span>', num: null, vx: true, np: m => !(m._v ? m.ports : m.io) },
+    { cat:'hw',    label:'Format',                          fn: m => m.f,               num: null         },
+    { cat:'hw',    label:'PoE',                             fn: m => m.poe ? '<span class="badge-yes">Oui</span>' : m.poe === false ? 'Non' : '—', num: null, np: m => m.poe == null },
+    { cat:'hw',    label:'Budget PoE total (W)',           fn: m => m.poeW != null ? m.poeW + ' W' : '—', num: m => m.poeW },
+    { cat:'hw',    label:'Ports de gestion, libellé datasheet', fn: m => m.mgmt ? '<span class="val-txt">' + esc(m.mgmt) + '</span>' : '—', num: null, np: m => !m.mgmt },
+    { cat:'hw',    label:'Stockage',                        fn: m => m.disk ? esc(m.disk) : '—', num: null, np: m => !m.disk },
+    { cat:'hw',    label:'Alimentation',                    fn: m => m.psu ? '<span class="val-txt">' + esc(m.psu) + '</span>' + (m._v ? psuRLab(m.psuR) : '') : '—', num: null, np: m => !m.psu, vx: true },
+    { cat:'hw',    label:'Refroidissement',                 fn: m => m.cool ? esc(m.cool) : '—', num: null, np: m => !m.cool },
+    { cat:'hw',    label:'PAN-OS minimal',                  fn: m => m.panosMin ? esc(m.panosMin) : '—', num: null, np: m => !m.panosMin },
+    { cat:'hw',    label:'PAN-OS des mesures datasheet',    fn: m => m.dsOs ? esc(m.dsOs) : '—', num: null, np: m => !m.dsOs },
+    { cat:'feat',  label:'HA actif/passif',                 fn: m => yesNo(m.haAP), num: null, np: m => m.haAP == null, vx: true },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Paire HA classique dont les deux membres traitent du trafic. Non supporté : exclu par la documentation de l’éditeur. Tiret : non publié. L’actif/actif par clustering figure sur la ligne Clustering.">HA actif/actif</span>', fn: m => m.haAA === false ? 'Non supporté' : yesNo(m.haAA), num: null, np: m => m.haAA == null, vx: true },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="HA clustering (jusqu’à 16 pare-feu, synchronisation de sessions) ou NGFW clustering (deux nœuds, plan de données double actif, MC-LAG). Nombre de membres publié par la documentation Palo Alto. Concurrents : clustering tel que le décrit la datasheet de l’éditeur.">Clustering</span>', fn: m => m.haCl ? '<span class="val-txt">' + esc(m.haCl) + '</span>' : '—', num: null, np: m => !m.haCl, vx: true },
+    { cat:'feat',  label:'Ports HA dédiés',                 fn: m => m.haPorts ? '<span class="val-txt">' + esc(m.haPorts) + '</span>' : '—', num: null, np: m => !m.haPorts },
+    { cat:'feat',  label:'HA : source et réserves',         fn: m => m.haNote ? '<span class="val-txt">' + esc(m.haNote) + '</span>' : '—', num: null, np: m => !m.haNote, vx: true },
+    { cat:'feat',  label:'Matériel concurrent : sources datasheet', fn: m => m.hwSrc ? '<span class="val-txt">' + esc(hwSrcText(m.hwSrc)) + '</span>' : '—', num: null, np: m => !m.hwSrc, vx: true, xOnly: true },
+    { cat:'feat',  label:'<span class="glossary-tip" tabindex="0" data-tip="Section Mobile Network Infrastructure de la datasheet. PA-3400, PA-5400 et PA-7000 y ajoutent GTP et SCTP Security. Tiret : la datasheet n’en parle pas.">5G Security</span>', fn: m => m.m5g ? YES : m.m5g === false ? 'Non (modèle exclu)' : '—', num: null, np: m => m.m5g == null },
+    { cat:'feat',  label:'End of Sale',                     fn: m => (m.eosD ? frDate(m.eosD) + (m.eos ? '' : '<span class="val-prof">annoncée</span>') : (m.eos ? '<span class="badge-eos-pa">EoS</span>' : 'Non annoncée')) + (m.eos && EOS_REPLACEMENTS[m.id] ? '<span class="val-prof">remplacé par ' + EOS_REPLACEMENTS[m.id] + '</span>' : ''), num: null },
+    { cat:'feat',  label:'End of Life',                     fn: m => m.eolD ? frDate(m.eolD) : 'Non annoncée', num: null },
+    { cat:'feat',  label:'Dernière version PAN-OS',         fn: m => m.panosMax ? esc(m.panosMax) : (m.eosD ? '—' : 'Non annoncée'), num: null, np: m => !m.panosMax && !!m.eosD },
+    { cat:'ref',  label:'SKU',                             fn: m => m.sku  ? `<span style="font-family:var(--mono);font-size:11px">${m.sku}</span>` : '—', num: null },
+  ];
+
+  const CATS = {
+    perf:  { label:'Performances' },
+    sess:  { label:'Sessions' },
+    cap:   { label:'Capacités' },
+    vpn:   { label:'VPN & SD-WAN' },
+    ports: { label:'Interfaces' },
+    hw:    { label:'Hardware' },
+    feat:  { label:'Fonctionnalités' },
+    ref:   { label:'Références / SKU' },
+    lim:   { label:'Limites de configuration' },
+    sec:   { label:'Fonctions de sécurité' },
+    net:   { label:'Réseau et accès' },
+  };
+
+  /* ══ Deuxième tableau : limites et fonctions (data/capabilities.js) ══
+     Mêmes règles que le reste du site : nul = non publié, jamais zéro,
+     et chaque valeur publiée porte sa source (survol de la cellule).
+     Libellés génériques : on compare des fonctions, pas des marques.
+     Les limites sont des nombres d'objets : elles se comparent d'un
+     éditeur à l'autre, contrairement aux débits. */
+  const CAPX = typeof CAPABILITIES !== 'undefined' ? CAPABILITIES : null;
+  const capOf = m => (CAPX && CAPX.models[m.id]) || null;
+  const capVendor = m => (CAPX && CAPX.vendors[m._v ? m.v : 'pan']) || null;
+  function capVal(m, row) {
+    const c = capOf(m);
+    if (row.feat) {
+      if (c && c.feat && row.k in c.feat) return c.feat[row.k];
+      const V = capVendor(m);
+      return V && V.features && row.k in V.features ? V.features[row.k] : null;
+    }
+    return c && c[row.k] != null ? c[row.k] : null;
+  }
+  function capSrc(m, row) {
+    const c = capOf(m), V = capVendor(m);
+    if (row.feat) return (c && c.featSrc && c.featSrc[row.k]) || (V && V.featSrc && V.featSrc[row.k]) || '';
+    return (c && c.src && (c.src[row.k] || (row.k === 'virt' && c.src.virtBase))) || '';
+  }
+  const FEAT_TXT = { base: 'Inclus', lic: 'Licence', 'lic-local': 'Licence<span class="val-prof">analyse sur le boîtier</span>' };
+  function capCell(row, m) {
+    const v = capVal(m, row);
+    if (v == null) return { html: '—', n: null, na: true };
+    let html;
+    if (row.feat) {
+      html = v === false ? '<span class="val-zero">Non</span>' : v === true ? 'Oui' : (FEAT_TXT[v] || esc(v));
+    } else {
+      html = v.toLocaleString('fr-FR');
+      if (row.k === 'virt' && v === 0) html = '<span class="val-zero">non pris en charge</span>';
+      else if (row.k === 'virt') {
+        const c = capOf(m);
+        if (c.virtBase != null && c.virtBase !== v) html += '<span class="val-prof">dont ' + c.virtBase.toLocaleString('fr-FR') + ' sans licence</span>';
+        if (c.virtTerm) html += '<span class="val-prof">' + esc(c.virtTerm) + '</span>';
+      }
+    }
+    const src = capSrc(m, row);
+    if (src) html = '<span class="cap-v" title="' + esc('Source : ' + src) + '">' + html + '</span>';
+    return { html, n: row.feat ? null : v };
+  }
+  const CAP_ROWS = [
+    ['lim', 'ipsec',   'Tunnels IPsec site-à-site max'],
+    ['lim', 'ra',      'Utilisateurs VPN d’accès distant max'],
+    ['lim', 'vlan',    'VLAN (sous-interfaces 802.1Q) max'],
+    ['lim', 'virt',    '<span class="glossary-tip" tabindex="0" data-tip="Partitions logiques du pare-feu, chacune avec ses propres politiques et interfaces (le terme de l’éditeur est rappelé sous la valeur).">Contextes virtuels max</span>'],
+    ['lim', 'rules',   'Règles de sécurité max'],
+    ['lim', 'nat',     'Règles NAT max'],
+    ['lim', 'addr',    'Objets adresse max'],
+    ['lim', 'addrGrp', 'Groupes d’adresses max'],
+    ['lim', 'svc',     'Objets service max'],
+    ['lim', 'zones',   'Zones de sécurité max'],
+    ['lim', 'routes',  'Routes statiques max'],
+    ['lim', 'users',   'Utilisateurs identifiés max'],
+    ['lim', 'sslDec',  'Sessions TLS déchiffrées max'],
+    ['lim', 'ap',      'Points d’accès Wi-Fi gérés max'],
+    ['lim', 'sw',      'Commutateurs gérés max'],
+    ['sec', 'ips',     'Prévention d’intrusion (IPS)', 1],
+    ['sec', 'av',      'Antivirus réseau', 1],
+    ['sec', 'sandbox', '<span class="glossary-tip" tabindex="0" data-tip="Analyse des fichiers inconnus en environnement isolé. « analyse sur le boîtier » : le pare-feu lui-même peut exécuter l’analyse ; sinon elle se fait dans le cloud de l’éditeur ou sur une appliance séparée.">Sandbox de fichiers inconnus</span>', 1],
+    ['sec', 'ai',      'Détection en ligne par apprentissage automatique', 1],
+    ['sec', 'url',     'Filtrage URL par catégories', 1],
+    ['sec', 'dns',     'Sécurité DNS', 1],
+    ['sec', 'app',     'Contrôle applicatif', 1],
+    ['sec', 'tls',     'Inspection TLS (déchiffrement)', 1],
+    ['sec', 'dlp',     'Prévention de fuite de données (DLP)', 1],
+    ['sec', 'iot',     'Identification IoT et équipements non gérés', 1],
+    ['sec', 'ot',      'Protocoles industriels (OT)', 1],
+    ['net', 'sdwan',   'SD-WAN', 1],
+    ['net', 'ztna',    'Accès zero trust (ZTNA)', 1],
+    ['net', 'raVpn',   'VPN d’accès distant', 1],
+    ['net', 'pqc',     'VPN IPsec post-quantique', 1],
+    ['net', 'wifi',    'Wi-Fi intégré', 1],
+    ['net', 'cell',    '5G / LTE', 1],
+    ['net', 'wlc',     'Contrôleur Wi-Fi', 1],
+    ['net', 'swc',     'Contrôleur de commutateurs', 1]
+  ].map(([cat, k, label, feat]) => ({ cap: true, cat, k, label, feat: !!feat,
+    fn: m => capCell(CAP_ROWS_BY[k], m).html, num: feat ? null : m => capVal(m, CAP_ROWS_BY[k]) }));
+  const CAP_ROWS_BY = {}; CAP_ROWS.forEach(r => { CAP_ROWS_BY[r.k] = r; });
+  /* Le tableau 1 et le tableau 2 partagent la même mécanique ; la vue
+     Comparaison et le texte copié enchaînent les deux. */
+  ROWS.push.apply(ROWS, CAP_ROWS);
+
+  /* Lignes qui ont un sens pour un boitier concurrent : debits,
+     sessions, interfaces, format. Le reste (GlobalProtect, vsys,
+     WildFire...) est propre a PAN-OS et reste vide. */
+  const isComparable = row => row.vx === true || row.vx !== false && (['perf', 'sess', 'ports'].indexOf(row.cat) !== -1 || row.label === 'Format');
+
+  /* Sources par valeur des champs materiels concurrents (hwSrc). */
+  const HWSRC_LAB = { ports: 'Ports', poe: 'PoE', ha: 'HA', psu: 'Alimentation' };
+  const PSUR = { true: 'redondance de série', option: 'redondance en option', false: 'non redondante' };
+  const psuRLab = r => r == null ? '' : '<span class="val-prof">' + PSUR[String(r)] + '</span>';
+  const hwSrcText = o => Object.keys(HWSRC_LAB).filter(k => o && o[k]).map(k => HWSRC_LAB[k] + ' : ' + o[k]).join(' · ');
+
+  /* Fin de vente d'un concurrent : la meme mention dans le tableau, la
+     comparaison et la fiche imprimable (elle lisait « sans objet » ici et
+     « aucun avis trouve » sur la fiche). */
+  const EOS_X = '<span class="np">aucun avis trouvé au relevé</span>';
+
+  /* Une valeur nulle veut dire « non publie », jamais zero. */
+  function cellRaw(row, m) {
+    if (row.cap) return capCell(row, m).html;
+    if (row.xOnly && !m._v) return '—';
+    if (m._v && row.label === 'End of Sale') return EOS_X;
+    if (m._v && !isComparable(row)) return '—';
+    if (row.num && row.num(m) == null) return (/Budget PoE/.test(row.label) && m.poe === false) ? '<span class="val-zero">sans PoE</span>' : '—';
+    /* Un port absent est un zero publie, pas un tiret (« non publie »). */
+    if (row.cat === 'ports' && row.num && row.num(m) === 0) return '<span class="val-zero">0</span>';
+    if (row.np && row.np(m)) return '—';
+    if (row.label === 'Format') return m.f || '—';
+    return row.fn(m);
+  }
+
+  const EOS_REPLACEMENTS = {
+    'PA-820': 'PA-1410', 'PA-850': 'PA-1420',
+    'PA-7050': 'PA-7500', 'PA-7080': 'PA-7500',
+  };
+
+  const DS_URLS = {
+    'PA-400':  'https://www.paloaltonetworks.com/resources/datasheets/pa-400-series',
+    'PA-400R': 'https://www.paloaltonetworks.com/resources/datasheets/pa-400r-series',
+    'PA-500':  'https://www.paloaltonetworks.com/resources/datasheets/pa-500-series',
+    'PA-800':  'https://www.paloaltonetworks.com/resources/datasheets/pa-800-series-datasheet',
+    'PA-1400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1400-series',
+    'PA-3400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3400-series',
+    'PA-5400': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5400-series',
+    'PA-7000': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7000-series',
+    'PA-1500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-1500-series',
+    'PA-3500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-3500-series',
+    'PA-5500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-5500-series',
+    'PA-50R':  'https://www.paloaltonetworks.com/resources/datasheets/pa-50r-series',
+    'PA-7500': 'https://www.paloaltonetworks.com/resources/datasheets/pa-7500',
+  };
+
+  const SERIES_NEW = ['PA-500', 'PA-1500', 'PA-3500', 'PA-5500', 'PA-50R'];
+  const SERIES_EOS_TITRE = { 'PA-800': 'End of Sale · août 2024',
+                             'PA-7000': 'End of Sale · décembre 2025' };
+
+  const ICO = {
+    ext: '<svg class="ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>',
+    x: '<svg class="ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+  };
+
+  const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+
+  /* ══ Etat ══ */
+  const state = {
+    cat: 'all', series: 'all', form: 'all', q: '', sort: 'default', set: 'hw',
+    range: {},            // tp, sess : { lo, hi } en valeurs reelles
+    vendors: new Set(),   // editeurs concurrents affiches
+    isolate: false
+  };
+  let selected = [];      // cles des modeles retenus, dans l'ordre du clic
+  const MAX_SEL = 4;
+
+  /* Petite memoire locale : selection et editeurs. Un navigateur qui
+     refuse le stockage (navigation privee) garde un outil complet. */
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* Encre lisible sur une couleur de gamme : on calcule le contraste
+     du charbon et du blanc et on garde le meilleur. */
+  function inkOn(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return '#fff';
+    var v = [0, 2, 4].map(function (i) {
+      var c = parseInt(h.substr(i, 2), 16) / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    var lum = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    var withWhite = 1.05 / (lum + 0.05);
+    var withInk   = (lum + 0.05) / 0.06665;
+    return withInk > withWhite ? '#10151c' : '#ffffff';
+  }
+
+  function chassis(id) {
+    var e = (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[id.toLowerCase()];
+    if (!e) return '';
+    return '<div class="model-hw"><img src="' + e.img + '" alt="' + e.label + '" loading="lazy"></div>';
+  }
+
+  /* ══ Catalogue : PA, plus les concurrents coches ══ */
+  let COMP = null;   // { vendors: {id: vendor}, models: [...] } une fois charge
+
+  function paModels() {
+    return MODELS.map(m => { m._key = m.id; return m; });
+  }
+  function compModels() {
+    if (!COMP) return [];
+    return COMP.models.filter(c => state.vendors.has(c.v));
+  }
+  function allModels() { return paModels().concat(compModels()); }
+  function byKey(k) {
+    return MODELS.find(m => m.id === k) || (COMP && COMP.models.find(c => c._key === k)) || null;
+  }
+
+  /* ══ Curseurs de plage ══ */
+  const RANGES = [
+    { key: 'tp',   el: 'rg-tp',   label: 'Threat Prevention', unit: ' Gbps',
+      fmt: v => (v < 10 ? (Math.round(v * 10) / 10) : Math.round(v)).toLocaleString('fr-FR') },
+    { key: 'sess', el: 'rg-sess', label: 'Sessions', unit: '',
+      fmt: v => fmtN(v >= 1e6 ? Math.round(v / 1e5) * 1e5 : v >= 1e3 ? Math.round(v / 1e3) * 1e3 : Math.round(v)) }
+  ];
+  const STEPS = 200;
+  let rangeBounds = null;
+
+  /* Les bornes suivent les donnees, calculees au premier appel. */
+  function bounds() {
+    if (rangeBounds) return rangeBounds;
+    rangeBounds = {};
+    RANGES.forEach(R => {
+      const vals = MODELS.map(m => m[R.key]).filter(v => v != null && v > 0);
+      rangeBounds[R.key] = { min: Math.min.apply(null, vals), max: Math.max.apply(null, vals) };
+    });
+    return rangeBounds;
+  }
+  const toVal = (key, t) => { const b = bounds()[key]; return b.min * Math.pow(b.max / b.min, t / STEPS); };
+  const toPos = (key, v) => { const b = bounds()[key]; return Math.round(STEPS * Math.log(v / b.min) / Math.log(b.max / b.min)); };
+
+  function buildRanges() {
+    RANGES.forEach(R => {
+      const host = document.getElementById(R.el);
+      host.innerHTML =
+          '<span class="tb-label" id="' + R.el + '-l">' + R.label + '</span>'
+        + '<div class="range-box">'
+        +   '<div class="range-track">'
+        +     '<span class="range-rail"></span><span class="range-fill"></span>'
+        +     '<input type="range" min="0" max="' + STEPS + '" value="0" aria-label="' + R.label + ' minimum">'
+        +     '<input type="range" min="0" max="' + STEPS + '" value="' + STEPS + '" aria-label="' + R.label + ' maximum">'
+        +   '</div>'
+        +   '<span class="range-val" aria-hidden="true"></span>'
+        + '</div>';
+      const [lo, hi] = host.querySelectorAll('input');
+      const sync = (moved) => {
+        let a = +lo.value, b = +hi.value;
+        if (a > b) { if (moved === lo) lo.value = a = b; else hi.value = b = a; }
+        const full = a === 0 && b === STEPS;
+        state.range[R.key] = full ? null : { lo: a === 0 ? 0 : toVal(R.key, a), hi: b === STEPS ? Infinity : toVal(R.key, b) };
+        paintRange(host, R, a, b);
+      };
+      [lo, hi].forEach(inp => {
+        inp.addEventListener('input', () => { sync(inp); scheduleBuild(); });
+      });
+      paintRange(host, R, 0, STEPS);
+    });
+  }
+  function paintRange(host, R, a, b) {
+    const fill = host.querySelector('.range-fill');
+    fill.style.left = (a / STEPS * 100) + '%';
+    fill.style.right = (100 - b / STEPS * 100) + '%';
+    const out = host.querySelector('.range-val');
+    const lo = R.fmt(toVal(R.key, a)), hi = R.fmt(toVal(R.key, b));
+    out.textContent = lo + ' à ' + hi + R.unit;
+    out.classList.toggle('is-set', !(a === 0 && b === STEPS));
+    const [i1, i2] = host.querySelectorAll('input');
+    i1.setAttribute('aria-valuetext', lo + R.unit);
+    i2.setAttribute('aria-valuetext', hi + R.unit);
+  }
+  function resetRanges() {
+    RANGES.forEach(R => {
+      const host = document.getElementById(R.el);
+      const [lo, hi] = host.querySelectorAll('input');
+      lo.value = 0; hi.value = STEPS;
+      state.range[R.key] = null;
+      paintRange(host, R, 0, STEPS);
+    });
+  }
+
+  /* ══ Selection des modeles visibles ══ */
+  function visibleModels() {
+    if (state.isolate && selected.length) return selected.map(byKey).filter(Boolean);
+    const q = state.q;
+    let list = allModels().filter(m => {
+      if (!m._v && state.series !== 'all' && m.s !== state.series) return false;
+      if (state.form !== 'all' && !String(m.f || '').startsWith(state.form)) return false;
+      if (q) {
+        const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      for (const k in state.range) {
+        const r = state.range[k];
+        if (!r) continue;
+        const v = m[k];
+        if (v == null) continue;             // non publie : on ne cache pas en silence
+        if (v < r.lo || v > r.hi) return false;
+      }
+      return true;
+    });
+    if (state.sort !== 'default') {
+      const key = state.sort;
+      list = list.slice().sort((a, b) => (b[key] || 0) - (a[key] || 0));
+    }
+    return list;
+  }
+
+  function filtersActive() {
+    return state.cat !== 'all' || state.series !== 'all' || state.form !== 'all' || !!state.q
+      || Object.keys(state.range).some(k => state.range[k]);
+  }
+
+  /* ══ Construction du tableau ══ */
+
+  /* Cle de donnee d'une ligne (fw, tp, rj45...), lue en faisant tourner
+     sa fonction num sur un objet qui renvoie le nom du champ demande. */
+  const FIELD_PROBE = new Proxy({}, { get: (t, p) => p });
+  const fieldOf = row => { if (row.cap) return 'cap:' + row.k; try { return row.num ? row.num(FIELD_PROBE) : null; } catch (e) { return null; } };
+
+  /* Quand un concurrent est visible, les libelles « appmix » deviennent
+     faux pour sa colonne : on passe a des intitules neutres, et chaque
+     ligne dit ce que mesure chacun. */
+  const NEUTRAL = {
+    fw:  ['Débit firewall', 'PA : App-ID appmix · concurrents : définition de l’éditeur'],
+    tp:  ['Débit avec protection complète', 'PA : Threat Prevention appmix · concurrents : définition de l’éditeur'],
+    vpn: ['IPsec VPN', 'PA : HTTP 64 KB · concurrents : définition de l’éditeur'],
+    sfp25:  ['25G SFP28', 'Concurrents : SFP28 et SFP56 (50G) regroupés'],
+    sfp100: ['100G QSFP28', 'Concurrents : QSFP28 et QSFP56 (200G) regroupés']
+  };
+  /* Capacites reprises d'une edition anterieure de la datasheet
+     (LEGACY_CAPS, data/pa-models.js) : affichees, attenuees, jamais
+     comptees dans un ecart, une barre ou un maximum. */
+  const isLegacy = row => typeof LEGACY_CAPS !== 'undefined' && LEGACY_CAPS.indexOf(fieldOf(row)) !== -1;
+  const LEG_TIP = typeof LEGACY_NOTE !== 'undefined' ? LEGACY_NOTE : 'Édition antérieure de la datasheet';
+  const legacyVal = html => '<span class="val-legacy" title="' + esc(LEG_TIP) + '">' + html + '</span>';
+  function rowLabel(row, withComp) {
+    const f = fieldOf(row);
+    if (isLegacy(row)) return row.label + '<span class="spec-sub spec-legacy">édition antérieure de la datasheet</span>';
+    if (!withComp || !NEUTRAL[f]) return row.label;
+    return NEUTRAL[f][0] + '<span class="spec-sub">' + NEUTRAL[f][1] + '</span>';
+  }
+
+  /* Profil de mesure court d'un editeur, tire de sa definition
+     (vendors[].metrics) : « UDP 1518 o », « Ent. Traffic Mix »... */
+  function shortProfile(def) {
+    if (!def) return '';
+    if (/UDP 1518|1518 ?B UDP|1518 octets/i.test(def) && /UDP/i.test(def)) return 'UDP 1518 o';
+    if (/1518 byte UDP/i.test(def)) return 'UDP 1518 o';
+    if (/Enterprise Traffic Mix/i.test(def)) return 'Ent. Traffic Mix';
+    if (/realistic traffic mix/i.test(def)) return 'trafic réaliste';
+    if (/512 Ko/i.test(def)) return 'HTTP 512 Ko';
+    if (/RFC 2544/i.test(def) && !/octets/i.test(def)) return 'RFC 2544';
+    if (/Keysight HTTP|HTTP Keysight/i.test(def)) return 'HTTP Keysight';
+    if (/Enterprise Test Conditions/i.test(def)) return 'Ent. Test Cond.';
+    const o = def.match(/(\d{3,4}) ?octets/i);
+    if (o) return o[1] + ' o';
+    return '';
+  }
+
+  function dsLink(href, name, title) {
+    return '<a class="model-ds-link" href="' + esc(href) + '" target="_blank" rel="noopener"'
+      + ' aria-label="Datasheet officielle ' + esc(name) + '" title="' + esc(title) + '">' + ICO.ext + '</a>';
+  }
+
+  /* En-tete de colonne compacte : nom, usage, facade, puis la case
+     « Comparer » et le lien datasheet (pictogramme) sur une ligne. */
+  function headCell(m) {
+    const k = m._key, on = selected.indexOf(k) !== -1;
+    let top, ds;
+    if (m._v) {
+      const V = COMP.vendors[m.v] || { name: m.v, metrics: {} };
+      const defs = ['fw', 'tp', 'vpn'].filter(x => V.metrics && V.metrics[x])
+        .map(x => '<b>' + ({ fw: 'Firewall', tp: 'Protection complète', vpn: 'VPN' })[x] + '</b> : ' + esc(V.metrics[x])).join('<br>');
+      const file = m.ds ? decodeURIComponent(String(m.ds).split('/').pop().split('?')[0]) : '';
+      top = '<div class="model-card-top" data-act="sel">'
+        + '<span class="model-name">' + esc(m.id) + '</span>'
+        + '<span class="model-target"><span class="vendor-badge" tabindex="0" data-tip="' + esc(V.name + ' : définitions de l’éditeur|' + (defs || 'Définitions non publiées.')) + '">' + esc(V.name) + '</span> · ' + esc(m.s || '') + '</span>'
+        + '</div>';
+      ds = m.ds ? dsLink(m.ds, m.id, 'Datasheet ' + V.name + (file ? ' : ' + file : '') + (m.dsRev ? ' (' + m.dsRev + ')' : '')) : '';
+    } else {
+      const ink = inkOn(m.color);
+      top = '<div class="model-card-top" data-act="sel" style="background:' + m.color + ';color:' + ink + '">'
+        + '<span class="model-name">' + m.id + '</span>'
+        + '<span class="model-target" title="' + esc(m.s + ' · ' + m.target) + '">' + esc(m.target) + '</span>'
+        + '</div>' + chassis(m.id);
+      ds = dsLink(DS_URLS[m.s] || '#', m.s, 'Datasheet officielle ' + m.s + ' (paloaltonetworks.com)');
+    }
+    return '<th class="model-th' + (on ? ' selected' : '') + (m.eos ? ' eos-model' : '') + (m._v ? ' is-comp' : '') + '" data-k="' + esc(k) + '" scope="col">'
+      + '<div class="model-card-clip">' + top
+      + '<div class="model-card-bot">'
+      + '<button type="button" class="sel-btn" data-act="sel" aria-pressed="' + on + '" aria-label="Comparer ' + esc(m.id) + '">'
+      + '<span class="sel-box">' + ICO.check + '</span>Comparer</button>' + ds + '</div>'
+      + '</div></th>';
+  }
+
+  function buildTable() {
+    const visible = visibleModels();
+    const withComp = visible.some(m => m._v);
+    const hRow = document.getElementById('header-row');
+    /* La cellule d'angle porte le compteur et la navigation des
+       colonnes : elle reste en place, seules les colonnes changent. */
+    hRow.querySelectorAll('th.model-th').forEach(th => th.remove());
+    hRow.insertAdjacentHTML('beforeend', visible.map(headCell).join(''));
+
+    /* Lignes a afficher. Avec des concurrents, une ligne vide pour tous
+       les modeles visibles (capacites propres a PAN-OS quand on ne voit
+       que des concurrents) est retiree et comptee dans une ligne de
+       synthese, au lieu d'aligner des tirets. */
+    const shown = [];
+    const hiddenByCat = {};
+    ROWS.forEach((row, ri) => {
+      if ((row.cap ? 'cap' : 'hw') !== state.set) return;
+      if (state.cat !== 'all' && row.cat !== state.cat) return;
+      if (row.xOnly && !withComp) return;
+      if (withComp && visible.length && visible.every(m => cellRaw(row, m) === '—')) {
+        hiddenByCat[row.cat] = (hiddenByCat[row.cat] || 0) + 1;
+        return;
+      }
+      shown.push([row, ri]);
+    });
+
+    const seen = new Set();
+    const span = visible.map(m => '<td class="cat-spacer' + (selected.indexOf(m._key) !== -1 ? ' is-sel' : '') + '" data-m="' + esc(m._key) + '"></td>').join('');
+    let html = '';
+    shown.forEach(([row, ri]) => {
+      if (!seen.has(row.cat) && CATS[row.cat]) {
+        seen.add(row.cat);
+        html += '<tr class="cat-row"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-inner-text">'
+          + CATS[row.cat].label + '</span></div></td>' + span + '</tr>';
+      }
+      // Le maximum ne se cherche qu'entre PA : un debit Fortinet et un
+      // debit appmix ne mesurent pas la meme chose. Et seulement s'il y
+      // a un ecart : une ligne ou tous les PA se valent n'a pas de meilleur.
+      let maxVal = -Infinity, minVal = Infinity;
+      if (row.num) visible.forEach(m => { if (m._v && !row.cap) return; const v = row.num(m); if (v == null) return; if (v > maxVal) maxVal = v; if (v < minVal) minVal = v; });
+      if (!(maxVal > minVal) || isLegacy(row)) maxVal = -Infinity;
+      const field = fieldOf(row);
+      const legacy = isLegacy(row);
+
+      const cells = visible.map(m => {
+        let raw = cellRaw(row, m);
+        const num = ((!m._v || row.cap) && row.num) ? row.num(m) : null;
+        let cls = 'val-cell';
+        if (num != null && num === maxVal && maxVal > 0) cls += ' val-max';
+        else if (raw === '—') cls += ' val-na';
+        if (legacy && !m._v && raw !== '—') { cls += ' is-legacy'; raw = legacyVal(raw); }
+        if (m._v) {
+          cls += ' is-comp';
+          if (raw !== '—' && (field === 'fw' || field === 'tp' || field === 'vpn')) {
+            const V = COMP.vendors[m.v];
+            const prof = shortProfile(V && V.metrics && V.metrics[field]);
+            if (prof) raw += '<span class="val-prof">' + prof + '</span>';
+          }
+        }
+        if (selected.indexOf(m._key) !== -1) cls += ' is-sel';
+        const style = m._v ? '' : ' style="border-left-color:' + m.color + '22"';
+        return '<td class="' + cls + '" data-m="' + esc(m._key) + '" data-k="' + esc(m._key) + '|' + ri + '"' + style + '>' + raw + '</td>';
+      }).join('');
+      html += '<tr class="data-row" data-cat="' + row.cat + '"><td class="spec-label-cell">' + rowLabel(row, withComp) + '</td>' + cells + '</tr>';
+    });
+
+    const nHidden = Object.keys(hiddenByCat).reduce((a, c) => a + hiddenByCat[c], 0);
+    if (nHidden) {
+      const cats = Object.keys(hiddenByCat).map(c => CATS[c] ? CATS[c].label : c).join(', ');
+      html += '<tr class="cat-row row-folded"><td class="cat-label-cell"><div class="cat-inner"><span class="cat-folded">'
+        + nHidden + ' ligne' + (nHidden > 1 ? 's' : '') + (state.set === 'cap' ? ' non publiées pour ces modèles (' + cats + ')' : ' sans objet pour ces modèles (' + cats + ' : capacités propres à PAN-OS)')
+        + '</span></div></td>' + span + '</tr>';
+    }
+    document.getElementById('table-body').innerHTML = html;
+
+    const nPa = visible.filter(m => !m._v).length, nC = visible.length - nPa;
+    document.getElementById('stat-models').textContent = visible.length;
+    document.getElementById('stat-label').textContent =
+      (visible.length > 1 ? 'modèles' : 'modèle') + (nC ? ' dont ' + nC + ' concurrent' + (nC > 1 ? 's' : '') : '')
+      + (state.isolate && selected.length ? ', sélection isolée' : '');
+
+    const empty = document.getElementById('pa-empty');
+    empty.hidden = visible.length > 0;
+    if (!visible.length) {
+      document.getElementById('pa-empty-why').textContent = state.q
+        ? 'Rien ne contient « ' + state.q + ' » avec les autres filtres actifs.'
+        : 'Les filtres de série, de format et de plage s\'excluent les uns les autres.';
+    }
+    document.getElementById('tb-reset').hidden = !filtersActive();
+    const nMore = (state.series !== 'all') + (state.form !== 'all') + Object.keys(state.range).filter(k => state.range[k]).length;
+    document.getElementById('tb-more-n').textContent = nMore ? String(nMore) : '';
+    document.getElementById('tb-more-btn').setAttribute('aria-label', 'Filtres' + (nMore ? ', ' + nMore + ' actif' + (nMore > 1 ? 's' : '') : ''));
+    updateNav();
+  }
+
+  /* Reconstruction animee : les colonnes qui restent glissent vers leur
+     nouvelle place, celles qui arrivent entrent en fondu. */
+  function rebuild() {
+    const outer = document.getElementById('table-outer');
+    if (window.Motion) Motion.flip(outer, 'th.model-th, td.val-cell', buildTable);
+    else buildTable();
+  }
+  let buildT = null;
+  function scheduleBuild() {
+    clearTimeout(buildT);
+    buildT = setTimeout(rebuild, 60);
+  }
+
+  /* ══ Filtres ══ */
+  function pressGroup(groupId, btn) {
+    document.querySelectorAll('#' + groupId + ' .fb').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
+
+  function buildSeriesFilters() {
+    const box = document.getElementById('series-filters');
+    const series = [];
+    MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
+    box.innerHTML = '<button class="fb on" data-series="all" aria-pressed="true">Toutes</button>'
+      + series.map(sid => {
+          const eos = MODELS.filter(m => m.s === sid).every(m => m.eos);
+          const badge = eos ? ' <span class="eos">EoS</span>'
+            : (SERIES_NEW.indexOf(sid) !== -1 ? ' <span class="new">New</span>' : '');
+          const titre = SERIES_EOS_TITRE[sid] ? ' title="' + SERIES_EOS_TITRE[sid] + '"' : '';
+          return '<button class="fb" data-series="' + sid + '" aria-pressed="false"' + titre + '>' + sid + badge + '</button>';
+        }).join('');
+  }
+
+  function renderCatFilters() {
+    const used = new Set(ROWS.filter(r => (r.cap ? 'cap' : 'hw') === state.set).map(r => r.cat));
+    document.getElementById('cat-filters').innerHTML = '<button class="fb' + (state.cat === 'all' ? ' on' : '') + '" data-cat="all" aria-pressed="' + (state.cat === 'all') + '">Toutes</button>'
+      + Object.keys(CATS).filter(c => used.has(c)).map(c => '<button class="fb' + (state.cat === c ? ' on' : '') + '" data-cat="' + c + '" aria-pressed="' + (state.cat === c) + '">' + CATS[c].label + '</button>').join('');
+  }
+  function setTableSet(set) {
+    if (set !== 'cap') set = 'hw';
+    state.set = set; state.cat = 'all';
+    document.body.dataset.set = set;
+    document.querySelectorAll('#tbl-set .fb').forEach(b => { const on = b.dataset.set === set; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+    renderCatFilters();
+  }
+  function wireFilters() {
+    setTableSet(new URLSearchParams(location.search).get('set'));
+    document.getElementById('tbl-set').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b || b.dataset.set === state.set) return;
+      setTableSet(b.dataset.set); rebuild(); setUrl();
+    });
+    document.getElementById('cat-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('cat-filters', b); state.cat = b.dataset.cat; rebuild();
+    });
+    document.getElementById('series-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('series-filters', b); state.series = b.dataset.series; rebuild();
+    });
+    document.getElementById('form-filters').addEventListener('click', e => {
+      const b = e.target.closest('.fb'); if (!b) return;
+      pressGroup('form-filters', b); state.form = b.dataset.form; rebuild();
+    });
+    document.getElementById('model-search').addEventListener('input', e => {
+      state.q = e.target.value.trim().toLowerCase(); scheduleBuild();
+    });
+    document.getElementById('sort-metric').addEventListener('change', e => {
+      state.sort = e.target.value; rebuild();
+    });
+    const reset = () => {
+      state.cat = state.series = state.form = 'all'; state.q = ''; state.sort = 'default';
+      pressGroup('cat-filters', document.querySelector('#cat-filters .fb'));
+      pressGroup('series-filters', document.querySelector('#series-filters .fb'));
+      pressGroup('form-filters', document.querySelector('#form-filters .fb'));
+      document.getElementById('model-search').value = '';
+      document.getElementById('sort-metric').value = 'default';
+      resetRanges();
+      rebuild();
+    };
+    document.getElementById('tb-reset').addEventListener('click', reset);
+    /* Serie, format et plages : replies derriere un seul bouton. */
+    const moreBtn = document.getElementById('tb-more-btn'), more = document.getElementById('tb-more');
+    moreBtn.addEventListener('click', () => {
+      const open = more.hidden;
+      more.hidden = !open;
+      moreBtn.setAttribute('aria-expanded', String(open));
+      updateNav();
+    });
+    document.getElementById('pa-empty-reset').addEventListener('click', reset);
+  }
+
+  /* ══ Defilement horizontal maitrise ══ */
+  function colWidth() {
+    const th = document.querySelector('th.model-th');
+    return th ? th.getBoundingClientRect().width : 148;
+  }
+  function labelWidth() {
+    const c = document.querySelector('.th-corner');
+    return c ? c.getBoundingClientRect().width : 220;
+  }
+  function scrollCols(n) {
+    const outer = document.getElementById('table-outer');
+    const w = colWidth();
+    const target = (Math.round(outer.scrollLeft / w) + n) * w;
+    outer.scrollTo({ left: Math.max(0, target), behavior: (window.Motion && Motion.reduce) ? 'auto' : 'smooth' });
+  }
+  function pageCols() {
+    const outer = document.getElementById('table-outer');
+    return Math.max(1, Math.floor((outer.clientWidth - labelWidth()) / colWidth()));
+  }
+  function updateNav() {
+    const outer = document.getElementById('table-outer');
+    const ths = document.querySelectorAll('th.model-th');
+    const prev = document.getElementById('ns-prev'), next = document.getElementById('ns-next');
+    const pos = document.getElementById('ns-pos');
+    if (!outer.offsetParent || !colWidth()) return;   // vue tableau masquee
+    if (!ths.length) { pos.textContent = ''; prev.disabled = next.disabled = true; return; }
+    const w = colWidth();
+    const atEnd = outer.scrollLeft + outer.clientWidth >= outer.scrollWidth - 2;
+    let first = Math.min(ths.length - 1, Math.round(outer.scrollLeft / w));
+    let last = Math.min(ths.length - 1, first + pageCols() - 1);
+    /* au bout du defilement, la derniere colonne est visible meme si
+       l'arrondi la laisse hors de la fenetre calculee */
+    if (atEnd) { last = ths.length - 1; first = Math.max(0, last - pageCols() + 1); }
+    prev.disabled = outer.scrollLeft <= 2;
+    next.disabled = atEnd;
+    pos.textContent = ths[first].dataset.k.replace(/^x:/, '')
+      + (last > first ? ' à ' + ths[last].dataset.k.replace(/^x:/, '') : '')
+      + '  ·  ' + (last > first ? (first + 1) + '-' + (last + 1) : (first + 1)) + ' sur ' + ths.length;
+  }
+
+  function wireScroll() {
+    const outer = document.getElementById('table-outer');
+    let raf = 0;
+    outer.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; updateNav(); });
+    }, { passive: true });
+    window.addEventListener('resize', updateNav);
+    document.getElementById('ns-prev').addEventListener('click', () => scrollCols(-pageCols()));
+    document.getElementById('ns-next').addEventListener('click', () => scrollCols(pageCols()));
+    outer.addEventListener('keydown', e => {
+      if (e.target !== outer) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollCols(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); scrollCols(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); outer.scrollTo({ left: 0 }); }
+      else if (e.key === 'End') { e.preventDefault(); outer.scrollTo({ left: outer.scrollWidth }); }
+    });
+    /* Molette verticale sur les en-tetes de modele : on defile les
+       colonnes. Ailleurs dans le tableau, la molette garde son sens. */
+    document.querySelector('#pa-table thead').addEventListener('wheel', e => {
+      if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if (outer.scrollWidth <= outer.clientWidth) return;
+      e.preventDefault();
+      outer.scrollLeft += e.deltaY;
+    }, { passive: false });
+  }
+
+
+  /* ════════════════════════════════════════════════════════════
+     v8 : explorateur de gamme, selection, comparaison
+     ════════════════════════════════════════════════════════════ */
+  const reduceM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const G = (window.gsap && !reduceM) ? window.gsap : null;
+  const HAS_FLIP = !!(G && window.Flip);
+  if (HAS_FLIP) gsap.registerPlugin(Flip);
+
+  state.view = 'xp';
+  state.metric = 'tp';
+  state.hideEos = false;
+
+  const METRICS = {
+    tp:   { label: 'Threat Prevention', unit: 'Gbps', fmt: v => fmtG(v) },
+    fw:   { label: 'App-ID Firewall', unit: 'Gbps', fmt: v => fmtG(v) },
+    sess: { label: 'Sessions concurrentes', unit: '', fmt: v => fmtN(v) },
+    cps:  { label: 'Nouvelles sessions par seconde', unit: '', fmt: v => fmtN(v) }
+  };
+  function fmtG(v) { return v == null ? 'non publié' : String(v).replace('.', ',') + ' Gbps'; }
+  function fmtMetric(key, v) { return v == null ? 'non publié' : METRICS[key].fmt(v); }
+  const shortId = id => String(id).replace(/^(PA|FG|Force|Spark|Cisco)-/, '');
+
+  /* Photos de facade extraites des datasheets (data/pa-chassis.js,
+     provenance dans img/SOURCES.md). Sans photo publiee, un plastron
+     dessine au format du boitier. */
+  function photoEntry(m) {
+    if (!m || m._v) return null;
+    return (typeof PA_CHASSIS !== 'undefined') && PA_CHASSIS[String(m.id).toLowerCase()] || null;
+  }
+  function photo(m) { const e = photoEntry(m); return e ? e.img : null; }
+  function phHTML(m) {
+    const e = photoEntry(m);
+    if (e) return '<img src="' + e.img + '" width="' + e.w + '" height="' + e.h + '" alt="' + (e.view === 'face' ? 'Face avant ' : 'Vue avant ') + esc(m.id) + '" loading="lazy" decoding="async">';
+    const f = String(m.f || '');
+    const k = /Chassis/.test(f) ? 'ch' : /3U/.test(f) ? 'u3' : /2U/.test(f) ? 'u2' : /Desktop/.test(f) ? 'dt' : '';
+    return '<span class="hw-ph ' + k + '" role="img" aria-label="Visuel non disponible' + (f ? ', format ' + esc(f) : '') + '"></span>';
+  }
+  function portsLine(m) {
+    const p = [['rj45', 'RJ45 1G'], ['mgig', 'mGig'], ['combo', 'combo SFP/RJ45'], ['sfp1', 'SFP'], ['sfp10', 'SFP+'], ['sfp25', 'SFP28'], ['sfp100', 'QSFP28'], ['sfpdd', 'SFP-DD'], ['sfp400', 'QSFP-DD']]
+      .filter(x => m[x[0]]).map(x => m[x[0]] + ' ' + x[1]);
+    return p.length ? p.join(' · ') : 'non publié';
+  }
+  /* Resume HA de la loupe : A/P, A/A, clustering, dans l'ordre de la doc. */
+  function haLine(m) {
+    const p = [];
+    if (m.haAP) p.push('A/P');
+    if (m.haAA === true) p.push('A/A');
+    if (m.haCl) p.push(/NGFW/.test(m.haCl) ? 'NGFW clustering' : 'HA clustering');
+    if (m.haAA === false) p.push('sans A/A classique');
+    return p.length ? p.join(' · ') : 'non publié';
+  }
+  const SEL = window.CmpSel || { get: () => store.get('pan-cmp-sel', []), set: a => store.set('pan-cmp-sel', a) };
+
+  /* ══ Couloirs : une serie par ligne, un editeur par ligne ══ */
+  let LANES = [];
+  function buildLaneData() {
+    const series = [];
+    MODELS.forEach(m => { if (series.indexOf(m.s) === -1) series.push(m.s); });
+    LANES = series.map(s => {
+      const ms = paModels().filter(m => m.s === s);
+      const forms = [];
+      ms.forEach(m => { const f = String(m.f).replace(' Rack', ''); if (forms.indexOf(f) === -1) forms.push(f); });
+      return { id: s, name: s, models: ms, comp: false, eos: ms.every(m => m.eos),
+        sub: ms.length + (ms.length > 1 ? ' modèles' : ' modèle') + ' · ' + forms[0] };
+    });
+    if (COMP) COMP.order.forEach(vid => {
+      if (!state.vendors.has(vid)) return;
+      const V = COMP.vendors[vid];
+      LANES.push({ id: 'v:' + vid, name: V.name, models: COMP.models.filter(c => c.v === vid), comp: true, vendor: V,
+        sub: V.line });
+    });
+  }
+
+  /* ══ Echelle logarithmique ══ */
+  const NPW = 70;              // colonne « non publie » a droite de l'axe
+  let SC = null;
+  function makeScale(trackW) {
+    const key = state.metric;
+    const vals = [];
+    LANES.forEach(L => L.models.forEach(m => { const v = m[key]; if (v != null && v > 0) vals.push(v); }));
+    const lo = Math.min.apply(null, vals) / 1.3, hi = Math.max.apply(null, vals) * 1.3;
+    const x0 = 10, x1 = Math.max(x0 + 40, trackW - NPW - 18);
+    const L0 = Math.log(lo), L1 = Math.log(hi);
+    SC = { lo, hi, x0, x1, npX: trackW - NPW / 2, w: trackW,
+      x: v => (v == null || !(v > 0)) ? trackW - NPW / 2 : x0 + (Math.log(v) - L0) / (L1 - L0) * (x1 - x0) };
+    return SC;
+  }
+  function ticks() {
+    const out = [];
+    const dense = SC.w > 640;
+    for (let e = Math.floor(Math.log10(SC.lo)); e <= Math.ceil(Math.log10(SC.hi)); e++) {
+      (dense ? [1, 2, 5] : [1]).forEach(k => { const v = k * Math.pow(10, e); if (v >= SC.lo && v <= SC.hi) out.push(v); });
+    }
+    return out;
+  }
+  function tickLabel(v) {
+    if (METRICS[state.metric].unit === 'Gbps') return String(v).replace('.', ',');
+    return fmtN(v);
+  }
+
+  /* ══ Rendu de l'explorateur ══ */
+  const plot = document.getElementById('xp-plot');
+  const axis = document.getElementById('xp-axis');
+  let rove = null;   // cle du jeton qui porte le tabindex 0
+
+  function matchQ(m) {
+    if (!state.q) return true;
+    const hay = (m.id + ' ' + (m.target || '') + ' ' + (m.s || '') + ' ' + (m._vname || '') + ' ' + (m.f || '') + (m.poe ? ' poe' : '') + (m.mgig ? ' mgig multi-gig' : '') + (m.haCl ? ' cluster clustering' : '')).toLowerCase();
+    return state.q.split(/\s+/).every(t => hay.indexOf(t) !== -1);
+  }
+  function laneShown(L) { return !(state.hideEos && L.eos); }
+  function modelShown(m) { return !(state.hideEos && m.eos); }
+
+  function renderExplorer() {
+    buildLaneData();
+    let html = '<div class="xp-grid" id="xp-grid"></div>';
+    let sepDone = false;
+    LANES.forEach(L => {
+      if (L.comp && !sepDone) {
+        sepDone = true;
+        html += '<p class="xp-sep"><b>Concurrents</b>, chiffres de l’éditeur. Chaque éditeur mesure à sa façon : ces points situent un boîtier dans sa gamme, ils ne se comparent pas un pour un aux débits appmix PA.</p>';
+      }
+      const lead = L.models.find(m => photo(m));
+      html += '<div class="xp-lane' + (L.comp ? ' is-comp' : '') + '" data-lane="' + esc(L.id) + '">'
+        + '<div class="xp-lab"><b>' + esc(L.name) + (L.eos ? '<span class="eos">EoS</span>' : '') + '</b>'
+        + '<span>' + esc(L.sub || '') + (L.comp ? ' · ' + esc(shortProfile(L.vendor.metrics && L.vendor.metrics[state.metric]) || 'mesure éditeur') : '') + '</span>'
+        + '</div>'
+        + '<div class="xp-track"><span class="xp-span"></span>' + (lead ? '<img class="xp-box" src="' + photo(lead) + '" width="' + Math.round(22 * photoEntry(lead).w / photoEntry(lead).h) + '" height="22" alt="" loading="lazy">' : '')
+        + L.models.map(m => {
+            const on = selected.indexOf(m._key) !== -1;
+            return '<button type="button" class="xp-tok' + (m.eos ? ' is-eos' : '') + '" tabindex="-1" data-k="' + esc(m._key) + '" aria-pressed="' + on + '">'
+              + '<span class="l" aria-hidden="true"></span><span class="d" aria-hidden="true"></span><span class="n">' + esc(shortId(m.id)) + '</span>'
+              + '<span class="b" aria-hidden="true"><i></i></span><span class="v" aria-hidden="true"></span></button>';
+          }).join('')
+        + '</div></div>';
+    });
+    plot.innerHTML = html;
+    LANES.forEach(L => {
+      L.el = plot.querySelector('[data-lane="' + CSS.escape(L.id) + '"]');
+      L.toks = L.models.map(m => ({ m, el: L.el.querySelector('[data-k="' + CSS.escape(m._key) + '"]') }));
+    });
+    layoutExplorer(false);
+    labelToks();
+    applyFilterXP();
+    if (!rove || !plot.querySelector('[data-k="' + CSS.escape(rove) + '"]')) {
+      const first = plot.querySelector('.xp-lane:not(.is-hidden) .xp-tok');
+      rove = first ? first.dataset.k : null;
+    }
+    setRove(rove);
+    const n = LANES.filter(L => !L.comp).reduce((a, L) => a + L.models.length, 0);
+    const ns = LANES.filter(L => !L.comp).length;
+    const nc = LANES.filter(L => L.comp).reduce((a, L) => a + L.models.length, 0);
+    document.getElementById('cmp-count').textContent = n + ' PA-Series, ' + ns + ' séries' + (nc ? ', ' + nc + ' concurrents' : '');
+    const notes = 'Échelle logarithmique. Débits appmix des datasheets officielles PAN-OS. Un modèle sans valeur publiée se range dans la colonne « non publié ».';
+    document.getElementById('xp-note').innerHTML = notes + ' Clic ou <kbd>Entrée</kbd> : ajouter à la comparaison. <kbd>Flèches</kbd> : se déplacer. <kbd>/</kbd> : chercher un modèle.';
+  }
+
+  function labelToks() {
+    LANES.forEach(L => L.toks.forEach(t => {
+      const m = t.m, v = m[state.metric];
+      t.el.setAttribute('aria-label', m.id + (m._v ? ' (' + m._vname + ')' : '') + ', ' + METRICS[state.metric].label + ' ' + fmtMetric(state.metric, v)
+        + (m.eos ? ', fin de vente' : '') + (selected.indexOf(m._key) !== -1 ? ', retenu' : ''));
+    }));
+  }
+
+  /* Placement : x selon la metrique ; l'etiquette prend la premiere
+     rangee libre, au-dessus puis en dessous du trait de serie. */
+  const ROW_H = 18;
+  function placeLane(L, trackW) {
+    const items = L.toks.filter(t => modelShown(t.m)).map(t => {
+      if (t.w == null) t.w = t.el.offsetWidth || 40;
+      return { t, x: SC.x(t.m[state.metric]) };
+    }).sort((a, b) => a.x - b.x);
+    const rows = [];
+    items.forEach(it => {
+      const left = Math.max(0, Math.min(trackW - it.t.w, it.x - it.t.w / 2));
+      let r = 0;
+      for (;; r++) {
+        const row = rows[r] || (rows[r] = []);
+        if (row.every(iv => left > iv[1] + 4 || left + it.t.w < iv[0] - 4)) { row.push([left, left + it.t.w]); break; }
+      }
+      it.left = left; it.row = r;
+    });
+    const nAbove = Math.ceil(rows.length / 2), nBelow = Math.floor(rows.length / 2);
+    const lineY = 6 + nAbove * ROW_H + 4;
+    const h = Math.max(46, lineY + 10 + nBelow * ROW_H + 4);
+    items.forEach(it => {
+      const k = Math.floor(it.row / 2), above = it.row % 2 === 0;
+      it.top = above ? lineY - 8 - 18 - k * ROW_H : lineY + 8 + k * ROW_H;
+      it.dotX = it.x - it.left; it.dotY = lineY - it.top;
+      it.leadY = above ? 18 : (lineY - it.top + 4);
+      it.leadH = above ? Math.max(0, lineY - it.top - 18 - 4) : Math.max(0, it.top - lineY - 4);
+    });
+    const xs = items.filter(it => it.t.m[state.metric] != null).map(it => it.x);
+    return { items, h, lineY, spanL: xs.length ? Math.min.apply(null, xs) : 0, spanR: xs.length ? Math.max.apply(null, xs) : 0 };
+  }
+
+  function layoutExplorer(animate) {
+    const sample = plot.querySelector('.xp-track');
+    if (!sample) return;
+    const trackW = sample.getBoundingClientRect().width;
+    makeScale(trackW);
+    const listMode = trackW < 560;
+    plot.classList.toggle('xp-list', listMode);
+    document.getElementById('view-xp').classList.toggle('is-list', listMode);
+    // axe et grille
+    axis.innerHTML = '<span class="xp-unit">' + METRICS[state.metric].label + (METRICS[state.metric].unit ? ' <span>en ' + METRICS[state.metric].unit + ', échelle log</span>' : ' <span>échelle log</span>') + '</span>'
+      + ticks().map(v => '<span class="xp-tick" style="left:' + SC.x(v).toFixed(1) + 'px">' + tickLabel(v) + '</span>').join('')
+      + '<span class="xp-np">non publié</span>';
+    const grid = document.getElementById('xp-grid');
+    if (grid) grid.innerHTML = ticks().map(v => '<i style="left:' + SC.x(v).toFixed(1) + 'px"></i>').join('');
+
+    // ordre des couloirs : du plus petit au plus gros sur la metrique
+    const minOf = L => { const v = L.models.map(m => m[state.metric]).filter(x => x != null); return v.length ? Math.min.apply(null, v) : Infinity; };
+    const order = LANES.filter(L => !L.comp).sort((a, b) => minOf(a) - minOf(b));
+    const flipState = (animate && HAS_FLIP) ? Flip.getState(plot.querySelectorAll('.xp-lane')) : null;
+    const sep = plot.querySelector('.xp-sep');
+    order.forEach(L => plot.insertBefore(L.el, sep || null));
+
+    LANES.forEach(L => {
+      L.el.classList.toggle('is-hidden', !laneShown(L));
+      L.toks.forEach(t => { t.el.hidden = !modelShown(t.m); });
+      if (!laneShown(L)) return;
+      if (listMode) { listLane(L); return; }
+      const P = placeLane(L, trackW);
+      L.el.style.height = P.h + 'px';
+      const box = L.el.querySelector('.xp-box');
+      if (box) {
+        const bw = box.offsetWidth || 90;
+        let bx = P.spanR + 16;
+        if (bx + bw > SC.x1 + 10) bx = Math.max(0, P.spanL - bw - 16);
+        const bv = { x: bx, y: P.lineY - 11 };
+        if (animate && G) G.to(box, Object.assign({ duration: .9, ease: 'power3.inOut' }, bv));
+        else if (window.gsap) gsap.set(box, bv); else box.style.transform = 'translate(' + bx + 'px,' + bv.y + 'px)';
+      }
+      const span = L.el.querySelector('.xp-span');
+      const spanVars = { x: P.spanL, y: P.lineY, width: Math.max(2, P.spanR - P.spanL) };
+      if (animate && G) G.to(span, Object.assign({ duration: .8, ease: 'power3.inOut' }, spanVars));
+      else if (window.gsap) gsap.set(span, spanVars);
+      else { span.style.transform = 'translate(' + P.spanL + 'px,' + P.lineY + 'px)'; span.style.width = spanVars.width + 'px'; }
+      P.items.forEach((it, i) => {
+        const el = it.t.el, d = el.querySelector('.d'), l = el.querySelector('.l');
+        const tv = { x: it.left, y: it.top }, dv = { x: it.dotX, y: it.dotY }, lv = { x: it.dotX, y: it.leadY, height: it.leadH };
+        if (animate && G) {
+          const o = { duration: .9, ease: 'power3.inOut', delay: Math.min(i, 12) * .012 };
+          G.to(el, Object.assign({}, o, tv)); G.to(d, Object.assign({}, o, dv)); G.to(l, Object.assign({}, o, lv));
+        } else if (window.gsap) { gsap.set(el, tv); gsap.set(d, dv); gsap.set(l, lv); }
+        else {
+          el.style.transform = 'translate(' + tv.x + 'px,' + tv.y + 'px)';
+          d.style.transform = 'translate(' + dv.x + 'px,' + dv.y + 'px)';
+          l.style.transform = 'translate(' + lv.x + 'px,' + lv.y + 'px)'; l.style.height = lv.height + 'px';
+        }
+      });
+    });
+    if (flipState) Flip.from(flipState, { duration: .8, ease: 'power3.inOut' });
+  }
+
+  /* Petit ecran : chaque couloir devient une liste rangee par la
+     metrique, avec une barre sur le meme axe logarithmique. */
+  function listLane(L) {
+    L.el.style.height = '';
+    const items = L.toks.filter(t => modelShown(t.m)).sort((a, b) => (a.m[state.metric] == null ? 1e15 : a.m[state.metric]) - (b.m[state.metric] == null ? 1e15 : b.m[state.metric]));
+    items.forEach((t, i) => {
+      const v = t.m[state.metric];
+      t.el.style.order = i;
+      t.el.querySelector('.v').textContent = fmtMetric(state.metric, v);
+      const w = v == null ? 0 : Math.max(2, (SC.x(v) - SC.x0) / (SC.x1 - SC.x0) * 100);
+      t.el.querySelector('.b i').style.width = w.toFixed(1) + '%';
+    });
+  }
+
+  function applyFilterXP() {
+    LANES.forEach(L => {
+      let any = false;
+      L.toks.forEach(t => { const ok = matchQ(t.m); t.el.classList.toggle('is-dim', !ok); if (ok && modelShown(t.m)) any = true; });
+      L.el.classList.toggle('is-off', !any);
+    });
+  }
+
+  /* Entree : les boitiers partent tous du debut de leur couloir et
+     vont se ranger a leur debit. Un seul passage, au chargement. */
+  function introExplorer() {
+    if (!G) return;
+    const lanes = plot.querySelectorAll('.xp-lane:not(.is-hidden)');
+    G.from(axis.children, { opacity: 0, y: -6, duration: .5, stagger: .03, ease: 'power2.out' });
+    G.from(plot.querySelectorAll('.xp-lane:not(.is-hidden) .xp-lab'), { opacity: 0, x: -16, duration: .6, stagger: .04, ease: 'power3.out' });
+    lanes.forEach((ln, li) => {
+      const toks = ln.querySelectorAll('.xp-tok:not([hidden])');
+      toks.forEach((el, i) => {
+        G.from(el, { x: 0, opacity: 0, duration: 1.1, ease: 'expo.out', delay: .25 + li * .05 + i * .025 });
+      });
+      G.from(ln.querySelector('.xp-span'), { width: 2, duration: 1, ease: 'expo.out', delay: .3 + li * .05 });
+    });
+  }
+
+  /* ══ Loupe ══ */
+  const loupe = document.getElementById('xp-loupe');
+  let loupeKey = null;
+  function showLoupe(el) {
+    const m = byKey(el.dataset.k); if (!m) return;
+    loupeKey = m._key;
+    const V = m._v && COMP ? COMP.vendors[m.v] : null;
+    const row = (k, v, np) => '<dt>' + k + '</dt><dd' + (np ? ' class="np"' : '') + '>' + v + '</dd>';
+    loupe.innerHTML = '<div class="ph">' + phHTML(m) + '</div>'
+      + '<h3>' + esc(m.id) + '</h3>'
+      + '<p class="sub">' + (m._v ? esc(m._vname + ' · ' + (m.s || '')) : esc(m.s + ' · ' + m.target)) + ' · ' + esc(m.f || '') + '</p>'
+      + '<dl>'
+      + row(m._v ? 'Firewall' : 'App-ID', fmtG(m.fw), m.fw == null)
+      + row(m._v ? 'Protection complète' : 'Threat Prevention', fmtG(m.tp), m.tp == null)
+      + row('IPsec VPN', fmtG(m.vpn), m.vpn == null)
+      + row('Sessions', m.sess == null ? 'non publié' : fmtN(m.sess), m.sess == null)
+      + row('CPS', m.cps == null ? 'non publié' : fmtN(m.cps), m.cps == null)
+      + row('Ports', esc(portsLine(m)), false)
+      + (m._v ? '' : row('HA', esc(haLine(m)), false))
+      + '</dl>'
+      + (m.eos ? '<p class="prof">End of Sale' + (m.eosD ? ' le ' + frDate(m.eosD) : '') + (EOS_REPLACEMENTS[m.id] ? ', remplacé par ' + EOS_REPLACEMENTS[m.id] : '') + '</p>'
+        : m.eosD ? '<p class="prof">End of Sale annoncée le ' + frDate(m.eosD) + '</p>' : '')
+      + (V ? '<p class="prof">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[state.metric]) || 'définition de l’éditeur') + '</p>' : '')
+      + '<p class="hint">' + (selected.indexOf(m._key) !== -1 ? '<b>Retenu.</b> Clic ou Entrée pour le retirer.' : 'Clic ou <b>Entrée</b> : ajouter à la comparaison') + '</p>';
+    const host = document.getElementById('view-xp');
+    const hr = host.getBoundingClientRect(), r = el.getBoundingClientRect();
+    const lw = loupe.offsetWidth, lh = loupe.offsetHeight;
+    let x = r.right - hr.left + 18, y = r.top - hr.top + host.scrollTop - 24;
+    if (x + lw > hr.width - 8) x = r.left - hr.left - lw - 18;
+    if (x < 8) x = 8;
+    const maxY = host.scrollTop + host.clientHeight - lh - 110;
+    y = Math.max(host.scrollTop + 50, Math.min(y, maxY));
+    if (G) {
+      G.killTweensOf(loupe);
+      const shown = loupe.style.visibility === 'visible';
+      G.set(loupe, { visibility: 'visible' });
+      if (shown) G.to(loupe, { x, y, opacity: 1, duration: .28, ease: 'power3.out' });
+      else G.fromTo(loupe, { x, y: y + 8, opacity: 0, scale: .98 }, { y, opacity: 1, scale: 1, duration: .3, ease: 'power3.out' });
+    } else {
+      loupe.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      loupe.style.opacity = '1'; loupe.style.visibility = 'visible';
+    }
+  }
+  let hideT = null;
+  function hideLoupe() {
+    loupeKey = null;
+    if (G) G.to(loupe, { opacity: 0, duration: .15, onComplete: () => { if (!loupeKey) loupe.style.visibility = 'hidden'; } });
+    else { loupe.style.opacity = '0'; loupe.style.visibility = 'hidden'; }
+  }
+
+  /* ══ Clavier : un seul arret de tabulation, les fleches pour le reste ══ */
+  function setRove(k) {
+    plot.querySelectorAll('.xp-tok[tabindex="0"]').forEach(b => b.setAttribute('tabindex', '-1'));
+    const el = k && plot.querySelector('.xp-tok[data-k="' + CSS.escape(k) + '"]');
+    if (el) { el.setAttribute('tabindex', '0'); rove = k; }
+  }
+  function visibleToksOfLane(ln) {
+    return [].slice.call(ln.querySelectorAll('.xp-tok:not([hidden])'))
+      .sort((a, b) => xOf(a) - xOf(b));
+  }
+  function xOf(el) { const r = el.getBoundingClientRect(); return r.left + r.width / 2; }
+  function wireExplorer() {
+    plot.addEventListener('click', e => {
+      const b = e.target.closest('.xp-tok'); if (!b) return;
+      setRove(b.dataset.k);
+      toggleSel(b.dataset.k, b);
+      if (loupeKey === b.dataset.k) showLoupe(b);
+    });
+    plot.addEventListener('pointerover', e => { const b = e.target.closest('.xp-tok'); if (b) { clearTimeout(hideT); showLoupe(b); } });
+    plot.addEventListener('pointerout', e => { const b = e.target.closest('.xp-tok'); if (b) { hideT = setTimeout(hideLoupe, 80); } });
+    plot.addEventListener('focusin', e => { const b = e.target.closest('.xp-tok'); if (b) { clearTimeout(hideT); setRove(b.dataset.k); showLoupe(b); } });
+    plot.addEventListener('focusout', () => { hideT = setTimeout(hideLoupe, 60); });
+    plot.addEventListener('keydown', e => {
+      const b = e.target.closest('.xp-tok'); if (!b) return;
+      const ln = b.closest('.xp-lane');
+      const row = visibleToksOfLane(ln);
+      const i = row.indexOf(b);
+      let next = null;
+      if (e.key === 'ArrowRight') next = row[i + 1];
+      else if (e.key === 'ArrowLeft') next = row[i - 1];
+      else if (e.key === 'Home') next = row[0];
+      else if (e.key === 'End') next = row[row.length - 1];
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const lanes = [].slice.call(plot.querySelectorAll('.xp-lane:not(.is-hidden)'));
+        const target = lanes[lanes.indexOf(ln) + (e.key === 'ArrowDown' ? 1 : -1)];
+        if (target) {
+          const x = xOf(b);
+          next = visibleToksOfLane(target).reduce((best, el) => !best || Math.abs(xOf(el) - x) < Math.abs(xOf(best) - x) ? el : best, null);
+        }
+      } else return;
+      e.preventDefault();
+      if (next) { setRove(next.dataset.k); next.focus(); }
+    });
+    document.getElementById('axis-seg').addEventListener('click', e => {
+      const b = e.target.closest('[data-m]'); if (!b || b.dataset.m === state.metric) return;
+      state.metric = b.dataset.m;
+      document.querySelectorAll('#axis-seg [data-m]').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+      hideLoupe();
+      // les libelles concurrents portent le profil de la metrique
+      LANES.forEach(L => { if (L.comp) { const s = L.el.querySelector('.xp-lab span'); if (s) s.textContent = (L.sub || '') + ' · ' + (shortProfile(L.vendor.metrics && L.vendor.metrics[state.metric]) || 'mesure éditeur'); } });
+      layoutExplorer(true);
+      labelToks();
+    });
+    document.getElementById('axis-seg').addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const bs = [].slice.call(document.querySelectorAll('#axis-seg [data-m]'));
+      const i = bs.findIndex(x => x.getAttribute('aria-checked') === 'true');
+      const n = bs[(i + (e.key === 'ArrowRight' ? 1 : -1) + bs.length) % bs.length];
+      e.preventDefault(); n.focus(); n.click();
+    });
+    document.getElementById('hide-eos').addEventListener('change', e => {
+      state.hideEos = e.target.checked;
+      layoutExplorer(true);
+      applyFilterXP();
+    });
+    let rz = 0;
+    window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (state.view === 'xp') layoutExplorer(false); }); });
+  }
+
+  /* ══ Selection ══ */
+  function say(msg) {
+    const el = document.getElementById('sel-msg');
+    el.textContent = msg;
+    if (msg) setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 3200);
+  }
+  function syncPressed() {
+    plot.querySelectorAll('.xp-tok').forEach(b => b.setAttribute('aria-pressed', String(selected.indexOf(b.dataset.k) !== -1)));
+    document.querySelectorAll('th.model-th').forEach(th => {
+      const on = selected.indexOf(th.dataset.k) !== -1;
+      th.classList.toggle('selected', on);
+      const b = th.querySelector('.sel-btn'); if (b) b.setAttribute('aria-pressed', String(on));
+    });
+    document.querySelectorAll('#table-body [data-m]').forEach(td => td.classList.toggle('is-sel', selected.indexOf(td.dataset.m) !== -1));
+    labelToks();
+    const n = selected.length;
+    document.getElementById('tab-cmp-n').textContent = n ? ' ' + n : '';
+    document.getElementById('tab-cmp').disabled = n < 2;
+  }
+  function toggleSel(k, srcEl) {
+    const i = selected.indexOf(k);
+    let added = null;
+    if (i !== -1) selected.splice(i, 1);
+    else {
+      if (selected.length >= MAX_SEL) { say('Quatre modèles au plus : retirez-en un d’abord.'); return; }
+      selected.push(k); added = k;
+    }
+    SEL.set(selected);
+    syncPressed();
+    renderDock(added, srcEl);
+  }
+
+  function slotCard(k) {
+    const m = byKey(k); if (!m) return '';
+    return '<div class="slot-card' + (m._v ? ' is-comp' : '') + '" data-flip-id="m-' + esc(k) + '" data-k="' + esc(k) + '">'
+      + '<span class="nm">' + esc(m.id) + '</span>'
+      + '<span class="vl">' + (m._v ? esc(m._vname) : fmtG(m.tp) + ' TP') + '</span>'
+      + '<button type="button" class="rm" data-rm="' + esc(k) + '" aria-label="Retirer ' + esc(m.id) + '">' + ICO.x + '</button></div>';
+  }
+  function renderDock(added, srcEl) {
+    const box = document.getElementById('sel-slots');
+    const before = (HAS_FLIP && !added) ? Flip.getState(box.querySelectorAll('.slot-card')) : null;
+    let h = '';
+    for (let i = 0; i < MAX_SEL; i++) {
+      h += selected[i] ? '<li class="slot">' + slotCard(selected[i]) + '</li>' : '<li class="slot is-empty" aria-hidden="true">' + (i + 1) + '</li>';
+    }
+    box.innerHTML = h;
+    const go = document.getElementById('sel-go');
+    go.disabled = selected.length < 2;
+    go.textContent = selected.length >= 2 ? 'Comparer les ' + selected.length : 'Comparer';
+    document.getElementById('sel-clear').disabled = !selected.length;
+    document.getElementById('sel-hint').textContent = selected.length >= 2 ? 'prêt à comparer' : selected.length ? 'encore un modèle' : 'choisissez deux à quatre modèles';
+    /* Bac vide : une pastille discrete, sans cases ni boutons. */
+    document.getElementById('sel').classList.toggle('is-empty', !selected.length);
+    if (before) Flip.from(before, { targets: box.querySelectorAll('.slot-card'), duration: .45, ease: 'power3.out' });
+    if (added) fly(added, srcEl);
+  }
+
+  /* Le modele choisi vole du couloir jusqu'a sa place dans le bac. */
+  function fly(k, srcEl) {
+    const card = document.querySelector('#sel-slots .slot-card[data-k="' + CSS.escape(k) + '"]');
+    if (!card || !G || !srcEl || !srcEl.getBoundingClientRect) return;
+    const a = srcEl.getBoundingClientRect(), b = card.getBoundingClientRect();
+    if (!a.width) return;
+    const m = byKey(k);
+    const f = document.createElement('div');
+    f.className = 'flyer';
+    f.textContent = m ? m.id : k;
+    document.body.appendChild(f);
+    const fw = f.offsetWidth, fh = f.offsetHeight;
+    const x0 = a.left + a.width / 2 - fw / 2, y0 = a.top + a.height / 2 - fh / 2;
+    const x1 = b.left + 10, y1 = b.top + b.height / 2 - fh / 2;
+    G.set(card, { opacity: 0 });
+    G.set(f, { x: x0, y: y0, scale: .8 });
+    const tl = G.timeline({ onComplete: () => { f.remove(); G.fromTo(card, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: .3, ease: 'power2.out' }); } });
+    tl.to(f, { x: x1, duration: .7, ease: 'power2.inOut' }, 0)
+      .to(f, { y: y1, duration: .7, ease: 'back.in(1.4)' }, 0)
+      .to(f, { scale: 1.08, duration: .25, ease: 'power2.out' }, 0)
+      .to(f, { scale: 1, duration: .45, ease: 'power2.in' }, .25);
+    setTimeout(() => { if (document.body.contains(f)) { f.remove(); G.set(card, { opacity: 1 }); } }, 1600);
+  }
+
+  function wireDock() {
+    document.getElementById('sel-slots').addEventListener('click', e => {
+      const x = e.target.closest('[data-rm]'); if (!x) return;
+      toggleSel(x.dataset.rm);
+      const nx = document.querySelector('#sel-slots .rm') || document.getElementById('sel-clear');
+      if (selected.length) nx.focus(); else { const t = plot.querySelector('.xp-tok[tabindex="0"]'); if (t && state.view === 'xp') t.focus(); }
+    });
+    document.getElementById('sel-clear').addEventListener('click', () => {
+      selected = []; SEL.set(selected); syncPressed(); renderDock();
+      const t = plot.querySelector('.xp-tok[tabindex="0"]'); if (t && state.view === 'xp') t.focus();
+    });
+    document.getElementById('sel-go').addEventListener('click', () => setView('cmp'));
+    // table : la case « Comparer » de chaque colonne
+    document.getElementById('header-row').addEventListener('click', e => {
+      if (e.target.closest('a, .vendor-badge')) return;
+      const t = e.target.closest('[data-act="sel"]'); if (!t) return;
+      const th = t.closest('th.model-th'); if (th) toggleSel(th.dataset.k, th.querySelector('.sel-btn') || th);
+    });
+  }
+
+  /* ══ Vues ══ */
+  const VIEWS = { xp: 'view-xp', tbl: 'view-tbl', cmp: 'view-cmp' };
+  function showOnly(v) {
+    Object.keys(VIEWS).forEach(k => { document.getElementById(VIEWS[k]).hidden = k !== v; });
+    document.body.dataset.view = v;
+    document.dispatchEvent(new Event('cmpview'));
+    ['xp', 'tbl', 'cmp'].forEach(k => document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === v)));
+  }
+  function setUrl() {
+    const p = new URLSearchParams();
+    if (state.vendors.size) p.set('vendors', Array.from(state.vendors).join(','));
+    if (state.view === 'tbl') { p.set('view', 'table'); if (state.set === 'cap') p.set('set', 'cap'); }
+    if (state.view === 'cmp') p.set('cmp', selected.map(k => byKey(k) ? byKey(k).id : k).join(','));
+    const s = p.toString();
+    history.replaceState(null, '', location.pathname + (s ? '?' + s.replace(/%2C/g, ',') : ''));
+  }
+  function setView(v) {
+    if (v === 'cmp' && selected.length < 2) { say('Choisissez au moins deux modèles.'); return; }
+    const prev = state.view;
+    if (v === prev && v !== 'cmp') return;
+    state.view = v;
+    hideLoupe();
+    if (v === 'cmp') {
+      const st = (HAS_FLIP && prev !== 'cmp') ? Flip.getState(document.querySelectorAll('#sel-slots .slot-card')) : null;
+      renderCompare();
+      showOnly('cmp');
+      document.getElementById('view-cmp').scrollTop = 0;
+      if (G) {
+        if (st) Flip.from(st, { targets: document.querySelectorAll('.cv-head'), duration: .8, ease: 'power3.inOut', absolute: true });
+        animateRows(.32);
+      }
+      document.getElementById('cv-back').focus({ preventScroll: true });
+    } else if (prev === 'cmp') {
+      const st = HAS_FLIP ? Flip.getState(document.querySelectorAll('.cv-head')) : null;
+      showOnly(v);
+      renderDock();
+      if (v === 'xp') layoutExplorer(false);
+      if (st) Flip.from(st, { targets: document.querySelectorAll('#sel-slots .slot-card'), duration: .7, ease: 'power3.inOut', absolute: true });
+      if (G) G.from(document.getElementById(VIEWS[v]), { opacity: 0, y: 10, duration: .45, ease: 'power2.out', delay: .1 });
+    } else {
+      showOnly(v);
+      if (v === 'xp') layoutExplorer(false);
+      if (v === 'tbl') { buildTable(); }
+      if (G) G.from(document.getElementById(VIEWS[v]), { opacity: 0, y: 10, duration: .4, ease: 'power2.out' });
+    }
+    setUrl();
+  }
+  function wireViews() {
+    ['xp', 'tbl', 'cmp'].forEach(k => document.getElementById('tab-' + k).addEventListener('click', () => setView(k)));
+    document.querySelector('.seg[role="tablist"]').addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const tabs = ['xp', 'tbl', 'cmp'].map(k => document.getElementById('tab-' + k)).filter(t => !t.disabled);
+      const i = tabs.indexOf(document.activeElement);
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+      e.preventDefault(); n.focus(); n.click();
+    });
+    document.getElementById('cv-back').addEventListener('click', () => setView('xp'));
+    const q = document.getElementById('q'), q2 = document.getElementById('model-search');
+    q.addEventListener('input', () => {
+      state.q = q.value.trim().toLowerCase(); q2.value = q.value;
+      applyFilterXP(); if (state.view === 'tbl') scheduleBuild();
+    });
+    q2.addEventListener('input', () => { q.value = q2.value; applyFilterXP(); });
+    q.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || state.view !== 'xp') return;
+      const hit = plot.querySelector('.xp-lane:not(.is-hidden) .xp-tok:not(.is-dim):not([hidden])');
+      if (hit) { e.preventDefault(); setRove(hit.dataset.k); hit.focus(); }
+    });
+    document.getElementById('cv-diff').addEventListener('change', e => { cmpDiffOnly = e.target.checked; renderCompare(); animateRows(0); });
+    document.getElementById('cv-copy').addEventListener('click', function () { copyCompare(this); });
+    document.getElementById('cv-print').addEventListener('click', printCompare);
+    document.getElementById('cv-link').addEventListener('click', function () {
+      const b = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject()).then(
+        () => { b.textContent = 'Lien copié'; setTimeout(() => { b.textContent = 'Copier le lien'; }, 1600); },
+        () => { b.textContent = 'Copie impossible ici'; });
+    });
+  }
+
+  /* ══ Comparaison cote a cote ══ */
+  let cmpDiffOnly = false;
+  function cvCell(row, m) {
+    const NP = { html: '<span class="np">non publié</span>', n: null, na: true };
+    if (row.cap) { const c = capCell(row, m); return c.na ? NP : c; }
+    if (m._v && row.label === 'End of Sale') return { html: EOS_X, n: null, na: true };
+    if ((m._v && !isComparable(row)) || (row.xOnly && !m._v)) return { html: '<span class="np">sans objet</span>', n: null, na: true };
+    if (row.num) {
+      const n = row.num(m);
+      if (n == null) {
+        if (/Budget PoE/.test(row.label) && !m.poe) return { html: 'Sans PoE', n: null };
+        return NP;
+      }
+      if (row.cat === 'ports') return { html: n ? cellRaw(row, m) : '0', n };
+      if (isLegacy(row)) return { html: legacyVal(cellRaw(row, m)), n: null, legacy: true };
+      return { html: cellRaw(row, m), n };
+    }
+    if (row.label === 'Format') return m.f ? { html: esc(m.f), n: null } : NP;
+    if (row.np && row.np(m)) return NP;
+    if (/5G/.test(row.label) && m.m5g == null) return NP;
+    if (/base \/ max/.test(row.label) && !m.vsys) return NP;
+    if (row.cat === 'ref' && !m.sku) return NP;
+    const raw = cellRaw(row, m);
+    if (raw === '—') return { html: 'Non', n: null };
+    return { html: raw, n: null };
+  }
+  function renderCompare() {
+    const models = selected.map(byKey).filter(Boolean);
+    const n = models.length;
+    const cv = document.getElementById('cv');
+    cv.style.setProperty('--n', n);
+    if (n < 2) { cv.innerHTML = '<p class="cv-empty">Choisissez au moins deux modèles sur la gamme.</p>'; return; }
+    const comp = models.some(m => m._v);
+    document.getElementById('cv-title').textContent = models.map(m => m.id).join(' · ');
+    let h = '<div class="cv-row cv-heads"><div class="cv-lab"></div>'
+      + models.map(m => '<div class="cv-head' + (m._v ? ' is-comp' : '') + '" data-flip-id="m-' + esc(m._key) + '">'
+        + '<div class="ph">' + phHTML(m) + '</div>'
+        + '<div class="nm">' + esc(m.id) + '</div>'
+        + '<p class="sb">' + (m._v ? esc(m._vname + ' · ' + (m.s || '')) : esc(m.s + ' · ' + m.target)) + '</p>'
+        + '<div class="lk">' + (m._v ? (m.ds ? '<a href="' + esc(m.ds) + '" target="_blank" rel="noopener">Datasheet ' + esc(m._vname) + '</a>' : '') : '<a href="' + esc(DS_URLS[m.s] || 'resources.html') + '" target="_blank" rel="noopener">Datasheet ' + esc(m.s) + '</a>')
+        + '<button type="button" class="rm" data-rmc="' + esc(m._key) + '" aria-label="Retirer ' + esc(m.id) + ' de la comparaison">Retirer</button></div>'
+        + '</div>').join('') + '</div>';
+    let lastCat = '';
+    ROWS.forEach(row => {
+      const cells = models.map(m => cvCell(row, m));
+      const plain = cells.map(c => String(c.html).replace(/<[^>]+>/g, ''));
+      const same = plain.every(p => p === plain[0]);
+      if (cmpDiffOnly && same) return;
+      if (comp && models.every(m => m._v) && !isComparable(row) && !row.cap) return;
+      if (row.xOnly && !comp) return;
+      if (row.cap && cells.every(c => c.na)) return;
+      if (row.cat !== lastCat) { lastCat = row.cat; h += '<div class="cv-cat">' + CATS[row.cat].label + '</div>'; }
+      /* Un port absent (0) n'est pas un ecart de capacite : pas de barre. */
+      const pa = models.map((m, i) => ((!m._v || row.cap) && cells[i].n != null && !(row.cat === 'ports' && cells[i].n === 0)) ? cells[i].n : null);
+      const nums = pa.filter(v => v != null);
+      const max = nums.length > 1 ? Math.max.apply(null, nums) : null;
+      const hasGap = max != null && Math.min.apply(null, nums) < max && max > 0;
+      const field = fieldOf(row);
+      h += '<div class="cv-row' + (same ? ' is-same' : '') + '"><div class="cv-lab">' + rowLabel(row, comp) + '</div>'
+        + cells.map((c, i) => {
+            const m = models[i];
+            let extra = '', cls = 'cv-c', bar = '';
+            if (m._v && !c.na && (field === 'fw' || field === 'tp' || field === 'vpn')) {
+              const V = COMP.vendors[m.v];
+              extra = '<span class="cv-prof">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[field]) || 'définition de l’éditeur') + '</span>';
+            }
+            if (hasGap && pa[i] != null) {
+              const top = pa[i] === max;
+              if (top) cls += ' is-top';
+              const d = top ? 'le plus élevé' : '−' + Math.round((1 - pa[i] / max) * 100) + ' %';
+              extra = '<span class="cv-d">' + d + '</span>' + extra;
+              bar = '<span class="cv-bar-t" aria-hidden="true"><i style="width:' + Math.max(2, pa[i] / max * 100).toFixed(1) + '%"></i></span>';
+            }
+            return '<div class="' + cls + '"><span class="cv-v">' + c.html + '</span>' + extra + bar + '</div>';
+          }).join('') + '</div>';
+    });
+    cv.innerHTML = h;
+    document.getElementById('cv-note').textContent = comp
+      ? 'Les débits des concurrents suivent la définition de leur éditeur, rappelée sous chaque valeur : ils ne se comparent pas un pour un aux débits appmix des PA. Les écarts et les barres de débit ne se calculent qu’entre PA ; ceux des limites de configuration, qui sont des nombres d’objets, se calculent entre tous les modèles. Source de chaque limite et de chaque fonction au survol.'
+      : 'Barres et écarts par rapport à la valeur la plus élevée de la ligne. Données issues des datasheets officielles Palo Alto Networks.';
+    cv.querySelectorAll('[data-rmc]').forEach(b => b.addEventListener('click', () => {
+      toggleSel(b.dataset.rmc);
+      if (selected.length < 2) setView('xp');
+      else { renderCompare(); setUrl(); document.getElementById('cv-back').focus(); }
+    }));
+  }
+  function animateRows(delay) {
+    if (!G) return;
+    const rows = document.querySelectorAll('#cv .cv-cat, #cv .cv-row:not(.cv-heads)');
+    const tw = G.from(rows, { opacity: 0, y: 12, duration: .5, stagger: .018, delay, ease: 'power2.out' });
+    G.from(document.querySelectorAll('#cv .cv-bar-t i'), { scaleX: 0, duration: 1, stagger: .012, delay: delay + .2, ease: 'power3.out' });
+    setTimeout(() => tw.progress(1), 4000);
+  }
+  function copyCompare(btn) {
+    const models = selected.map(byKey).filter(Boolean);
+    let text = 'COMPARAISON\n\n' + models.map(m => m.id).join(' | ') + '\n\n';
+    const withC = models.some(m => m._v);
+    ROWS.forEach(row => {
+      if (row.xOnly && !withC) return;
+      text += row.label.replace(/<[^>]+>/g, '') + (isLegacy(row) ? ' (édition antérieure de la datasheet)' : '') + ' : ' + models.map(m => cvCell(row, m).html.replace(/<[^>]+>/g, '') || 'oui').join(' | ') + '\n';
+    });
+    if (models.some(m => m._v)) text += '\nDébits concurrents : définitions propres à chaque éditeur, non comparables un pour un.';
+    text += '\nDonnées issues des datasheets officielles.';
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      () => { btn.textContent = 'Copié'; setTimeout(() => { btn.textContent = 'Copier le texte'; }, 1600); },
+      () => { btn.textContent = 'Copie impossible ici'; });
+  }
+
+  /* ══ Fiche de comparaison imprimable ══
+     Une page A4 en noir et blanc, construite a partir des memes lignes
+     (ROWS) et des memes cellules (cvCell) que la vue Comparaison :
+     rien n'y est recalcule, aucun ecart n'y figure, aucun prix. */
+  const PS_ROWS = [
+    ['Débits', r => ['fw', 'tp', 'vpn'].indexOf(fieldOf(r)) !== -1],
+    ['Sessions', r => ['sess', 'cps'].indexOf(fieldOf(r)) !== -1],
+    ['Interfaces', r => ['rj45', 'mgig', 'combo', 'sfp1', 'sfp10', 'sfp25', 'sfp100', 'sfpdd', 'sfp400', 'poeP'].indexOf(fieldOf(r)) !== -1, true],
+    ['Haute disponibilité', r => /HA actif\/passif|>HA actif\/actif<|>Clustering</.test(r.label)],
+    ['Matériel et cycle de vie', r => r.label === 'Format' || r.label === 'Alimentation' || r.label === 'End of Sale']
+  ];
+  const psText = h => String(h == null ? '' : h).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  function psPhoto(m) {
+    const e = photoEntry(m);
+    return e ? '<img src="' + e.img + '" width="' + e.w + '" height="' + e.h + '" alt="">'
+      : '<span class="nophoto">' + (m._v ? 'Photo non reprise (concurrent)' : 'Pas de photo publiée') + '</span>';
+  }
+  function psCell(row, m) {
+    const f = fieldOf(row);
+    if (m._v && row.label === 'End of Sale') return EOS_X;
+    const c = cvCell(row, m);
+    let h = c.html;
+    if (/badge-yes/.test(h)) h = 'Oui';
+    if (m._v && !c.na && (f === 'fw' || f === 'tp' || f === 'vpn')) {
+      const V = COMP.vendors[m.v];
+      h += '<span class="pf">Mesure ' + esc(V.name) + ' : ' + esc(shortProfile(V.metrics && V.metrics[f]) || 'définition de l’éditeur') + '</span>';
+    }
+    return h;
+  }
+  function psLabel(row, comp) {
+    const f = fieldOf(row);
+    if (comp && NEUTRAL[f]) return esc(NEUTRAL[f][0]) + '<small>' + esc(NEUTRAL[f][1]) + '</small>';
+    return esc(psText(row.label));
+  }
+  function psDsLine(m) {
+    if (m._v) return '<b>' + esc(m.id) + '</b> : datasheet ' + esc(m._vname) + (m.dsRev ? ' (' + esc(m.dsRev) + ')' : '') + ', ' + esc(m.ds || '');
+    return '<b>' + esc(m.id) + '</b> : datasheet ' + esc(m.s) + ' Series, ' + esc(DS_URLS[m.s] || '');
+  }
+  function buildPrintSheet() {
+    const models = selected.map(byKey).filter(Boolean);
+    const box = document.getElementById('print-sheet');
+    if (models.length < 2) { box.innerHTML = ''; return false; }
+    const comp = models.some(m => m._v);
+    const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    let h = '<header class="ps-hd"><div><div class="ps-brand">Sizing Guide PANW</div>'
+      + '<h1>Fiche de comparaison</h1></div>'
+      + '<div class="ps-date">Édition du ' + esc(date) + '<br>' + models.length + ' modèles' + (comp ? ', dont concurrents' : '') + '</div></header>';
+    h += '<table class="ps-t"><colgroup><col class="lab">' + models.map(() => '<col>').join('') + '</colgroup>'
+      + '<thead><tr><th class="lab ps-m" scope="col"></th>'
+      + models.map(m => '<th class="ps-m' + (m._v ? ' is-comp' : '') + '" scope="col"><div class="ph">' + psPhoto(m) + '</div>'
+        + '<span class="nm">' + esc(m.id) + '</span>'
+        + '<span class="sb">' + esc(m._v ? m._vname + ' · ' + (m.s || '') : m.s + ' Series · ' + m.target) + '</span>'
+        + '<span class="tag">' + (m._v ? 'Concurrent' : 'Palo Alto Networks') + '</span></th>').join('')
+      + '</tr></thead><tbody>';
+    PS_ROWS.forEach(([title, pick, skipEmpty]) => {
+      const rows = ROWS.filter(pick).filter(row => {
+        if (!skipEmpty) return true;
+        return models.some(m => { const c = cvCell(row, m); return c.n != null && c.n > 0; });
+      });
+      if (!rows.length) return;
+      h += '<tr class="ps-cat"><td colspan="' + (models.length + 1) + '">' + title + '</td></tr>';
+      rows.forEach(row => {
+        h += '<tr><td class="lab">' + psLabel(row, comp) + '</td>'
+          + models.map(m => '<td class="v">' + psCell(row, m) + '</td>').join('') + '</tr>';
+      });
+    });
+    h += '</tbody></table>';
+    h += '<footer class="ps-ft">'
+      + (comp ? '<p><b>Concurrents.</b> Leurs valeurs suivent la méthode de mesure de leur éditeur (profil rappelé sous chaque débit) : elles ne se comparent pas une pour une aux débits App-ID appmix et Threat Prevention des PA-Series, et ne remplacent ni un test ni le dimensionnement de l’éditeur.</p>' : '')
+      + '<p>Une valeur « non publié » n’est pas un zéro : la datasheet ne la donne pas. Aucune donnée commerciale.</p>'
+      + '<p><b>Sources</b></p><ol>' + models.map(m => '<li>' + psDsLine(m) + '</li>').join('') + '</ol>'
+      + '<p>Haute disponibilité et fin de vie des PA-Series : documentation technique et page officielle des fins de vie Palo Alto Networks. Fiche éditée le ' + esc(date) + ' depuis Sizing Guide PANW.</p>'
+      + '</footer>';
+    box.innerHTML = h;
+    return true;
+  }
+  function printCompare() {
+    if (!buildPrintSheet()) { say('Choisissez au moins deux modèles.'); return; }
+    document.body.classList.add('ps-on');
+    const imgs = Array.from(document.querySelectorAll('#print-sheet img'));
+    const ready = imgs.map(i => i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; }));
+    Promise.race([Promise.all(ready), new Promise(r => setTimeout(r, 1500))]).then(() => window.print());
+  }
+  /* Ctrl+P depuis la vue Comparaison imprime aussi la fiche ; ailleurs,
+     la page s'imprime comme avant. */
+  window.addEventListener('beforeprint', () => {
+    if (state.view === 'cmp' && buildPrintSheet()) document.body.classList.add('ps-on');
+  });
+  window.addEventListener('afterprint', () => { document.body.classList.remove('ps-on'); });
+  window.PrintSheet = { build: buildPrintSheet };
+
+  /* ══ Concurrents (fichier facultatif) ══ */
+  function initVendors() {
+    if (typeof COMPETITORS === 'undefined' || !COMPETITORS || !Array.isArray(COMPETITORS.models)) return;
+    const vendors = {};
+    (COMPETITORS.vendors || []).forEach(v => { vendors[v.id] = v; });
+    const order = (COMPETITORS.vendors || []).map(v => v.id).filter(id => COMPETITORS.models.some(m => m.v === id));
+    if (!order.length) return;
+    COMP = {
+      vendors, order,
+      models: COMPETITORS.models.map(c => Object.assign({}, c, { _v: c.v, _key: 'x:' + c.id, _vname: vendors[c.v] ? vendors[c.v].name : c.v }))
+    };
+    const box = document.getElementById('vendors');
+    box.insertAdjacentHTML('beforeend', order.map(id =>
+      '<label class="vchk"><input type="checkbox" value="' + esc(id) + '"> ' + esc(vendors[id].name) + '</label>').join(''));
+    const forced = new URLSearchParams(location.search).get('vendors');
+    const saved = forced ? forced.split(',') : store.get('pan-cmp-vendors', []);
+    saved.forEach(id => { if (order.indexOf(id) !== -1) state.vendors.add(id); });
+    box.querySelectorAll('input').forEach(inp => {
+      inp.checked = state.vendors.has(inp.value);
+      inp.addEventListener('change', () => {
+        if (inp.checked) state.vendors.add(inp.value);
+        else {
+          state.vendors.delete(inp.value);
+          selected = selected.filter(k => { const m = byKey(k); return !(m && m._v === inp.value); });
+          SEL.set(selected);
+        }
+        store.set('pan-cmp-vendors', Array.from(state.vendors));
+        document.getElementById('vendor-note').hidden = state.vendors.size === 0;
+        renderExplorer();
+        if (G && inp.checked) G.from(plot.querySelectorAll('.xp-lane.is-comp, .xp-sep'), { opacity: 0, y: 14, duration: .5, stagger: .05, ease: 'power2.out' });
+        if (state.view === 'tbl') rebuild(); else buildTable();
+        if (state.view === 'cmp') { if (selected.length < 2) setView('xp'); else renderCompare(); }
+        syncPressed(); renderDock(); setUrl();
+      });
+    });
+    box.hidden = false;
+    document.getElementById('vendor-note').hidden = state.vendors.size === 0;
+  }
+  function loadCompetitors(done) {
+    const s = document.createElement('script');
+    s.setAttribute('src', 'data/competitors.js');
+    s.onload = () => { initVendors(); done(); };
+    s.onerror = () => done();
+    document.body.appendChild(s);
+  }
+
+  /* ══ Selection retrouvee et routage ══ */
+  function resolveIds(list) {
+    const keys = [];
+    list.forEach(id => {
+      if (MODELS.some(m => m.id === id)) keys.push(id);
+      else if (COMP) {
+        const c = COMP.models.find(x => x.id === id || x._key === id);
+        if (c) { keys.push(c._key); if (!state.vendors.has(c.v)) { state.vendors.add(c.v); const i = document.querySelector('#vendors input[value="' + CSS.escape(c.v) + '"]'); if (i) i.checked = true; document.getElementById('vendor-note').hidden = false; } }
+      }
+    });
+    return keys.filter((k, i) => keys.indexOf(k) === i).slice(0, MAX_SEL);
+  }
+  function route(href, first) {
+    const p = new URLSearchParams((href || location.search).split('?')[1] || '');
+    const cmp = p.get('cmp');
+    const vendorsBefore = state.vendors.size;
+    selected = resolveIds(cmp ? cmp.split(',').map(decodeURIComponent) : SEL.get());
+    SEL.set(selected);
+    if (state.vendors.size !== vendorsBefore) renderExplorer();
+    syncPressed(); renderDock();
+    if (cmp && selected.length >= 2) { if (first) { renderCompare(); state.view = 'cmp'; showOnly('cmp'); animateRows(.1); setUrl(); } else setView('cmp'); return; }
+    if (p.get('view') === 'table') { if (first) { state.view = 'tbl'; showOnly('tbl'); buildTable(); } else setView('tbl'); return; }
+    if (!first && state.view !== 'xp') setView('xp');
+    const f = p.get('focus');
+    if (f) {
+      const el = plot.querySelector('.xp-tok[data-k="' + CSS.escape(f) + '"]');
+      if (el) { setRove(f); setTimeout(() => { el.focus({ preventScroll: false }); }, first && G ? 1300 : 50); }
+    }
+  }
+  window.CmpPage = { route: h => route(h, false) };
+  document.addEventListener('cmpsel', e => {
+    selected = resolveIds(e.detail || []);
+    syncPressed(); renderDock();
+    if (state.view === 'cmp') { if (selected.length < 2) setView('xp'); else renderCompare(); }
+  });
+
+  /* Hauteur du bac fixe, pour que le tableau lui laisse sa place (mobile). */
+  (function trackTray() {
+    const el = document.getElementById('sel');
+    const put = () => {
+      const cs = getComputedStyle(el);
+      const h = cs.display !== 'none' && cs.position === 'fixed' ? el.offsetHeight : 0;
+      document.documentElement.style.setProperty('--tray-h', h + 'px');
+    };
+    if (window.ResizeObserver) new ResizeObserver(put).observe(el);
+    window.addEventListener('resize', put);
+    document.addEventListener('cmpview', put);
+    put();
+  })();
+
+  /* ══ Demarrage ══ */
+  buildSeriesFilters();
+  buildRanges();
+  wireFilters();
+  wireScroll();
+  wireExplorer();
+  wireDock();
+  wireViews();
+  loadCompetitors(() => {
+    renderExplorer();
+    buildTable();
+    route(location.search, true);
+    if (state.view === 'xp') introExplorer();
+  });
+
+  </script>
+
+  <footer class="site-footer">
+    <div>Sizing Guide PANW</div>
+    <div style="margin-top:4px;font-size:10px">Données issues des datasheets officielles Palo Alto Networks (mesures sous PAN-OS 11.0 à 12.2 selon la série), documentation technique Palo Alto pour la HA et les versions · Dernière mise à jour : novembre 2026</div>
+    <div style="margin-top:8px;font-size:10px"><a href="resources.html" style="color:var(--text-muted)">Toutes les ressources officielles Palo Alto Networks</a></div>
+  </footer>
+</body>
+</html>
