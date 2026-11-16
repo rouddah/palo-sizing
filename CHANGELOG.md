@@ -1,5 +1,30 @@
 # Changelog
 
+## Session 27 - 17 novembre 2026 : Dimensionner SASE, mode guide et guide public d'abord
+
+- Mode guide dans `sase.html` (boutons « Mode guidé » / « Établi » dans la barre,
+  `?mode=guide`, choix retenu localement) : 6 questions en mots de client (usages,
+  Mobile Users, sites et palier Very Small a X-Large, ION et HA, data centers,
+  besoins complementaires), une question a la fois dans le volet de gauche, la
+  nomenclature se recalcule a droite a chaque reponse. Chaque reponse ecrit dans
+  les champs de l'etabli (un seul etat) ; pas de conversion personnes vers debit,
+  qui ne serait sourcee nulle part. Repris de l'ancien mode guide (8b099a3).
+- Sources : le tableau 1 du Prisma Access Licensing Guide public prime. Editions
+  nommees comme lui (Secure Web Gateway, ZTNA, Enterprise), compteurs par
+  utilisateur, par Mbps, par site. Ce que seule une description d'offre non
+  publique apporte porte « [à confirmer] » (ligne, unite, inclusion, alerte ou
+  note), calcule par le moteur (`tbc`, `unitTbc`, `inclTbc`) et rendu dans la
+  page et le texte copie.
+- Corrections de fond : SaaS Inline n'est plus inclus en Secure Web Gateway (guide
+  public) ; transfert de donnees alloue a 250 GB par unite et par an (doc 3.0 et
+  3.1) au lieu de 250 GB par tenant ; add-ons renommes comme le guide public
+  (Strata Cloud Manager Pro, App Security, Privileged Remote Access, Data Loss
+  Protection, Prisma Browser Core), Data Security ajoute ; abonnement SD-WAN
+  agrege : ZBFW, WCR et DVR inclus (doc SD-WAN).
+- `_sase.js` : 194 controles, dont le parcours du mode guide dans jsdom et la
+  regle « toute ligne sans source publique porte [à confirmer] ».
+- Points ouverts : `_to_verify.md`, section « Repasse du 17 novembre 2026 ».
+
 ## Session 26 - 10 novembre 2026 : Dimensionner SASE
 
 - Nouvel outil `sase.html` (barre d outils « SASE », raccourci S, palette, accueil

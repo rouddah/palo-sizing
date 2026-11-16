@@ -4,6 +4,12 @@ Releve du 10 novembre 2026 pour l'outil `sase.html` (donnees `data/sase-rules.js
 moteur `js/sase-engine.js`, test `_sase.js`). Sources officielles Palo Alto Networks
 seulement. Aucun prix, aucune reference de commande.
 
+> Mise a jour du 17 novembre 2026 : l'axe « Core par persona » decrit plus bas
+> n'est plus l'axe affiche. L'outil suit le tableau 1 du guide de licences public
+> (Secure Web Gateway, ZTNA, Enterprise ; compteurs par utilisateur, par Mbps, par
+> site). Les inclusions et unites qui ne viennent que des descriptions d'offres
+> s'affichent « [à confirmer] » ; liste et divergences dans `_to_verify.md`.
+
 ## Axe principal : l'offre « Core » par persona
 
 Source `cat` : descriptif officiel des references Palo Alto, aout 2026. Seules les

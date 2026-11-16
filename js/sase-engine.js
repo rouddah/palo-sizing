@@ -1,11 +1,15 @@
 /* Moteur de dimensionnement Prisma SASE.
-   Axe principal : l'offre « Core » par persona (User par utilisateur, Net par
-   Mbps, Site par site et par palier), une edition par tenant (SWG, ZTNA ou
-   Enterprise Core). Entrees (voir defaults) -> nomenclature : une ligne par
-   brique, avec la quantite, l'unite, la regle appliquee et la cle de source
-   (SASE_RULES.src), plus des alertes de coherence. Aucun prix, aucune
-   reference de commande. Une quantite que les sources ne permettent pas de
-   calculer reste nulle : l'interface l'affiche « unité non publiée ». */
+   Axe principal : les trois editions du guide de licences public (Secure Web
+   Gateway, ZTNA, Enterprise), une par tenant, et ses trois compteurs (par
+   utilisateur, par Mbps, par site et par palier). Entrees (voir defaults) ->
+   nomenclature : une ligne par brique, avec la quantite, l'unite, la regle
+   appliquee et la cle de source (SASE_RULES.src), plus des alertes de
+   coherence. Aucun prix, aucune reference de commande.
+   - Une quantite que les sources ne permettent pas de calculer reste nulle :
+     l'interface l'affiche « unité non publiée ».
+   - tbc : la ligne ne repose que sur une source non publique (src.pub ===
+     false) ; unitTbc : seule l'unite en depend. L'interface ecrit alors
+     « [à confirmer] ». */
 (function (root) {
   'use strict';
 
@@ -15,12 +19,12 @@
       edition: 'auto',          // auto | swg | ztna | enterprise
       tenants: 1,
       mu: { users: 0, clientless: 0 },
-      rn: { model: 'site', sites: [] },   // site (Site Core par palier) | net (Net Core par Mbps) ; sites : [{ n, mbps, region, ha, sdwan, poe, cell, sfp10, rugged, virt }]
+      rn: { model: 'site', sites: [] },   // site (compteur par site et par palier) | net (compteur par Mbps) ; sites : [{ n, mbps, region, ha, sdwan, poe, cell, sfp10, rugged, virt }]
       dc: { count: 0, mbps: 0, sdwan: false, ha: false, virt: false },
       ztnaConnectors: 0,
       dataTB: 0,                // transfert annuel prevu, en To
       coloLinks: 0,
-      sdwanModel: 'device',     // device | site | aggregate (sites hors Site Core)
+      sdwanModel: 'device',     // device | site | aggregate (sites hors compteur par site)
       addons: {}                // { id: true }
     };
   }
@@ -47,12 +51,19 @@
     return o;
   }
 
+  /* Une liste de cles est publique si l'une au moins renvoie a une source publiee. */
+  function isPub(R, keys) {
+    const k = String(keys || '').split(/,\s*/).filter(Boolean);
+    return k.some(x => R.src[x] && R.src[x].pub !== false);
+  }
+
   function size(input, R) {
     R = R || root.SASE_RULES;
     const x = merge(input);
     const lines = [], alerts = [], notes = [];
-    const line = (grp, name, qty, unit, why, src, extra) => lines.push(Object.assign({ grp, name, qty, unit, why, src }, extra || {}));
-    const alert = (lvl, text, src) => alerts.push({ lvl, text, src: src || null });
+    const line = (grp, name, qty, unit, why, src, extra) => lines.push(Object.assign({ grp, name, qty, unit, why, src, tbc: !isPub(R, src) }, extra || {}));
+    const alert = (lvl, text, src) => alerts.push({ lvl, text, src: src || null, tbc: !!src && !isPub(R, src) });
+    const note = (text, src) => notes.push({ text, src, tbc: !isPub(R, src) });
     const T = R.rnSite.tiers, XL = T[T.length - 1].mbps;
 
     const users = x.mu.users + x.mu.clientless;
@@ -61,19 +72,20 @@
     const hasMu = users > 0, hasRn = nSites > 0;
     if (!hasMu && !hasRn) alert('info', 'Renseignez des utilisateurs nomades ou des sites pour obtenir une nomenclature.');
 
-    /* 1. Edition (une par tenant) */
+    /* 1. Edition (une par tenant), tableau 1 du guide public */
     let ed = x.edition;
     const wantPriv = x.needs.privateApps || x.dc.count > 0;
     if (ed === 'auto') ed = x.needs.browser || (x.needs.internet && wantPriv) ? 'enterprise' : wantPriv ? 'ztna' : 'swg';
     const E = R.editions.find(e => e.id === ed) || R.editions[2];
     if (x.edition !== 'auto') {
-      if (!E.privateApps && wantPriv) alert('warn', 'SWG Core n’inclut pas l’accès aux applications privées : l’add-on Private App Access est ajouté pour chaque persona.', 'cat');
-      if (ed === 'ztna' && x.needs.internet) alert('warn', 'ZTNA Core couvre l’accès aux applications privées ; la sécurité de l’accès internet relève de SWG Core ou d’Enterprise Core.', 'cat');
-      if (ed !== 'enterprise' && x.needs.browser) alert('warn', 'Prisma Browser Core n’est inclus que dans Enterprise Core ; sinon, add-on Prisma Browser.', 'cat');
+      if (!E.privateApps && wantPriv) alert('warn', 'Secure Web Gateway n’inclut pas la connexion aux applications privées : l’add-on Private App Access est ajouté pour chaque compteur.', 'palg');
+      if (ed === 'ztna' && x.needs.internet) alert('warn', 'ZTNA n’inclut ni Advanced URL Filtering ni Advanced DNS Security : la sécurité de l’accès internet relève de Secure Web Gateway ou d’Enterprise.', 'palg');
+      if (ed !== 'enterprise' && x.needs.browser) alert('warn', 'Prisma Browser Core et SaaS Inline Security ne sont inclus que dans Enterprise ; sinon, add-ons.', 'palg');
     }
     if (x.tenants > 1) alert('info', R.oneEdition, 'allocl');
+    if (ed === 'swg') R.conflicts.forEach(c => note(c, 'palg, cat'));
 
-    /* Personas presentes et leurs quantites */
+    /* Compteurs presents et leurs quantites */
     const useNet = hasRn && x.rn.model === 'net';
     const useSite = hasRn && x.rn.model === 'site';
     const siteTiers = {};
@@ -88,36 +100,38 @@
     if (useNet) Object.keys(regions).forEach(r => { netMbps += Math.max(R.rnAgg.minPerLocation, regions[r]); });
     const present = { user: hasMu, net: useNet, site: useSite };
 
-    /* Lignes d'une offre declinee par persona ; renvoie le nombre de personas servies. */
-    const perPersona = (grp, label, why, src, only) => {
+    /* Lignes d'une offre declinee par compteur ; renvoie le nombre de compteurs servis. */
+    const perPersona = (grp, label, why, src, only, extra) => {
       let n = 0;
       const ok = p => present[p] && (!only || only.indexOf(p) !== -1);
-      if (ok('user')) { n++; line(grp, label + ' (User)', users, R.personas.user.unit, why + ' Offre ' + R.personas.user.per + '.', src); }
-      if (ok('net')) { n++; line(grp, label + ' (Net)', netMbps, R.personas.net.unit, why + ' Offre ' + R.personas.net.per + '.', src); }
-      if (ok('site')) { n++; T.forEach(t => { if (siteTiers[t.id]) line(grp, label + ' (Site, ' + t.name + ')', siteTiers[t.id], 'sites', why + ' Offre par site et par an, au palier du site.', src); }); }
+      if (ok('user')) { n++; line(grp, label + ' (par utilisateur)', users, R.personas.user.unit, why, src, extra); }
+      if (ok('net')) { n++; line(grp, label + ' (par Mbps)', netMbps, R.personas.net.unit, why, src, extra); }
+      if (ok('site')) { n++; T.forEach(t => { if (siteTiers[t.id]) line(grp, label + ' (par site, ' + t.name + ')', siteTiers[t.id], 'sites', why + ' Au palier du site.', src, extra); }); }
       return n;
     };
+    const inclOf = p => ({ incl: E.pub.concat(R.personaPub[p] || []), inclTbc: (E.extra[p] || []).slice() });
 
-    /* 2. Offres Core */
+    /* 2. Editions par compteur */
+    const base = 'Prisma Access ' + E.name;
     if (hasMu) {
-      line('core', 'Prisma Access User ' + E.name, users, 'utilisateurs', R.mu.note, R.mu.src, { incl: E.incl.user });
-      if (ed === 'enterprise' && users >= R.entUserSites.minUsers) notes.push({ text: 'User Enterprise Core à partir de 2 000 utilisateurs achetés : 5 sites de 10 Mbps inclus.', src: 'cat' });
+      line('core', base + ', par utilisateur', users, 'utilisateurs', R.mu.note + ' Compteur par utilisateur et par an.', R.mu.src + ', palg', inclOf('user'));
+      if (ed === 'enterprise' && users >= R.entUserSites.minUsers) note('Enterprise par utilisateur, à partir de 2 000 utilisateurs : 5 sites de 10 Mbps inclus.', 'cat');
     }
     if (useSite) {
       let first = true;
-      T.forEach(t => { if (siteTiers[t.id]) { line('core', 'Prisma Access Site ' + E.name + ', ' + t.name, siteTiers[t.id], 'sites', 'Palier de bande passante du site (entrant + sortant), 10 % de dépassement toléré, Egress NAT et redondance régionale inclus.', R.rnSite.src, first ? { incl: E.incl.site } : {}); first = false; } });
+      T.forEach(t => { if (siteTiers[t.id]) { line('core', base + ', par site, ' + t.name, siteTiers[t.id], 'sites', 'Palier de bande passante du site (entrant + sortant), 10 % de dépassement toléré, Egress NAT et redondance régionale inclus. Compteur par site et par an.', R.rnSite.src + ', palg', first ? inclOf('site') : {}); first = false; } });
       if (split) alert(wantPriv ? 'crit' : 'warn', R.rnSite.splitNote, 'site');
-      alert('info', 'Le modèle par site demande Prisma Access 6.0 ou plus.', 'site');
+      alert('info', 'Le compteur par site demande Prisma Access 6.0 ou plus.', 'site');
     }
     if (useNet) {
       if (E.personas.indexOf('net') === -1) {
-        alert('crit', 'Il n’existe pas d’offre Net ' + E.name + ' (par Mbps) : prendre l’offre par site, ou Net SWG Core ou Net Enterprise Core.', 'cat');
+        alert('crit', 'Pas d’édition ' + E.name + ' au compteur par Mbps : prendre le compteur par site, ou Secure Web Gateway ou Enterprise par Mbps.', 'cat');
       } else {
-        line('core', 'Prisma Access Net ' + E.name, netMbps, 'Mbps', 'Somme des débits (entrant + sortant) par compute location, 50 Mbps au moins par compute location.', R.rnAgg.src, { incl: E.incl.net });
+        line('core', base + ', par Mbps', netMbps, 'Mbps', 'Somme des débits (entrant + sortant) par compute location, 50 Mbps au moins par compute location. Compteur par Mbps et par an.', R.rnAgg.src + ', palg', inclOf('net'));
       }
       Object.keys(regions).forEach(r => {
         const mb = Math.max(R.rnAgg.minPerLocation, regions[r]), nodes = Math.ceil(mb / R.rnAgg.nodeMbps);
-        notes.push({ text: r + ' : ' + mb.toLocaleString('fr-FR') + ' Mbps alloués' + (mb > regions[r] ? ' (minimum de 50 par compute location)' : '') + ', ' + nodes + ' IPSec Termination Node' + (nodes > 1 ? 's' : '') + '.', src: 'alloc, rncheck' });
+        note(r + ' : ' + mb.toLocaleString('fr-FR') + ' Mbps alloués' + (mb > regions[r] ? ' (minimum de 50 par compute location)' : '') + ', ' + nodes + ' IPSec Termination Node' + (nodes > 1 ? 's' : '') + '.', 'alloc, rncheck');
         const nS = sites.filter(s => s.region === r).reduce((a, s) => a + s.n, 0);
         if (nS > nodes * R.rnAgg.sitesPerNode) alert('warn', r + ' : ' + nS + ' sites pour ' + nodes + ' IPSec Termination Node(s), au plus ' + R.rnAgg.sitesPerNode + ' par nœud.', 'rncheck');
       });
@@ -133,12 +147,12 @@
       if (perDc > R.scMaxRecommended) alert('warn', 'Plus de ' + R.scMaxRecommended + ' Service Connections par data center ne sont pas recommandées (environ 1 Gbps chacune) : ZTNA Connector ou Colo-Connect.', 'schb');
     } else if (hasMu && hasRn) scNeed = 1;
     if (E.privateApps) {
-      if (scNeed) line('pa', 'Service Connections', scNeed, 'connexions', (x.dc.count ? 'Environ 1 Gbps par Service Connection, une par data center au moins. ' : R.scNote + ' ') + E.sc + ' incluses dans ' + E.name + '.', 'sc, schb, cat');
-      if (scNeed > E.sc) line('addon', 'Private App Access, Service Connections supplémentaires', scNeed - E.sc, 'Service Connections', 'Au-delà des ' + E.sc + ' incluses. Offre par Service Connection.', 'cat, sc');
-      if (x.ztnaConnectors) line('pa', 'ZTNA Connectors', x.ztnaConnectors, 'connecteurs', E.ztnaConn + ' inclus dans ' + E.name + ', jusqu’à 2 Gbps par connecteur.', 'cat, ztnaon');
-      if (x.ztnaConnectors > E.ztnaConn) alert('warn', x.ztnaConnectors + ' ZTNA Connectors pour ' + E.ztnaConn + ' inclus : la documentation annonce jusqu’à 200 connecteurs avec Private App Access ; l’unité de cette extension n’est pas publiée.', R.privateAppSrc);
+      if (scNeed) line('pa', 'Service Connections', scNeed, 'connexions', (x.dc.count ? 'Environ 1 Gbps par Service Connection, une par data center au moins. ' : R.scNote + ' ') + E.sc + ' incluses dans ' + E.name + '.', 'sc, schb, palg');
+      if (scNeed > E.sc) line('addon', 'Private App Access, Service Connections supplémentaires', scNeed - E.sc, 'Service Connections', 'Au-delà des ' + E.sc + ' incluses. Private App Access porte jusqu’à 200 connecteurs ; unité par Service Connection.', 'palg, cat, sc', { unitTbc: true });
+      if (x.ztnaConnectors) line('pa', 'ZTNA Connectors', x.ztnaConnectors, 'connecteurs', E.ztnaConn + ' inclus dans ' + E.name + ', jusqu’à 2 Gbps par connecteur.', 'palg, ztnaon');
+      if (x.ztnaConnectors > E.ztnaConn) alert('warn', x.ztnaConnectors + ' ZTNA Connectors pour ' + E.ztnaConn + ' inclus : Private App Access porte jusqu’à 200 connecteurs ; l’unité de cette extension n’est pas publiée.', R.privateAppSrc);
     } else if (wantPriv || (hasMu && hasRn)) {
-      perPersona('addon', 'Private App Access', 'Donne accès aux Service Connections et aux ZTNA Connectors à SWG Core.', 'cat');
+      perPersona('addon', 'Private App Access', 'Connexion aux Service Connections et aux ZTNA Connectors, absente de Secure Web Gateway.', 'palg', null, { unitTbc: true });
       if (scNeed) line('pa', 'Service Connections', scNeed, 'connexions', (x.dc.count ? 'Environ 1 Gbps par Service Connection, une par data center au moins.' : R.scNote) + ' Nombre inclus avec Private App Access non publié.', 'sc, schb');
       if (x.ztnaConnectors) line('pa', 'ZTNA Connectors', x.ztnaConnectors, 'connecteurs', 'Jusqu’à 2 Gbps par connecteur. Nombre inclus avec Private App Access non publié.', 'ztnaon');
     }
@@ -162,7 +176,7 @@
     if (sdSites.length) {
       const S = R.sdwan;
       if (useSite) {
-        notes.push({ text: S.siteCoreIncl, src: 'cat' });
+        note(S.siteCoreIncl, 'palg');
       } else if (x.sdwanModel === 'device') {
         const c = {};
         sdSites.forEach(s => {
@@ -171,8 +185,8 @@
         });
         Object.keys(c).sort((a, b) => (parseInt(a.slice(1)) || 1e9) - (parseInt(b.slice(1)) || 1e9)).forEach(k => {
           const v = k[0] === 'v', m = k.slice(1);
-          if (m === 'x') { alert('crit', 'Un site dépasse le plus haut palier d’abonnement par appareil (' + (v ? '500 Mbps en ION virtuel' : '2,5 Gbps') + ').', S.src); return; }
-          line('sdwan', 'Abonnement ' + (v ? 'Virtual ION' : 'ION') + ' Branch par appareil, ' + fmtMbps(+m), c[k], 'abonnements', S.device.note, S.src);
+          if (m === 'x') { alert('crit', 'Un site dépasse le plus haut palier d’abonnement par appareil (' + (v ? '500 Mbps en ION virtuel' : '2,5 Gbps') + ').', v ? S.device.vtiersSrc : S.src); return; }
+          line('sdwan', 'Abonnement ' + (v ? 'Virtual ION' : 'ION') + ' Branch par appareil, ' + fmtMbps(+m), c[k], 'abonnements', S.device.note, S.src + (v ? ', ' + S.device.vtiersSrc : ''), v ? { unitTbc: true } : {});
         });
       } else if (x.sdwanModel === 'site') {
         const c = {};
@@ -185,33 +199,44 @@
         if (devCount && mb / devCount < S.aggregate.minAvgPerDevice) alert('warn', 'Bande passante agrégée : moyenne de ' + (mb / devCount).toFixed(1) + ' Mbps par ION, il en faut au moins ' + S.aggregate.minAvgPerDevice + '.', S.src);
       }
       if (!useSite) alert('info', S.oneModel + ' Durée de 1 à 5 ans.', 'sdwanlic');
-      notes.push({ text: S.perDeviceAddons, src: 'cat' });
+      note(S.perDeviceAddons, 'cat');
     }
 
     /* 5. Add-ons */
     R.addons.forEach(a => {
       if (!x.addons[a.id] || a.id === 'scQty') return;
       const inc = a.inc || [];
-      if (inc.indexOf(ed) !== -1 || (a.id === 'privateApp' && E.privateApps)) { line('incl', a.name, null, '', 'Inclus dans ' + E.name + '.', R.editionSrc); return; }
+      const incSrc = a.incSrc ? a.src + ', ' + a.incSrc : R.editionSrc;
+      const incTbc = !!a.incSrc && !isPub(R, a.incSrc);
+      if (inc.indexOf(ed) !== -1 || (a.id === 'privateApp' && E.privateApps)) { line('incl', a.name, null, '', 'Inclus dans ' + E.name + '.', incSrc, { tbc: incTbc }); return; }
       if (a.id === 'privateApp' && lines.some(l => l.name.indexOf('Private App Access (') === 0)) return;
       if (a.id === 'rbi' && !hasMu && !hasRn) alert('warn', 'Remote Browser Isolation requiert un abonnement Mobile User ou Remote Network.', 'rbi');
+      const uTbc = !!a.unitSrc && !isPub(R, a.unitSrc);
       if (a.per) {
         const only = a.per.filter(p => inc.indexOf(ed + ':' + p) === -1);
-        if (inc.indexOf(ed + ':site') !== -1 && present.site) line('incl', a.name + ' (Site)', null, '', 'Inclus dans Site ' + E.name + '.', R.editionSrc);
-        const n = perPersona('addon', a.name, a.desc, a.src, only);
-        if (!n && !(inc.indexOf(ed + ':site') !== -1 && present.site)) line('addon', a.name, null, '', a.desc + ' Proposé ' + a.per.map(p => R.personas[p].per).join(', ') + ' : aucune persona correspondante dans ce besoin.', a.src);
+        const inSite = inc.indexOf(ed + ':site') !== -1 && present.site;
+        if (inSite) line('incl', a.name + ' (par site)', null, '', 'Inclus dans ' + E.name + ' par site.', incSrc, { tbc: incTbc });
+        const n = perPersona('addon', a.name, a.desc, a.src, only, { unitTbc: uTbc });
+        if (!n && !inSite) line('addon', a.name, null, '', a.desc + ' Proposé ' + a.per.map(p => R.personas[p].per).join(', ') + ' : aucun compteur correspondant dans ce besoin.', a.src, { unitTbc: uTbc });
         return;
       }
       let q = null;
-      if (a.fixed === 'perTB') q = x.dataTB > R.includedGB / 1000 ? Math.ceil(x.dataTB - R.includedGB / 1000) : null;
+      const units = users + netMbps, inclTB = units * R.includedGB / 1000;
+      if (a.fixed === 'perTB') q = x.dataTB > inclTB && !useSite ? Math.ceil(x.dataTB - inclTB) : null;
       else if (a.fixed === 'perLink') q = x.coloLinks || null;
       else if (a.fixed === 'flat') q = 1;
-      line('addon', a.name, q, a.fixed ? R.fixedUnits[a.fixed] : '', a.desc + (a.fixed === 'perTB' && q == null ? ' Indiquez le transfert annuel prévu.' : '') + (a.fixed === 'perLink' && q == null ? ' Indiquez le nombre de liens.' : ''), a.src);
+      line('addon', a.name, q, a.fixed ? R.fixedUnits[a.fixed] : '', a.desc + (a.fixed === 'perTB' && q == null ? (useSite ? ' Allocation des compteurs par site non publiée.' : ' Indiquez le transfert annuel prévu.') : '') + (a.fixed === 'perLink' && q == null ? ' Indiquez le nombre de liens.' : ''), a.src, { unitTbc: uTbc });
     });
-    if (x.addons.scmPro && useNet) notes.push({ text: R.ademRn, src: R.ademRnSrc });
-    if (x.dataTB > R.includedGB / 1000 && !x.addons.excess) alert('warn', 'Transfert prévu de ' + x.dataTB.toLocaleString('fr-FR') + ' To pour 250 GB inclus par an : add-on Excess Data Transfer (1 To par unité).', 'cat, palg');
+    if (x.addons.scmPro && useNet) note(R.ademRn, R.ademRnSrc);
 
-    return { input: x, edition: E, lines, alerts, notes, included: R.allEditions };
+    /* Transfert de donnees : 250 GB par unite et par an (1 Mobile User ou 1 Mbps) */
+    const units = users + netMbps, inclTB = units * R.includedGB / 1000;
+    if (x.dataTB > 0) {
+      if (useSite) alert('info', 'Allocation de transfert des compteurs par site non publiée : à vérifier avec Palo Alto Networks.', 'cat');
+      else if (x.dataTB > inclTB && !x.addons.excess) alert('warn', 'Transfert prévu de ' + x.dataTB.toLocaleString('fr-FR') + ' To pour ' + inclTB.toLocaleString('fr-FR') + ' To alloués (250 GB par unité et par an, ' + units.toLocaleString('fr-FR') + ' unités) : add-on Excess Data Transfer.', R.includedSrc);
+    }
+
+    return { input: x, edition: E, lines, alerts, notes, included: R.allEditions, includedTB: useSite ? null : inclTB };
   }
 
   function fits(i, s, dc) {
@@ -242,7 +267,7 @@
   }
   function fmtMbps(m) { return m >= 1000 ? (m / 1000).toLocaleString('fr-FR') + ' Gbps' : m + ' Mbps'; }
 
-  const api = { size, defaults, pickIon: (s, dc) => pickIon(root.SASE_RULES, s, dc), fmtMbps };
+  const api = { size, defaults, isPub: k => isPub(root.SASE_RULES, k), pickIon: (s, dc) => pickIon(root.SASE_RULES, s, dc), fmtMbps };
   root.SaseEngine = api;
   if (typeof module !== 'undefined') module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

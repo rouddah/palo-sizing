@@ -4,12 +4,11 @@
    dans SASE_RULES.src. Releve du 10 novembre 2026, detail dans
    AUDIT_SASE_2026-11.md.
 
-   AXE PRINCIPAL : l'offre « Core » par persona et par unite, telle que la
-   decrit le descriptif officiel des references Palo Alto (aout 2026) :
-   Prisma Access User (par utilisateur), Net (par Mbps) et Site (par site et
-   par palier), chacune en SWG, ZTNA ou Enterprise Core. Les descriptions
-   donnent ce que chaque offre inclut ; elles sont reprises comme faits, sans
-   prix ni reference de commande.
+   AXE PRINCIPAL : les trois editions du guide de licences public (Secure
+   Web Gateway, ZTNA, Enterprise) et ses trois compteurs (par utilisateur,
+   par site, par Mbps). Le guide public prime ; ce que seules les
+   descriptions d'offres (cle cat, non publique) ajoutent s'affiche avec la
+   mention [a confirmer] (src.pub === false), sans prix ni reference.
 
    REGLES DU SITE
      - aucun prix, aucune reference de commande : on nomme les briques par leur
@@ -22,7 +21,8 @@
 */
 const SASE_RULES = {
   src: {
-    cat:     { t: 'Descriptif officiel des références Palo Alto, août 2026', u: null },
+    cat:     { t: 'Descriptif officiel des références Palo Alto, août 2026', u: null, pub: false },
+    dtx:     { t: 'Monitor Your Prisma Access Data Transfer Usage (documentation Prisma Access 3.0 et 3.1)', u: 'https://docs.paloaltonetworks.com/prisma/prisma-access/3-1/prisma-access-panorama-admin/prisma-access-overview/prisma-access-licenses/monitor-your-data-transfer-usage' },
     palg:    { t: 'Prisma Access Licensing Guide (datasheet, juin 2026, prisma_ds_prisma-access-licensing-guide_060526)', u: 'https://www.paloaltonetworks.com/resources/datasheets/prisma-access-licensing-guide' },
     lic:     { t: 'Your Prisma Access License (docs Prisma Access)', u: 'https://docs.paloaltonetworks.com/prisma-access/activation-and-onboarding/your-prisma-access-license' },
     site:    { t: 'Remote Networks, High Performance Site-Based Licensing (Prisma Access 6.0)', u: 'https://docs.paloaltonetworks.com/prisma-access/activation-and-onboarding/your-prisma-access-license/remote-networks-site-based-licensing' },
@@ -39,34 +39,46 @@ const SASE_RULES = {
     sdwanlic:{ t: 'Your Prisma SD-WAN License', u: 'https://docs.paloaltonetworks.com/prisma-sd-wan/activation-and-onboarding/your-prisma-sd-wan-license' }
   },
 
-  /* ── Offre « Core » par persona (cat) ──
-     User par utilisateur, Net par Mbps, Site par site et par palier.
-     incl : ce que la description de chaque offre inclut. */
+  /* Compteurs publics (palg) : Per User, Per Site, Per Bandwidth (Mbps), par an. */
   personas: {
-    user: { name: 'Prisma Access User', unit: 'utilisateurs', per: 'par utilisateur et par an' },
-    net:  { name: 'Prisma Access Net',  unit: 'Mbps',         per: 'par Mbps et par an' },
-    site: { name: 'Prisma Access Site', unit: 'sites',        per: 'par site et par an' }
+    user: { name: 'par utilisateur', unit: 'utilisateurs', per: 'par utilisateur et par an' },
+    net:  { name: 'par Mbps',        unit: 'Mbps',         per: 'par Mbps et par an' },
+    site: { name: 'par site',        unit: 'sites',        per: 'par site et par an' }
   },
+  personaSrc: 'palg',
+  /* Editions : noms et contenu du tableau 1 du guide de licences public
+     (palg). pub = ce que le tableau 1 coche ; persona = ce que le guide dit
+     du compteur (par site : abonnement SD-WAN de branche, redondance,
+     connectivite entre branches) et la doc site-based (Egress NAT,
+     redondance regionale). extra = ce que seules les descriptions d'offres
+     (cat) ajoutent : affiche avec la mention [a confirmer]. */
   editions: [
-    { id: 'swg', name: 'SWG Core', use: 'Sécurité de l’accès internet.', privateApps: false, sc: 0, ztnaConn: 0,
+    { id: 'swg', name: 'Secure Web Gateway', short: 'SWG', use: 'Sécurité de l’accès internet des utilisateurs et des sites.', privateApps: false, sc: 0, ztnaConn: 0,
       personas: ['user', 'net', 'site'],
-      incl: { user: ['Sécurité internet (abonnement de sécurité premium)', 'SaaS Inline', 'AI Access Security', 'ADEM Core'],
-              net:  ['Sécurité internet', 'SaaS Inline', 'AI Access Security', 'ADEM Core'],
-              site: ['Sécurité internet', 'Abonnement de bande passante SD-WAN', 'SaaS Inline', 'AI Access Security', 'ADEM Core'] } },
-    { id: 'ztna', name: 'ZTNA Core', use: 'Accès aux applications privées, avec Advanced Threat Prevention et Advanced WildFire.', privateApps: true, sc: 5, ztnaConn: 10,
+      pub: ['Advanced Threat Prevention', 'Advanced WildFire', 'Advanced URL Filtering', 'Advanced DNS Security'],
+      extra: { user: ['AI Access Security', 'ADEM Core'], net: ['AI Access Security', 'ADEM Core'], site: ['AI Access Security', 'ADEM Core'] } },
+    { id: 'ztna', name: 'Zero Trust Network Access (ZTNA)', short: 'ZTNA', use: 'Accès sécurisé aux applications privées.', privateApps: true, sc: 5, ztnaConn: 10,
       personas: ['user', 'site'],
-      incl: { user: ['Accès aux applications privées', 'Advanced Threat Prevention', 'Advanced WildFire', '5 Service Connections', '10 ZTNA Connectors', 'ADEM Core'],
-              site: ['Accès aux applications privées', 'Advanced Threat Prevention', 'Advanced WildFire', '5 Service Connections', '10 ZTNA Connectors', 'Interconnect', 'Abonnement de bande passante SD-WAN', 'ADEM Core'] } },
-    { id: 'enterprise', name: 'Enterprise Core', use: 'Applications privées et sécurité internet.', privateApps: true, sc: 5, ztnaConn: 10,
+      pub: ['Connexion aux applications privées (5 Service Connections, 10 ZTNA Connectors)', 'Advanced Threat Prevention', 'Advanced WildFire'],
+      extra: { user: ['ADEM Core'], site: ['Interconnect', 'ADEM Core'] } },
+    { id: 'enterprise', name: 'Enterprise', short: 'Enterprise', use: 'Sécurité de toutes les applications, internet et privées, avec navigateur d’entreprise et protection des données SaaS en ligne.', privateApps: true, sc: 5, ztnaConn: 10,
       personas: ['user', 'net', 'site'],
-      incl: { user: ['Applications privées et sécurité internet', '5 Service Connections', '10 ZTNA Connectors', 'SaaS Inline', 'AI Access Security', 'ADEM Core', 'Prisma Browser Core', '5 sites de 10 Mbps (à partir de 2 000 utilisateurs achetés)'],
-              net:  ['Applications privées et sécurité internet', '5 Service Connections', '10 ZTNA Connectors', 'SaaS Inline', 'AI Access Security', 'ADEM Core', 'Prisma Browser Core'],
-              site: ['Applications privées et sécurité internet', '5 Service Connections', '10 ZTNA Connectors', 'Interconnect', 'Abonnement de bande passante SD-WAN', 'SaaS Inline', 'AI Access Security', 'ADEM Core', 'Prisma Browser Core'] } }
+      pub: ['Connexion aux applications privées (5 Service Connections, 10 ZTNA Connectors)', 'Advanced Threat Prevention', 'Advanced WildFire', 'Advanced URL Filtering', 'Advanced DNS Security', 'SaaS Inline Security', 'Prisma Browser Core'],
+      extra: { user: ['AI Access Security', 'ADEM Core', '5 sites de 10 Mbps à partir de 2 000 utilisateurs'], net: ['AI Access Security', 'ADEM Core'], site: ['Interconnect', 'AI Access Security', 'ADEM Core'] } }
   ],
-  editionSrc: 'cat',
+  personaPub: { site: ['Abonnement de branche Prisma SD-WAN, selon le palier et le modèle d’ION', 'Egress NAT', 'Redondance régionale'] },
+  personaPubSrc: 'palg, site',
+  editionSrc: 'palg',
+  extraSrc: 'cat',
+  /* Le guide public ne coche pas SaaS Inline pour Secure Web Gateway ; une
+     description d'offre l'inclut. L'outil suit le guide public. */
+  conflicts: ['SaaS Inline Security : le guide de licences public ne l’inclut qu’en Enterprise ; une description d’offre l’annonce aussi en Secure Web Gateway. L’outil suit le guide public.'],
   entUserSites: { minUsers: 2000, sites: 5, mbps: 10 },
-  allEditions: ['Plus de 150 emplacements cloud', '250 GB de transfert de données par an', 'Gestion par Strata Cloud Manager ou Panorama', 'Connexion par GlobalProtect, Prisma Agent, Explicit Proxy ou tunnels IPsec', 'SLA Prisma Access'],
-  includedGB: 250,
+  allEditions: ['Plus de 150 emplacements cloud', '250 GB de transfert de données par an et par unité', 'Gestion par Strata Cloud Manager ou Panorama', 'Connexion par GlobalProtect, Prisma Agent, Explicit Proxy ou tunnels IPsec', 'SLA Prisma Access'],
+  /* 250 GB par unite et par an, unites additionnees sur le tenant ; une
+     unite = un Mobile User ou 1 Mbps de Remote Network (dtx, doc 3.0 et
+     3.1). Unite des offres par site : non publiee. */
+  includedGB: 250, includedSrc: 'palg, dtx',
   oneEdition: 'Un tenant ne porte qu’un type de licence Prisma Access : on ne mélange pas les éditions dans un tenant.',
   history: 'Des pages d’allocation de licences citent encore des couvertures « Local » et « Worldwide » (minimum de 200 ou 1 000 unités par tenant). Elles n’apparaissent plus dans l’offre actuelle : l’outil ne les propose pas.',
 
@@ -74,18 +86,18 @@ const SASE_RULES = {
   mu: { note: 'Une unité = un utilisateur nomade ; elle ouvre GlobalProtect, Prisma Agent, Explicit Proxy ou plusieurs. Les utilisateurs Clientless VPN comptent aussi.', src: 'lic, cat' },
 
   /* ── Remote Networks ── */
-  rnSite: {   // offre Site Core (cat) et modele par site (site)
+  rnSite: {   // compteur par site (palg) et modele par site (site)
     tiers: [
-      { id: 'vs', name: 'jusqu’à 25 Mbps',  mbps: 25 },
-      { id: 's',  name: 'jusqu’à 50 Mbps',  mbps: 50 },
-      { id: 'm',  name: 'jusqu’à 250 Mbps', mbps: 250 },
-      { id: 'l',  name: 'jusqu’à 1 Gbps',   mbps: 1000 },
-      { id: 'xl', name: 'jusqu’à 2,5 Gbps', mbps: 2500 }
+      { id: 'vs', type: 'Very Small', name: 'jusqu’à 25 Mbps',  mbps: 25 },
+      { id: 's',  type: 'Small',      name: 'jusqu’à 50 Mbps',  mbps: 50 },
+      { id: 'm',  type: 'Medium',     name: 'jusqu’à 250 Mbps', mbps: 250 },
+      { id: 'l',  type: 'Large',      name: 'jusqu’à 1 Gbps',   mbps: 1000 },
+      { id: 'xl', type: 'X-Large',    name: 'jusqu’à 2,5 Gbps', mbps: 2500 }
     ],
     oversub: 0.10, incl: ['Egress NAT', 'Redondance régionale'], src: 'cat, site',
     splitNote: 'Au-delà de 2,5 Gbps, un site s’embarque comme plusieurs sites de 2,5 Gbps, mais ce modèle ne donne pas accès aux applications privées.'
   },
-  rnAgg: {    // offre Net Core par Mbps, allouee par compute location (alloc, rncheck)
+  rnAgg: {    // compteur par Mbps (palg), allouee par compute location (alloc, rncheck)
     minPerLocation: 50, nodeMbps: 1000, sitesPerNode: 500, maxNodes: 200,
     noQosInbound: 'QoS et accès entrant sécurisé non pris en charge quand la bande passante est allouée par compute location.',
     src: 'cat, alloc, rncheck'
@@ -102,30 +114,36 @@ const SASE_RULES = {
      net = par Mbps, site = par site et par palier) ; fixed : unite fixe
      (perSC, perLink, perTB, flat), null = unite non publiee.
      inc : editions qui l'incluent deja (« edition:persona » si une seule). */
+  /* Noms et descriptions : tableau 2 du guide de licences public (palg)
+     quand l'add-on y figure. unitSrc : source de l'unite par persona ; le
+     guide public ne publie aucune unite d'add-on, elle vient des
+     descriptions d'offres (cat) et s'affiche [a confirmer]. incSrc : source
+     de l'inclusion quand elle n'est pas dans le tableau 1 public. */
   addons: [
-    { id: 'privateApp',  name: 'Private App Access', desc: 'Accès aux Service Connections et aux ZTNA Connectors pour une édition qui ne les inclut pas.', per: ['user', 'net', 'site'], inc: ['ztna', 'enterprise'], src: 'cat' },
+    { id: 'privateApp',  name: 'Private App Access', desc: 'Connecteurs d’applications privées supplémentaires (jusqu’à 200), Service Connections et ZTNA Connectors.', per: ['user', 'net', 'site'], unitSrc: 'cat', inc: ['ztna', 'enterprise'], src: 'palg' },
     { id: 'scQty',       name: 'Private App Access, Service Connections supplémentaires', desc: 'Service Connections au-delà de celles de l’édition.', fixed: 'perSC', src: 'cat, sc' },
     { id: 'ztnaUnl',     name: 'ZTNA Connector, applications illimitées', desc: 'Lève la limite d’applications des ZTNA Connectors.', fixed: null, src: 'cat' },
-    { id: 'appSec',      name: 'Private App Security', desc: 'Protection applicative des applications privées (OWASP Top 10, robots, exploits jour zéro).', per: ['user', 'net', 'site'], src: 'cat' },
-    { id: 'saasInline',  name: 'SaaS Inline', desc: 'Visibilité et contrôle en ligne des applications SaaS.', per: ['user', 'net', 'site'], inc: ['swg', 'enterprise'], src: 'cat' },
-    { id: 'appAccel',    name: 'App Acceleration', desc: 'Accélération des applications SaaS selon les conditions réseau.', per: ['user', 'net', 'site'], src: 'cat' },
-    { id: 'scmPro',      name: 'Strata Cloud Manager avec AIOps et ADEM', desc: 'AIOps et ADEM, Strata Logging Service 1 an compris.', per: ['user', 'net', 'site'], src: 'cat' },
-    { id: 'sls',         name: 'Strata Logging Service', desc: 'Stockage des journaux, 1 an de rétention.', per: ['user', 'net', 'site'], src: 'cat' },
-    { id: 'iot',         name: 'IoT', desc: 'Sécurité IoT pour le réseau (par site et palier ; ailleurs « par unité », persona non précisée).', per: ['site'], src: 'cat' },
-    { id: 'interconnect',name: 'Interconnect', desc: 'Connectivité site à site et utilisateurs vers sites par Prisma Access.', per: ['net'], inc: ['ztna:site', 'enterprise:site'], src: 'cat' },
-    { id: 'dlp',         name: 'DLP', desc: 'Data Loss Prevention pour Prisma Access.', per: ['user'], src: 'cat' },
-    { id: 'ngcasb',      name: 'NG-CASB', desc: 'SaaS Security Inline, DLP Inline, SaaS Security API, DLP API, SSPM et AI Access Security (« par unité »).', fixed: null, src: 'cat' },
-    { id: 'saa',         name: 'Secure Agentless Access', desc: 'Accès sans client aux applications non web (RDP, SSH, VNC).', per: ['user'], src: 'cat' },
-    { id: 'trafficRep',  name: 'Traffic Replication', desc: 'Copie du trafic qui traverse Prisma Access.', per: ['user'], src: 'cat' },
-    { id: 'browserAdd',  name: 'Prisma Browser, add-on Prisma Access', desc: 'Navigateur d’entreprise pour internet, SaaS et applications privées, Enterprise DLP, AI Access pour le trafic du navigateur, console.', per: ['user'], src: 'cat' },
-    { id: 'browserPro',  name: 'Prisma Browser Pro, add-on Prisma Access', desc: 'Navigateur pour internet, SaaS et applications privées, Enterprise DLP, AI Access, protection avancée web, données et identité, ADEM RUM.', per: ['user'], src: 'cat' },
-    { id: 'colo',        name: 'Colo-Connect', desc: 'Liens Colo-Connect utilisables par les Service Connections comme transport (variante 100G), jusqu’à 20 Gbps par région.', fixed: 'perLink', src: 'cat, palg' },
-    { id: 'excess',      name: 'Excess Data Transfer', desc: '1 To de transfert agrégé par unité, au-delà des 250 GB annuels inclus.', fixed: 'perTB', src: 'cat, palg' },
-    { id: 'byoip',       name: 'Onboarding des IP du client', desc: 'IPv4 ou IPv6 du client portées sur les nœuds Prisma Access (MU, RN, SC, EP, répartiteurs, NAT).', fixed: 'flat', src: 'cat' },
-    { id: 'xborder',     name: 'X-Border Connectivity', desc: 'Connectivité dédiée ou premium entre la Chine et le reste du monde.', fixed: 'flat', src: 'cat' },
+    { id: 'appSec',      name: 'App Security', desc: 'Pare-feu applicatif web pour toutes les applications, inspection continue du trafic.', per: ['user', 'net', 'site'], unitSrc: 'cat', src: 'palg' },
+    { id: 'saasInline',  name: 'SaaS Inline', desc: 'Visibilité et contrôle en temps réel des applications SaaS autorisées ou non, découverte du shadow IT.', per: ['user', 'net', 'site'], unitSrc: 'cat', inc: ['enterprise'], src: 'palg' },
+    { id: 'appAccel',    name: 'App Acceleration', desc: 'Accélère les applications selon les conditions réseau, poste et application en temps réel.', per: ['user', 'net', 'site'], unitSrc: 'cat', src: 'palg' },
+    { id: 'scmPro',      name: 'Strata Cloud Manager Pro', desc: 'Supervision de bout en bout de l’expérience utilisateur vers les applications (ADEM), détection et correction des problèmes de performance.', per: ['user', 'net', 'site'], unitSrc: 'cat', src: 'palg' },
+    { id: 'sls',         name: 'Strata Logging Service', desc: 'Stockage et analyse des journaux dans le cloud.', per: ['user', 'net', 'site'], unitSrc: 'cat', src: 'palg' },
+    { id: 'iot',         name: 'IoT', desc: 'Découverte, profilage et protection des objets connectés.', per: ['site'], unitSrc: 'cat', src: 'palg' },
+    { id: 'interconnect',name: 'Interconnect', desc: 'Connectivité entre branches et des utilisateurs vers les branches par Prisma Access.', per: ['net'], unitSrc: 'cat', inc: ['ztna:site', 'enterprise:site'], incSrc: 'cat', src: 'palg' },
+    { id: 'dlp',         name: 'Data Loss Protection', desc: 'Protection des données en mouvement pour tous les utilisateurs et réseaux.', per: ['user'], unitSrc: 'cat', src: 'palg' },
+    { id: 'dataSec',     name: 'Data Security', desc: 'Protection unifiée des données sensibles : découverte, classification, application des politiques.', fixed: null, src: 'palg' },
+    { id: 'ngcasb',      name: 'NG-CASB', desc: 'SaaS Security Inline, DLP Inline, SaaS Security API, DLP API, SSPM et AI Access Security.', fixed: null, src: 'cat' },
+    { id: 'pra',         name: 'Privileged Remote Access', desc: 'Accès sans client, depuis un navigateur, aux applications internes RDP, SSH et VNC.', per: ['user'], unitSrc: 'cat', src: 'palg' },
+    { id: 'trafficRep',  name: 'Traffic Replication', desc: 'Copie du trafic des utilisateurs dans le cloud pour l’analyse forensique et la chasse aux menaces.', per: ['user'], unitSrc: 'cat', src: 'palg' },
+    { id: 'browserCore', name: 'Prisma Browser Core', desc: 'Navigateur d’entreprise natif SASE, postes gérés ou non, sans agent à installer.', per: ['user'], unitSrc: 'cat', inc: ['enterprise'], src: 'palg' },
+    { id: 'browserPro',  name: 'Prisma Browser Pro', desc: 'DLP avancée dans le navigateur et les applications lourdes, gestion des identifiants Idira, ADEM real user monitoring.', per: ['user'], unitSrc: 'cat', src: 'palg' },
+    { id: 'colo',        name: 'Colo-Connect', desc: 'Connectivité privée entre les hubs du client et Prisma Access, jusqu’à 20 Gbps par région.', fixed: 'perLink', unitSrc: 'cat', src: 'palg' },
+    { id: 'excess',      name: 'Excess Data Transfer', desc: 'Transfert de données au-delà de l’allocation annuelle.', fixed: 'perTB', src: 'cat' },
+    { id: 'byoip',       name: 'Onboarding des IP du client', desc: 'IPv4 ou IPv6 du client portées sur les nœuds Prisma Access.', fixed: 'flat', src: 'cat' },
+    { id: 'xborder',     name: 'X-Border Connectivity', desc: 'Connectivité entre la Chine et le reste du monde.', fixed: 'flat', src: 'cat' },
     { id: 'rbi',         name: 'Remote Browser Isolation', desc: 'Rendu des sites dans des conteneurs cloud isolés. Requiert un abonnement Mobile User ou Remote Network.', fixed: null, src: 'palg, rbi' },
-    { id: 'aiAccess',    name: 'AI Access', desc: 'Usage encadré des applications d’IA générative.', fixed: null, inc: ['swg', 'enterprise'], src: 'palg, cat' },
-    { id: 'sspm',        name: 'SSPM', desc: 'Correction des erreurs de configuration des applications SaaS (aussi dans NG-CASB).', fixed: null, src: 'palg, cat' },
+    { id: 'aiAccess',    name: 'AI Access', desc: 'Usage encadré des applications d’IA générative.', fixed: null, inc: ['swg', 'enterprise'], incSrc: 'cat', src: 'palg' },
+    { id: 'sspm',        name: 'SSPM', desc: 'Surveillance et correction des erreurs de configuration des applications SaaS.', fixed: null, src: 'palg' },
     { id: 'emailDlp',    name: 'Email DLP', desc: 'Prévention de l’exfiltration dans les courriels sortants.', fixed: null, src: 'palg' },
     { id: 'endpointDlp', name: 'Endpoint DLP', desc: 'Contrôle des transferts vers les périphériques.', fixed: null, src: 'palg' }
   ],
@@ -162,16 +180,19 @@ const SASE_RULES = {
   /* ── Abonnements Prisma SD-WAN (sdwanlic, cat) ── */
   sdwan: {
     termYears: [1, 5],
-    device: { tiers: [25, 50, 150, 250, 500, 1000, 2500], vtiers: [25, 50, 150, 250, 500],
-      note: 'Une licence par ION, au palier de débit du site (entrant + sortant) ; une paire HA demande deux licences. ZBFW inclus ; WAN Clarity Reporting et Clarity Network DVR en option, pour tous les ION de branche ou aucun.' },
+    /* tiers : paliers « alternatifs » publies par sdwanlic (le modele Small /
+       Medium / Large 25 / 250 / 2 500 Mbps couvre le meme besoin) ; vtiers :
+       plafond de 500 Mbps en ION virtuel, descriptions d'offres seulement. */
+    device: { tiers: [25, 50, 150, 250, 500, 1000, 2500], vtiers: [25, 50, 150, 250, 500], vtiersSrc: 'cat',
+      note: 'Une licence par ION, au palier de débit (entrant + sortant) qui le traverse ; une paire HA demande deux licences. ZBFW inclus ; WAN Clarity Reporting et Clarity Network DVR en option, pour tous les ION de branche ou aucun. Paliers Small, Medium, Large (25, 250, 2 500 Mbps) ou paliers alternatifs de 25 Mbps à 2,5 Gbps.' },
     site: { tiers: [25, 250, 2500],
-      note: 'Une licence partagée par tous les ION du site. ZBFW, DVR et WCR inclus.' },
-    aggregate: { minAvgPerDevice: 10, note: 'Mbps partagés par tous les sites, HA comprise. ZBFW, WAN Reporting et EDA inclus. Moyenne d’au moins 10 Mbps par ION de branche.' },
+      note: 'Une licence partagée par tous les ION du site (Small, Medium, Large). ZBFW, DVR et WCR inclus.' },
+    aggregate: { minAvgPerDevice: 10, note: 'Mbps partagés par tous les sites, HA comprise. ZBFW, WCR et DVR inclus. Moyenne d’au moins 10 Mbps par ION de branche.' },
     oneModel: 'Un seul type d’abonnement de branche pour tous les sites du tenant.',
     dc: 'Un abonnement data center par ION (physique ou virtuel) affecté à un site data center, débit jusqu’au maximum de l’ION.',
-    siteCoreIncl: 'L’offre Prisma Access Site Core inclut l’abonnement de bande passante SD-WAN : pas d’abonnement de branche à ajouter pour ces sites, seulement les ION.',
+    siteCoreIncl: 'Le compteur Prisma Access par site inclut l’abonnement de branche Prisma SD-WAN, selon le palier acheté et le modèle d’ION : pas d’abonnement de branche à ajouter pour ces sites, seulement les ION.',
     perDeviceAddons: 'Par ION, en option : Security, SD-WAN + Security, IoT Device Security, Strata Logging Service (paliers Very Small à Large), ZBFW, WAN Clarity Reporting, Clarity Network DVR, App Acceleration.',
-    src: 'sdwanlic, cat'
+    src: 'sdwanlic'
   }
 };
 /* Un const de haut niveau n'est pas une propriete de window : on l'expose. */

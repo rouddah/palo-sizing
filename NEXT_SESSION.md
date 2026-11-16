@@ -3,6 +3,20 @@
 > Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
 
+## Session 27 (branche sase-v14, non fusionnee, non deployee)
+
+Le guide de licences public (`palg`, tableau 1) et les docs priment sur les
+descriptions d'offres (`cat`, `pub: false` dans `SASE_RULES.src`). Le moteur
+marque `tbc` toute ligne, alerte ou note dont aucune source n'est publique,
+`unitTbc` une unite d'add-on non publiee, `inclTbc` les inclusions venues des
+descriptions ; la page ecrit « [à confirmer] ». `_sase.js` fait echouer le build
+si une ligne sans source publique n'est pas marquee. Editions = noms publics
+(Secure Web Gateway, ZTNA, Enterprise), plus de « Core » ni de User / Net / Site.
+Mode guide : `sase.html?mode=guide`, `window.SaseGuide`, il ne fait qu'ecrire
+dans les champs de l'etabli. A faire : relire les points de `_to_verify.md`
+(« Repasse du 17 novembre ») avec un avant-vente, marge sous le debit ION,
+puis fusion + deploiement sur feu vert.
+
 ## Session 26 (branche sase-v14, non fusionnee, non deployee)
 
 `sase.html` = Dimensionner SASE. Regles dans `data/sase-rules.js` (sources

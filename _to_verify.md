@@ -323,3 +323,18 @@ edition PA-5500 dans l en-tete (08/2026). Restent ouverts :
 - Private App Access pour SWG Core : nombre de Service Connections et de ZTNA Connectors apportes non publie.
 - Marge sous le debit ION : le maximum de la datasheet est utilise tel quel, en attente de la decision de Rayan.
 - Datasheet ION : debits mesures en Prisma SD-WAN 6.5.1 (fevrier 2025), « subject to change ».
+
+### Repasse du 17 novembre 2026 : guide public d'abord
+
+L'outil suit desormais le tableau 1 du Prisma Access Licensing Guide public (juin 2026) et les docs. Tout ce qui ne repose que sur une description d'offre non publique s'affiche « [à confirmer] ». A faire confirmer :
+
+- **SaaS Inline Security en Secure Web Gateway** : le guide public ne le coche qu'en Enterprise, une description d'offre l'inclut aussi en SWG. L'outil suit le guide public (SaaS Inline en add-on pour SWG).
+- **AI Access Security et ADEM Core** inclus dans les editions (AI Access inclus en SWG et Enterprise) : absents du tableau 1 public, qui range AI Access parmi les add-ons.
+- **Pas d'edition ZTNA au compteur par Mbps** : seule une description d'offre le dit.
+- **Enterprise par utilisateur, 5 sites de 10 Mbps a partir de 2 000 utilisateurs** : description d'offre seulement.
+- **Interconnect inclus en ZTNA et Enterprise par site** : description d'offre ; le guide public dit seulement que le compteur par site apporte la connectivite entre branches, sans distinguer les editions.
+- **Unites des add-ons par compteur** (par utilisateur, par Mbps, par site et palier), Service Connections supplementaires par Service Connection, Colo-Connect par lien : le guide public ne publie aucune unite d'add-on.
+- **Add-ons absents du guide public** : Excess Data Transfer, onboarding des IP du client, X-Border Connectivity, NG-CASB, ZTNA Connector applications illimitees.
+- **Allocation de transfert** : 250 GB par unite et par an (1 Mobile User ou 1 Mbps), unites additionnees sur le tenant, d'apres la documentation Prisma Access 3.0 et 3.1 ; le guide de juin 2026 ecrit seulement « 250 GB annual data transfer per year ». Allocation des compteurs par site non publiee.
+- **Abonnement ION virtuel par appareil plafonne a 500 Mbps** : description d'offre seulement (la doc SD-WAN publie les paliers sans distinguer physique et virtuel).
+- **Noms d'add-ons** : le guide public ecrit Strata Cloud Manager Pro, App Security, Privileged Remote Access, Data Loss Protection, Data Security ; les descriptions d'offres utilisent d'autres libelles (Secure Agentless Access, Private App Security). L'outil reprend les noms du guide public.
