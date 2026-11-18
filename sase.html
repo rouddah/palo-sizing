@@ -166,6 +166,12 @@
     .lic .src { display: block; color: var(--text-muted); font-size: 10px; }
     .lic .src a { color: var(--text-muted); }
     .lic .src a:hover { color: var(--accent-txt); }
+    .lic-inc { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 24px; border-top: 1px solid var(--border); }
+    .lic-inc li { padding: 10px 0 10px 16px; border-bottom: 1px solid var(--border); font-size: var(--text-xs); color: var(--text-bright); font-weight: 600; position: relative; line-height: 1.45; }
+    .lic-inc li::before { content: ''; position: absolute; left: 0; top: 16px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .lic-incsrc { margin: 8px 0 0; }
+    .lic a { color: var(--text-muted); }
+    .lic a:hover { color: var(--accent-txt); }
     .lic-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
     @media (max-width: 760px) {
       .lic-eds { grid-template-columns: 1fr 1fr; }
@@ -815,8 +821,9 @@
       + '<p class="lic-leg"><span class="st st-i">Inclus</span><span class="st st-t">Inclus [à confirmer]</span><span>description d’offre, pas encore dans le guide public</span><span class="st st-a">Add-on</span><span class="st st-n">Non</span><span>non proposé</span></p>'
       + rowsHTML(R.explain, ED.map(function (e) { return [e.id, e.short === 'ZTNA' ? 'ZTNA' : e.short]; }), 'pa')
       + '<p class="sz-notes">' + esc(R.oneEdition) + ' ' + TBC + ' (' + srcHTML('allocl') + ')</p></section>';
-    h += '<section id="lic-all"><h2>Ce que toutes les éditions incluent</h2><dl class="lic-dl">'
-      + R.allEditions.map(function (t) { return '<dt>' + esc(t) + '</dt><dd>' + srcHTML(R.includedSrc) + '</dd>'; }).join('')
+    h += '<section id="lic-all"><h2>Ce que toutes les éditions incluent</h2><ul class="lic-inc">'
+      + R.allEditions.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'
+      + '<p class="lic-incsrc">' + srcLine(R.includedSrc) + '</p><h3>Les deux façons de compter les sites</h3><dl class="lic-dl">'
       + '<dt>Compteur par site</dt><dd>' + esc(R.personaPub.site.join(', ')) + '. Paliers de 25 Mbps à 2,5 Gbps, 10 % de dépassement toléré. ' + srcLine('palg, site') + '</dd>'
       + '<dt>Compteur par Mbps</dt><dd>Bande passante allouée par compute location, 50 Mbps au moins. ' + esc(R.rnAgg.noQosInbound) + srcLine('alloc') + '</dd></dl></section>';
     var pbRows = [{ grp: 'Navigateur', rows: [
