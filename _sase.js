@@ -159,9 +159,9 @@ r = run({ pb: { ext: 200 }, needs: { internet: false } });
 ok(!r.usePA && find(r, /^Prisma Browser Core, licence seule$/).qty === 200, '13 : prestataires seuls = Core en licence seule');
 ok(!find(r, /^Prisma Access/), '13 : aucune ligne Prisma Access sans utilisateur ni site');
 r = run({ pb: { ext: 200, priv: true } });
-ok(find(r, /^Private App Access pour Prisma Browser$/).qty === 200 && find(r, /^Private App Access pour Prisma Browser$/).tbc, '13 : Core + Private App Access, [a confirmer]');
+ok(find(r, /^Prisma Browser Connector, add-on/).qty === 200 && !find(r, /^Prisma Browser Connector, add-on/).tbc && find(r, /^Prisma Browser Connector, add-on/).unitTbc, '13 : licence seule + add-on Prisma Browser Connector (doc publique), unite a confirmer');
 r = run({ pb: { ext: 200, priv: true, thick: true } });
-ok(find(r, /^Prisma Browser Pro, licence seule$/) && !find(r, /Private App Access pour/), '13 : besoin Pro, pas d extension');
+ok(find(r, /^Prisma Browser Pro, licence seule$/) && !find(r, /Prisma Browser Connector, add-on/), '13 : besoin Pro, pas d add-on connecteur');
 r = run({ pb: { staff: 300, edu: true } });
 ok(find(r, /^Prisma Browser Education, licence seule$/).tbc, '13 : Education, description d offre');
 r = run({ mu: { users: 1000 }, needs: { internet: true, privateApps: true }, pb: { staff: 300, ext: 50 } });
@@ -172,7 +172,9 @@ l = find(r, /^Prisma Browser Pro, add-on Prisma Access$/);
 ok(l && l.qty === 120 && l.unitTbc, '13 : SWG + Pro en add-on pour 120 utilisateurs');
 ok(has(r, 'warn', /120 utilisateurs Prisma Browser/), '13 : plus d utilisateurs Prisma Browser que de Mobile Users');
 r = run({ pb: { ext: 10, priv: true, ngfw: true } });
-ok(r.notes.some(n => /PAN-OS 12\.1\.5/.test(n.text) && n.tbc), '13 : connecteur NGFW, presentation non publique');
+ok(r.notes.some(n => /PAN-OS 12\.1\.5/.test(n.text) && /Strata Cloud Manager/.test(n.text) && !n.tbc), '13 : NGFW Connector, doc publique');
+r = run({ edition: 'swg', mu: { users: 500 }, pb: { staff: 80 } });
+ok(find(r, /add-on Prisma Access$/).qty === 500, '13 : add-on Prisma Browser pour tous les Mobile Users du tenant');
 
 /* Toutes les lignes ont une source connue ; une ligne sans source publique porte tbc */
 [run({ mu: { users: 5000 }, needs: { privateApps: true, internet: true, browser: true }, ztnaConnectors: 30, dc: { count: 3, mbps: 2000, sdwan: true, ha: true }, dataTB: 5, coloLinks: 1,

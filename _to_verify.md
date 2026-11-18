@@ -349,3 +349,25 @@ Affiche « [à confirmer] » dans l'outil, a faire valider par un avant-vente ou
 - **Private App Access pour Prisma Browser** (10 ZTNA Connectors + Prisma Browser Connector, pour Core seul) : description d'offre.
 - **Connecteur NGFW (PAN-OS 12.1.5 ou plus, Panorama), Prisma Browser Connector, RDP/SSH natif** : presentation client Prisma Browser, pas de doc publique relevee.
 - **ZTNA Connectors cloud** : un par environnement, deux si redondance demandee ; c'est un choix de l'utilisateur, pas une regle publiee.
+
+## Vérification sur sources publiques (18 novembre 2026, après relecture)
+
+Confirmé (doc ou guide public) : trois éditions, matrice URL/DNS/Threat/WildFire, Service Connection ~1 Gbps,
+5 incluses et 200 avec add-on, AD sur site -> SC, ZTNA Connector 2 Gbps et 10 inclus, paliers par site
+25 Mbps à 2,5 Gbps et 10 % de dépassement, 50 Mbps minimum par compute location, Prisma Browser Core inclus
+dans Enterprise, licence seule répartie entre tenants (200 unités au moins par tenant), NGFW Connector
+(PAN-OS 12.1.5+, Panorama avec CSP 6.1+ ou Strata Cloud Manager, Prisma Access 6.1+, sans HA ni Logical Router),
+Prisma Browser Connector = add-on de la licence seule, jusqu'à 10 ZTNA Connectors, sans Prisma Access.
+
+Corrigé dans l'outil : connecteur NGFW (plus seulement Panorama), « Private App Access pour Prisma Browser »
+renommé en add-on Prisma Browser Connector, add-on Prisma Browser dimensionné sur tous les Mobile Users du
+tenant (page Subscription Usage), source AI Access de la licence seule.
+
+Toujours à confirmer (aucune page publique) :
+- une seule édition par tenant ;
+- édition Prisma Browser Education ;
+- contenu de Core édition par édition, « protection web avancée » en Pro ;
+- cohabitation licence seule + add-on sur un même tenant ;
+- Interconnect inclus par édition (le guide le range parmi les add-ons, sans détail par édition) ;
+- add-on Excess Data Transfer ;
+- unité de l'add-on Prisma Browser Connector ; besoin du connecteur pour Pro seul.

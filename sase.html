@@ -344,7 +344,7 @@
                 <label class="sz-check"><input type="checkbox" id="pb-rum"> Mesurer leur expérience réelle (ADEM RUM)</label>
                 <label class="sz-check"><input type="checkbox" id="pb-advWeb"> Protection web avancée (scripts, extensions)</label>
                 <p class="sz-grp-t">Contexte</p>
-                <label class="sz-check"><input type="checkbox" id="pb-ngfw"> Un pare-feu Palo Alto (PAN-OS 12.1.5 ou plus, Panorama) protège déjà les applications</label>
+                <label class="sz-check"><input type="checkbox" id="pb-ngfw"> Un pare-feu Palo Alto (PAN-OS 12.1.5 ou plus, Panorama ou Strata Cloud Manager) protège déjà les applications</label>
                 <label class="sz-check"><input type="checkbox" id="pb-edu"> Établissement d’enseignement</label>
               </div>
             </div>
@@ -667,11 +667,11 @@
     { k: 'pbuse', type: 'checks', q: 'Que doivent faire ces utilisateurs dans le navigateur ?',
       tip: 'Core couvre internet et les SaaS. Les besoins marqués Pro font passer à Prisma Browser Pro.',
       show: function () { return vnum('pb-ext') + vnum('pb-staff') > 0; },
-      items: [['pb-priv', 'Ouvrir des applications internes web', 'Core avec Private App Access, ou Pro'],
+      items: [['pb-priv', 'Ouvrir des applications internes web', 'Pro, ou add-on Prisma Browser Connector'],
               ['pb-rdp', 'Se connecter à des serveurs en RDP ou SSH', 'Infogérance, administration'],
               ['pb-thick', 'Manipuler des données sensibles dans Outlook, Teams, Excel', 'Pro : DLP dans les applications lourdes'],
               ['pb-identity', 'Utiliser des comptes partagés ou des applications sans SSO', 'Pro : identifiants gérés, jamais vus par l’utilisateur'],
-              ['pb-ngfw', 'Un pare-feu Palo Alto protège déjà ces applications', 'PAN-OS 12.1.5 ou plus, géré par Panorama', function () { return $('pb-priv').checked || $('pb-rdp').checked; }],
+              ['pb-ngfw', 'Un pare-feu Palo Alto protège déjà ces applications', 'PAN-OS 12.1.5 ou plus, Panorama ou Strata Cloud Manager', function () { return $('pb-priv').checked || $('pb-rdp').checked; }],
               ['pb-edu', 'Le client est un établissement d’enseignement', 'Édition Education']] },
     { k: 'pblic', type: 'choice', q: 'Comment licencier les prestataires ?',
       tip: 'En licence seule, ils ne consomment pas de Mobile User et n’installent pas d’agent. Dans Prisma Access, ils passent par le tenant et ses connexions, et comptent comme Mobile Users.',
@@ -814,7 +814,7 @@
         }).join('') + '</div>'
       + '<p class="lic-leg"><span class="st st-i">Inclus</span><span class="st st-t">Inclus [à confirmer]</span><span>description d’offre, pas encore dans le guide public</span><span class="st st-a">Add-on</span><span class="st st-n">Non</span><span>non proposé</span></p>'
       + rowsHTML(R.explain, ED.map(function (e) { return [e.id, e.short === 'ZTNA' ? 'ZTNA' : e.short]; }), 'pa')
-      + '<p class="sz-notes">' + esc(R.oneEdition) + ' (' + srcHTML('allocl') + ')</p></section>';
+      + '<p class="sz-notes">' + esc(R.oneEdition) + ' ' + TBC + ' (' + srcHTML('allocl') + ')</p></section>';
     h += '<section id="lic-all"><h2>Ce que toutes les éditions incluent</h2><dl class="lic-dl">'
       + R.allEditions.map(function (t) { return '<dt>' + esc(t) + '</dt><dd>' + srcHTML(R.includedSrc) + '</dd>'; }).join('')
       + '<dt>Compteur par site</dt><dd>' + esc(R.personaPub.site.join(', ')) + '. Paliers de 25 Mbps à 2,5 Gbps, 10 % de dépassement toléré. ' + srcLine('palg, site') + '</dd>'
@@ -822,10 +822,10 @@
     var pbRows = [{ grp: 'Navigateur', rows: [
         { n: 'Navigateur Chromium sécurisé, internet et SaaS', d: 'SWG dans le navigateur, trafic chiffré inspecté sur le poste, contrôle des extensions, posture vérifiée en continu, postes gérés ou non.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'palg, cat' },
         { n: 'Enterprise DLP au dernier kilomètre', d: 'Copier-coller, téléversement, impression, capture d’écran contrôlés selon la donnée et l’appareil.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'cat' },
-        { n: 'AI Access (trafic du navigateur)', d: PB.aiAccess, st: { edu: 'i', core: 'i', pro: 'i' }, src: 'pbsa' },
+        { n: 'AI Access (trafic du navigateur)', d: PB.aiAccess, st: { edu: 'i', core: 'i', pro: 'i' }, src: 'aiacl' },
         { n: 'Console d’administration', d: 'Politiques et journaux dans Strata Cloud Manager.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'cat' } ] },
       { grp: 'Applications privées', rows: [
-        { n: 'Applications internes web, RDP et SSH', d: 'Sans VPN ni agent, par le Prisma Browser Connector, un pare-feu Palo Alto en place ou un ZTNA Connector. ' + PB.rdp, ask: 'Prestataires ou infogérants qui doivent atteindre des serveurs ?', st: { edu: 'n', core: 'a', pro: 'i' }, note: 'Core : extension Private App Access', src: 'palg, cat' } ] },
+        { n: 'Applications internes web, RDP et SSH', d: 'Sans VPN ni agent, par le Prisma Browser Connector, un pare-feu Palo Alto en place ou un ZTNA Connector. ' + PB.rdp, ask: 'Prestataires ou infogérants qui doivent atteindre des serveurs ?', st: { edu: 'n', core: 'a', pro: 'i' }, note: 'Core : add-on Prisma Browser Connector', src: 'palg, pbconn' } ] },
       { grp: 'Protection avancée (Pro)', rows: [
         { n: 'DLP dans les applications lourdes', d: 'Les contrôles de données s’étendent à Outlook, Teams, Excel et aux autres applications installées.', ask: 'Les données sensibles partent-elles aussi par la messagerie ou Teams ?', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'palg' },
         { n: 'Identifiants gérés (Idira)', d: 'Comptes partagés et applications sans SSO : mots de passe injectés, jamais vus par l’utilisateur.', ask: 'Des comptes partagés circulent-ils entre prestataires ?', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'palg' },
@@ -835,12 +835,12 @@
       + '<p class="lic-lead">Une unité par utilisateur et par an. Education reprend Core pour l’enseignement ; Pro ajoute les applications privées natives et la protection avancée. Enterprise inclut Prisma Browser Core pour ses utilisateurs.</p>'
       + rowsHTML(pbRows, [['edu', 'Education'], ['core', 'Core'], ['pro', 'Pro']], 'pb')
       + '<h3>Quelle licence pour qui</h3><dl class="lic-dl">'
-      + '<dt>Sans Prisma Access</dt><dd>Licence Prisma Browser seule. Elle se répartit entre tenants (PoC, production) et inclut AI Access pour le trafic du navigateur. Applications privées : Pro, ou Core avec Private App Access pour Prisma Browser (10 ZTNA Connectors et Prisma Browser Connector).' + srcLine('pbsa') + '</dd>'
-      + '<dt>Avec Prisma Access</dt><dd>Enterprise inclut Core. Avec Secure Web Gateway ou ZTNA, add-on Core ou Pro par utilisateur. ' + esc(PB.addonPriv) + ' ' + esc(PB.addonPerUser) + srcLine('palg, cat') + '</dd>'
+      + '<dt>Sans Prisma Access</dt><dd>Licence Prisma Browser seule. Elle se répartit entre tenants (PoC, production) et inclut AI Access pour le trafic du navigateur. Applications privées : add-on Prisma Browser Connector, jusqu’à 10 ZTNA Connectors par tenant, sans Prisma Access.' + srcLine('pbsa, pbconn') + '</dd>'
+      + '<dt>Avec Prisma Access</dt><dd>Enterprise inclut Core. Avec Secure Web Gateway ou ZTNA, add-on Core ou Pro. ' + esc(PB.addonPriv) + ' ' + esc(PB.addonPerUser) + srcLine('palg, pbsub') + '</dd>'
       + '<dt>Prestataires</dt><dd>Licence seule par défaut : ni Mobile User, ni agent sur des postes qui ne sont pas au client. ' + esc(PB.mix) + srcLine('cat') + '</dd></dl>'
       + '<h3>Joindre les applications privées</h3><dl class="lic-dl">'
-      + '<dt>Pare-feu Palo Alto en place</dt><dd>' + esc(PB.ngfwPath) + srcLine('pbdeck') + '</dd>'
-      + '<dt>Prisma Browser Connector</dt><dd>' + esc(PB.pbcPath) + srcLine('pbdeck') + '</dd>'
+      + '<dt>Pare-feu Palo Alto en place</dt><dd>' + esc(PB.ngfwPath) + srcLine('pbngfw') + '</dd>'
+      + '<dt>Prisma Browser Connector</dt><dd>' + esc(PB.pbcPath) + srcLine('pbconn') + '</dd>'
       + '<dt>ZTNA Connector, Service Connection, Colo-Connect</dt><dd>Les connexions du tenant Prisma Access, quand le projet en a un.' + srcLine('sc, ztnaon') + '</dd></dl>'
       + '<h3>Cas d’usage qui déclenchent la discussion</h3><dl class="lic-dl">'
       + PB.useCases.map(function (u) { return '<dt>' + esc(u[0]) + '</dt><dd>' + esc(u[1]) + '</dd>'; }).join('') + '</dl></section>';

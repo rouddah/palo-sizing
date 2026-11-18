@@ -38,7 +38,11 @@ const SASE_RULES = {
     iondev:  { t: 'Prisma SD-WAN ION Device Specifications (datasheet, prisma_ds_sdwan-ion-device-specifications_082426)', u: 'https://www.paloaltonetworks.com/resources/datasheets/prisma-sd-wan-instant-on-network-ion-device-specifications' },
     sdwanlic:{ t: 'Your Prisma SD-WAN License', u: 'https://docs.paloaltonetworks.com/prisma-sd-wan/activation-and-onboarding/your-prisma-sd-wan-license' },
     pbsa:    { t: 'Activate Standalone Prisma Browser License (docs Prisma Browser)', u: 'https://docs.paloaltonetworks.com/prisma-browser/activation-and-onboarding/activate-standalone-prisma-browser-license' },
-    pbdeck:  { t: 'Présentation client Prisma Browser, Palo Alto Networks, 2026', u: null, pub: false }
+    pbdeck:  { t: 'Présentation client Prisma Browser, Palo Alto Networks, 2026', u: null, pub: false },
+    pbngfw:  { t: 'NGFW Connector Integration (docs Prisma Browser)', u: 'https://docs.paloaltonetworks.com/prisma-browser/integrations/first-party-integrations/ngfw-ztna-connector-integration' },
+    pbconn:  { t: 'Onboard the Prisma Browser Connector (docs Prisma Browser)', u: 'https://docs.paloaltonetworks.com/prisma-browser/activation-and-onboarding/onboard-the-prisma-browser-connector' },
+    aiacl:   { t: 'AI Access Security Licenses (docs AI Access Security)', u: 'https://docs.paloaltonetworks.com/ai-access-security/activation-and-onboarding/ai-access-security-licenses' },
+    pbsub:   { t: 'View and Monitor Subscription Usage (docs Prisma Access)', u: 'https://docs.paloaltonetworks.com/prisma-access/administration/monitor/monitor-prisma-access-in-strata/view-and-monitor-subscription-usage' }
   },
 
   /* Compteurs publics (palg) : Per User, Per Site, Per Bandwidth (Mbps), par an. */
@@ -209,13 +213,13 @@ const SASE_RULES = {
       { id: 'pro',  name: 'Prisma Browser Pro', short: 'Pro', use: 'Core, plus applications privées natives, DLP étendue aux applications lourdes, identifiants gérés par Idira, protection web avancée, ADEM RUM.', src: 'palg, cat' }
     ],
     addonPriv: 'En add-on de Prisma Access, Prisma Browser joint aussi les applications privées par les Service Connections et les ZTNA Connectors du tenant.',
-    standalonePriv: { name: 'Private App Access pour Prisma Browser', desc: 'Pour Prisma Browser Core seul : jusqu’à 10 ZTNA Connectors et le Prisma Browser Connector pour joindre les applications privées.' },
+    standalonePriv: { name: 'Prisma Browser Connector, add-on de la licence seule', desc: 'Licence Prisma Browser seule + add-on Prisma Browser Connector : applications privées sans déployer Prisma Access, jusqu’à 10 ZTNA Connectors par tenant.' },
     proWhy: { thick: 'données à protéger dans les applications lourdes (Outlook, Teams, Excel)', identity: 'comptes partagés ou applications sans SSO', rum: 'mesure de l’expérience réelle depuis le navigateur (ADEM RUM)', advWeb: 'protection web avancée (scripts à l’exécution, extensions)' },
-    alloc: 'Une licence Prisma Browser seule se répartit entre plusieurs tenants, par exemple PoC et production.',
-    aiAccess: 'La licence Prisma Browser seule inclut AI Access Security pour le trafic du navigateur ; l’AI Access au niveau réseau demande une autre licence.',
+    alloc: 'Une licence Prisma Browser seule se répartit entre plusieurs tenants, par exemple PoC et production, avec 200 unités au moins par tenant.',
+    aiAccess: 'La licence Prisma Browser seule inclut AI Access Security (visibilité et contrôle depuis le navigateur) ; le contrôle au niveau réseau demande une autre licence.',
     mix: 'Prestataires en licence Prisma Browser seule dans un projet Prisma Access : cohabitation des deux licences sur un même tenant à vérifier avec Palo Alto Networks.',
-    addonPerUser: 'L’add-on Prisma Browser s’ajoute à des utilisateurs Prisma Access : chaque utilisateur Prisma Browser en add-on compte aussi comme Mobile User.',
-    ngfwPath: 'Pare-feu Palo Alto en place devant les applications : le connecteur NGFW (PAN-OS 12.1.5 ou plus, géré par Panorama) évite toute nouvelle machine.',
+    addonPerUser: 'L’add-on Prisma Browser se souscrit pour tous les Mobile Users du tenant : sa quantité suit celle des Mobile Users.',
+    ngfwPath: 'Pare-feu Palo Alto en place devant les applications : le NGFW Connector évite toute nouvelle machine. PAN-OS 12.1.5 ou plus, géré par Panorama (Cloud Services Plugin 6.1 ou plus) ou Strata Cloud Manager, Prisma Access 6.1 ou plus ; pas de paire HA ni de Logical Router.',
     pbcPath: 'Applications privées par le Prisma Browser Connector, côté data center ; le navigateur rejoint la région cloud la plus proche.',
     rdp: 'Connexion RDP et SSH native dans le navigateur, par Prisma Access ou le Prisma Browser Connector.',
     useCases: [
@@ -279,7 +283,7 @@ const SASE_RULES = {
     { n: 'ZTNA Connector', d: 'Machine virtuelle qui ouvre les applications d’un data center ou d’un cloud, sans tunnel IPsec ni routage à préparer. Jusqu’à 2 Gbps.', src: 'ztnaon' },
     { n: 'Compute location', d: 'Région de traitement Prisma Access. Au compteur par Mbps, la bande passante s’alloue par compute location, 50 Mbps au moins.', src: 'alloc' },
     { n: 'ION', d: 'Boîtier Prisma SD-WAN du site ou du data center, physique ou virtuel, qui monte les tunnels vers Prisma Access.', src: 'iondev' },
-    { n: 'Prisma Browser Connector', d: 'Connecteur côté data center pour les utilisateurs Prisma Browser, sans Prisma Access.', src: 'pbdeck' },
+    { n: 'Prisma Browser Connector', d: 'Connecteur côté data center pour les utilisateurs Prisma Browser, sans Prisma Access. Add-on de la licence Prisma Browser seule, jusqu’à 10 ZTNA Connectors par tenant.', src: 'pbconn' },
     { n: 'Colo-Connect', d: 'Interconnexion privée dans une colocation, pour des Service Connections à haut débit.', src: 'palg' }
   ],
 

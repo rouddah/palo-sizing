@@ -121,7 +121,7 @@
       if (ed === 'ztna' && x.needs.internet) alert('warn', 'ZTNA n’inclut ni Advanced URL Filtering ni Advanced DNS Security : la sécurité de l’accès internet relève de Secure Web Gateway ou d’Enterprise.', 'palg');
       if (ed !== 'enterprise' && x.needs.browser) alert('warn', 'Prisma Browser Core et SaaS Inline Security ne sont inclus que dans Enterprise ; sinon, add-ons.', 'palg');
     }
-    if (x.tenants > 1) alert('info', R.oneEdition, 'allocl');
+    if (x.tenants > 1) alerts.push({ lvl: 'info', text: R.oneEdition, src: 'allocl', tbc: true });
     if (ed === 'swg' && usePA) R.conflicts.forEach(c => note(c, 'palg, cat'));
 
     /* Compteurs presents et leurs quantites */
@@ -280,10 +280,10 @@
         if (e.id === 'core' && ed === 'enterprise' && hasMu) {
           line('pb', 'Prisma Browser Core, inclus dans Enterprise', addN, 'utilisateurs', 'Enterprise par utilisateur inclut Prisma Browser Core. ' + e.why, 'palg');
         } else {
-          line('pb', edName(e.id) + ', add-on Prisma Access', addN, 'utilisateurs', e.why + ' ' + PB.addonPerUser, 'palg, cat', { unitTbc: true, tbc: false });
+          line('pb', edName(e.id) + ', add-on Prisma Access', Math.max(addN, users), 'utilisateurs', e.why + ' ' + PB.addonPerUser, 'palg, pbsub', { unitTbc: true, tbc: false });
         }
         if (needPriv) note(PB.addonPriv, 'cat');
-        if (addN > users) alert('warn', addN.toLocaleString('fr-FR') + ' utilisateurs Prisma Browser en add-on pour ' + users.toLocaleString('fr-FR') + ' Mobile Users : ' + PB.addonPerUser, 'cat');
+        if (addN > users) alert('warn', addN.toLocaleString('fr-FR') + ' utilisateurs Prisma Browser en add-on pour ' + users.toLocaleString('fr-FR') + ' Mobile Users : ' + PB.addonPerUser + ' Revoir le nombre de Mobile Users.', 'pbsub');
         pbOut.groups.push({ who: 'add-on', n: addN, ed: e.id });
       }
       /* Licence seule : salaries sans Prisma Access, prestataires par defaut */
@@ -291,11 +291,11 @@
       if (stdN) {
         const e = pickEd(false);
         line('pb', edName(e.id) + ', licence seule', stdN, 'utilisateurs', e.why + ' Par utilisateur et par an, quel que soit le nombre d’appareils.' + (extStd && usePA ? ' Prestataires sans Mobile User ni agent.' : ''), e.id === 'edu' ? 'cat' : 'pbsa, palg', { unitTbc: true });
-        if (needPriv && e.id !== 'pro') line('pb', PB.standalonePriv.name, stdN, 'utilisateurs', PB.standalonePriv.desc, 'cat');
+        if (needPriv && e.id !== 'pro') line('pb', PB.standalonePriv.name, stdN, 'utilisateurs', PB.standalonePriv.desc, 'pbconn, cat', { tbc: false, unitTbc: true });
         note(PB.alloc, 'pbsa');
-        note(PB.aiAccess, 'pbsa');
+        note(PB.aiAccess, 'aiacl');
         if (needPriv) {
-          note(P.ngfw ? PB.ngfwPath : PB.pbcPath, 'pbdeck');
+          note(P.ngfw ? PB.ngfwPath : PB.pbcPath, P.ngfw ? 'pbngfw' : 'pbconn');
           if (!usePA && x.dc.count) alert('info', 'Sans Prisma Access, les data centers se joignent par le Prisma Browser Connector ou les ZTNA Connectors, pas par des Service Connections.', 'pbdeck');
         }
         if (extStd && usePA) alert('info', PB.mix, 'cat');
