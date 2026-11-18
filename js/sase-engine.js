@@ -25,7 +25,10 @@
       dataTB: 0,                // transfert annuel prevu, en To
       coloLinks: 0,
       sdwanModel: 'device',     // device | site | aggregate (sites hors compteur par site)
-      addons: {}                // { id: true }
+      addons: {},               // { id: true }
+      flows: { toDc: false, toDcMbps: 0, b2b: false, toBranch: false },   // trafic des sites
+      apps: { ad: false, cloudEnvs: 0, cloudHa: false },                   // hebergement des applications privees
+      pb: { staff: 0, ext: 0, extLic: 'auto', priv: false, rdp: false, thick: false, identity: false, rum: false, advWeb: false, edu: false, ngfw: false }
     };
   }
 
@@ -39,6 +42,15 @@
     o.rn = Object.assign(defaults().rn, i.rn || {});
     o.dc = Object.assign(defaults().dc, i.dc || {});
     o.addons = Object.assign({}, i.addons || {});
+    o.flows = Object.assign(defaults().flows, i.flows || {});
+    o.apps = Object.assign(defaults().apps, i.apps || {});
+    o.pb = Object.assign(defaults().pb, i.pb || {});
+    o.flows.toDcMbps = int(o.flows.toDcMbps); o.apps.cloudEnvs = int(o.apps.cloudEnvs);
+    o.pb.staff = int(o.pb.staff); o.pb.ext = int(o.pb.ext);
+    if (['auto', 'mu', 'standalone'].indexOf(o.pb.extLic) === -1) o.pb.extLic = 'auto';
+    ['toDc', 'b2b', 'toBranch'].forEach(k => { o.flows[k] = !!o.flows[k]; });
+    o.apps.ad = !!o.apps.ad; o.apps.cloudHa = !!o.apps.cloudHa;
+    ['priv', 'rdp', 'thick', 'identity', 'rum', 'advWeb', 'edu', 'ngfw'].forEach(k => { o.pb[k] = !!o.pb[k]; });
     o.mu.users = int(o.mu.users); o.mu.clientless = int(o.mu.clientless);
     o.dc.count = int(o.dc.count); o.dc.mbps = int(o.dc.mbps);
     o.tenants = Math.max(1, int(o.tenants, 1)); o.ztnaConnectors = int(o.ztnaConnectors);
@@ -70,20 +82,47 @@
     const sites = x.rn.sites;
     const nSites = sites.reduce((a, s) => a + s.n, 0);
     const hasMu = users > 0, hasRn = nSites > 0;
-    if (!hasMu && !hasRn) alert('info', 'Renseignez des utilisateurs nomades ou des sites pour obtenir une nomenclature.');
+    const pbN = x.pb.staff + x.pb.ext;
+    if (!hasMu && !hasRn && !pbN) alert('info', 'Renseignez des utilisateurs nomades, des sites ou des utilisateurs Prisma Browser pour obtenir une nomenclature.');
+    /* Flux des sites et hebergement des applications : ils font naitre le besoin d'applications privees */
+    const F = x.flows, A = x.apps;
+    if (hasRn && (F.b2b || F.toBranch)) x.addons.interconnect = true;
 
     /* 1. Edition (une par tenant), tableau 1 du guide public */
     let ed = x.edition;
-    const wantPriv = x.needs.privateApps || x.dc.count > 0;
+    const privWhy = [];
+    if (x.needs.privateApps) privWhy.push('applications internes à atteindre');
+    if (x.dc.count) privWhy.push(x.dc.count + ' data center' + (x.dc.count > 1 ? 's' : ''));
+    if (A.cloudEnvs) privWhy.push('applications dans ' + A.cloudEnvs + ' environnement' + (A.cloudEnvs > 1 ? 's' : '') + ' cloud');
+    if (hasRn && F.toDc) privWhy.push('données des sites remontées vers le data center');
+    if (hasRn && hasMu && F.toBranch) privWhy.push('serveurs des sites joints par les nomades');
+    if (A.ad) privWhy.push('authentification sur l’Active Directory du data center');
+    const wantPriv = privWhy.length > 0;
+    const usePA = hasMu || hasRn;
     if (ed === 'auto') ed = x.needs.browser || (x.needs.internet && wantPriv) ? 'enterprise' : wantPriv ? 'ztna' : 'swg';
+    /* Trace de decision et ecarts de chaque edition avec le besoin */
+    const decision = [];
+    if (x.needs.internet) decision.push({ t: 'Accès internet à sécuriser', e: 'Advanced URL Filtering et Advanced DNS Security : Secure Web Gateway ou Enterprise.' });
+    if (wantPriv) decision.push({ t: 'Applications privées : ' + privWhy.join(', '), e: 'Service Connections et ZTNA Connectors : ZTNA ou Enterprise, ou Secure Web Gateway avec Private App Access.' });
+    if (x.needs.browser) decision.push({ t: 'Navigateur d’entreprise ou données SaaS à protéger', e: 'Prisma Browser Core et SaaS Inline Security ne sont inclus que dans Enterprise.' });
+    const useNetPre = hasRn && x.rn.model === 'net';
+    const compare = R.editions.map(e => {
+      const gaps = [], block = [];
+      if (x.needs.internet && e.id === 'ztna') block.push('ni Advanced URL Filtering ni Advanced DNS Security : l’accès internet n’est pas couvert');
+      if (wantPriv && !e.privateApps) gaps.push('Private App Access en add-on');
+      if (x.needs.browser && e.id !== 'enterprise') gaps.push('SaaS Inline et Prisma Browser en add-ons');
+      if (useNetPre && e.personas.indexOf('net') === -1) block.push('pas de compteur par Mbps');
+      if (e.id === 'enterprise' && !wantPriv && !x.needs.browser) gaps.push('inclut applications privées et Prisma Browser, non demandés ici');
+      return { id: e.id, name: e.name, gaps, block };
+    });
     const E = R.editions.find(e => e.id === ed) || R.editions[2];
-    if (x.edition !== 'auto') {
+    if (x.edition !== 'auto' && usePA) {
       if (!E.privateApps && wantPriv) alert('warn', 'Secure Web Gateway n’inclut pas la connexion aux applications privées : l’add-on Private App Access est ajouté pour chaque compteur.', 'palg');
       if (ed === 'ztna' && x.needs.internet) alert('warn', 'ZTNA n’inclut ni Advanced URL Filtering ni Advanced DNS Security : la sécurité de l’accès internet relève de Secure Web Gateway ou d’Enterprise.', 'palg');
       if (ed !== 'enterprise' && x.needs.browser) alert('warn', 'Prisma Browser Core et SaaS Inline Security ne sont inclus que dans Enterprise ; sinon, add-ons.', 'palg');
     }
     if (x.tenants > 1) alert('info', R.oneEdition, 'allocl');
-    if (ed === 'swg') R.conflicts.forEach(c => note(c, 'palg, cat'));
+    if (ed === 'swg' && usePA) R.conflicts.forEach(c => note(c, 'palg, cat'));
 
     /* Compteurs presents et leurs quantites */
     const useNet = hasRn && x.rn.model === 'net';
@@ -141,20 +180,33 @@
 
     /* 3. Applications privees : Service Connections, ZTNA Connectors */
     let scNeed = 0;
+    let dcMbps = x.dc.mbps;
+    if (x.dc.count && hasRn && F.toDc && F.toDcMbps) {
+      const per = Math.ceil(F.toDcMbps / x.dc.count);
+      if (per > dcMbps) { dcMbps = per; note('Débit par data center porté à ' + fmtMbps(per) + ' : ' + fmtMbps(F.toDcMbps) + ' remontés des sites, répartis sur ' + x.dc.count + ' data center' + (x.dc.count > 1 ? 's' : '') + '.', 'sc, schb'); }
+    }
     if (x.dc.count) {
-      const perDc = x.dc.mbps ? Math.max(1, Math.ceil(x.dc.mbps / R.scMbps)) : 1;
+      const perDc = dcMbps ? Math.max(1, Math.ceil(dcMbps / R.scMbps)) : 1;
       scNeed = x.dc.count * Math.min(perDc, R.scMaxRecommended);
       if (perDc > R.scMaxRecommended) alert('warn', 'Plus de ' + R.scMaxRecommended + ' Service Connections par data center ne sont pas recommandées (environ 1 Gbps chacune) : ZTNA Connector ou Colo-Connect.', 'schb');
-    } else if (hasMu && hasRn) scNeed = 1;
+    } else if ((hasMu && hasRn) || (A.ad && usePA)) scNeed = 1;
+    if (A.ad && usePA) note(R.adOnPrem, 'sc');
+    if (A.ad && !x.dc.count && usePA) alert('warn', 'Active Directory sur site sans data center saisi : une Service Connection est comptée vers le site qui l’héberge.', 'sc');
+    let zc = x.ztnaConnectors;
+    if (A.cloudEnvs && usePA) {
+      const need = A.cloudEnvs * (A.cloudHa ? 2 : 1);
+      if (need > zc) zc = need;
+      note(R.cloudZtna + ' ' + A.cloudEnvs + ' environnement' + (A.cloudEnvs > 1 ? 's' : '') + (A.cloudHa ? ', deux connecteurs chacun pour la redondance.' : ', un connecteur chacun.'), 'ztnaon, ztna');
+    }
     if (E.privateApps) {
       if (scNeed) line('pa', 'Service Connections', scNeed, 'connexions', (x.dc.count ? 'Environ 1 Gbps par Service Connection, une par data center au moins. ' : R.scNote + ' ') + E.sc + ' incluses dans ' + E.name + '.', 'sc, schb, palg');
       if (scNeed > E.sc) line('addon', 'Private App Access, Service Connections supplémentaires', scNeed - E.sc, 'Service Connections', 'Au-delà des ' + E.sc + ' incluses. Private App Access porte jusqu’à 200 connecteurs ; unité par Service Connection.', 'palg, cat, sc', { unitTbc: true });
-      if (x.ztnaConnectors) line('pa', 'ZTNA Connectors', x.ztnaConnectors, 'connecteurs', E.ztnaConn + ' inclus dans ' + E.name + ', jusqu’à 2 Gbps par connecteur.', 'palg, ztnaon');
-      if (x.ztnaConnectors > E.ztnaConn) alert('warn', x.ztnaConnectors + ' ZTNA Connectors pour ' + E.ztnaConn + ' inclus : Private App Access porte jusqu’à 200 connecteurs ; l’unité de cette extension n’est pas publiée.', R.privateAppSrc);
+      if (zc) line('pa', 'ZTNA Connectors', zc, 'connecteurs', E.ztnaConn + ' inclus dans ' + E.name + ', jusqu’à 2 Gbps par connecteur.', 'palg, ztnaon');
+      if (zc > E.ztnaConn) alert('warn', zc + ' ZTNA Connectors pour ' + E.ztnaConn + ' inclus : Private App Access porte jusqu’à 200 connecteurs ; l’unité de cette extension n’est pas publiée.', R.privateAppSrc);
     } else if (wantPriv || (hasMu && hasRn)) {
       perPersona('addon', 'Private App Access', 'Connexion aux Service Connections et aux ZTNA Connectors, absente de Secure Web Gateway.', 'palg', null, { unitTbc: true });
       if (scNeed) line('pa', 'Service Connections', scNeed, 'connexions', (x.dc.count ? 'Environ 1 Gbps par Service Connection, une par data center au moins.' : R.scNote) + ' Nombre inclus avec Private App Access non publié.', 'sc, schb');
-      if (x.ztnaConnectors) line('pa', 'ZTNA Connectors', x.ztnaConnectors, 'connecteurs', 'Jusqu’à 2 Gbps par connecteur. Nombre inclus avec Private App Access non publié.', 'ztnaon');
+      if (zc) line('pa', 'ZTNA Connectors', zc, 'connecteurs', 'Jusqu’à 2 Gbps par connecteur. Nombre inclus avec Private App Access non publié.', 'ztnaon');
     }
 
     /* 4. Prisma SD-WAN */
@@ -167,10 +219,10 @@
       line('sdwan', pick.id, per * s.n, 'appareils', 'Sites de ' + fmtMbps(s.mbps) + (s.ha ? ', en paire HA' : '') + ' : ' + pickWhy(pick, s, false) + '.', R.ionSrc, { ion: pick });
     });
     if (x.dc.sdwan && x.dc.count) {
-      const s = { mbps: x.dc.mbps, sfp10: x.dc.mbps > 1000, virt: x.dc.virt };
+      const s = { mbps: dcMbps, sfp10: dcMbps > 1000, virt: x.dc.virt };
       const pick = pickIon(R, s, true), per = x.dc.ha ? 2 : 1;
-      if (pick) line('sdwan', pick.id + ' (data center)', per * x.dc.count, 'appareils', 'Data centers de ' + fmtMbps(x.dc.mbps) + (x.dc.ha ? ', en paire HA' : '') + ' : ' + pickWhy(pick, s, true) + '.', R.ionSrc, { ion: pick });
-      else alert('crit', 'Aucun ION data center ne tient ' + fmtMbps(x.dc.mbps) + '.', R.ionSrc);
+      if (pick) line('sdwan', pick.id + ' (data center)', per * x.dc.count, 'appareils', 'Data centers de ' + fmtMbps(dcMbps) + (x.dc.ha ? ', en paire HA' : '') + ' : ' + pickWhy(pick, s, true) + '.', R.ionSrc, { ion: pick });
+      else alert('crit', 'Aucun ION data center ne tient ' + fmtMbps(dcMbps) + '.', R.ionSrc);
       line('sdwan', 'Abonnement ' + (x.dc.virt ? 'Virtual ION' : 'ION') + ' Data Center', per * x.dc.count, 'abonnements', R.sdwan.dc, R.sdwan.src);
     }
     if (sdSites.length) {
@@ -202,9 +254,61 @@
       note(S.perDeviceAddons, 'cat');
     }
 
+    /* 4 bis. Prisma Browser : seul ou en add-on de Prisma Access.
+       Salaries : add-on des Mobile Users quand le projet a Prisma Access,
+       licence seule sinon. Prestataires : licence seule par defaut (aucun
+       Mobile User consomme), ou comptes en Mobile Users avec l'add-on. */
+    const P = x.pb, PB = R.pb;
+    const pbOut = { groups: [] };
+    if (pbN) {
+      const pro = Object.keys(PB.proWhy).filter(k => P[k]);
+      const needPriv = P.priv || P.rdp;
+      const extMu = P.ext && usePA && P.extLic === 'mu';
+      const extStd = P.ext && !extMu;
+      const staffAddon = P.staff && usePA;
+      const pickEd = (addon) => {
+        if (pro.length) return { id: 'pro', why: 'Pro : ' + pro.map(k => PB.proWhy[k]).join(', ') + '.' };
+        if (addon) return { id: 'core', why: 'Core suffit : internet, SaaS' + (needPriv ? ', et applications privées par les connexions du tenant Prisma Access' : '') + '.' };
+        if (P.edu) return { id: 'edu', why: 'Education : établissement d’enseignement, contenu de Core.' };
+        return { id: 'core', why: 'Core : internet et SaaS' + (needPriv ? ' ; les applications privées passent par l’extension Private App Access (Pro les inclut)' : '') + '.' };
+      };
+      const edName = id => PB.editions.find(e => e.id === id).name;
+      /* Add-on : salaries, et prestataires comptes en Mobile Users */
+      const addN = (staffAddon ? P.staff : 0) + (extMu ? P.ext : 0);
+      if (addN) {
+        const e = pickEd(true);
+        if (e.id === 'core' && ed === 'enterprise' && hasMu) {
+          line('pb', 'Prisma Browser Core, inclus dans Enterprise', addN, 'utilisateurs', 'Enterprise par utilisateur inclut Prisma Browser Core. ' + e.why, 'palg');
+        } else {
+          line('pb', edName(e.id) + ', add-on Prisma Access', addN, 'utilisateurs', e.why + ' ' + PB.addonPerUser, 'palg, cat', { unitTbc: true, tbc: false });
+        }
+        if (needPriv) note(PB.addonPriv, 'cat');
+        if (addN > users) alert('warn', addN.toLocaleString('fr-FR') + ' utilisateurs Prisma Browser en add-on pour ' + users.toLocaleString('fr-FR') + ' Mobile Users : ' + PB.addonPerUser, 'cat');
+        pbOut.groups.push({ who: 'add-on', n: addN, ed: e.id });
+      }
+      /* Licence seule : salaries sans Prisma Access, prestataires par defaut */
+      const stdN = (P.staff && !usePA ? P.staff : 0) + (extStd ? P.ext : 0);
+      if (stdN) {
+        const e = pickEd(false);
+        line('pb', edName(e.id) + ', licence seule', stdN, 'utilisateurs', e.why + ' Par utilisateur et par an, quel que soit le nombre d’appareils.' + (extStd && usePA ? ' Prestataires sans Mobile User ni agent.' : ''), e.id === 'edu' ? 'cat' : 'pbsa, palg', { unitTbc: true });
+        if (needPriv && e.id !== 'pro') line('pb', PB.standalonePriv.name, stdN, 'utilisateurs', PB.standalonePriv.desc, 'cat');
+        note(PB.alloc, 'pbsa');
+        note(PB.aiAccess, 'pbsa');
+        if (needPriv) {
+          note(P.ngfw ? PB.ngfwPath : PB.pbcPath, 'pbdeck');
+          if (!usePA && x.dc.count) alert('info', 'Sans Prisma Access, les data centers se joignent par le Prisma Browser Connector ou les ZTNA Connectors, pas par des Service Connections.', 'pbdeck');
+        }
+        if (extStd && usePA) alert('info', PB.mix, 'cat');
+        pbOut.groups.push({ who: 'seule', n: stdN, ed: e.id });
+      }
+      if (P.rdp) note(PB.rdp, 'pbdeck');
+      if (P.edu && pro.length) note('Education n’existe qu’au niveau de Core : un besoin Pro fait passer à Prisma Browser Pro.', 'cat');
+    }
+
     /* 5. Add-ons */
     R.addons.forEach(a => {
       if (!x.addons[a.id] || a.id === 'scQty') return;
+      if (pbN && (a.id === 'browserCore' || a.id === 'browserPro')) return;
       const inc = a.inc || [];
       const incSrc = a.incSrc ? a.src + ', ' + a.incSrc : R.editionSrc;
       const incTbc = !!a.incSrc && !isPub(R, a.incSrc);
@@ -236,7 +340,7 @@
       else if (x.dataTB > inclTB && !x.addons.excess) alert('warn', 'Transfert prévu de ' + x.dataTB.toLocaleString('fr-FR') + ' To pour ' + inclTB.toLocaleString('fr-FR') + ' To alloués (250 GB par unité et par an, ' + units.toLocaleString('fr-FR') + ' unités) : add-on Excess Data Transfer.', R.includedSrc);
     }
 
-    return { input: x, edition: E, lines, alerts, notes, included: R.allEditions, includedTB: useSite ? null : inclTB };
+    return { input: x, edition: E, lines, alerts, notes, decision, compare, privWhy, pb: pbOut, usePA, included: R.allEditions, includedTB: useSite ? null : inclTB };
   }
 
   function fits(i, s, dc) {

@@ -77,6 +77,76 @@
     .sz-tbc { color: var(--warn); font-weight: 600; font-style: normal; white-space: nowrap; }
     .sz-notes { font-size: var(--text-xs); color: var(--text-muted); line-height: 1.6; margin: 0 0 14px; }
     .sz-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+    /* Pourquoi cette edition */
+    .sz-why { margin: 0 0 20px; }
+    .sz-why ol { margin: 0 0 12px; padding-left: 18px; font-size: var(--text-xs); line-height: 1.55; color: var(--text); }
+    .sz-why ol li { margin: 0 0 5px; }
+    .sz-why ol li span { display: block; color: var(--text-muted); }
+    .sz-cmp { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .sz-cmp > div { padding: 10px 10px 10px 12px; border-left: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.5; color: var(--text-muted); }
+    .sz-cmp > div:first-child { border-left: 0; }
+    .sz-cmp b { display: block; color: var(--text-bright); font-size: var(--text-sm); margin-bottom: 2px; }
+    .sz-cmp .on { box-shadow: inset 0 2px 0 var(--accent); background: var(--accent-dim); }
+    .sz-cmp .on em { color: var(--accent-txt); font-style: normal; font-weight: 700; }
+    .sz-cmp .ko b { color: var(--text-muted); }
+    .sz-cmp .ko em { color: var(--crit); font-style: normal; }
+    .sz-grp-t { font-size: var(--text-xs); color: var(--text-muted); margin: 10px 0 6px; font-weight: 600; }
+    /* Vue Licences */
+    .lic { display: none; flex: 1; min-height: 0; overflow: auto; }
+    body.lic-on .lic { display: block; }
+    body.lic-on #view-commercial { display: none; }
+    .lic-in { max-width: 1180px; margin: 0 auto; padding: 8px 24px 80px; }
+    .lic-nav { position: sticky; top: 0; z-index: 3; display: flex; flex-wrap: wrap; gap: 2px 4px; padding: 10px 0; background: var(--bg); border-bottom: 1px solid var(--border); margin: 0 0 8px; }
+    .lic-nav a { color: var(--text-muted); text-decoration: none; font-size: var(--text-xs); padding: 6px 10px; border-radius: var(--r-sm); }
+    .lic-nav a:hover, .lic-nav a.on { color: var(--text-bright); background: var(--surface2); }
+    .lic section { padding: 26px 0 8px; scroll-margin-top: 56px; }
+    .lic h2 { font-size: 24px; line-height: 1.25; font-weight: 700; color: var(--text-bright); margin: 0 0 6px; letter-spacing: -.01em; }
+    .lic h3 { font-size: var(--text-sm); font-weight: 700; color: var(--text-bright); margin: 22px 0 8px; }
+    .lic-lead { color: var(--text-muted); font-size: var(--text-sm); line-height: 1.6; max-width: 820px; margin: 0 0 16px; }
+    .lic-leg { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: var(--text-xs); color: var(--text-muted); margin: 0 0 12px; }
+    .lic-eds { display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr)); border-top: 2px solid var(--border2); }
+    .lic-eds > div { padding: 12px 12px 14px; border-left: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.5; color: var(--text-muted); }
+    .lic-eds > div:first-child { border-left: 0; padding-left: 0; }
+    .lic-eds b { display: block; color: var(--text-bright); font-size: 16px; margin-bottom: 4px; }
+    .lic-eds .per { display: block; margin-top: 6px; color: var(--text); }
+    .lic-mx { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .lic-mx th, .lic-mx td { text-align: left; vertical-align: top; padding: 9px 10px 9px 0; border-bottom: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.45; }
+    .lic-mx col.c { width: 17%; }
+    .lic-mx tr.g td { padding-top: 18px; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent-txt); font-weight: 700; border-bottom-color: var(--border2); }
+    .lic-mx .rb { all: unset; cursor: pointer; display: flex; gap: 8px; align-items: flex-start; color: var(--text-bright); font-weight: 600; width: 100%; }
+    .lic-mx .rb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .lic-mx .rb .chev { flex: none; color: var(--text-muted); transition: transform .25s var(--ease); margin-top: 1px; }
+    .lic-mx .rb[aria-expanded="true"] .chev { transform: rotate(90deg); }
+    .lic-mx .rb small { display: block; font-weight: 400; color: var(--text-muted); }
+    .lic-mx tr.r:hover td { background: var(--surface); }
+    .lic-mx tr.d td { padding: 0 10px 14px 22px; color: var(--text); border-bottom: 1px solid var(--border); }
+    .lic-mx tr.d p { margin: 4px 0; max-width: 760px; }
+    .lic-ask { border-left: 2px solid var(--accent); padding-left: 10px; color: var(--text-bright); }
+    .st { font-weight: 600; white-space: nowrap; }
+    .st-i { color: var(--text-bright); }
+    .st-i::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; }
+    .st-t { color: var(--warn); }
+    .st-a { color: var(--text); font-weight: 400; }
+    .st-n { color: var(--text-muted); font-weight: 400; }
+    .lic-dl { display: grid; grid-template-columns: minmax(160px, 230px) 1fr; margin: 0; border-top: 1px solid var(--border); }
+    .lic-dl dt, .lic-dl dd { margin: 0; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border); font-size: var(--text-xs); line-height: 1.55; }
+    .lic-dl dt { color: var(--text-bright); font-weight: 600; }
+    .lic-dl dd { color: var(--text); }
+    .lic-dl .src { display: block; color: var(--text-muted); font-size: 10px; margin-top: 2px; }
+    .lic-dl .src a { color: var(--text-muted); }
+    .lic .src { display: block; color: var(--text-muted); font-size: 10px; }
+    .lic .src a { color: var(--text-muted); }
+    .lic .src a:hover { color: var(--accent-txt); }
+    .lic-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+    @media (max-width: 760px) {
+      .lic-eds { grid-template-columns: 1fr 1fr; }
+      .lic-eds > div:first-child { grid-column: 1 / -1; border-left: 0; }
+      .lic-2, .lic-dl { grid-template-columns: 1fr; }
+      .lic-dl dt { padding-bottom: 0; border-bottom: 0; }
+      .lic-mx col.c { width: 22%; }
+      .sz-cmp { grid-template-columns: 1fr; }
+      .sz-cmp > div { border-left: 0; border-top: 1px solid var(--border); padding-left: 0; }
+    }
     @media (max-width: 560px) {
       .sz-prof .wb-row { grid-template-columns: 1fr 1fr; }
       .sz-addons { columns: 1; }
@@ -113,8 +183,8 @@
     <div class="sz-modes" role="group" aria-label="Mode de saisie">
       <button type="button" class="wb-tab" id="sz-m-guide" aria-pressed="false"><span data-ic="target" data-ic-size="16"></span>Mode guidé</button>
       <button type="button" class="wb-tab" id="sz-m-wb" aria-pressed="true"><span data-ic="table" data-ic-size="16"></span>Établi</button>
+      <button type="button" class="wb-tab" id="sz-m-lic" aria-pressed="false"><span data-ic="info" data-ic-size="16"></span>Licences</button>
     </div>
-    <a class="wb-tab" href="prisma.html"><span data-ic="info" data-ic-size="16"></span>Éditions et add-ons Prisma SASE</a>
   </div>
 
   <div class="commercial-view" id="view-commercial">
@@ -225,6 +295,57 @@
             </div>
 
             <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="site" data-ic-size="20"></span>Flux des sites et hébergement</h3>
+              <label class="sz-check"><input type="checkbox" id="f-todc"> Les sites remontent des données vers le data center (ERP, fichiers, sauvegardes, caisse)</label>
+              <div class="wb-field">
+                <label for="f-todcm">Volume remonté, tous sites <span class="wb-unit">Mbps</span>
+                  <button type="button" class="wb-help" data-tip="Remontée des sites|Réparti sur les data centers ; il augmente le nombre de Service Connections quand il dépasse le débit saisi par data center.">?</button></label>
+                <input type="number" id="f-todcm" inputmode="numeric" min="0" step="1" placeholder="0">
+              </div>
+              <label class="sz-check"><input type="checkbox" id="f-b2b"> Les sites échangent entre eux</label>
+              <label class="sz-check"><input type="checkbox" id="f-tobr"> Des serveurs dans les sites sont joints par les nomades</label>
+              <label class="sz-check"><input type="checkbox" id="f-ad"> L’authentification passe par un Active Directory du data center</label>
+              <div class="wb-field">
+                <label for="f-cloud">Environnements cloud avec des applications
+                  <button type="button" class="wb-help" data-tip="Clouds publics|Un VPC AWS, un VNet Azure ou un VPC GCP qui héberge des applications internes. Chacun reçoit un ZTNA Connector.">?</button></label>
+                <input type="number" id="f-cloud" inputmode="numeric" min="0" step="1" placeholder="0">
+              </div>
+              <label class="sz-check"><input type="checkbox" id="f-cloudha"> Deux ZTNA Connectors par environnement (redondance)</label>
+            </div>
+
+            <div class="wb-group">
+              <h3 class="wb-group-title"><span data-ic="threat" data-ic-size="20"></span>Prisma Browser</h3>
+              <div class="wb-row">
+                <div class="wb-field">
+                  <label for="pb-staff">Salariés
+                    <button type="button" class="wb-help" data-tip="Salariés|Postes non gérés, BYOD, VDI à réduire, données SaaS à garder dans le navigateur. Avec Prisma Access, en add-on des Mobile Users.">?</button></label>
+                  <input type="number" id="pb-staff" inputmode="numeric" min="0" step="1" placeholder="0">
+                </div>
+                <div class="wb-field">
+                  <label for="pb-ext">Prestataires et tiers
+                    <button type="button" class="wb-help" data-tip="Prestataires|Infogérants, intérimaires, partenaires, développeurs externes. Par défaut en licence Prisma Browser seule.">?</button></label>
+                  <input type="number" id="pb-ext" inputmode="numeric" min="0" step="1" placeholder="0">
+                </div>
+              </div>
+              <div class="wb-field">
+                <label for="pb-extlic">Licence des prestataires</label>
+                <select id="pb-extlic">
+                  <option value="auto" selected>Prisma Browser seul (sans Mobile User)</option>
+                  <option value="mu">Dans Prisma Access, comptés en Mobile Users</option>
+                </select>
+              </div>
+              <p class="sz-grp-t">Ce que les utilisateurs Prisma Browser doivent faire</p>
+              <label class="sz-check"><input type="checkbox" id="pb-priv"> Ouvrir des applications internes web</label>
+              <label class="sz-check"><input type="checkbox" id="pb-rdp"> Se connecter à des serveurs en RDP ou SSH</label>
+              <label class="sz-check"><input type="checkbox" id="pb-thick"> Travailler dans Outlook, Teams, Excel avec des données sensibles</label>
+              <label class="sz-check"><input type="checkbox" id="pb-identity"> Utiliser des comptes partagés ou des applications sans SSO</label>
+              <label class="sz-check"><input type="checkbox" id="pb-rum"> Mesurer leur expérience réelle (ADEM RUM)</label>
+              <label class="sz-check"><input type="checkbox" id="pb-advWeb"> Protection web avancée (scripts à l’exécution, extensions)</label>
+              <label class="sz-check"><input type="checkbox" id="pb-ngfw"> Un pare-feu Palo Alto (PAN-OS 12.1.5 ou plus, Panorama) protège déjà les applications</label>
+              <label class="sz-check"><input type="checkbox" id="pb-edu"> Établissement d’enseignement</label>
+            </div>
+
+            <div class="wb-group">
               <h3 class="wb-group-title"><span data-ic="table" data-ic-size="20"></span>Abonnement Prisma SD-WAN</h3>
               <div class="wb-field">
                 <label for="f-sdm">Modèle de branche
@@ -259,6 +380,8 @@
 
     </div>
   </div>
+
+  <div class="lic" id="sz-lic" aria-label="Licences Prisma SASE"><div class="lic-in" id="lic-in"></div></div>
 
 <script>
 (function () {
@@ -301,13 +424,15 @@
   });
 
   /* ── Add-ons ── */
-  $('sz-addons').innerHTML = R.addons.map(function (a) {
+  $('sz-addons').innerHTML = R.addons.filter(function (a) { return a.id !== 'browserCore' && a.id !== 'browserPro'; }).map(function (a) {
     return '<label class="sz-check" title="' + esc(a.desc) + '"><input type="checkbox" data-addon="' + a.id + '"> ' + esc(a.name) + '</label>';
   }).join('');
 
   /* ── Lecture et ecriture de l'etat ── */
   var FIELDS = { 'n-internet': 'c', 'n-private': 'c', 'n-browser': 'c', 'f-edition': 'v', 'f-mu': 'v', 'f-cl': 'v', 'f-ten': 'v', 'f-tb': 'v',
-    'f-rnm': 'v', 'f-dc': 'v', 'f-dcm': 'v', 'f-zc': 'v', 'f-colo': 'v', 'f-dcsd': 'c', 'f-dcha': 'c', 'f-dcv': 'c', 'f-sdm': 'v' };
+    'f-rnm': 'v', 'f-dc': 'v', 'f-dcm': 'v', 'f-zc': 'v', 'f-colo': 'v', 'f-dcsd': 'c', 'f-dcha': 'c', 'f-dcv': 'c', 'f-sdm': 'v',
+    'f-todc': 'c', 'f-todcm': 'v', 'f-b2b': 'c', 'f-tobr': 'c', 'f-ad': 'c', 'f-cloud': 'v', 'f-cloudha': 'c',
+    'pb-staff': 'v', 'pb-ext': 'v', 'pb-extlic': 'v', 'pb-priv': 'c', 'pb-rdp': 'c', 'pb-thick': 'c', 'pb-identity': 'c', 'pb-rum': 'c', 'pb-advWeb': 'c', 'pb-ngfw': 'c', 'pb-edu': 'c' };
   function readState() {
     var s = {};
     Object.keys(FIELDS).forEach(function (id) { s[id] = FIELDS[id] === 'c' ? $(id).checked : $(id).value; });
@@ -329,7 +454,11 @@
       mu: { users: s['f-mu'], clientless: s['f-cl'] },
       rn: { model: s['f-rnm'], sites: s.p },
       dc: { count: s['f-dc'], mbps: s['f-dcm'] || 1000, sdwan: s['f-dcsd'], ha: s['f-dcha'], virt: s['f-dcv'] },
-      ztnaConnectors: s['f-zc'], sdwanModel: s['f-sdm'], addons: addons
+      ztnaConnectors: s['f-zc'], sdwanModel: s['f-sdm'], addons: addons,
+      flows: { toDc: s['f-todc'], toDcMbps: s['f-todcm'], b2b: s['f-b2b'], toBranch: s['f-tobr'] },
+      apps: { ad: s['f-ad'], cloudEnvs: s['f-cloud'], cloudHa: s['f-cloudha'] },
+      pb: { staff: s['pb-staff'], ext: s['pb-ext'], extLic: s['pb-extlic'], priv: s['pb-priv'], rdp: s['pb-rdp'], thick: s['pb-thick'], identity: s['pb-identity'],
+            rum: s['pb-rum'], advWeb: s['pb-advWeb'], ngfw: s['pb-ngfw'], edu: s['pb-edu'] }
     };
   }
   function enc(s) { try { return btoa(unescape(encodeURIComponent(JSON.stringify(s)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) { return ''; } }
@@ -337,7 +466,7 @@
 
   /* ── Rendu ── */
   var TBC = '<span class="sz-tbc">[à confirmer]</span>';
-  var GROUPS = { core: 'Prisma Access', mu: 'Mobile Users', rn: 'Remote Networks', pa: 'Applications privées', sdwan: 'Prisma SD-WAN', addon: 'Add-ons', incl: 'Inclus dans l’édition' };
+  var GROUPS = { core: 'Prisma Access', mu: 'Mobile Users', rn: 'Remote Networks', pa: 'Applications privées', sdwan: 'Prisma SD-WAN', pb: 'Prisma Browser', addon: 'Add-ons', incl: 'Inclus dans l’édition' };
   function srcHTML(keys) {
     return String(keys || '').split(/,\s*/).filter(Boolean).map(function (k) {
       var S = R.src[k]; return !S ? esc(k) : S.u ? '<a href="' + esc(S.u) + '" target="_blank" rel="noopener">' + esc(S.t) + '</a>' : esc(S.t);
@@ -346,8 +475,26 @@
   var prevQ = {};
   function render() {
     var st = readState(), r = E.size(toInput(st), R);
-    var h = '<div class="sz-head"><h3>Prisma Access ' + esc(r.edition.name) + '</h3>'
-      + '<p>' + esc(r.edition.use) + '</p></div>';
+    var pbg = r.pb.groups, pbEd = function (id) { return R.pb.editions.find(function (e) { return e.id === id; }); };
+    var h;
+    if (r.usePA || !pbg.length) {
+      h = '<div class="sz-head"><h3>Prisma Access ' + esc(r.edition.name) + (pbg.length ? ' + Prisma Browser' : '') + '</h3>'
+        + '<p>' + esc(r.edition.use) + '</p></div>';
+    } else {
+      var pe = pbEd(pbg[0].ed);
+      h = '<div class="sz-head"><h3>' + esc(pe.name) + ', licence seule</h3><p>' + esc(pe.use) + ' Sans Prisma Access : aucun Mobile User, aucun site.</p></div>';
+    }
+    if (r.usePA) {
+      h += '<div class="sz-why"><p class="sz-sub">Pourquoi cette édition</p>';
+      if (r.decision.length) h += '<ol>' + r.decision.map(function (d) { return '<li>' + esc(d.t) + '<span>' + esc(d.e) + '</span></li>'; }).join('') + '</ol>';
+      h += '<div class="sz-cmp">' + r.compare.map(function (c) {
+        var on = c.id === r.edition.id, ko = c.block.length > 0;
+        var st = on ? '<em>Retenue</em>' + (c.gaps.length ? ' : ' + esc(c.gaps.join(', ')) : '') + (ko ? '. Attention : ' + esc(c.block.join(', ')) : '')
+          : ko ? '<em>Ne couvre pas le besoin</em> : ' + esc(c.block.join(', '))
+          : c.gaps.length ? 'Possible : ' + esc(c.gaps.join(', ')) : 'Couvre le besoin';
+        return '<div class="' + (on ? 'on' : ko ? 'ko' : '') + '"><b>' + esc(c.name.replace('Zero Trust Network Access (ZTNA)', 'ZTNA')) + '</b>' + st + '</div>';
+      }).join('') + '</div></div>';
+    }
     var alertList = function (list) {
       return '<ul class="sz-alerts">' + list.map(function (a) {
         return '<li class="' + a.lvl + '">' + icn(a.lvl === 'info' ? 'dash' : 'alert', 14) + '<span>' + esc(a.text) + (a.tbc ? ' ' + TBC : '') + (a.src ? '<span class="sz-src"> (' + srcHTML(a.src) + ')</span>' : '') + '</span></li>';
@@ -374,7 +521,7 @@
     h += '</tbody></table>';
     if (info.length) h += '<p class="sz-sub">À savoir</p>' + alertList(info);
     r.notes.forEach(function (n) { h += '<p class="sz-notes">' + esc(n.text) + (n.tbc ? ' ' + TBC : '') + ' (' + srcHTML(n.src) + ')</p>'; });
-    h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML(R.includedSrc) + '). ' + esc(R.ionNote) + '</p>'
+    if (r.usePA) h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML(R.includedSrc) + '). ' + esc(R.ionNote) + '</p>'
       + '<p class="sz-notes">' + TBC + ' : la donnée ne figure que dans une description d’offre Palo Alto Networks, pas encore dans un guide ou une documentation publics.</p>'
       + '<p class="sz-notes">' + esc(R.history) + ' (' + srcHTML('allocl') + ')</p>';
     h += '<div class="sz-actions">'
@@ -390,7 +537,8 @@
     history.replaceState(null, '', location.pathname + (t ? '?s=' + t : ''));
   }
   function textOf(r) {
-    var t = 'DIMENSIONNEMENT PRISMA SASE\nPrisma Access ' + r.edition.name + '\n\n';
+    var t = 'DIMENSIONNEMENT PRISMA SASE\n' + (r.usePA ? 'Prisma Access ' + r.edition.name : 'Prisma Browser, licence seule') + '\n'
+      + (r.decision.length ? r.decision.map(function (d) { return '- ' + d.t; }).join('\n') + '\n' : '') + '\n';
     var last = '';
     r.lines.forEach(function (l) {
       if (l.grp !== last) { last = l.grp; t += '\n' + (GROUPS[l.grp] || l.grp).toUpperCase() + '\n'; }
@@ -411,7 +559,7 @@
   $('sz-form').addEventListener('input', function (e) { if (!e.target.closest('#sz-profiles')) schedule(); });
   $('sz-form').addEventListener('change', function (e) { if (!e.target.closest('#sz-profiles')) schedule(); });
   $('sz-reset').addEventListener('click', function () {
-    $('sz-form').reset(); profiles = [{ n: '', mbps: '', region: '' }]; renderProfiles();
+    $('sz-form').reset(); $('pb-extlic').value = 'auto'; profiles = [{ n: '', mbps: '', region: '' }]; renderProfiles();
     document.querySelectorAll('[data-addon]').forEach(function (x) { x.checked = false; }); render();
   });
 
@@ -421,54 +569,101 @@
      et la nomenclature de droite se recalcule a chaque reponse. Aucune
      conversion « personnes -> debit » : elle ne serait sourcee nulle part,
      le debit se choisit parmi les paliers officiels du compteur par site. */
-  var GUIDE_ADDONS = ['iot', 'dlp', 'rbi', 'appAccel', 'scmPro', 'pra'];
+  var vnum = function (id) { return +$(id).value || 0; };
+  var hasPA = function () { return vnum('f-mu') > 0 || +profiles[0].n > 0; };
   var STEPS = [
-    { k: 'usage', type: 'checks', q: 'Que doit couvrir Prisma Access ?',
-      tip: 'Plusieurs réponses possibles. Elles fixent l’édition : Secure Web Gateway, ZTNA ou Enterprise.',
-      items: [['n-internet', 'Filtrer l’accès internet des utilisateurs et des sites', 'Catégories web, contrôle des applications SaaS'],
-              ['n-private', 'Atteindre des applications internes à distance', 'Intranet, ERP, partages de fichiers, bases de données'],
-              ['n-browser', 'Navigateur d’entreprise ou protection des données SaaS en ligne', 'Postes non gérés, prestataires, fuite de données vers les SaaS']] },
-    { k: 'mu', type: 'num', field: 'f-mu', q: 'Combien d’utilisateurs travaillent hors des sites ?',
-      tip: 'Télétravail, mobilité, déplacements. Ce sont les Mobile Users : une unité par utilisateur. 0 si aucun.', ph: 'ex : 250' },
+    { k: 'usage', type: 'checks', q: 'Que doit couvrir le projet ?',
+      tip: 'Plusieurs réponses possibles. Elles orientent l’édition : Secure Web Gateway pour internet, ZTNA pour les applications internes, Enterprise pour les deux et le navigateur d’entreprise.',
+      items: [['n-internet', 'Sécuriser l’accès internet des utilisateurs et des sites', 'Filtrage web, DNS, menaces, téléchargements'],
+              ['n-private', 'Remplacer le VPN pour les applications internes', 'Intranet, ERP, partages de fichiers, bases de données'],
+              ['n-browser', 'Protéger les données des SaaS et équiper un navigateur d’entreprise', 'Shadow IT, comptes personnels, postes non gérés']] },
+    { k: 'mu', type: 'nums', q: 'Combien d’utilisateurs travaillent hors des sites ?',
+      tip: 'Télétravail, mobilité, déplacements : ce sont les Mobile Users, une unité par utilisateur. Un salarié hybride compte une fois. Les utilisateurs qui ne travaillent que sur site sont couverts par le site. 0 si aucun.',
+      fields: [['f-mu', 'Utilisateurs nomades ou hybrides', 'ex : 250']] },
     { k: 'sites', type: 'sites', q: 'Combien de sites faut-il raccorder, et à quel débit ?',
       tip: 'Débit d’un site typique, entrant + sortant. Les paliers sont ceux du compteur Prisma Access par site. Des sites de tailles différentes se décrivent ensuite dans l’établi, un profil par taille.' },
-    { k: 'sdwan', type: 'choice', q: 'Ces sites reçoivent-ils un boîtier Prisma SD-WAN (ION) ?',
-      tip: 'Sinon, le routeur ou le pare-feu en place monte un tunnel IPsec vers Prisma Access.',
+    { k: 'sdwan', type: 'choice', q: 'Qu’est-ce qui raccorde chaque site à Prisma Access ?',
+      tip: 'Un ION Prisma SD-WAN monte les tunnels et gère les liens. Sinon, le pare-feu ou le routeur en place monte un tunnel IPsec.',
       show: function () { return +profiles[0].n > 0; },
-      choices: [['1', 'Oui, un ION par site'], ['2', 'Oui, deux ION en paire HA par site'], ['0', 'Non, l’équipement en place suffit']] },
-    { k: 'dc', type: 'dc', q: 'Combien de data centers hébergent ces applications internes ?',
-      tip: 'Chaque data center se raccorde par une ou plusieurs Service Connections, environ 1 Gbps chacune.',
-      show: function () { return $('n-private').checked; } },
-    { k: 'addons', type: 'addons', q: 'Faut-il prévoir l’un de ces besoins ?',
-      tip: 'Cochez ce qui s’applique. Les autres add-ons se choisissent dans l’établi.' },
+      cur: function () { var p = profiles[0]; return p.sdwan ? (p.ha ? '2' : '1') : '0'; },
+      set: function (v) { profiles[0].sdwan = v !== '0'; profiles[0].ha = v === '2'; renderProfiles(); },
+      choices: [['1', 'Un ION par site', 'Prisma SD-WAN, le plus petit modèle qui tient le débit'], ['2', 'Deux ION en paire HA par site', 'Sites critiques'], ['0', 'Le pare-feu ou le routeur en place', 'Tunnel IPsec, aucun boîtier à ajouter']] },
+    { k: 'flows', type: 'checks', q: 'Quelles données circulent depuis les sites ?',
+      tip: 'Ces flux décident des Service Connections et de l’Interconnect. Un site qui ne fait qu’aller sur internet n’a besoin que du filtrage.',
+      show: function () { return +profiles[0].n > 0; },
+      items: [['f-todc', 'Les sites remontent des données vers le data center', 'ERP, caisse, fichiers, sauvegardes, supervision'],
+              ['f-b2b', 'Les sites échangent entre eux', 'Réplication, téléphonie, applications hébergées dans un site'],
+              ['f-tobr', 'Des serveurs dans les sites doivent être joints par les nomades', 'NAS, serveur d’impression, application locale', function () { return vnum('f-mu') > 0; }]],
+      fields: [['f-todcm', 'Volume remonté, tous sites (Mbps)', 'ex : 400', function () { return $('f-todc').checked; }]] },
+    { k: 'apps', type: 'checks', q: 'Où sont hébergées les applications internes ?',
+      tip: 'Data center : Service Connection, environ 1 Gbps chacune, 5 incluses en ZTNA et Enterprise. Cloud public : ZTNA Connector dans le VPC ou le VNet, 10 inclus. Un Active Directory sur site impose une Service Connection.',
+      show: function () { return $('n-private').checked || $('f-todc').checked || $('f-tobr').checked; },
+      fields: [['f-dc', 'Data centers', '0'], ['f-dcm', 'Débit par data center (Mbps)', '1000', function () { return vnum('f-dc') > 0; }], ['f-cloud', 'Environnements cloud (AWS, Azure, GCP)', '0']],
+      items: [['f-ad', 'L’authentification passe par un Active Directory du data center', ''],
+              ['f-cloudha', 'Deux ZTNA Connectors par environnement cloud', 'Redondance', function () { return vnum('f-cloud') > 0; }]] },
+    { k: 'pb', type: 'nums', q: 'Qui travaille depuis un appareil que l’entreprise ne gère pas ?',
+      tip: 'Prestataires, intérimaires, partenaires, BYOD, VDI à réduire, équipes rachetées : c’est le terrain de Prisma Browser. Les données restent dans le navigateur, sans agent ni VPN. 0 si personne.',
+      fields: [['pb-ext', 'Prestataires et tiers', 'ex : 80'], ['pb-staff', 'Salariés sur appareils non gérés ou en BYOD', 'ex : 0']] },
+    { k: 'pbuse', type: 'checks', q: 'Que doivent faire ces utilisateurs dans le navigateur ?',
+      tip: 'Core couvre internet et les SaaS. Les besoins marqués Pro font passer à Prisma Browser Pro.',
+      show: function () { return vnum('pb-ext') + vnum('pb-staff') > 0; },
+      items: [['pb-priv', 'Ouvrir des applications internes web', 'Core avec Private App Access, ou Pro'],
+              ['pb-rdp', 'Se connecter à des serveurs en RDP ou SSH', 'Infogérance, administration'],
+              ['pb-thick', 'Manipuler des données sensibles dans Outlook, Teams, Excel', 'Pro : DLP dans les applications lourdes'],
+              ['pb-identity', 'Utiliser des comptes partagés ou des applications sans SSO', 'Pro : identifiants gérés, jamais vus par l’utilisateur'],
+              ['pb-ngfw', 'Un pare-feu Palo Alto protège déjà ces applications', 'PAN-OS 12.1.5 ou plus, géré par Panorama', function () { return $('pb-priv').checked || $('pb-rdp').checked; }],
+              ['pb-edu', 'Le client est un établissement d’enseignement', 'Édition Education']] },
+    { k: 'pblic', type: 'choice', q: 'Comment licencier les prestataires ?',
+      tip: 'En licence seule, ils ne consomment pas de Mobile User et n’installent pas d’agent. Dans Prisma Access, ils passent par le tenant et ses connexions, et comptent comme Mobile Users.',
+      show: function () { return vnum('pb-ext') > 0 && hasPA(); },
+      cur: function () { return $('pb-extlic').value; },
+      set: function (v) { $('pb-extlic').value = v; },
+      choices: [['auto', 'Prisma Browser seul', 'Recommandé pour des tiers : rien sur leurs postes'], ['mu', 'Dans Prisma Access, comptés en Mobile Users', 'Même tenant, mêmes politiques que les salariés']] },
+    { k: 'addons', type: 'addons', q: 'Le client a-t-il l’un de ces sujets ?',
+      tip: 'Chaque réponse ajoute l’add-on correspondant, ou le marque inclus dans l’édition retenue.',
+      items: [['saasInline', 'Il ne sait pas quels SaaS sont utilisés, ni avec quels comptes'],
+              ['aiAccess', 'L’usage de ChatGPT, Copilot ou Gemini n’est pas encadré'],
+              ['dlp', 'Des données réglementées partent vers le web (santé, cartes, données personnelles)'],
+              ['rbi', 'Des utilisateurs visitent des sites non catégorisés ou à risque'],
+              ['pra', 'Des administrateurs prennent la main sur des serveurs sans client installé'],
+              ['appSec', 'Des applications internes anciennes ou peu patchées sont ouvertes à distance'],
+              ['iot', 'Caméras, imprimantes, objets industriels ou médicaux dans les sites', function () { return +profiles[0].n > 0; }],
+              ['scmPro', 'Le support reçoit des plaintes de lenteur sans savoir d’où elles viennent'],
+              ['appAccel', 'Des utilisateurs éloignés se plaignent de lenteurs sur les SaaS'],
+              ['sls', 'La conformité impose une conservation longue des journaux']] },
     { k: 'end', type: 'end', q: 'La nomenclature est prête.',
-      tip: 'Elle se lit à droite, chaque ligne avec sa règle et sa source. L’établi permet d’affiner : régions, PoE, 4G / 5G, HA des data centers, ZTNA Connectors, transfert de données, modèle d’abonnement SD-WAN.' }
+      tip: 'Elle se lit à droite, avec la raison du choix d’édition et une règle sourcée par ligne. L’établi permet d’affiner : profils de sites, régions, PoE, 4G / 5G, HA des data centers, transfert de données, modèle d’abonnement SD-WAN.' }
   ];
   var gi = 0;
+  var shown = function (it) { return typeof it[it.length - 1] !== 'function' || it[it.length - 1](); };
   function visible() { return STEPS.filter(function (s) { return !s.show || s.show(); }); }
   function optHTML(on, label, sub, attrs) {
     return '<button type="button" class="sg-opt" aria-pressed="' + (on ? 'true' : 'false') + '" ' + attrs + '>'
       + '<span><b>' + esc(label) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></button>';
   }
+  function fieldsHTML(fs) {
+    return (fs || []).filter(shown).map(function (f) {
+      return '<div class="wb-field"><label for="sg-' + f[0] + '">' + esc(f[1]) + '</label><input type="number" id="sg-' + f[0] + '" data-in="' + f[0] + '" min="0" step="1" inputmode="numeric" placeholder="' + esc(f[2]) + '" value="' + esc($(f[0]).value) + '"></div>';
+    }).join('');
+  }
   function stepHTML(s) {
     var h = '<h3 class="sg-q">' + esc(s.q) + '</h3><p class="sg-tip">' + esc(s.tip) + '</p>';
     var p0 = profiles[0];
-    if (s.type === 'checks') h += '<div class="sg-opts">' + s.items.map(function (it) { return optHTML($(it[0]).checked, it[1], it[2], 'data-f="' + it[0] + '"'); }).join('') + '</div>';
-    else if (s.type === 'num') h += '<div class="wb-field"><label for="sg-num">Utilisateurs</label><input type="number" id="sg-num" min="0" step="1" inputmode="numeric" placeholder="' + esc(s.ph) + '" value="' + esc($(s.field).value) + '"></div>';
+    if (s.type === 'checks') {
+      h += '<div class="sg-opts">' + s.items.filter(shown).map(function (it) { return optHTML($(it[0]).checked, it[1], it[2], 'data-f="' + it[0] + '"'); }).join('') + '</div>';
+      h += '<div class="sg-more">' + fieldsHTML(s.fields) + '</div>';
+    } else if (s.type === 'nums') h += fieldsHTML(s.fields);
     else if (s.type === 'sites') {
       h += '<div class="wb-field"><label for="sg-sites">Sites</label><input type="number" id="sg-sites" min="0" step="1" inputmode="numeric" placeholder="0" value="' + esc(p0.n) + '"></div>'
         + '<div class="sg-opts" role="group" aria-label="Palier de débit d’un site typique">' + R.rnSite.tiers.map(function (t) { return optHTML(+p0.mbps === t.mbps, t.type, t.name, 'data-mbps="' + t.mbps + '"'); }).join('') + '</div>';
       if (profiles.length > 1) h += '<p class="sg-tip">L’établi décrit ' + profiles.length + ' profils de sites ; cette question ne modifie que le premier.</p>';
     } else if (s.type === 'choice') {
-      var cur = p0.sdwan ? (p0.ha ? '2' : '1') : '0';
-      h += '<div class="sg-opts">' + s.choices.map(function (c) { return optHTML(cur === c[0], c[1], '', 'data-c="' + c[0] + '"'); }).join('') + '</div>';
-    } else if (s.type === 'dc') {
-      h += '<div class="wb-row"><div class="wb-field"><label for="sg-dc">Data centers</label><input type="number" id="sg-dc" min="0" step="1" inputmode="numeric" placeholder="0" value="' + esc($('f-dc').value) + '"></div>'
-        + '<div class="wb-field"><label for="sg-dcm">Débit par DC <span class="wb-unit">Mbps</span></label><input type="number" id="sg-dcm" min="0" step="1" inputmode="numeric" placeholder="1000" value="' + esc($('f-dcm').value) + '"></div></div>';
+      var cur = s.cur();
+      h += '<div class="sg-opts">' + s.choices.map(function (c) { return optHTML(cur === c[0], c[1], c[2], 'data-c="' + c[0] + '"'); }).join('') + '</div>';
     } else if (s.type === 'addons') {
-      h += '<div class="sg-opts">' + GUIDE_ADDONS.map(function (id) {
-        var a = R.addons.find(function (x) { return x.id === id; }), box = document.querySelector('[data-addon="' + id + '"]');
-        return a ? optHTML(box && box.checked, a.name, a.desc, 'data-a="' + id + '"') : '';
+      h += '<div class="sg-opts">' + s.items.filter(shown).map(function (it) {
+        var a = R.addons.find(function (x) { return x.id === it[0]; }), box = document.querySelector('[data-addon="' + it[0] + '"]');
+        return a ? optHTML(box && box.checked, it[1], a.name, 'data-a="' + it[0] + '"') : '';
       }).join('') + '</div>';
     }
     if (s.type === 'end') h += '<div class="sg-nav sg-end">'
@@ -490,12 +685,18 @@
     var f = box.querySelector('input, .sg-opt, #sg-wb');
     if (dir && f) f.focus({ preventScroll: true });
   }
+  /* Champs dependants (volume remonte, debit par DC, redondance cloud) : on redessine la question sans animation */
+  function refreshStep() {
+    var a = document.activeElement, id = a && a.id, pos = a && a.selectionStart;
+    renderStep(0);
+    var b = id && $(id); if (b) { b.focus({ preventScroll: true }); try { if (pos != null) b.setSelectionRange(pos, pos); } catch (e) {} }
+  }
   function setProfile0(k, v) { profiles[0][k] = v; renderProfiles(); schedule(); }
   $('sg-step').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.f) { var c = $(b.dataset.f); c.checked = !c.checked; b.setAttribute('aria-pressed', c.checked); schedule(); return; }
+    if (b.dataset.f) { var c = $(b.dataset.f); c.checked = !c.checked; b.setAttribute('aria-pressed', c.checked); schedule(); refreshStep(); return; }
     if (b.dataset.mbps) { $('sg-step').querySelectorAll('[data-mbps]').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); var er = $('sg-step').querySelector('.sg-err'); if (er) er.remove(); setProfile0('mbps', b.dataset.mbps); return; }
-    if (b.dataset.c) { $('sg-step').querySelectorAll('[data-c]').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); profiles[0].sdwan = b.dataset.c !== '0'; setProfile0('ha', b.dataset.c === '2'); return; }
+    if (b.dataset.c) { $('sg-step').querySelectorAll('[data-c]').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); visible()[gi].set(b.dataset.c); schedule(); return; }
     if (b.dataset.a) { var a = document.querySelector('[data-addon="' + b.dataset.a + '"]'); a.checked = !a.checked; b.setAttribute('aria-pressed', a.checked); schedule(); return; }
     if (b.id === 'sg-next') {
       var cur = visible()[gi];
@@ -509,32 +710,128 @@
     if (b.id === 'sg-again') { $('sz-reset').click(); gi = 0; renderStep(-1); return; }
     if (b.id === 'sg-wb') setMode('wb');
   });
+  var DEP = { 'f-dc': 1, 'f-cloud': 1 };
   $('sg-step').addEventListener('input', function (e) {
     var t = e.target;
-    if (t.id === 'sg-num') { $('f-mu').value = t.value; schedule(); }
+    if (t.dataset.in) { $(t.dataset.in).value = t.value; schedule(); if (DEP[t.dataset.in]) refreshStep(); }
     else if (t.id === 'sg-sites') { profiles[0].n = t.value; renderProfiles(); schedule(); }
-    else if (t.id === 'sg-dc') { $('f-dc').value = t.value; schedule(); }
-    else if (t.id === 'sg-dcm') { $('f-dcm').value = t.value; schedule(); }
   });
   $('sg-step').addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); var n = $('sg-next'); if (n) n.click(); }
   });
+
+  /* ── Vue Licences ──
+     Ce que chaque licence donne, construit depuis les memes regles que le
+     calcul (SASE_RULES.explain, editions, pb, glossary, addons). */
+  var ST = { i: ['st st-i', 'Inclus'], t: ['st st-t', 'Inclus [à confirmer]'], a: ['st st-a', 'Add-on'], n: ['st st-n', 'Non'] };
+  var stCell = function (k) { var x = ST[k] || ST.n; return '<td><span class="' + x[0] + '">' + x[1] + '</span></td>'; };
+  var srcLine = function (k) { return '<span class="src">' + srcHTML(k) + (E.isPub(k) ? '' : ' ' + TBC) + '</span>'; };
+  function rowsHTML(groups, cols, id) {
+    var h = '<table class="lic-mx"><colgroup><col>' + cols.map(function () { return '<col class="c">'; }).join('') + '</colgroup><thead><tr><th scope="col">Fonction</th>'
+      + cols.map(function (c) { return '<th scope="col">' + esc(c[1]) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    groups.forEach(function (g, gi2) {
+      h += '<tr class="g"><td colspan="' + (cols.length + 1) + '">' + esc(g.grp) + '</td></tr>';
+      g.rows.forEach(function (r, ri) {
+        var did = id + '-' + gi2 + '-' + ri;
+        h += '<tr class="r"><th scope="row" style="font-weight:inherit;padding:9px 10px 9px 0"><button type="button" class="rb" aria-expanded="false" aria-controls="' + did + '">' + icn('chevron', 12).replace('class="', 'class="chev ') + '<span>' + esc(r.n) + (r.note ? '<small>' + esc(r.note) + '</small>' : '') + '</span></button></th>'
+          + cols.map(function (c) { var k = r.st[c[0]]; return stCell(k === 'i' && !E.isPub(r.src) ? 't' : k); }).join('') + '</tr>'
+          + '<tr class="d" id="' + did + '" hidden><td colspan="' + (cols.length + 1) + '"><p>' + esc(r.d) + '</p>'
+          + (r.ask ? '<p class="lic-ask">Question à poser : ' + esc(r.ask) + '</p>' : '') + '<p>' + srcLine(r.src) + '</p></td></tr>';
+      });
+    });
+    return h + '</tbody></table>';
+  }
+  function licHTML() {
+    var ED = R.editions, PB = R.pb;
+    var h = '<nav class="lic-nav" aria-label="Sections">'
+      + [['lic-pa', 'Éditions Prisma Access'], ['lic-all', 'Inclus partout'], ['lic-pb', 'Prisma Browser'], ['lic-net', 'Raccordement'], ['lic-sd', 'Prisma SD-WAN'], ['lic-more', 'Autres add-ons']]
+        .map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join('') + '</nav>';
+    h += '<section id="lic-pa"><h2>Prisma Access : trois éditions, une par tenant</h2>'
+      + '<p class="lic-lead">L’édition fixe les fonctions ; le compteur fixe ce qu’on compte : des utilisateurs, des sites par palier de débit, ou des Mbps agrégés. Les add-ons complètent l’édition, compteur par compteur. Cliquez une ligne pour voir ce qu’elle apporte et la question qui fait naître le besoin.</p>'
+      + '<div class="lic-eds"><div><b>Choisir</b>Internet seulement : Secure Web Gateway. Applications internes seulement : ZTNA. Les deux, ou navigateur d’entreprise et données SaaS : Enterprise.</div>'
+      + ED.map(function (e) {
+          return '<div><b>' + esc(e.short === 'ZTNA' ? 'ZTNA' : e.name) + '</b>' + esc(e.use) + '<span class="per">Compteurs : ' + esc(e.personas.map(function (p) { return R.personas[p].name; }).join(', ')) + (e.personas.indexOf('net') === -1 ? ' ' + TBC : '') + '</span></div>';
+        }).join('') + '</div>'
+      + '<p class="lic-leg"><span class="st st-i">Inclus</span><span class="st st-t">Inclus [à confirmer]</span><span>description d’offre, pas encore dans le guide public</span><span class="st st-a">Add-on</span><span class="st st-n">Non</span><span>non proposé</span></p>'
+      + rowsHTML(R.explain, ED.map(function (e) { return [e.id, e.short === 'ZTNA' ? 'ZTNA' : e.short]; }), 'pa')
+      + '<p class="sz-notes">' + esc(R.oneEdition) + ' (' + srcHTML('allocl') + ')</p></section>';
+    h += '<section id="lic-all"><h2>Ce que toutes les éditions incluent</h2><dl class="lic-dl">'
+      + R.allEditions.map(function (t) { return '<dt>' + esc(t) + '</dt><dd>' + srcHTML(R.includedSrc) + '</dd>'; }).join('')
+      + '<dt>Compteur par site</dt><dd>' + esc(R.personaPub.site.join(', ')) + '. Paliers de 25 Mbps à 2,5 Gbps, 10 % de dépassement toléré. ' + srcLine('palg, site') + '</dd>'
+      + '<dt>Compteur par Mbps</dt><dd>Bande passante allouée par compute location, 50 Mbps au moins. ' + esc(R.rnAgg.noQosInbound) + srcLine('alloc') + '</dd></dl></section>';
+    var pbRows = [{ grp: 'Navigateur', rows: [
+        { n: 'Navigateur Chromium sécurisé, internet et SaaS', d: 'SWG dans le navigateur, trafic chiffré inspecté sur le poste, contrôle des extensions, posture vérifiée en continu, postes gérés ou non.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'palg, cat' },
+        { n: 'Enterprise DLP au dernier kilomètre', d: 'Copier-coller, téléversement, impression, capture d’écran contrôlés selon la donnée et l’appareil.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'cat' },
+        { n: 'AI Access (trafic du navigateur)', d: PB.aiAccess, st: { edu: 'i', core: 'i', pro: 'i' }, src: 'pbsa' },
+        { n: 'Console d’administration', d: 'Politiques et journaux dans Strata Cloud Manager.', st: { edu: 'i', core: 'i', pro: 'i' }, src: 'cat' } ] },
+      { grp: 'Applications privées', rows: [
+        { n: 'Applications internes web, RDP et SSH', d: 'Sans VPN ni agent, par le Prisma Browser Connector, un pare-feu Palo Alto en place ou un ZTNA Connector. ' + PB.rdp, ask: 'Prestataires ou infogérants qui doivent atteindre des serveurs ?', st: { edu: 'n', core: 'a', pro: 'i' }, note: 'Core : extension Private App Access', src: 'palg, cat' } ] },
+      { grp: 'Protection avancée (Pro)', rows: [
+        { n: 'DLP dans les applications lourdes', d: 'Les contrôles de données s’étendent à Outlook, Teams, Excel et aux autres applications installées.', ask: 'Les données sensibles partent-elles aussi par la messagerie ou Teams ?', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'palg' },
+        { n: 'Identifiants gérés (Idira)', d: 'Comptes partagés et applications sans SSO : mots de passe injectés, jamais vus par l’utilisateur.', ask: 'Des comptes partagés circulent-ils entre prestataires ?', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'palg' },
+        { n: 'Protection web avancée', d: 'Analyse des scripts pendant l’exécution de la page et surveillance des extensions.', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'cat' },
+        { n: 'ADEM real user monitoring', d: 'Expérience réelle mesurée depuis le navigateur, remontée dans Strata Cloud Manager.', st: { edu: 'n', core: 'n', pro: 'i' }, src: 'palg' } ] }];
+    h += '<section id="lic-pb"><h2>Prisma Browser : seul ou avec Prisma Access</h2>'
+      + '<p class="lic-lead">Une unité par utilisateur et par an. Education reprend Core pour l’enseignement ; Pro ajoute les applications privées natives et la protection avancée. Enterprise inclut Prisma Browser Core pour ses utilisateurs.</p>'
+      + rowsHTML(pbRows, [['edu', 'Education'], ['core', 'Core'], ['pro', 'Pro']], 'pb')
+      + '<h3>Quelle licence pour qui</h3><dl class="lic-dl">'
+      + '<dt>Sans Prisma Access</dt><dd>Licence Prisma Browser seule. Elle se répartit entre tenants (PoC, production) et inclut AI Access pour le trafic du navigateur. Applications privées : Pro, ou Core avec Private App Access pour Prisma Browser (10 ZTNA Connectors et Prisma Browser Connector).' + srcLine('pbsa') + '</dd>'
+      + '<dt>Avec Prisma Access</dt><dd>Enterprise inclut Core. Avec Secure Web Gateway ou ZTNA, add-on Core ou Pro par utilisateur. ' + esc(PB.addonPriv) + ' ' + esc(PB.addonPerUser) + srcLine('palg, cat') + '</dd>'
+      + '<dt>Prestataires</dt><dd>Licence seule par défaut : ni Mobile User, ni agent sur des postes qui ne sont pas au client. ' + esc(PB.mix) + srcLine('cat') + '</dd></dl>'
+      + '<h3>Joindre les applications privées</h3><dl class="lic-dl">'
+      + '<dt>Pare-feu Palo Alto en place</dt><dd>' + esc(PB.ngfwPath) + srcLine('pbdeck') + '</dd>'
+      + '<dt>Prisma Browser Connector</dt><dd>' + esc(PB.pbcPath) + srcLine('pbdeck') + '</dd>'
+      + '<dt>ZTNA Connector, Service Connection, Colo-Connect</dt><dd>Les connexions du tenant Prisma Access, quand le projet en a un.' + srcLine('sc, ztnaon') + '</dd></dl>'
+      + '<h3>Cas d’usage qui déclenchent la discussion</h3><dl class="lic-dl">'
+      + PB.useCases.map(function (u) { return '<dt>' + esc(u[0]) + '</dt><dd>' + esc(u[1]) + '</dd>'; }).join('') + '</dl></section>';
+    h += '<section id="lic-net"><h2>Raccordement : qui se branche comment</h2><dl class="lic-dl">'
+      + R.glossary.map(function (g) { return '<dt>' + esc(g.n) + '</dt><dd>' + esc(g.d) + srcLine(g.src) + '</dd>'; }).join('') + '</dl></section>';
+    var S = R.sdwan;
+    h += '<section id="lic-sd"><h2>Prisma SD-WAN : boîtiers et abonnements</h2>'
+      + '<p class="lic-lead">' + esc(S.siteCoreIncl) + '</p><dl class="lic-dl">'
+      + '<dt>Par appareil</dt><dd>' + esc(S.device.note) + '</dd>'
+      + '<dt>Par site</dt><dd>' + esc(S.site.note) + '</dd>'
+      + '<dt>Par Mbps</dt><dd>' + esc(S.aggregate.note) + '</dd>'
+      + '<dt>Data center</dt><dd>' + esc(S.dc) + '</dd>'
+      + '<dt>Règle</dt><dd>' + esc(S.oneModel) + srcLine(S.src) + '</dd></dl></section>';
+    h += '<section id="lic-more"><h2>Autres add-ons et options</h2><dl class="lic-dl">'
+      + R.addons.filter(function (a) { return a.fixed !== undefined; }).map(function (a) {
+          return '<dt>' + esc(a.name) + '</dt><dd>' + esc(a.desc) + (a.fixed ? ' Unité : ' + esc(R.fixedUnits[a.fixed]) + '.' : ' Unité non publiée.') + srcLine(a.src) + '</dd>';
+        }).join('') + '</dl>'
+      + '<p class="sz-notes">' + TBC + ' : la donnée ne figure que dans une description d’offre ou une présentation Palo Alto Networks, pas encore dans un guide ou une documentation publics. Aucun prix, aucune référence de commande.</p></section>';
+    return h;
+  }
+  var licDone = false;
+  function renderLic() {
+    if (licDone) return; licDone = true;
+    $('lic-in').innerHTML = licHTML();
+    $('lic-in').addEventListener('click', function (e) {
+      var b = e.target.closest('.rb'); if (!b) return;
+      var open = b.getAttribute('aria-expanded') !== 'true', d = $(b.getAttribute('aria-controls'));
+      b.setAttribute('aria-expanded', open); d.hidden = !open;
+      if (open && window.Motion) Motion.enter([d], 1);
+    });
+  }
+
   function setMode(m) {
-    var g = m === 'guide';
+    var g = m === 'guide', l = m === 'lic';
+    document.body.classList.toggle('lic-on', l);
+    if (l) renderLic();
     $('sz-guide').hidden = !g; $('sz-form').hidden = g;
-    $('sz-m-guide').setAttribute('aria-pressed', g); $('sz-m-wb').setAttribute('aria-pressed', !g);
+    $('sz-m-guide').setAttribute('aria-pressed', g); $('sz-m-wb').setAttribute('aria-pressed', m === 'wb'); $('sz-m-lic').setAttribute('aria-pressed', l);
     try { localStorage.setItem('sz-mode', m); } catch (e) {}
-    if (g) { gi = 0; renderStep(0); } else renderProfiles();
+    if (g) { gi = 0; renderStep(0); } else if (!l) renderProfiles();
   }
   $('sz-m-guide').addEventListener('click', function () { setMode('guide'); });
   $('sz-m-wb').addEventListener('click', function () { setMode('wb'); });
+  $('sz-m-lic').addEventListener('click', function () { setMode('lic'); });
   window.SaseGuide = { setMode: setMode, steps: function () { return visible().map(function (s) { return s.k; }); } };
 
   var init = dec(new URLSearchParams(location.search).get('s') || '');
   if (init) writeState(init); else { profiles = [{ n: '', mbps: '', region: '' }]; renderProfiles(); }
   var mode = new URLSearchParams(location.search).get('mode');
   if (!mode) { try { mode = localStorage.getItem('sz-mode'); } catch (e) {} }
-  setMode(mode === 'wb' || (init && mode !== 'guide') ? 'wb' : 'guide');
+  setMode(mode === 'lic' ? 'lic' : mode === 'wb' || (init && mode !== 'guide') ? 'wb' : 'guide');
   render();
 })();
 </script>

@@ -36,7 +36,9 @@ const SASE_RULES = {
     ztnaon:  { t: 'Onboarding Workflow for Prisma Access ZTNA Connector', u: 'https://docs.paloaltonetworks.com/prisma-access/activation-and-onboarding/onboard-prisma-access/onboarding-workflow-for-ztna-connector' },
     rbi:     { t: 'Cheat Sheet: Remote Browser Isolation', u: 'https://docs.paloaltonetworks.com/prisma-access/activation-and-onboarding/your-prisma-access-license/all-available-apps-and-services/cheat-sheet-rbi' },
     iondev:  { t: 'Prisma SD-WAN ION Device Specifications (datasheet, prisma_ds_sdwan-ion-device-specifications_082426)', u: 'https://www.paloaltonetworks.com/resources/datasheets/prisma-sd-wan-instant-on-network-ion-device-specifications' },
-    sdwanlic:{ t: 'Your Prisma SD-WAN License', u: 'https://docs.paloaltonetworks.com/prisma-sd-wan/activation-and-onboarding/your-prisma-sd-wan-license' }
+    sdwanlic:{ t: 'Your Prisma SD-WAN License', u: 'https://docs.paloaltonetworks.com/prisma-sd-wan/activation-and-onboarding/your-prisma-sd-wan-license' },
+    pbsa:    { t: 'Activate Standalone Prisma Browser License (docs Prisma Browser)', u: 'https://docs.paloaltonetworks.com/prisma-browser/activation-and-onboarding/activate-standalone-prisma-browser-license' },
+    pbdeck:  { t: 'Présentation client Prisma Browser, Palo Alto Networks, 2026', u: null, pub: false }
   },
 
   /* Compteurs publics (palg) : Per User, Per Site, Per Bandwidth (Mbps), par an. */
@@ -193,7 +195,97 @@ const SASE_RULES = {
     siteCoreIncl: 'Le compteur Prisma Access par site inclut l’abonnement de branche Prisma SD-WAN, selon le palier acheté et le modèle d’ION : pas d’abonnement de branche à ajouter pour ces sites, seulement les ION.',
     perDeviceAddons: 'Par ION, en option : Security, SD-WAN + Security, IoT Device Security, Strata Logging Service (paliers Very Small à Large), ZBFW, WAN Clarity Reporting, Clarity Network DVR, App Acceleration.',
     src: 'sdwanlic'
-  }
+  },
+
+  /* ── Prisma Browser (palg tableau 2, pbsa, cat, pbdeck) ──
+     Seul ou en add-on de Prisma Access, par utilisateur et par an. Le guide
+     public decrit Core et Pro comme add-ons ; la doc d'activation confirme
+     la licence seule ; Education, le contenu de la licence seule et
+     l'extension Private App Access viennent des descriptions d'offres. */
+  pb: {
+    editions: [
+      { id: 'edu',  name: 'Prisma Browser Education', short: 'Education', use: 'Contenu de Core, réservé aux établissements d’enseignement.', src: 'cat' },
+      { id: 'core', name: 'Prisma Browser Core', short: 'Core', use: 'Navigateur d’entreprise pour internet et les SaaS : SWG dans le navigateur, Enterprise DLP, AI Access, console d’administration.', src: 'palg, cat' },
+      { id: 'pro',  name: 'Prisma Browser Pro', short: 'Pro', use: 'Core, plus applications privées natives, DLP étendue aux applications lourdes, identifiants gérés par Idira, protection web avancée, ADEM RUM.', src: 'palg, cat' }
+    ],
+    addonPriv: 'En add-on de Prisma Access, Prisma Browser joint aussi les applications privées par les Service Connections et les ZTNA Connectors du tenant.',
+    standalonePriv: { name: 'Private App Access pour Prisma Browser', desc: 'Pour Prisma Browser Core seul : jusqu’à 10 ZTNA Connectors et le Prisma Browser Connector pour joindre les applications privées.' },
+    proWhy: { thick: 'données à protéger dans les applications lourdes (Outlook, Teams, Excel)', identity: 'comptes partagés ou applications sans SSO', rum: 'mesure de l’expérience réelle depuis le navigateur (ADEM RUM)', advWeb: 'protection web avancée (scripts à l’exécution, extensions)' },
+    alloc: 'Une licence Prisma Browser seule se répartit entre plusieurs tenants, par exemple PoC et production.',
+    aiAccess: 'La licence Prisma Browser seule inclut AI Access Security pour le trafic du navigateur ; l’AI Access au niveau réseau demande une autre licence.',
+    mix: 'Prestataires en licence Prisma Browser seule dans un projet Prisma Access : cohabitation des deux licences sur un même tenant à vérifier avec Palo Alto Networks.',
+    addonPerUser: 'L’add-on Prisma Browser s’ajoute à des utilisateurs Prisma Access : chaque utilisateur Prisma Browser en add-on compte aussi comme Mobile User.',
+    ngfwPath: 'Pare-feu Palo Alto en place devant les applications : le connecteur NGFW (PAN-OS 12.1.5 ou plus, géré par Panorama) évite toute nouvelle machine.',
+    pbcPath: 'Applications privées par le Prisma Browser Connector, côté data center ; le navigateur rejoint la région cloud la plus proche.',
+    rdp: 'Connexion RDP et SSH native dans le navigateur, par Prisma Access ou le Prisma Browser Connector.',
+    useCases: [
+      ['Prestataires et tiers', 'Accès en quelques minutes sans expédier de PC, les données restent dans le navigateur.'],
+      ['BYOD et appareils non gérés', 'Aucun agent intrusif, posture vérifiée en continu, mobiles compris.'],
+      ['Réduction du VDI', 'Les applications web et SaaS passent dans le navigateur ; le VDI reste pour les applications lourdes.'],
+      ['Fusions et acquisitions', 'Équipes rachetées en production en quelques heures, sans toucher à leurs postes.'],
+      ['IA générative et SaaS', 'Copier-coller, téléversements et invites contrôlés au dernier kilomètre, trafic chiffré compris.'],
+      ['Continuité d’activité', 'N’importe quel appareil devient un poste de travail sécurisé pendant un incident.']
+    ]
+  },
+
+  /* ── Fiches explicatives (vue Licences) ──
+     st par edition : i = inclus (guide public), t = inclus selon une
+     description d'offre [a confirmer], a = add-on, n = non propose.
+     ask = la question qui fait apparaitre le besoin chez le client. */
+  explain: [
+    { grp: 'Sécurité de l’accès internet', rows: [
+      { n: 'Advanced URL Filtering', d: 'Filtrage web par catégories, analyse en ligne des pages pour bloquer le phishing et les sites malveillants inconnus.', ask: 'Faut-il filtrer la navigation des utilisateurs et des sites ?', st: { swg: 'i', ztna: 'n', enterprise: 'i' }, src: 'palg' },
+      { n: 'Advanced DNS Security', d: 'Bloque les domaines malveillants, le tunneling DNS et les domaines générés par algorithme.', ask: 'Le client a-t-il une protection DNS aujourd’hui ?', st: { swg: 'i', ztna: 'n', enterprise: 'i' }, src: 'palg' },
+      { n: 'Advanced Threat Prevention', d: 'IPS, anti-malware et blocage des commandes et contrôles, inconnus compris, sur tout le trafic.', ask: '', st: { swg: 'i', ztna: 'i', enterprise: 'i' }, src: 'palg' },
+      { n: 'Advanced WildFire', d: 'Analyse des fichiers inconnus en bac à sable cloud, protections diffusées en quelques minutes.', ask: '', st: { swg: 'i', ztna: 'i', enterprise: 'i' }, src: 'palg' },
+      { n: 'Remote Browser Isolation', d: 'Ouvre les sites à risque dans un conteneur cloud isolé ; seul le rendu arrive sur le poste.', ask: 'Les utilisateurs visitent-ils des sites non catégorisés ou à risque ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg, rbi' }
+    ] },
+    { grp: 'Applications privées', rows: [
+      { n: 'Connexion aux applications privées', d: '5 Service Connections et 10 ZTNA Connectors pour joindre data centers et clouds.', ask: 'Où sont hébergées les applications internes : data center, AWS, Azure, GCP, sites ?', st: { swg: 'a', ztna: 'i', enterprise: 'i' }, src: 'palg, sc' },
+      { n: 'Private App Access', d: 'Ouvre les Service Connections et les ZTNA Connectors à Secure Web Gateway ; porte un tenant jusqu’à 200 Service Connections.', ask: 'Plus de 5 Service Connections, ou applications privées avec Secure Web Gateway ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg, sc' },
+      { n: 'App Security', d: 'Pare-feu applicatif web devant les applications : OWASP Top 10, bots, exploits zero-day.', ask: 'Des applications internes ouvertes aux utilisateurs distants sont-elles anciennes ou peu patchées ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'Privileged Remote Access', d: 'Accès sans client, depuis un navigateur, aux serveurs RDP, SSH et VNC.', ask: 'Des administrateurs ou des prestataires prennent-ils la main sur des serveurs ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'Colo-Connect', d: 'Interconnexion privée à haut débit entre les hubs du client et Prisma Access, jusqu’à 20 Gbps par région.', ask: 'Le data center est-il en colocation (Equinix ou autre) ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' }
+    ] },
+    { grp: 'Données et SaaS', rows: [
+      { n: 'SaaS Inline Security', d: 'Découvre le shadow IT, note le risque de chaque SaaS et contrôle les usages (compte personnel ou d’entreprise, téléversements).', ask: 'Le client sait-il quels SaaS sont utilisés, et avec quels comptes ?', st: { swg: 'a', ztna: 'a', enterprise: 'i' }, src: 'palg' },
+      { n: 'AI Access Security', d: 'Inventaire et contrôle des applications d’IA générative, protection des invites et des téléversements.', ask: 'ChatGPT, Copilot, Gemini : l’usage est-il encadré ?', st: { swg: 't', ztna: 'a', enterprise: 't' }, src: 'palg, cat' },
+      { n: 'Data Loss Protection', d: 'Enterprise DLP sur les données en mouvement : plus de 1 000 identifiants, EDM, empreintes de documents.', ask: 'Des données réglementées (santé, cartes bancaires, données personnelles) partent-elles vers le web ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'Email DLP et Endpoint DLP', d: 'DLP étendue aux courriels sortants et aux périphériques (USB, imprimantes, partages).', ask: 'La fuite passe-t-elle aussi par la messagerie ou les clés USB ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'SSPM', d: 'Surveillance et correction des erreurs de configuration des SaaS (Microsoft 365, Salesforce).', ask: 'Qui vérifie les réglages de sécurité de Microsoft 365 ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' }
+    ] },
+    { grp: 'Navigateur d’entreprise', rows: [
+      { n: 'Prisma Browser Core', d: 'Navigateur Chromium sécurisé, postes gérés ou non : SWG et DLP au dernier kilomètre, contrôle des extensions, posture vérifiée en continu.', ask: 'Des prestataires ou des appareils personnels accèdent-ils aux applications ?', st: { swg: 'a', ztna: 'a', enterprise: 'i' }, src: 'palg' },
+      { n: 'Prisma Browser Pro', d: 'Core, plus DLP dans les applications lourdes, identifiants gérés par Idira, accès natif aux applications privées, ADEM RUM.', ask: 'Comptes partagés, applications sans SSO, données qui partent par Outlook ou Teams ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' }
+    ] },
+    { grp: 'Expérience et exploitation', rows: [
+      { n: 'ADEM Core', d: 'Supervision de base de l’expérience des utilisateurs Prisma Access.', ask: '', st: { swg: 't', ztna: 't', enterprise: 't' }, src: 'cat' },
+      { n: 'Strata Cloud Manager Pro', d: 'ADEM complet (tests de bout en bout : poste, Wi-Fi, FAI, application) et AIOps.', ask: 'Le support reçoit-il des plaintes de lenteur sans pouvoir dire d’où elles viennent ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'App Acceleration', d: 'Accélère les applications selon le réseau, le poste et l’application, jusqu’à 5 fois plus vite que l’accès internet direct.', ask: 'Des utilisateurs éloignés se plaignent-ils de lenteurs sur les SaaS ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'Strata Logging Service', d: 'Stockage et analyse des journaux dans le cloud.', ask: 'Quelle durée de conservation des journaux la conformité impose-t-elle ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' },
+      { n: 'Traffic Replication', d: 'Copie du trafic dans le cloud pour l’analyse forensique et la chasse aux menaces.', ask: 'Le SOC a-t-il besoin des paquets, pas seulement des journaux ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg' }
+    ] },
+    { grp: 'Sites', rows: [
+      { n: 'Abonnement de branche Prisma SD-WAN', d: 'Compris dans le compteur par site, selon le palier et le modèle d’ION : seuls les boîtiers s’ajoutent.', ask: 'Les sites ont-ils un SD-WAN à remplacer ?', st: { swg: 'i', ztna: 'i', enterprise: 'i' }, src: 'palg', note: 'au compteur par site' },
+      { n: 'Interconnect', d: 'Trafic entre sites, et des utilisateurs vers les sites, à travers Prisma Access.', ask: 'Les sites échangent-ils des données entre eux, ou des serveurs sont-ils dans les sites ?', st: { swg: 'a', ztna: 't', enterprise: 't' }, src: 'palg, cat', note: 'inclus au compteur par site en ZTNA et Enterprise' },
+      { n: 'IoT', d: 'Découverte et profilage des objets connectés des sites, politique par type d’objet.', ask: 'Caméras, imprimantes, équipements médicaux ou industriels sur les sites ?', st: { swg: 'a', ztna: 'a', enterprise: 'a' }, src: 'palg', note: 'au compteur par site' }
+    ] }
+  ],
+  /* Briques de raccordement, expliquees dans la vue Licences. */
+  glossary: [
+    { n: 'Mobile User', d: 'Un utilisateur hors site (télétravail, mobilité), connecté par GlobalProtect, Prisma Agent ou Explicit Proxy. Un utilisateur hybride compte une fois.', src: 'lic' },
+    { n: 'Remote Network', d: 'Un site raccordé par tunnel IPsec depuis un ION, un pare-feu ou un routeur. Compté par site (palier de débit) ou en Mbps agrégés.', src: 'palg, site' },
+    { n: 'Service Connection', d: 'Tunnel vers un data center ou un siège, environ 1 Gbps. Nécessaire pour un AD sur site, et pour que les Mobile Users joignent les sites.', src: 'sc, schb' },
+    { n: 'ZTNA Connector', d: 'Machine virtuelle qui ouvre les applications d’un data center ou d’un cloud, sans tunnel IPsec ni routage à préparer. Jusqu’à 2 Gbps.', src: 'ztnaon' },
+    { n: 'Compute location', d: 'Région de traitement Prisma Access. Au compteur par Mbps, la bande passante s’alloue par compute location, 50 Mbps au moins.', src: 'alloc' },
+    { n: 'ION', d: 'Boîtier Prisma SD-WAN du site ou du data center, physique ou virtuel, qui monte les tunnels vers Prisma Access.', src: 'iondev' },
+    { n: 'Prisma Browser Connector', d: 'Connecteur côté data center pour les utilisateurs Prisma Browser, sans Prisma Access.', src: 'pbdeck' },
+    { n: 'Colo-Connect', d: 'Interconnexion privée dans une colocation, pour des Service Connections à haut débit.', src: 'palg' }
+  ],
+
+  /* ── Qualification : regles appliquees par le moteur ── */
+  adOnPrem: 'Authentification sur un service du data center (Active Directory) : une Service Connection vers ce data center est nécessaire.',
+  cloudZtna: 'Applications dans un cloud public : ZTNA Connector dans le VPC ou le VNet, avec groupe à mise à l’échelle automatique sur AWS et Azure.'
 };
 /* Un const de haut niveau n'est pas une propriete de window : on l'expose. */
 if (typeof window !== 'undefined') window.SASE_RULES = SASE_RULES;
