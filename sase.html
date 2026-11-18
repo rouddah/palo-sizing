@@ -522,8 +522,8 @@
     if (info.length) h += '<p class="sz-sub">À savoir</p>' + alertList(info);
     r.notes.forEach(function (n) { h += '<p class="sz-notes">' + esc(n.text) + (n.tbc ? ' ' + TBC : '') + ' (' + srcHTML(n.src) + ')</p>'; });
     if (r.usePA) h += '<p class="sz-notes">Toutes les éditions incluent : ' + esc(r.included.join(', ')) + ' (' + srcHTML(R.includedSrc) + '). ' + esc(R.ionNote) + '</p>'
-      + '<p class="sz-notes">' + TBC + ' : la donnée ne figure que dans une description d’offre Palo Alto Networks, pas encore dans un guide ou une documentation publics.</p>'
       + '<p class="sz-notes">' + esc(R.history) + ' (' + srcHTML('allocl') + ')</p>';
+    h += '<p class="sz-notes">' + TBC + ' : la donnée ne figure que dans une description d’offre ou une présentation Palo Alto Networks, pas encore dans un guide ou une documentation publics.</p>';
     h += '<div class="sz-actions">'
       + '<button type="button" class="fx-btn primary" id="sz-copy">' + icn('copy') + 'Copier la nomenclature</button>'
       + '<button type="button" class="fx-btn" id="sz-link">' + icn('link') + 'Copier le lien</button>'

@@ -338,3 +338,14 @@ L'outil suit desormais le tableau 1 du Prisma Access Licensing Guide public (jui
 - **Allocation de transfert** : 250 GB par unite et par an (1 Mobile User ou 1 Mbps), unites additionnees sur le tenant, d'apres la documentation Prisma Access 3.0 et 3.1 ; le guide de juin 2026 ecrit seulement « 250 GB annual data transfer per year ». Allocation des compteurs par site non publiee.
 - **Abonnement ION virtuel par appareil plafonne a 500 Mbps** : description d'offre seulement (la doc SD-WAN publie les paliers sans distinguer physique et virtuel).
 - **Noms d'add-ons** : le guide public ecrit Strata Cloud Manager Pro, App Security, Privileged Remote Access, Data Loss Protection, Data Security ; les descriptions d'offres utilisent d'autres libelles (Secure Agentless Access, Private App Security). L'outil reprend les noms du guide public.
+
+## Prisma Browser et qualification SASE (18 novembre 2026)
+
+Affiche « [à confirmer] » dans l'outil, a faire valider par un avant-vente ou Palo Alto Networks :
+
+- **Add-on Prisma Browser = Mobile User** : l'outil considere que chaque utilisateur Prisma Browser en add-on compte aussi comme Mobile User (description d'offre « add-on to Prisma Access »).
+- **Prestataires en licence seule dans un projet Prisma Access** : cohabitation, sur un meme tenant, de l'add-on et de licences Prisma Browser seules, non documentee publiquement.
+- **Contenu de la licence seule** (SWG, DLP, console) et **Education** : descriptions d'offres ; la doc publique confirme seulement la licence seule, sa repartition entre tenants et AI Access pour le trafic du navigateur.
+- **Private App Access pour Prisma Browser** (10 ZTNA Connectors + Prisma Browser Connector, pour Core seul) : description d'offre.
+- **Connecteur NGFW (PAN-OS 12.1.5 ou plus, Panorama), Prisma Browser Connector, RDP/SSH natif** : presentation client Prisma Browser, pas de doc publique relevee.
+- **ZTNA Connectors cloud** : un par environnement, deux si redondance demandee ; c'est un choix de l'utilisateur, pas une regle publiee.

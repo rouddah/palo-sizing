@@ -3,6 +3,26 @@
 > Mis a jour le 21 aout 2026 (session 16). A lire en debut de session avant de toucher quoi que ce soit.
 
 
+## Session 28 (branche sase-v14, non fusionnee, non deployee)
+
+Demande de Rayan du 18/11 : sizing SASE plus precis, questions qui orientent
+SWG / ZTNA / Enterprise, Prisma Browser seul ou en add-on, menu Licences
+mieux fait. Fait :
+- moteur : `flows` (remontee des sites vers le DC -> Service Connections,
+  echanges entre sites -> Interconnect, serveurs des sites), `apps` (AD sur
+  site -> au moins 1 SC, clouds publics -> ZTNA Connectors), `pb` (salaries,
+  prestataires, usages -> Core / Pro / Education, seul ou add-on), sortie
+  `decision` + `compare` (pourquoi cette edition, ecarts des 3 editions) ;
+- page : mode guide a 10 questions conditionnelles, groupes « Flux des sites
+  et hebergement » et « Prisma Browser » dans l'etabli, troisieme mode
+  « Licences » (`?mode=lic`) construit depuis `SASE_RULES.explain`, `pb`,
+  `glossary` ;
+- sources : `pbsa` (doc publique licence seule), `pbdeck` (presentation
+  client, non publique, comme `cat`). Ne jamais nommer une cle `catalog` :
+  `_sase.js` refuse ce mot (document source).
+A faire : relecture par Rayan, points « 18 novembre » de `_to_verify.md`,
+puis fusion + deploiement sur feu vert.
+
 ## Session 27 (branche sase-v14, non fusionnee, non deployee)
 
 Le guide de licences public (`palg`, tableau 1) et les docs priment sur les
