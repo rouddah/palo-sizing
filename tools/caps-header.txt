@@ -1,0 +1,27 @@
+/* Deuxieme tableau du comparateur : limites de configuration et fonctions,
+   pour chaque modele PA (data/pa-models.js) et concurrent (data/competitors.js).
+   FICHIER GENERE par tools/caps-merge.js a partir des releves par editeur :
+   ne pas l'editer a la main, corriger le releve puis relancer la fusion.
+
+   Releve du 10 novembre 2026 sur les sources officielles de chaque editeur
+   (datasheets, tables de valeurs maximales, guides d'administration, listes de
+   fonctions, pages de licences). La source de chaque valeur est dans `src`
+   (limites) ou `featSrc` (fonctions) et s'affiche au survol de la cellule.
+
+   REGLES
+     - nul = non publie, jamais zero, jamais estime ;
+     - limites (entiers) : ipsec tunnels IPsec site-a-site, ra utilisateurs VPN
+       d'acces distant, vlan, virt contextes virtuels (virtBase sans licence,
+       virtTerm terme de l'editeur), rules regles de securite, nat, addr objets
+       adresse, addrGrp, svc objets service, zones, routes statiques, users
+       utilisateurs identifies, sslDec sessions TLS dechiffrees, ap points
+       d'acces Wi-Fi geres, sw commutateurs geres ;
+     - fonctions : 'base' inclus sans abonnement, 'lic' sous licence,
+       'lic-local' sandbox executee sur le boitier, false non disponible,
+       true / texte court pour le materiel (wifi, cell), null non publie.
+       vendors[v].features = valeur de toute la gamme, models[id].feat = exception ;
+     - libelles generiques : aucun nom commercial de fonction ;
+     - les limites se comparent d'un editeur a l'autre (ce sont des nombres
+       d'objets), les debits non.
+*/
+
